@@ -8,7 +8,7 @@
         <!--Connexion-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="Connexion" customModule="PresseEchange" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="Connexion" customModule="PressShare" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -18,9 +18,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Mot de passe" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ays-Xi-A3s">
-                                <rect key="frame" x="73" y="220" width="170" height="44"/>
+                                <rect key="frame" x="75" y="180" width="170" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Utilisateur" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mpV-vj-S3G">
+                                <rect key="frame" x="75" y="131" width="170" height="41"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t97-DZ-Hpt">
                                 <rect key="frame" x="82" y="412" width="119" height="30"/>
@@ -33,7 +39,7 @@
                                 <rect key="frame" x="124" y="302" width="60" height="30"/>
                                 <state key="normal" title="VALIDER"/>
                                 <connections>
-                                    <action selector="ActionValider:" destination="BYZ-38-t0r" eventType="touchUpInside" id="SGd-Ow-XbR"/>
+                                    <action selector="ActionValider:" destination="BYZ-38-t0r" eventType="touchUpInside" id="06T-QO-F5X"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MKr-GY-e2y">
@@ -56,12 +62,6 @@
                                     <segue destination="KiF-xM-ekO" kind="modal" id="70v-ZN-DLS"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Utilisateur" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mpV-vj-S3G">
-                                <rect key="frame" x="73" y="152" width="170" height="41"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
-                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -88,19 +88,19 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="IBpassword" destination="Ays-Xi-A3s" id="IeE-e2-xs1"/>
-                        <outlet property="IBuser" destination="mpV-vj-S3G" id="lIz-qJ-3MY"/>
+                        <outlet property="IBpassword" destination="Ays-Xi-A3s" id="njz-jg-ppW"/>
+                        <outlet property="IBuser" destination="mpV-vj-S3G" id="x40-7n-mCF"/>
                         <segue destination="cda-Mx-Xiq" kind="modal" identifier="accueilnormal" id="ZXU-Gk-pKP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-61" y="-101.99999999999996"/>
+            <point key="canvasLocation" x="-223" y="-147"/>
         </scene>
         <!--Changer Passe-->
         <scene sceneID="VLy-2Z-IGA">
             <objects>
-                <viewController id="Ujs-0X-esF" customClass="ChangerPasse" customModule="PressShare" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Ujs-0X-esF" customClass="ChangerPasse" customModule="PressShare" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jeD-df-9w7"/>
                         <viewControllerLayoutGuide type="bottom" id="KKJ-sB-Yay"/>
@@ -152,7 +152,7 @@
         <!--New User-->
         <scene sceneID="ent-WN-zgC">
             <objects>
-                <viewController id="2EN-pX-s0E" customClass="NewUser" customModule="PressShare" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="2EN-pX-s0E" customClass="NewUser" customModule="PressShare" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Lcf-NA-CJg"/>
                         <viewControllerLayoutGuide type="bottom" id="z8P-gM-vgZ"/>
@@ -253,11 +253,11 @@
                     <connections>
                         <outlet property="IBadresse" destination="hJy-aj-Qy4" id="tKb-ES-LmL"/>
                         <outlet property="IBcodepostal" destination="8Ar-do-3w5" id="zpD-JD-DCM"/>
-                        <outlet property="IBemail" destination="SNH-cs-gMq" id="VXG-g9-eba"/>
+                        <outlet property="IBemail" destination="SNH-cs-gMq" id="8hU-it-cwY"/>
                         <outlet property="IBpasse" destination="Gvg-UE-lbQ" id="Ed5-nc-cMc"/>
                         <outlet property="IBpasseVerif" destination="t4g-qq-vEd" id="cdW-L2-e7I"/>
                         <outlet property="IBpays" destination="bgv-gp-40a" id="NpD-Pb-R7y"/>
-                        <outlet property="IBpseudo" destination="ADv-WE-VpM" id="vjx-Gd-Rqr"/>
+                        <outlet property="IBpseudo" destination="ADv-WE-VpM" id="sBE-zr-0S6"/>
                         <outlet property="IBville" destination="5py-ws-uOj" id="fG4-ye-pmn"/>
                     </connections>
                 </viewController>
@@ -268,7 +268,7 @@
         <!--Accueil Normal-->
         <scene sceneID="9IN-zI-ufd">
             <objects>
-                <viewController id="cda-Mx-Xiq" customClass="AccueilNormal" customModule="PressShare" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="cda-Mx-Xiq" customClass="AccueilNormal" customModule="PressShare" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Q33-jg-deb"/>
                         <viewControllerLayoutGuide type="bottom" id="3M0-6c-XFu"/>
@@ -328,7 +328,7 @@
         <!--Accueil-->
         <scene sceneID="jiF-Ow-arw">
             <objects>
-                <viewController id="KiF-xM-ekO" customClass="Accueil" customModule="PresseEchange" sceneMemberID="viewController">
+                <viewController id="KiF-xM-ekO" customClass="Accueil" customModule="PressShare" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9vh-9T-ZqW"/>
                         <viewControllerLayoutGuide type="bottom" id="obZ-bF-6Sr"/>

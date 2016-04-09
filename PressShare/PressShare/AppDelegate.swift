@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  PressShare
+//  PresseEchange
 //
-//  Created by MacbookPRV on 09/04/2016.
+//  Created by MacbookPRV on 05/03/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
