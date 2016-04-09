@@ -15,7 +15,6 @@
 		DBF8D8251CB9A0B700BF706E /* ChangerPasse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */; };
 		DBF8D8261CB9A0B700BF706E /* Connexion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8211CB9A0B700BF706E /* Connexion.swift */; };
 		DBF8D8271CB9A0B700BF706E /* NewUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8221CB9A0B700BF706E /* NewUser.swift */; };
-		DBF8D8291CB9A28400BF706E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8281CB9A28400BF706E /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +28,6 @@
 		DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangerPasse.swift; sourceTree = "<group>"; };
 		DBF8D8211CB9A0B700BF706E /* Connexion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connexion.swift; sourceTree = "<group>"; };
 		DBF8D8221CB9A0B700BF706E /* NewUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUser.swift; sourceTree = "<group>"; };
-		DBF8D8281CB9A28400BF706E /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +60,6 @@
 		DBF8D80B1CB99E9D00BF706E /* PressShare */ = {
 			isa = PBXGroup;
 			children = (
-				DBF8D8281CB9A28400BF706E /* ViewController.swift */,
 				DBF8D81E1CB9A0B700BF706E /* Accueil.swift */,
 				DBF8D81F1CB9A0B700BF706E /* AccueilNormal.swift */,
 				DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */,
@@ -151,7 +148,6 @@
 				DBF8D8271CB9A0B700BF706E /* NewUser.swift in Sources */,
 				DBF8D8251CB9A0B700BF706E /* ChangerPasse.swift in Sources */,
 				DBF8D8261CB9A0B700BF706E /* Connexion.swift in Sources */,
-				DBF8D8291CB9A28400BF706E /* ViewController.swift in Sources */,
 				DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */,
 				DBF8D8241CB9A0B700BF706E /* AccueilNormal.swift in Sources */,
 			);
