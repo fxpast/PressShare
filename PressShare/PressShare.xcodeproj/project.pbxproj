@@ -7,26 +7,54 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA351CE0FB870065ECEB /* BlackBox.swift */; };
+		DB5EFA3A1CE39AE80065ECEB /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA391CE39AE80065ECEB /* Users.swift */; };
+		DBA03CD81CECB31800B76896 /* Produits.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA03CD71CECB31800B76896 /* Produits.swift */; };
+		DBA3C5321CE5141800CD826D /* InfoPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */; };
+		DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52F1CE5141800CD826D /* LoginViewController.swift */; };
+		DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5301CE5141800CD826D /* MapViewController.swift */; };
+		DBA3C5351CE5141900CD826D /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* TableViewController.swift */; };
+		DBBC9D231CED4DE900906E8E /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D201CED4DE900906E8E /* FBSDKCoreKit.framework */; };
+		DBBC9D241CED4DE900906E8E /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D211CED4DE900906E8E /* FBSDKLoginKit.framework */; };
+		DBBC9D251CED4DE900906E8E /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D221CED4DE900906E8E /* FBSDKShareKit.framework */; };
 		DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D80C1CB99E9D00BF706E /* AppDelegate.swift */; };
 		DBF8D8121CB99E9D00BF706E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBF8D8101CB99E9D00BF706E /* Main.storyboard */; };
 		DBF8D8141CB99E9D00BF706E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBF8D8131CB99E9D00BF706E /* Assets.xcassets */; };
-		DBF8D8231CB9A0B700BF706E /* Accueil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D81E1CB9A0B700BF706E /* Accueil.swift */; };
-		DBF8D8241CB9A0B700BF706E /* AccueilNormal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D81F1CB9A0B700BF706E /* AccueilNormal.swift */; };
 		DBF8D8251CB9A0B700BF706E /* ChangerPasse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */; };
-		DBF8D8261CB9A0B700BF706E /* Connexion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8211CB9A0B700BF706E /* Connexion.swift */; };
 		DBF8D8271CB9A0B700BF706E /* NewUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8221CB9A0B700BF706E /* NewUser.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		DBA3C53F1CE519C300CD826D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		DB5EFA351CE0FB870065ECEB /* BlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackBox.swift; sourceTree = "<group>"; };
+		DB5EFA391CE39AE80065ECEB /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
+		DBA03CD71CECB31800B76896 /* Produits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Produits.swift; sourceTree = "<group>"; };
+		DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPostViewController.swift; sourceTree = "<group>"; };
+		DBA3C52F1CE5141800CD826D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		DBA3C5301CE5141800CD826D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		DBA3C5311CE5141800CD826D /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		DBA3C5411CE51A1B00CD826D /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		DBBC9D201CED4DE900906E8E /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = PressShare/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		DBBC9D211CED4DE900906E8E /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = PressShare/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		DBBC9D221CED4DE900906E8E /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = PressShare/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		DBF8D8091CB99E9C00BF706E /* PressShare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PressShare.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBF8D80C1CB99E9D00BF706E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DBF8D8111CB99E9D00BF706E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DBF8D8131CB99E9D00BF706E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DBF8D8181CB99E9D00BF706E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DBF8D81E1CB9A0B700BF706E /* Accueil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Accueil.swift; sourceTree = "<group>"; };
-		DBF8D81F1CB9A0B700BF706E /* AccueilNormal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccueilNormal.swift; sourceTree = "<group>"; };
 		DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangerPasse.swift; sourceTree = "<group>"; };
-		DBF8D8211CB9A0B700BF706E /* Connexion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connexion.swift; sourceTree = "<group>"; };
 		DBF8D8221CB9A0B700BF706E /* NewUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -35,16 +63,70 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBBC9D231CED4DE900906E8E /* FBSDKCoreKit.framework in Frameworks */,
+				DBBC9D241CED4DE900906E8E /* FBSDKLoginKit.framework in Frameworks */,
+				DBBC9D251CED4DE900906E8E /* FBSDKShareKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB5EFA371CE39AC80065ECEB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DB5EFA391CE39AE80065ECEB /* Users.swift */,
+				DBA03CD71CECB31800B76896 /* Produits.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		DB5EFA3B1CE39AFB0065ECEB /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DBF8D8101CB99E9D00BF706E /* Main.storyboard */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		DB5EFA3C1CE39B010065ECEB /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				DBA3C5311CE5141800CD826D /* TableViewController.swift */,
+				DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */,
+				DBA3C5301CE5141800CD826D /* MapViewController.swift */,
+				DBA3C52F1CE5141800CD826D /* LoginViewController.swift */,
+				DBF8D8221CB9A0B700BF706E /* NewUser.swift */,
+				DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		DB5EFA3D1CE39B520065ECEB /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				DBF8D80C1CB99E9D00BF706E /* AppDelegate.swift */,
+				DBA3C5411CE51A1B00CD826D /* Bridging-Header.h */,
+				DB5EFA351CE0FB870065ECEB /* BlackBox.swift */,
+			);
+			name = Delegate;
+			sourceTree = "<group>";
+		};
+		DBA3C5401CE519EA00CD826D /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Framework;
+			sourceTree = "<group>";
+		};
 		DBF8D8001CB99E9C00BF706E = {
 			isa = PBXGroup;
 			children = (
+				DBBC9D201CED4DE900906E8E /* FBSDKCoreKit.framework */,
+				DBBC9D211CED4DE900906E8E /* FBSDKLoginKit.framework */,
+				DBBC9D221CED4DE900906E8E /* FBSDKShareKit.framework */,
 				DBF8D80B1CB99E9D00BF706E /* PressShare */,
+				DBA3C5401CE519EA00CD826D /* Framework */,
 				DBF8D80A1CB99E9C00BF706E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,13 +142,10 @@
 		DBF8D80B1CB99E9D00BF706E /* PressShare */ = {
 			isa = PBXGroup;
 			children = (
-				DBF8D81E1CB9A0B700BF706E /* Accueil.swift */,
-				DBF8D81F1CB9A0B700BF706E /* AccueilNormal.swift */,
-				DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */,
-				DBF8D8211CB9A0B700BF706E /* Connexion.swift */,
-				DBF8D8221CB9A0B700BF706E /* NewUser.swift */,
-				DBF8D80C1CB99E9D00BF706E /* AppDelegate.swift */,
-				DBF8D8101CB99E9D00BF706E /* Main.storyboard */,
+				DB5EFA3D1CE39B520065ECEB /* Delegate */,
+				DB5EFA3C1CE39B010065ECEB /* Controller */,
+				DB5EFA3B1CE39AFB0065ECEB /* View */,
+				DB5EFA371CE39AC80065ECEB /* Model */,
 				DBF8D8131CB99E9D00BF706E /* Assets.xcassets */,
 				DBF8D8181CB99E9D00BF706E /* Info.plist */,
 			);
@@ -83,6 +162,7 @@
 				DBF8D8051CB99E9C00BF706E /* Sources */,
 				DBF8D8061CB99E9C00BF706E /* Frameworks */,
 				DBF8D8071CB99E9C00BF706E /* Resources */,
+				DBA3C53F1CE519C300CD826D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -144,12 +224,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBF8D8231CB9A0B700BF706E /* Accueil.swift in Sources */,
 				DBF8D8271CB9A0B700BF706E /* NewUser.swift in Sources */,
+				DBA3C5351CE5141900CD826D /* TableViewController.swift in Sources */,
 				DBF8D8251CB9A0B700BF706E /* ChangerPasse.swift in Sources */,
-				DBF8D8261CB9A0B700BF706E /* Connexion.swift in Sources */,
+				DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */,
 				DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */,
-				DBF8D8241CB9A0B700BF706E /* AccueilNormal.swift in Sources */,
+				DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */,
+				DBA03CD81CECB31800B76896 /* Produits.swift in Sources */,
+				DBA3C5321CE5141800CD826D /* InfoPostViewController.swift in Sources */,
+				DB5EFA3A1CE39AE80065ECEB /* Users.swift in Sources */,
+				DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,12 +342,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/PressShare",
+				);
 				INFOPLIST_FILE = PressShare/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.prv.PressShare;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.prv.MemeMe2-0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "68e56823-3c2e-4cdb-b161-db6d263254d9";
+				SWIFT_OBJC_BRIDGING_HEADER = "PressShare/Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -271,12 +363,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/PressShare",
+				);
 				INFOPLIST_FILE = PressShare/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.prv.PressShare;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.prv.MemeMe2-0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "68e56823-3c2e-4cdb-b161-db6d263254d9";
+				SWIFT_OBJC_BRIDGING_HEADER = "PressShare/Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
