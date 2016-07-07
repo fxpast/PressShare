@@ -30,7 +30,7 @@ class TableViewController: UITableViewController {
     //MARK: Data Networking
     private  func RefreshData()  {
         
-        getAllUsers { (success, usersArray, errorString) in
+        getAllUsers(config.user_id) { (success, usersArray, errorString) in
             
             if success {
                 self.users.usersArray = usersArray

@@ -11,16 +11,48 @@ import UIKit
 class ChangerPasse : UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var IBemail: UITextField!
+    @IBOutlet weak var IBPasswordVerif: UITextField!
+    @IBOutlet weak var IBPassword: UITextField!
+    
+    let config = Config.sharedInstance
+    
+    
+    //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.IBemail.delegate=self
+        self.IBemail.delegate = self
+        self.IBPasswordVerif.delegate = self
+        self.IBPassword.delegate = self
+        
+        if config.previousView == "LoginViewController" {
+            setUIHidden(config.user_newpassword )
+            
+        }
+        
+        if config.previousView == "SettingsTableViewContr" {
+            navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
+            IBemail.text = config.user_email
+            config.user_newpassword = true
+        }
+        
+        
+        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+    private func setUIHidden(hidden: Bool) {
+        IBPassword.hidden = !hidden
+        IBPasswordVerif.hidden = !hidden
+        IBemail.hidden = hidden
+        
+    }
+    
     
     
     
@@ -30,20 +62,60 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     
     @IBAction func ActionValier(sender: AnyObject) {
         
-        guard self.IBemail.text != "" else {
-            displayAlert("Error", mess: "Email is empty")
-            return
-        }
+        var password:String
         
         var user = User(dico: [String : AnyObject]())
-        user.user_pass = randomAlphaNumericString(8)
-        user.user_email = IBemail.text!
+        
+        if config.user_newpassword == true {
+            
+            guard IBPassword.text != "" else {
+                displayAlert("Error", mess: "le mot de passe est incorrect")
+                return
+            }
+            
+            guard IBPasswordVerif.text != "" else {
+                displayAlert("Error", mess: "le mot de passe est incorrect")
+                return
+            }
+            
+            guard IBPassword.text == IBPasswordVerif.text else {
+                displayAlert("Error", mess: "le mot de passe est incorrect")
+                return
+            }
+            
+            password = IBPassword.text!
+            user.user_email = config.user_email
+            user.user_newpassword = false
+        }
+        else {
+            guard IBemail.text != "" else {
+                displayAlert("Error", mess: "Email is empty")
+                return
+            }
+            
+            password = randomAlphaNumericString(8)
+            user.user_email = IBemail.text!
+            user.user_newpassword = true
+            
+        }
+        
+        
+        user.user_pass = password
+        
         
         setUpdatePass(user) { (success, errorString) in
             if success {
                 performUIUpdatesOnMain {
-                    self.displayAlert("Mot de passe", mess: "Attention un mail a été envoyé dans votre boite aux lettes. \n Pensez à vérifier votre dossier spam si vous ne trouvez pas le mail.")
-                                    }
+                    
+                    if user.user_newpassword == true {
+                        
+                        self.displayAlert("Mot de passe", mess: "Attention un mail a été envoyé dans votre boite aux lettes. \n Pensez à vérifier votre dossier spam si vous ne trouvez pas le mail.")
+                        
+                    }
+                    else {
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                }
             }
             else {
                 performUIUpdatesOnMain {
@@ -53,9 +125,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
             
         }
         
-
         
-    
     }
     
     

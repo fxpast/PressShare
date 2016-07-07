@@ -19,7 +19,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     var facebookButton:FBSDKLoginButton!
     
     var user = User(dico: [String : AnyObject]())
-    
+    var config = Config.sharedInstance
     
     //MARK: View Controller Delegate
     
@@ -29,13 +29,27 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         IBuser.delegate = self
         IBPassword.delegate = self
         
+        config.latitude = 0
+        config.longitude = 0
+        config.mapString = ""
+        config.user_adresse = ""
+        config.user_codepostal = ""
+        config.user_email = ""
+        config.user_id = 0
+        config.user_nom = ""
+        config.user_pays = ""
+        config.user_prenom = ""
+        config.user_pseudo = ""
+        config.user_ville = ""
+        config.user_newpassword = false
+        config.previousView = "LoginViewController"
+        
         loginWithCurrentToken()
         
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
         
         facebookButton = FBSDKLoginButton()
         view.addSubview(facebookButton)
@@ -47,7 +61,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         facebookButton.readPermissions = ["public_profile", "email", "user_friends"]
         facebookButton.delegate = self
         
-        
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -55,6 +68,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         return true
         
     }
+    
     
     private func setUIEnabled(enabled: Bool) {
         IBuser.enabled = enabled
@@ -73,8 +87,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     //MARK: Facebook Delegate Methods
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
-        print("User facebook Logged In")
-        
+
         if ((error) != nil)
         {
             // Process error
@@ -90,19 +103,27 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             if result.grantedPermissions.contains("email")
             {
                 LoadFaceBook()
-                self.IBuser.hidden = true
-                self.IBPassword.hidden = true
+                IBuser.hidden = true
+                IBPassword.hidden = true
             }
         }
     }
     
     func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
-        print("User facebook Logged Out")
         loginWithCurrentToken()
     }
     
     
     //MARK: Sign in
+    
+    
+    @IBAction func actionPassword(sender: AnyObject) {
+        
+        
+        performSegueWithIdentifier("chgpass", sender: self)
+        
+    }
+
     
     
     @IBAction func ActionLogin(sender: AnyObject) {
@@ -135,18 +156,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             if success {
                 performUIUpdatesOnMain {
                     
-                    self.user = User(dico: userArray![0])
-                    let config = Config.sharedInstance
-                    config.user_id = self.user.user_id
-                    config.user_pseudo = self.user.user_pseudo
-                    config.user_nom = self.user.user_nom
-                    config.user_prenom = self.user.user_prenom
-                    config.latitude = self.user.user_latitude
-                    config.longitude = self.user.user_longitude
-                    config.mapString = self.user.user_mapString
-                    self.IBPassword.text = ""
-                    self.setUIEnabled(true)
-                    self.performSegueWithIdentifier("tabbar", sender: self)
+                    self.AffecterUser(userArray![0])
                     
                 }
                 
@@ -184,7 +194,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
     }
     
-    
     private func LoadFaceBook() {
     
         let parameters = ["fields":"email"]
@@ -196,20 +205,9 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                 
                 if success {
                     performUIUpdatesOnMain {
-                        
-                        self.user = User(dico: userArray![0])
-                        let config = Config.sharedInstance
-                        config.user_id = self.user.user_id
-                        config.user_pseudo = self.user.user_pseudo
-                        config.user_nom = self.user.user_nom
-                        config.user_prenom = self.user.user_prenom
-                        config.latitude = self.user.user_latitude
-                        config.longitude = self.user.user_longitude
-                        config.mapString = self.user.user_mapString
-                        self.IBPassword.text = ""
-                        self.setUIEnabled(true)
-                        self.performSegueWithIdentifier("tabbar", sender: self)
-                        
+
+                        self.AffecterUser(userArray![0])
+
                     }
                     
                 }
@@ -230,6 +228,33 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     
     
+    private func AffecterUser(dictionnaire:[String:AnyObject]) {
+        
+        self.user = User(dico: dictionnaire)       
+        config.user_id = user.user_id
+        config.user_pseudo = user.user_pseudo
+        config.user_email = user.user_email
+        config.user_nom = user.user_nom
+        config.user_prenom = user.user_prenom
+        config.latitude = user.user_latitude
+        config.longitude = user.user_longitude
+        config.mapString = user.user_mapString
+        config.user_newpassword = user.user_newpassword
+        config.user_pays = user.user_pays
+        config.user_ville = user.user_ville
+        config.user_adresse = user.user_adresse
+        config.user_codepostal = user.user_codepostal
+        IBPassword.text = ""
+        setUIEnabled(true)
+        if (config.user_newpassword == true) {
+            performSegueWithIdentifier("chgpass", sender: self)
+        }
+        else {
+            performSegueWithIdentifier("tabbar", sender: self)
+        }
+        
+        
+    }
     
     
 }

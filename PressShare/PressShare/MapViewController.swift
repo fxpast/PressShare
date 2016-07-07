@@ -51,9 +51,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             IBMap.removeAnnotation(item as! MKAnnotation)
         }
         
-       
-        getAllUsers({(success, usersArray, errorString) in
-            
+       getAllUsers(config.user_id) { (success, usersArray, errorString) in
+        
+        
             if success {
                 
                 self.users.usersArray = usersArray
@@ -92,7 +92,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 }
             }
             
-        })
+        }
         
     }
     

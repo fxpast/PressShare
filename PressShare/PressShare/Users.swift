@@ -29,6 +29,7 @@ struct User {
     var user_latitude:Float
     var user_longitude:Float
     var user_mapString:String
+    var user_newpassword:Bool
 
     
     //MARK: Initialisation
@@ -52,7 +53,7 @@ struct User {
             user_latitude = Float(dico["user_latitude"] as! String)!
             user_longitude = Float(dico["user_longitude"] as! String)!
             user_mapString = dico["user_mapString"] as! String
-
+            user_newpassword = Bool(Int(dico["user_newpassword"] as! String)!)
         }
         else {
             user_id = 0
@@ -70,6 +71,7 @@ struct User {
             user_latitude = 0.0
             user_longitude = 0.0
             user_mapString = ""
+            user_newpassword = false
 
         }
         
@@ -87,29 +89,38 @@ class Users {
 }
 
 
-
-
 class Config {
     
     var user_id:Int!
     var user_pseudo:String!
+    var user_email:String!
     var latitude:Float!
     var longitude:Float!
     var mapString:String!
     var user_nom:String!
     var user_prenom:String!
+    var user_newpassword:Bool!
+    var previousView:String!
+    var user_adresse:String!
+    var user_codepostal:String!
+    var user_ville:String!
+    var user_pays:String!
     
     static let sharedInstance = Config()
     
 }
 
 
-func getAllUsers(completionHandlerAllUsers: (success: Bool, usersArray: [[String : AnyObject]]?, errorString:String?) -> Void)
+func getAllUsers(userId:Int, completionHandlerAllUsers: (success: Bool, usersArray: [[String : AnyObject]]?, errorString:String?) -> Void)
 {
+    // Create your request string with parameter name as defined in PHP file
+    let body: String = "user_id=\(userId)"
     // Create Data from request
     let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_getAllUsers.php")!)
     // set Request Type
     request.HTTPMethod = "POST"
+    // Set Request Body
+    request.HTTPBody = body.dataUsingEncoding(NSUTF8StringEncoding)
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
@@ -153,7 +164,7 @@ func getAllUsers(completionHandlerAllUsers: (success: Bool, usersArray: [[String
             completionHandlerAllUsers(success: true, usersArray: resultArray, errorString: nil)
         }
         else {
-            completionHandlerAllUsers(success: false, usersArray: nil, errorString: "impossible to get users")
+            completionHandlerAllUsers(success: false, usersArray: nil, errorString: resultDico["error"] as? String)
             
         }
         
@@ -220,12 +231,8 @@ func AuthentiFacebook(user: User, completionHandlerOAuthFacebook: (success: Bool
             completionHandlerOAuthFacebook(success: true, userArray: resultArray, errorString: nil)
         }
         else {
-            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString: "wrong password and user")
-            
+            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString: resultDico["error"] as? String)
         }
-        
-        
-        
         
     }
     
@@ -283,6 +290,8 @@ func Authentification(user: User, completionHandlerOAuth: (success: Bool, userAr
             
         }
         
+        print(parsedResult)
+        
         let resultDico = parsedResult as! [String:AnyObject]
         let resultArray = resultDico["user"] as! [[String:AnyObject]]
         
@@ -291,11 +300,9 @@ func Authentification(user: User, completionHandlerOAuth: (success: Bool, userAr
             completionHandlerOAuth(success: true, userArray: resultArray, errorString: nil)
         }
         else {
-            completionHandlerOAuth(success: false, userArray: nil, errorString: "wrong password and user")
+            completionHandlerOAuth(success: false, userArray: nil, errorString: resultDico["error"] as? String)
             
         }
-        
-        
         
         
     }
@@ -360,8 +367,8 @@ func setLocation(user: User, completionHandlerLocation: (success: Bool, errorStr
             completionHandlerLocation(success: true, errorString: nil)
         }
         else {
-            completionHandlerLocation(success: false, errorString: "impossible to update the location")
-            
+            completionHandlerLocation(success: false, errorString: result["error"])
+
         }
         
     }
@@ -375,7 +382,9 @@ func setLocation(user: User, completionHandlerLocation: (success: Bool, errorStr
 func setUpdatePass(user: User, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_email=\(user.user_email)&user_pass=\(user.user_pass)"
+    
+    let newpassword = (user.user_newpassword==true) ? 1 : 0
+    let jsonBody: String = "user_email=\(user.user_email)&user_pass=\(user.user_pass)&user_newpassword=\(newpassword)"
     // Create Data from request
     let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_updatepass.php")!)
     // set Request Type
@@ -385,7 +394,6 @@ func setUpdatePass(user: User, completionHandlerOAuth: (success: Bool, errorStri
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
     request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
-    
     
     let session = NSURLSession.sharedSession()
     let task = session.dataTaskWithRequest(request) { data, response, error in
@@ -426,7 +434,7 @@ func setUpdatePass(user: User, completionHandlerOAuth: (success: Bool, errorStri
             completionHandlerOAuth(success: true, errorString: nil)
         }
         else {
-            completionHandlerOAuth(success: false, errorString: "impossible to update the passeword")
+            completionHandlerOAuth(success: false, errorString: result["error"])
             
         }
         
@@ -437,6 +445,71 @@ func setUpdatePass(user: User, completionHandlerOAuth: (success: Bool, errorStri
     
 }
 
+
+func setUpdateUser(user: User, completionHandlerUpdate: (success: Bool, errorString: String?) -> Void) {
+    
+    // Create your request string with parameter name as defined in PHP file
+    let jsonBody: String = "user_pseudo=\(user.user_pseudo)&user_pass=\(user.user_pass)&user_adresse=\(user.user_adresse)&user_codepostal=\(user.user_codepostal)&user_nom=\(user.user_nom)&user_prenom=\(user.user_prenom)&user_email=\(user.user_email)&user_pays=\(user.user_pays)&user_ville=\(user.user_ville)&user_id=\(user.user_id)"
+    // Create Data from request
+    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_updateuser.php")!)
+    // set Request Type
+    request.HTTPMethod = "POST"
+    // Set content-type
+    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
+    request.addValue("application/json", forHTTPHeaderField: "Accept")
+    // Set Request Body
+    request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+    
+    
+    let session = NSURLSession.sharedSession()
+    let task = session.dataTaskWithRequest(request) { data, response, error in
+        
+        /* GUARD: Was there an error? */
+        guard (error == nil) else {
+            completionHandlerUpdate(success: false, errorString: "There was an error with your request: \(error)")
+            return
+        }
+        
+        /* GUARD: Did we get a successful 2XX response? */
+        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerUpdate(success: false, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+            return
+        }
+        
+        /* GUARD: Was there any data returned? */
+        guard let data = data else {
+            completionHandlerUpdate(success: false, errorString:"No data was returned by the request!")
+            return
+            
+        }
+        
+        /* Parse the data */
+        let parsedResult: AnyObject!
+        do {
+            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+        } catch {
+            completionHandlerUpdate(success: false, errorString: "Could not parse the data as JSON: '\(data)'")
+            
+            return
+            
+        }
+        
+        let result = parsedResult as! [String:String]
+        
+        if (result["success"] == "1") {
+            completionHandlerUpdate(success: true, errorString: nil)
+        }
+        else {
+            completionHandlerUpdate(success: false, errorString: result["error"])
+            
+        }
+        
+    }
+    
+    
+    task.resume()
+    
+}
 
 
 func setAddUser(user: User, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
@@ -493,7 +566,7 @@ func setAddUser(user: User, completionHandlerOAuth: (success: Bool, errorString:
             completionHandlerOAuth(success: true, errorString: nil)
         }
         else {
-            completionHandlerOAuth(success: false, errorString: "impossible to record the user")
+            completionHandlerOAuth(success: false, errorString: result["error"])
             
         }
         
