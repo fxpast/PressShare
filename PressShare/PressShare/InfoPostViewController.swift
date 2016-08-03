@@ -13,35 +13,44 @@ import UIKit
 class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextFieldDelegate {
     
     
+    @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBSave: UIBarButtonItem!
     @IBOutlet weak var IBFind: UIButton!
     @IBOutlet weak var IBMap: MKMapView!
     @IBOutlet weak var IBInfoLocation: UITextField!
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
-    var config:Config!
-   
+    var  config = Config.sharedInstance
+    let traduction = InternationalIHM.sharedInstance
+    
+    var filePath : String {
+        let manager = NSFileManager.defaultManager()
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
+        return url.URLByAppendingPathComponent("mapRegionArchive").path!
+    }
+    
     
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        config = Config.sharedInstance
        
-        IBMap.delegate = self
-        IBInfoLocation.delegate = self
-        
         IBActivity.stopAnimating()
         
         setUIHidden(true)
         
         IBInfoLocation.text = config.mapString
+        IBCancel.title = traduction.pse1
+        IBSave.title = traduction.pse2
+        IBInfoLocation.placeholder = traduction.pse3
+        IBFind.titleLabel?.text = traduction.pse4
         
         
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         self.navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
     }
     
@@ -133,9 +142,9 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
     
     @IBAction func ActionSubmit(sender: AnyObject) {
         
-        
         IBActivity.startAnimating()
         
+        saveMapRegion()
         
         var user = User(dico: [String : AnyObject]())
         user.user_longitude = config.longitude
@@ -165,6 +174,27 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
         
     }
     
+    
+    //MARK: Map function
+    
+    private func saveMapRegion() {
+        
+        // Place the "center" and "span" of the map into a dictionary
+        // The "span" is the width and height of the map in degrees.
+        // It represents the zoom level of the map.
+        
+        let dictionary = [
+            "latitude" : IBMap.region.center.latitude,
+            "longitude" : IBMap.region.center.longitude,
+            "latitudeDelta" : IBMap.region.span.latitudeDelta,
+            "longitudeDelta" : IBMap.region.span.longitudeDelta
+        ]
+        
+        // Archive the dictionary into the filePath
+        NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
+    }
+    
+
     
     //MARK: Map View Delegate
     

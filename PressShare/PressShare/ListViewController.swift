@@ -10,20 +10,56 @@ import Foundation
 import UIKit
 
 
-class TableViewController: UITableViewController {
+class ListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
-    var users:Users!
-    var config:Config!
+    @IBOutlet weak var IBTableView: UITableView!
+    @IBOutlet weak var IBSearch: UISearchBar!
+    @IBOutlet weak var IBLogout: UIBarButtonItem!
+    
+    var users = Users.sharedInstance
+    var config = Config.sharedInstance
+    let traduction = InternationalIHM.sharedInstance
+   
     
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
-        users = Users.sharedInstance
-        config = Config.sharedInstance
+        //IBSearch.text = traduction.titre
+        
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         self.navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
+        IBTableView.reloadData()
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.tabBarItem.title = traduction.pam2
+        IBLogout.title = traduction.pam4
+        //IBSearch.becomeFirstResponder()
+        
+    }
+    
+    
+    
+    // MARK: - Search Bar Delegate
+    
+    // Each time the search text changes we want to cancel any current download and start a new one
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        // If the text is empty we are done
+        if searchText == "" {
+            IBTableView.reloadData()
+            return
+        }
+    
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
     
     
@@ -35,7 +71,7 @@ class TableViewController: UITableViewController {
             if success {
                 self.users.usersArray = usersArray
                 performUIUpdatesOnMain {
-                    self.tableView.reloadData()
+                    self.IBTableView.reloadData()
                 }
             }
             else {
@@ -43,6 +79,8 @@ class TableViewController: UITableViewController {
                     self.displayAlert("Error", mess: errorString!)
                 }
             }
+            
+            
             
         }
         
@@ -60,8 +98,10 @@ class TableViewController: UITableViewController {
     }
     
     
-    //MARK: Table View Controller Delegate
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    //MARK: Table View Controller data source
+
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let CellReuseId = "Cell"
         let location =  users.usersArray[indexPath.row]
@@ -81,11 +121,11 @@ class TableViewController: UITableViewController {
     }
     
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.usersArray.count
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         
         //let location = users.usersArray[indexPath.row]

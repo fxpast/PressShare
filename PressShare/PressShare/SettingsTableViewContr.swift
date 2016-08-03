@@ -11,7 +11,10 @@ import Foundation
 
 class SettingsTableViewContr : UITableViewController {
 
+    @IBOutlet weak var IBLogout: UIBarButtonItem!
+    
      let config = Config.sharedInstance
+     let traduction = InternationalIHM.sharedInstance
     
     
     //MARK: View Controller Delegate
@@ -24,9 +27,43 @@ class SettingsTableViewContr : UITableViewController {
     
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         self.navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
     }
 
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.tabBarItem.title = traduction.pam3
+        IBLogout.title = traduction.pam4
+
+        var cell:UITableViewCell
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0))!
+        var label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.psp1
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 1, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.psp2
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 2, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.psp3
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 3, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.psp4
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 4, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.psp5
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 5, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.psp6
+        
+    }
     
     
     @IBAction func ActionLogout(sender: AnyObject) {

@@ -13,11 +13,22 @@ import UIKit
 class MapViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var IBMap: MKMapView!
+    @IBOutlet weak var IBLogout: UIBarButtonItem!
     
     var user_pseudo:String!
-    var user_id:Int!
-    var config:Config!
-    var users:Users!
+    var user_id:Int!    
+    var config = Config.sharedInstance
+    var users = Users.sharedInstance
+    var traduction = InternationalIHM.sharedInstance
+    
+    
+    
+    var filePath : String {
+        let manager = NSFileManager.defaultManager()
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
+        return url.URLByAppendingPathComponent("mapRegionArchive").path!
+    }
+    
     
     //MARK: View Controller Delegate
     
@@ -25,17 +36,25 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        config = Config.sharedInstance
-        users = Users.sharedInstance
-        IBMap.delegate = self
-        
         user_pseudo  = config.user_pseudo
         user_id = config.user_id
-        RefreshData()
+        
         
     }
     override func viewWillAppear(animated: Bool) {
+        
+        super.viewWillAppear(animated)
+        restoreMapRegion(false)
+         RefreshData()
+        
         self.navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.tabBarItem.title = traduction.pam1
+        IBLogout.title = traduction.pam4
     }
     
     //MARK: Data Networking
@@ -103,6 +122,49 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     
+    
+    //MARK: Map function
+    
+    
+    private func restoreMapRegion(animated: Bool) {
+        
+        // if we can unarchive a dictionary, we will use it to set the map back to its
+        // previous center and span
+        if let regionDictionary = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as? [String : AnyObject] {
+            
+            let longitude = regionDictionary["longitude"] as! CLLocationDegrees
+            let latitude = regionDictionary["latitude"] as! CLLocationDegrees
+            let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            
+            let longitudeDelta = regionDictionary["latitudeDelta"] as! CLLocationDegrees
+            let latitudeDelta = regionDictionary["longitudeDelta"] as! CLLocationDegrees
+            let span = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
+            
+            let savedRegion = MKCoordinateRegion(center: center, span: span)
+            
+            IBMap.setRegion(savedRegion, animated: animated)
+        }
+    }
+    
+    private func saveMapRegion() {
+        
+        // Place the "center" and "span" of the map into a dictionary
+        // The "span" is the width and height of the map in degrees.
+        // It represents the zoom level of the map.
+        
+        let dictionary = [
+            "latitude" : IBMap.region.center.latitude,
+            "longitude" : IBMap.region.center.longitude,
+            "latitudeDelta" : IBMap.region.span.latitudeDelta,
+            "longitudeDelta" : IBMap.region.span.longitudeDelta
+        ]
+        
+        // Archive the dictionary into the filePath
+        NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
+    }
+    
+
+    
     //MARK: Map View Delegate
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
@@ -136,6 +198,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 
             }
         }
+    }
+    
+    
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        saveMapRegion()
     }
     
     

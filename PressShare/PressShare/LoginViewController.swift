@@ -15,19 +15,42 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     @IBOutlet weak var IBPassword: UITextField!
     @IBOutlet weak var IBLogin: UIButton!
     @IBOutlet weak var IBFacebook: UIButton!
+    @IBOutlet weak var IBoda1: UILabel!
+    @IBOutlet weak var IBoda3: UIButton!
+    @IBOutlet weak var IBoda4: UIButton!
+    
     
     var facebookButton:FBSDKLoginButton!
     
     var user = User(dico: [String : AnyObject]())
     var config = Config.sharedInstance
+    var traduction = InternationalIHM.sharedInstance
+    
+    
+    
     
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBuser.delegate = self
-        IBPassword.delegate = self
+        loginWithCurrentToken()
+        
+
+        
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        IBoda1.text = traduction.oda1
+        IBLogin.titleLabel?.text = traduction.oda2
+        IBoda3.titleLabel?.text =  traduction.oda3
+        IBoda4.titleLabel?.text = traduction.oda4
+        IBuser.placeholder = traduction.pmp3
+        IBPassword.placeholder = traduction.pmp5
+
         
         config.latitude = 0
         config.longitude = 0
@@ -44,12 +67,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         config.user_newpassword = false
         config.previousView = "LoginViewController"
         
-        loginWithCurrentToken()
-        
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
         
         facebookButton = FBSDKLoginButton()
         view.addSubview(facebookButton)
@@ -83,6 +100,31 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
         
     }
+    
+    
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        
+        if segue.identifier == "tabbar"  {
+            
+            let controller = segue.destinationViewController as! UITabBarController
+            let item1 = controller.tabBar.items![0]
+            item1.title = traduction.pam1
+            let item2 = controller.tabBar.items![1]
+            item2.title = traduction.pam2
+            let item3 = controller.tabBar.items![2]
+            item3.title = traduction.pam3
+            
+            
+        }
+        
+        
+        
+        
+    }
+    
+    
     
     //MARK: Facebook Delegate Methods
     
@@ -118,7 +160,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     
     @IBAction func actionPassword(sender: AnyObject) {
-        
         
         performSegueWithIdentifier("chgpass", sender: self)
         

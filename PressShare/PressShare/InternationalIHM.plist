@@ -2,10 +2,180 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>titre</key>
+	<key>oda1</key>
 	<array>
-		<string>salut</string>
-		<string>hello</string>
+		<string>Connexion à PressShare</string>
+		<string>Connect to PressShare</string>
+	</array>
+	<key>oda2</key>
+	<array>
+		<string>Connexion</string>
+		<string>Login</string>
+	</array>
+	<key>oda3</key>
+	<array>
+		<string>Créer un compte</string>
+		<string>Create an account</string>
+	</array>
+	<key>oda4</key>
+	<array>
+		<string>Mot de passe perdu</string>
+		<string>Lost password</string>
+	</array>
+	<key>pam1</key>
+	<array>
+		<string>Carte</string>
+		<string>Map</string>
+	</array>
+	<key>pam2</key>
+	<array>
+		<string>Liste</string>
+		<string>List</string>
+	</array>
+	<key>pam3</key>
+	<array>
+		<string>Paramètre</string>
+		<string>Settings</string>
+	</array>
+	<key>pam4</key>
+	<array>
+		<string>Déconnexion</string>
+		<string>Logout</string>
+	</array>
+	<key>psp1</key>
+	<array>
+		<string>Modifier mon profil</string>
+		<string>Edit my profil</string>
+	</array>
+	<key>psp2</key>
+	<array>
+		<string>informations de connexion</string>
+		<string>Connection information</string>
+	</array>
+	<key>psp3</key>
+	<array>
+		<string>Mon abonnement</string>
+		<string>My subscription</string>
+	</array>
+	<key>psp4</key>
+	<array>
+		<string>Mes cartes bancaires</string>
+		<string>My credit card</string>
+	</array>
+	<key>psp5</key>
+	<array>
+		<string>Mes alertes</string>
+		<string>Notification ou my alert</string>
+	</array>
+        <key>psp6</key>
+	<array>
+		<string>Explication ou tutoriel</string>
+		<string>Explanation or Tutorial</string>
+	</array>
+	<key>pmp1</key>
+	<array>
+		<string>Annuler</string>
+		<string>Cancel</string>
+	</array>
+	<key>pmp2</key>
+	<array>
+		<string>Enregistrer</string>
+		<string>Save</string>
+	</array>
+	<key>pmp3</key>
+	<array>
+		<string>Pseudo</string>
+		<string>Pseudonym</string>
+	</array>
+	<key>pmp4</key>
+	<array>
+		<string>Mail</string>
+		<string>Mail</string>
+	</array>
+	<key>pmp5</key>
+	<array>
+		<string>Mot de passe</string>
+		<string>Password</string>
+	</array>
+	<key>pmp6</key>
+	<array>
+		<string>Nom</string>
+		<string>Nickmane</string>
+	</array>
+	<key>pmp7</key>
+	<array>
+		<string>Prénom</string>
+		<string>Surename</string>
+	</array>
+	<key>pmp8</key>
+	<array>
+		<string>Adresse</string>
+		<string>An address</string>
+	</array>
+	<key>pmp9</key>
+	<array>
+		<string>Code postal</string>
+		<string>Zip code</string>
+	</array>
+	<key>pmp10</key>
+	<array>
+		<string>Ville</string>
+		<string>City</string>
+	</array>
+	<key>pmp11</key>
+	<array>
+		<string>Pays</string>
+		<string>Country</string>
+	</array>
+	<key>pmp12</key>
+	<array>
+		<string>Nouveau compte</string>
+		<string>New account</string>
+	</array>
+	<key>pic1</key>
+	<array>
+		<string>Annuler</string>
+		<string>Cancel</string>
+	</array>
+	<key>pic2</key>
+	<array>
+		<string>Valider</string>
+		<string>Done</string>
+	</array>
+	<key>pic3</key>
+	<array>
+		<string>Entrer le mot de passe</string>
+		<string>Enter the password</string>
+	</array>
+	<key>pic4</key>
+	<array>
+		<string>Verifier le mot de passe</string>
+		<string>Check the password</string>
+	</array>
+	<key>pic5</key>
+	<array>
+		<string>Entrer l'email</string>
+		<string>Enter the email</string>
+	</array>
+	<key>pse1</key>
+	<array>
+		<string>Annuler</string>
+		<string>Cancel</string>
+	</array>
+	<key>pse2</key>
+	<array>
+		<string>Enregistrer</string>
+		<string>Save</string>
+	</array>
+	<key>pse3</key>
+	<array>
+		<string>Coller ou taper le lieu</string>
+		<string>Tap a location</string>
+	</array>
+	<key>pse4</key>
+	<array>
+		<string>Trouver sur la carte</string>
+		<string>Find on the map</string>
 	</array>
 </dict>
 </plist>

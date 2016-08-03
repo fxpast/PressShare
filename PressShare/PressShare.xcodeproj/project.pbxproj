@@ -16,7 +16,7 @@
 		DBA3C5321CE5141800CD826D /* InfoPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */; };
 		DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52F1CE5141800CD826D /* LoginViewController.swift */; };
 		DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5301CE5141800CD826D /* MapViewController.swift */; };
-		DBA3C5351CE5141900CD826D /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* TableViewController.swift */; };
+		DBA3C5351CE5141900CD826D /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* ListViewController.swift */; };
 		DBBC9D231CED4DE900906E8E /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D201CED4DE900906E8E /* FBSDKCoreKit.framework */; };
 		DBBC9D241CED4DE900906E8E /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D211CED4DE900906E8E /* FBSDKLoginKit.framework */; };
 		DBBC9D251CED4DE900906E8E /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D221CED4DE900906E8E /* FBSDKShareKit.framework */; };
@@ -50,7 +50,7 @@
 		DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPostViewController.swift; sourceTree = "<group>"; };
 		DBA3C52F1CE5141800CD826D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DBA3C5301CE5141800CD826D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		DBA3C5311CE5141800CD826D /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		DBA3C5311CE5141800CD826D /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		DBA3C5411CE51A1B00CD826D /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DBBC9D201CED4DE900906E8E /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = PressShare/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		DBBC9D211CED4DE900906E8E /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = PressShare/FBSDKLoginKit.framework; sourceTree = "<group>"; };
@@ -81,6 +81,7 @@
 		DB5EFA371CE39AC80065ECEB /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */,
 				DB5EFA391CE39AE80065ECEB /* Users.swift */,
 				DBA03CD71CECB31800B76896 /* Produits.swift */,
 			);
@@ -98,14 +99,13 @@
 		DB5EFA3C1CE39B010065ECEB /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				DBA3C5311CE5141800CD826D /* TableViewController.swift */,
+				DBA3C5311CE5141800CD826D /* ListViewController.swift */,
 				DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */,
 				DBA3C5301CE5141800CD826D /* MapViewController.swift */,
 				DBA3C52F1CE5141800CD826D /* LoginViewController.swift */,
 				DBF8D8221CB9A0B700BF706E /* NewUserTableViewContr.swift */,
 				DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */,
 				DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */,
-				DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -236,7 +236,7 @@
 			files = (
 				DBF8D8271CB9A0B700BF706E /* NewUserTableViewContr.swift in Sources */,
 				DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */,
-				DBA3C5351CE5141900CD826D /* TableViewController.swift in Sources */,
+				DBA3C5351CE5141900CD826D /* ListViewController.swift in Sources */,
 				DB796C651CF4A3E900BEA2F3 /* InternationalIHM.swift in Sources */,
 				DBF8D8251CB9A0B700BF706E /* ChangerPasse.swift in Sources */,
 				DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */,

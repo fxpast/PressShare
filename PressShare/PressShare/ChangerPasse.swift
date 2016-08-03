@@ -10,23 +10,26 @@ import UIKit
 
 class ChangerPasse : UIViewController, UITextFieldDelegate {
     
+    
+    @IBOutlet weak var IBValider: UIBarButtonItem!
+    @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBemail: UITextField!
     @IBOutlet weak var IBPasswordVerif: UITextField!
     @IBOutlet weak var IBPassword: UITextField!
     
     let config = Config.sharedInstance
+    let traduction = InternationalIHM.sharedInstance
     
     
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.IBemail.delegate = self
-        self.IBPasswordVerif.delegate = self
-        self.IBPassword.delegate = self
         
         if config.previousView == "LoginViewController" {
             setUIHidden(config.user_newpassword )
+            navigationItem.title = traduction.oda4
+            
             
         }
         
@@ -40,11 +43,15 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        IBCancel.title = traduction.pic1
+        IBValider.title = traduction.pic2
+        IBPassword.placeholder = traduction.pic3
+        IBPasswordVerif.placeholder = traduction.pic4
+        IBemail.placeholder = traduction.pic5
+        
     }
-    
     
     private func setUIHidden(hidden: Bool) {
         IBPassword.hidden = !hidden

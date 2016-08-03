@@ -10,10 +10,16 @@ import UIKit
 
 class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     
+    
+    
+    
+    @IBOutlet weak var IBCancel: UIBarButtonItem!
+    @IBOutlet weak var IBSave: UIBarButtonItem!
+    
     var user = User(dico: [String : AnyObject]())
 
-    
     let config = Config.sharedInstance
+    let traduction = InternationalIHM.sharedInstance
     
     
     //MARK: View Controller Delegate
@@ -21,42 +27,82 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        IBCancel.title = traduction.pmp1
+        IBSave.title = traduction.pmp2
+        
+        
+        var cell:UITableViewCell
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0))!
+        var label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp3
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 1, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp4
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 2, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp5
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 3, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp5
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 4, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp6
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 5, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp7
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 6, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp8
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 7, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp9
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 8, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp10
+        
+        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 9, inSection: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = traduction.pmp11
+        
+        
         
         if config.previousView == "LoginViewController" {
-            
+           navigationItem.title = traduction.pmp12
             
         }
         
         if config.previousView == "SettingsTableViewContr" {
             navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
             
+            user.user_id = config.user_id
+            afficherData(NSIndexPath(forRow: 0, inSection: 0))
+            afficherData(NSIndexPath(forRow: 1, inSection: 0))
+            afficherData(NSIndexPath(forRow: 4, inSection: 0))
+            afficherData(NSIndexPath(forRow: 5, inSection: 0))
+            afficherData(NSIndexPath(forRow: 6, inSection: 0))
+            afficherData(NSIndexPath(forRow: 7, inSection: 0))
+            afficherData(NSIndexPath(forRow: 8, inSection: 0))
+            afficherData(NSIndexPath(forRow: 9, inSection: 0))
+            
+
+            
         }
-        
-        
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        
-        var indexpath:NSIndexPath
-        
-        user.user_id = config.user_id
-        indexpath = NSIndexPath(forRow: 0, inSection: 0)
-        afficherData(indexpath)
-        indexpath = NSIndexPath(forRow: 1, inSection: 0)
-        afficherData(indexpath)
-        indexpath = NSIndexPath(forRow: 4, inSection: 0)
-        afficherData(indexpath)
-        indexpath = NSIndexPath(forRow: 5, inSection: 0)
-        afficherData(indexpath)
-        indexpath = NSIndexPath(forRow: 6, inSection: 0)
-        afficherData(indexpath)
-        indexpath = NSIndexPath(forRow: 7, inSection: 0)
-        afficherData(indexpath)
-        indexpath = NSIndexPath(forRow: 8, inSection: 0)
-        afficherData(indexpath)
-        indexpath = NSIndexPath(forRow: 9, inSection: 0)
-        afficherData(indexpath)
-        
         
        
         
