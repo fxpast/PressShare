@@ -1,3 +1,16 @@
+User test for Facebook :
+	name : test pressshare
+        password : testpressshare
+	id : 108830289562293
+	email : test_sohgoqx_pressshare@tfbnw.net
+
+
+user test for pressShare : 
+user : test1
+password : test1
+email : test_sohgoqx_pressshare@tfbnw.net
+
+
 
 PressShare est une application d'échange et de commercialisation de journaux
 
@@ -12,3 +25,17 @@ Les fonctions attendues de PressShare sont :
     Souscrire à un abonnement
     Paiement sécurisé
 
+
+
+PressShare is an exchange application and commercialization of newspapers
+
+The functions expected of PressShare are:
+
+     User authentication / password or third facebook
+     Location / search products / users on a map
+     Product Management
+     Selling a product
+     Buy product
+     Exchanging a product
+     A subscription
+     Secure payment
