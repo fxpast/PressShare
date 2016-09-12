@@ -18,9 +18,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var user_pseudo:String!
     var user_id:Int!    
     var config = Config.sharedInstance
-    var users = Users.sharedInstance
+    var produits = Produits.sharedInstance
     var traduction = InternationalIHM.sharedInstance
-    
+    var lat:CLLocationDegrees!
+    var lon:CLLocationDegrees!
     
     
     var filePath : String {
@@ -47,7 +48,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         restoreMapRegion(false)
          RefreshData()
         
-        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
+        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
         
     }
     
@@ -56,6 +57,22 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         navigationController?.tabBarItem.title = traduction.pam1
         IBLogout.title = traduction.pam4
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+       
+        if segue.identifier == "mapproduit" {
+            
+            let nav = segue.destinationViewController as! UINavigationController
+            let controller = nav.topViewController as! ListProduitViewController
+            
+            controller.lon = lon
+            controller.lat = lat
+        }
+        
+    }
+    
+    
     
     //MARK: Data Networking
     @IBAction func ActionRefresh(sender: AnyObject) {
@@ -70,22 +87,23 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             IBMap.removeAnnotation(item as! MKAnnotation)
         }
         
-       getAllUsers(config.user_id) { (success, usersArray, errorString) in
+       
+        getAllProduits(config.user_id) { (success, produitArray, errorString) in
         
-        
+            
             if success {
                 
-                self.users.usersArray = usersArray
+                self.produits.produitsArray = produitArray
                 
                 var annotations = [MKPointAnnotation]()
                 
-                for dictionary in self.users.usersArray! {
+                for dictionary in self.produits.produitsArray! {
                     
-                    let user = User(dico: dictionary)
+                    let produit = Produit(dico: dictionary)
                     // Notice that the float values are being used to create CLLocationDegree values.
                     // This is a version of the Double type.
-                    let lat = CLLocationDegrees(user.user_latitude)
-                    let long = CLLocationDegrees(user.user_longitude)
+                    let lat = CLLocationDegrees(produit.prod_latitude)
+                    let long = CLLocationDegrees(produit.prod_longitude)
                     
                     // The lat and long are used to create a CLLocationCoordinates2D instance.
                     let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
@@ -93,8 +111,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     // Here we create the annotation and set its coordiate, title, and subtitle properties
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = coordinate
-                    annotation.title = "\(user.user_nom) \(user.user_prenom)"
-                    annotation.subtitle = user.user_mapString
+                    annotation.title = "\(produit.prod_nom) (user:\(produit.prod_by_user))"
+                    annotation.subtitle = "\(produit.prod_mapString) / \(produit.prod_comment)"
                     
                     // Finally we place the annotation in an array of annotations.
                     annotations.append(annotation)
@@ -110,8 +128,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     self.displayAlert("Error", mess: errorString!)
                 }
             }
-            
         }
+        
+        
         
     }
     
@@ -188,16 +207,21 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.sharedApplication()
-            if let toOpen = view.annotation?.subtitle! {
-                guard let url = NSURL(string: toOpen) else {
-                    displayAlert("Error", mess: "invalid link")
-                    return
-                }
-                app.openURL(url)
-                
-            }
+            performSegueWithIdentifier("mapproduit", sender: self)
         }
+    }
+    
+    
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        
+        
+        if let coord = view.annotation?.coordinate {
+            
+            lat = coord.latitude
+            lon = coord.longitude
+            
+        }
+        
     }
     
     

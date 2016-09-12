@@ -6,28 +6,34 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+import CoreData
 import UIKit
 
 class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     
     
     
-    
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBSave: UIBarButtonItem!
     
-    var user = User(dico: [String : AnyObject]())
-
     let config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
+    
+    
+    
+    var sharedContext: NSManagedObjectContext {
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return delegate.managedObjectContext
+    }
+    
     
     
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-
+      
         
     }
     
@@ -88,9 +94,9 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         }
         
         if config.previousView == "SettingsTableViewContr" {
-            navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
             
-            user.user_id = config.user_id
+            self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
+            
             afficherData(NSIndexPath(forRow: 0, inSection: 0))
             afficherData(NSIndexPath(forRow: 1, inSection: 0))
             afficherData(NSIndexPath(forRow: 4, inSection: 0))
@@ -120,49 +126,49 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
             
             let valeur =  cell!.contentView.subviews[1] as! UILabel
             valeur.text = config.user_pseudo
-            user.user_pseudo = config.user_pseudo
+            config.user_pseudo = config.user_pseudo
             
         case  "Mail"?:
             
             let valeur =  cell!.contentView.subviews[1] as! UILabel
             valeur.text = config.user_email
-            user.user_email = config.user_email
+            config.user_email = config.user_email
             
         case  "Nom"?:
             
             let valeur =  cell!.contentView.subviews[1] as! UILabel
             valeur.text = config.user_nom
-            user.user_nom = config.user_nom
+            config.user_nom = config.user_nom
             
         case  "Prenom"?:
             let valeur =  cell!.contentView.subviews[1] as! UILabel
             valeur.text = config.user_prenom
-            user.user_prenom = config.user_prenom
+            config.user_prenom = config.user_prenom
             
         case  "Adresse"?:
             
             let valeur =  cell!.contentView.subviews[1] as! UILabel
             valeur.text = config.user_adresse
-            user.user_adresse = config.user_adresse
+            config.user_adresse = config.user_adresse
             
         case "Code postal"?:
             
             let valeur =  cell!.contentView.subviews[1] as! UILabel
             valeur.text = config.user_codepostal
-            user.user_codepostal = config.user_codepostal
+            config.user_codepostal = config.user_codepostal
             
         case "Ville"?:
             
             let valeur =  cell!.contentView.subviews[1] as! UILabel
             valeur.text = config.user_ville
-            user.user_ville = config.user_ville
+            config.user_ville = config.user_ville
             
             
         case "Pays"?:
             
             let valeur =  cell!.contentView.subviews[1] as! UILabel
             valeur.text = config.user_pays
-            user.user_pays = config.user_pays
+            config.user_pays = config.user_pays
             
             
         default: break
@@ -180,34 +186,42 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     
     @IBAction func ActionValier(sender: AnyObject) {
         
-        guard user.user_pseudo != "" else {
+        guard config.user_pseudo != "" else {
             self.displayAlert("Error", mess: "Pseudo incorrect")
             return
         }
         
-        guard user.user_email != "" else {
+        guard config.user_email != "" else {
             self.displayAlert("Error", mess: "mail incorrect")
             return
         }
         
-        guard user.user_pass != "" else {
+        guard config.user_pass != "" else {
             self.displayAlert("Error", mess: "mot de passe incorrect")
             return
         }
         
-        guard user.user_pass == user.user_mapString else {
+        guard config.user_pass == config.verifpassword else {
             self.displayAlert("Error", mess: "mot de passe incorrect")
             return
         }
         
-        
+        sharedContext.deletedObjects
+        // Save the context.
+        do {
+            try sharedContext.save()
+        } catch let error as NSError {
+            print(error.debugDescription)
+            
+        }
         
         if config.previousView == "LoginViewController" {
             
             
-            setAddUser(user) { (success, errorString) in
+            setAddUser(config) { (success, errorString) in
                 if success {
                     performUIUpdatesOnMain {
+                        
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
                 }
@@ -224,7 +238,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
         if config.previousView == "SettingsTableViewContr" {
             
-            setUpdateUser(user) { (success, errorString) in
+            setUpdateUser(config) { (success, errorString) in
                 if success {
                     performUIUpdatesOnMain {
                         self.dismissViewControllerAnimated(true, completion: nil)
@@ -251,25 +265,25 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
         switch nom {
         case "Pseudo":
-            user.user_pseudo = valeur
+            config.user_pseudo = valeur
         case "Mail":
-            user.user_email = valeur
+            config.user_email = valeur
         case "Mot de passe":
-            user.user_pass = valeur
+            config.user_pass = valeur
         case "Verifier mot de passe":
-            user.user_mapString = valeur
+            config.verifpassword = valeur
         case "Nom":
-            user.user_nom = valeur
+            config.user_nom = valeur
         case "Prenom":
-            user.user_prenom = valeur
+            config.user_prenom = valeur
         case "Adresse":
-            user.user_adresse = valeur
+            config.user_adresse = valeur
         case "Code postal":
-            user.user_codepostal = valeur
+            config.user_codepostal = valeur
         case "Ville":
-            user.user_ville = valeur
+            config.user_ville = valeur
         case "Pays":
-            user.user_pays = valeur
+            config.user_pays = valeur
             
         default:
             break

@@ -6,6 +6,8 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+import CoreData
 import Foundation
 import UIKit
 
@@ -20,9 +22,18 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     @IBOutlet weak var IBoda4: UIButton!
     
     
+    var sharedContext: NSManagedObjectContext {
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return delegate.managedObjectContext
+    }
+    
+    
     var facebookButton:FBSDKLoginButton!
     
-    var user = User(dico: [String : AnyObject]())
+    
+    var users = [User]()
+    var user:User!
+    
     var config = Config.sharedInstance
     var traduction = InternationalIHM.sharedInstance
     
@@ -34,9 +45,9 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loginWithCurrentToken()
+        users = fetchAllUser()
         
-
+        loginWithCurrentToken()
         
     }
     
@@ -124,7 +135,22 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
     }
     
+    //MARK: coreData function
     
+    
+    func fetchAllUser() -> [User] {
+        
+        // Create the Fetch Request
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        // Execute the Fetch Request
+        do {
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+        } catch _ {
+            return [User]()
+        }
+    }
+
     
     //MARK: Facebook Delegate Methods
     
@@ -189,28 +215,43 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         setUIEnabled(false)
         
         
-        user.user_pseudo = IBuser.text!
-        user.user_pass = IBPassword.text!
+        config.user_pseudo = IBuser.text!
+        config.user_pass = IBPassword.text!
         
-        Authentification(user) { (success, userArray, errorString) in
+        if users.count > 0 {
+            for aUser in users {
+                if aUser.user_pseudo == config.user_pseudo {
+                    user = aUser
+                    self.AffecterUser()
+                    break
+                }
+            }
             
-            if success {
-                performUIUpdatesOnMain {
-                    
-                    self.AffecterUser(userArray![0])
-                    
-                }
-                
-            }
-            else {
-                performUIUpdatesOnMain {
-                    self.setUIEnabled(true)
-                    self.displayAlert("Error", mess: errorString!)
-                    
-                }
-            }
         }
-               
+        else {
+            
+            Authentification(config) { (success, userArray, errorString) in
+                
+                if success {
+                    performUIUpdatesOnMain {
+                        
+                        self.user = User(dico: userArray![0], context: self.sharedContext)
+                        self.AffecterUser()
+                        
+                    }
+                    
+                }
+                else {
+                    performUIUpdatesOnMain {
+                        self.setUIEnabled(true)
+                        self.displayAlert("Error", mess: errorString!)
+                        
+                    }
+                }
+            }
+            
+        }
+        
     }
     
     
@@ -240,28 +281,46 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         let parameters = ["fields":"email"]
         FBSDKGraphRequest(graphPath: "me", parameters: parameters).startWithCompletionHandler({ (connexion, result, error) in
             print(result)
-            self.user.user_email = result["email"] as! String
-            AuthentiFacebook(self.user, completionHandlerOAuthFacebook: { (success, userArray, errorString) in
-                
-                
-                if success {
-                    performUIUpdatesOnMain {
-
-                        self.AffecterUser(userArray![0])
-
+            self.config.user_email = result["email"] as? String
+            
+            if self.users.count > 0 {
+                for aUser in self.users {
+                    if aUser.user_email == self.config.user_email {
+                        self.user = aUser
+                        self.AffecterUser()
+                        break
                     }
-                    
                 }
-                else {
-                    performUIUpdatesOnMain {
-                        self.setUIEnabled(true)
-                        self.displayAlert("Error", mess: errorString!)
+                
+                
+            }
+            else {
+                
+                AuthentiFacebook(self.config, completionHandlerOAuthFacebook: { (success, userArray, errorString) in
+                    
+                    
+                    if success {
+                        performUIUpdatesOnMain {
+                            
+                            self.user = User(dico: userArray![0], context: self.sharedContext)
+                            self.AffecterUser()
+                            
+                        }
                         
                     }
-                }
+                    else {
+                        performUIUpdatesOnMain {
+                            self.setUIEnabled(true)
+                            self.displayAlert("Error", mess: errorString!)
+                            
+                        }
+                    }
+                    
+                    
+                })
                 
-                
-            })
+            }
+            
         })
         
         
@@ -269,18 +328,21 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     
     
-    private func AffecterUser(dictionnaire:[String:AnyObject]) {
+    private func AffecterUser() {
         
-        self.user = User(dico: dictionnaire)       
-        config.user_id = user.user_id
+        
+        // Save the context.
+        do {
+            try sharedContext.save()
+        } catch _ {}
+        
+        
+        config.user_id = user.user_id?.integerValue
         config.user_pseudo = user.user_pseudo
         config.user_email = user.user_email
         config.user_nom = user.user_nom
         config.user_prenom = user.user_prenom
-        config.latitude = user.user_latitude
-        config.longitude = user.user_longitude
-        config.mapString = user.user_mapString
-        config.user_newpassword = user.user_newpassword
+        config.user_newpassword = user.user_newpassword?.boolValue
         config.user_pays = user.user_pays
         config.user_ville = user.user_ville
         config.user_adresse = user.user_adresse

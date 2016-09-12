@@ -1,58 +1,46 @@
 //
-//  Data.swift
+//  User.swift
 //  PressShare
 //
-//  Created by MacbookPRV on 11/05/2016.
+//  Created by MacbookPRV on 09/09/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
 import Foundation
+import CoreData
 
 
-struct User {
-    
-    //MARK: Properties
-    
-    
-    var user_id:Int
-    var user_pseudo:String
-    var user_pass:String
-    var user_email:String
-    var user_date:NSDate
-    var user_level:Int
-    var user_nom:String
-    var user_prenom:String
-    var user_adresse:String
-    var user_codepostal:String
-    var user_ville:String
-    var user_pays:String
-    var user_latitude:Float
-    var user_longitude:Float
-    var user_mapString:String
-    var user_newpassword:Bool
+class User: NSManagedObject {
+
+// Insert code here to add functionality to your managed object subclass
 
     
-    //MARK: Initialisation
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    }
     
-    init(dico : [String : AnyObject]) {
+    
+    init(dico: [String : AnyObject], context: NSManagedObjectContext) {
         
+        // Core Data
+        let entity =  NSEntityDescription.entityForName("User", inManagedObjectContext: context)!
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        
+        // Dictionary
         if dico.count > 1 {
             
             user_id = Int((dico["user_id"] as! String))!
-            user_pseudo = dico["user_pseudo"] as! String
-            user_pass = ""
-            user_email = dico["user_email"] as! String
-            user_date = NSDate().dateFromString(dico["user_date"] as! String, format: "yyyy-MM-dd HH:mm:ss") 
+            user_pseudo = dico["user_pseudo"] as? String
+            user_pass = dico["user_pass"] as? String
+            user_email = dico["user_email"] as? String
+            user_date = NSDate().dateFromString(dico["user_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             user_level = Int((dico["user_level"] as! String))!
-            user_nom = dico["user_nom"] as! String
-            user_prenom = dico["user_prenom"] as! String
-            user_adresse = dico["user_adresse"] as! String
-            user_codepostal = dico["user_codepostal"] as! String
-            user_ville = dico["user_ville"] as! String
-            user_pays = dico["user_pays"] as! String
-            user_latitude = Float(dico["user_latitude"] as! String)!
-            user_longitude = Float(dico["user_longitude"] as! String)!
-            user_mapString = dico["user_mapString"] as! String
+            user_nom = dico["user_nom"] as? String
+            user_prenom = dico["user_prenom"] as? String
+            user_adresse = dico["user_adresse"] as? String
+            user_codepostal = dico["user_codepostal"] as? String
+            user_ville = dico["user_ville"] as? String
+            user_pays = dico["user_pays"] as? String
             user_newpassword = Bool(Int(dico["user_newpassword"] as! String)!)
         }
         else {
@@ -68,16 +56,17 @@ struct User {
             user_codepostal = ""
             user_ville = ""
             user_pays = ""
-            user_latitude = 0.0
-            user_longitude = 0.0
-            user_mapString = ""
             user_newpassword = false
-
+            
         }
         
     }
     
+    
+    
 }
+
+
 
 
 //MARK: Students Array
@@ -94,8 +83,8 @@ class Config {
     var user_id:Int!
     var user_pseudo:String!
     var user_email:String!
-    var latitude:Float!
-    var longitude:Float!
+    var latitude:Double!
+    var longitude:Double!
     var mapString:String!
     var user_nom:String!
     var user_prenom:String!
@@ -105,6 +94,8 @@ class Config {
     var user_codepostal:String!
     var user_ville:String!
     var user_pays:String!
+    var verifpassword:String!
+    var user_pass:String!
     
     static let sharedInstance = Config()
     
@@ -175,10 +166,10 @@ func getAllUsers(userId:Int, completionHandlerAllUsers: (success: Bool, usersArr
 }
 
 
-func AuthentiFacebook(user: User, completionHandlerOAuthFacebook: (success: Bool, userArray: [[String : AnyObject]]?, errorString: String?) -> Void) {
+func AuthentiFacebook(config: Config, completionHandlerOAuthFacebook: (success: Bool, userArray: [[String : AnyObject]]?, errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_email=\(user.user_email)"
+    let jsonBody: String = "user_email=\(config.user_email)"
     // Create Data from request
     let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_Facebook.php")!)
     // set Request Type
@@ -242,10 +233,10 @@ func AuthentiFacebook(user: User, completionHandlerOAuthFacebook: (success: Bool
 }
 
 
-func Authentification(user: User, completionHandlerOAuth: (success: Bool, userArray: [[String : AnyObject]]?, errorString: String?) -> Void) {
+func Authentification(config: Config, completionHandlerOAuth: (success: Bool, userArray: [[String : AnyObject]]?, errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_pseudo=\(user.user_pseudo)&user_pass=\(user.user_pass)"
+    let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)"
     // Create Data from request
     let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_signin.php")!)
     // set Request Type
@@ -313,78 +304,12 @@ func Authentification(user: User, completionHandlerOAuth: (success: Bool, userAr
 }
 
 
-func setLocation(user: User, completionHandlerLocation: (success: Bool, errorString: String?) -> Void) {
-    
-    // Create your request string with parameter name as defined in PHP file
-    let body: String = "user_longitude=\(user.user_longitude)&user_latitude=\(user.user_latitude)&user_pseudo=\(user.user_pseudo)&user_mapString=\(user.user_mapString)"
-    // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_postLocation.php")!)
-    // set Request Type
-    request.HTTPMethod = "POST"
-    // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
-    // Set Request Body
-    request.HTTPBody = body.dataUsingEncoding(NSUTF8StringEncoding)
-    
-    
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
-        
-        /* GUARD: Was there an error? */
-        guard (error == nil) else {
-            completionHandlerLocation(success: false, errorString: "There was an error with your request: \(error)")
-            return
-        }
-        
-        /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerLocation(success: false, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
-            return
-        }
-        
-        /* GUARD: Was there any data returned? */
-        guard let data = data else {
-            completionHandlerLocation(success: false, errorString:"No data was returned by the request!")
-            return
-            
-        }
-        
-        /* Parse the data */
-        let parsedResult: AnyObject!
-        do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
-        } catch {
-            completionHandlerLocation(success: false, errorString: "Could not parse the data as JSON: '\(data)'")
-            
-            return
-            
-        }
-        
-        let result = parsedResult as! [String:String]
-        
-        if (result["success"] == "1") {
-            completionHandlerLocation(success: true, errorString: nil)
-        }
-        else {
-            completionHandlerLocation(success: false, errorString: result["error"])
-
-        }
-        
-    }
-    
-    
-    task.resume()
-    
-}
-
-
-func setUpdatePass(user: User, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
+func setUpdatePass(config: Config, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
     
-    let newpassword = (user.user_newpassword==true) ? 1 : 0
-    let jsonBody: String = "user_email=\(user.user_email)&user_pass=\(user.user_pass)&user_newpassword=\(newpassword)"
+    let newpassword = (config.user_newpassword==true) ? 1 : 0
+    let jsonBody: String = "user_email=\(config.user_email)&user_pass=\(config.user_pass)&user_newpassword=\(newpassword)"
     // Create Data from request
     let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_updatepass.php")!)
     // set Request Type
@@ -446,10 +371,10 @@ func setUpdatePass(user: User, completionHandlerOAuth: (success: Bool, errorStri
 }
 
 
-func setUpdateUser(user: User, completionHandlerUpdate: (success: Bool, errorString: String?) -> Void) {
+func setUpdateUser(config: Config, completionHandlerUpdate: (success: Bool, errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_pseudo=\(user.user_pseudo)&user_pass=\(user.user_pass)&user_adresse=\(user.user_adresse)&user_codepostal=\(user.user_codepostal)&user_nom=\(user.user_nom)&user_prenom=\(user.user_prenom)&user_email=\(user.user_email)&user_pays=\(user.user_pays)&user_ville=\(user.user_ville)&user_id=\(user.user_id)"
+    let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)&user_adresse=\(config.user_adresse)&user_codepostal=\(config.user_codepostal)&user_nom=\(config.user_nom)&user_prenom=\(config.user_prenom)&user_email=\(config.user_email)&user_pays=\(config.user_pays)&user_ville=\(config.user_ville)&user_id=\(config.user_id)"
     // Create Data from request
     let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_updateuser.php")!)
     // set Request Type
@@ -512,10 +437,10 @@ func setUpdateUser(user: User, completionHandlerUpdate: (success: Bool, errorStr
 }
 
 
-func setAddUser(user: User, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
+func setAddUser(config: Config, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_pseudo=\(user.user_pseudo)&user_pass=\(user.user_pass)&user_adresse=\(user.user_adresse)&user_codepostal=\(user.user_codepostal)&user_nom=\(user.user_nom)&user_prenom=\(user.user_prenom)&user_email=\(user.user_email)&user_pays=\(user.user_pays)&user_ville=\(user.user_ville)"
+    let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)&user_adresse=\(config.user_adresse)&user_codepostal=\(config.user_codepostal)&user_nom=\(config.user_nom)&user_prenom=\(config.user_prenom)&user_email=\(config.user_email)&user_pays=\(config.user_pays)&user_ville=\(config.user_ville)"
     // Create Data from request
     let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_signup.php")!)
     // set Request Type
@@ -576,7 +501,6 @@ func setAddUser(user: User, completionHandlerOAuth: (success: Bool, errorString:
     task.resume()
     
 }
-
 
 
 

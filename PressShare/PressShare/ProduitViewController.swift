@@ -10,7 +10,7 @@ import Foundation
 import MapKit
 import UIKit
 
-class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextFieldDelegate {
+class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldDelegate {
     
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
@@ -19,8 +19,15 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
     @IBOutlet weak var IBMap: MKMapView!
     @IBOutlet weak var IBInfoLocation: UITextField!
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
+    @IBOutlet weak var IBNom: UITextField!
+    @IBOutlet weak var IBPrix: UITextField!
+    @IBOutlet weak var IBComment: UITextField!
+    @IBOutlet weak var IBNoimage: UIImageView!
     
-    var  config = Config.sharedInstance
+    
+    var aproduit:Produit?
+    
+    var config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
     
     var filePath : String {
@@ -45,13 +52,24 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
         IBSave.title = traduction.pse2
         IBInfoLocation.placeholder = traduction.pse3
         IBFind.titleLabel?.text = traduction.pse4
-        
+
         
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
+        
+        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
+        if let thisproduit = aproduit {
+            IBNom.text =  thisproduit.prod_nom
+            IBPrix.text = String(thisproduit.prod_prix)
+            IBComment.text = thisproduit.prod_comment
+            IBInfoLocation.text = thisproduit.prod_mapString
+            IBSave.enabled = false
+            IBFind.enabled = false
+        }
+        
+        
     }
     
     @IBAction func ActionCancel(sender: AnyObject) {
@@ -65,6 +83,10 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
         IBSave.enabled = !hidden
         IBMap.hidden = hidden
         IBFind.hidden = !hidden
+        IBNom.hidden = !hidden
+        IBPrix.hidden = !hidden
+        IBComment.hidden = !hidden
+        IBNoimage.hidden = !hidden
         IBInfoLocation.hidden = !hidden
         
         
@@ -80,6 +102,13 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
     //MARK: Data Networking
     
     @IBAction func ActionFindMap(sender: AnyObject) {
+        
+        
+        guard IBInfoLocation.text != "" else {
+            self.displayAlert("Error", mess: "localisation incorrecte")
+            return
+        }
+        
         
         setUIHidden(false)
         
@@ -102,8 +131,8 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
             }
             
             let placemark = marks![0] as CLPlacemark
-            self.config.latitude = Float((placemark.location?.coordinate.latitude)!)
-            self.config.longitude = Float((placemark.location?.coordinate.longitude)!)
+            self.config.latitude = Double((placemark.location?.coordinate.latitude)!)
+            self.config.longitude = Double((placemark.location?.coordinate.longitude)!)
             
             performUIUpdatesOnMain {
                 
@@ -142,19 +171,38 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
     
     @IBAction func ActionSubmit(sender: AnyObject) {
         
+        
+        guard IBNom.text != "" else {
+            self.displayAlert("Error", mess: "nom incorrect")
+            return
+        }
+        
+        
+        guard IBPrix.text != "" else {
+            self.displayAlert("Error", mess: "prix incorrect")
+            return
+        }
+        
+
         IBActivity.startAnimating()
+        
         
         saveMapRegion()
         
-        var user = User(dico: [String : AnyObject]())
-        user.user_longitude = config.longitude
-        user.user_latitude = config.latitude
-        user.user_pseudo = config.user_pseudo
-        user.user_mapString = config.mapString
         
-        setLocation(user) { (success, errorString) in
-            
-            
+        
+        var produit = Produit(dico: [String : AnyObject]())
+        
+        produit.prod_nom = IBNom.text!
+        produit.prod_image = ""
+        produit.prod_prix = Double(IBPrix.text!)!
+        produit.prod_by_user = config.user_id
+        produit.prod_longitude = config.longitude
+        produit.prod_latitude = config.latitude
+        produit.prod_mapString = config.mapString
+        produit.prod_comment = IBComment.text!
+        
+        setAddProduit(produit) { (success, errorString) in
             
             if success {
                 performUIUpdatesOnMain {
@@ -170,6 +218,8 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
             }
             
         }
+        
+        
         
         
     }
@@ -208,7 +258,6 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
             pinView?.pinTintColor = UIColor.redColor()
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
         }
         else {
             pinView!.annotation = annotation
@@ -217,12 +266,7 @@ class InfoPostViewController : UIViewController , MKMapViewDelegate, UITextField
         return pinView
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if control == view.rightCalloutAccessoryView {
 
-            
-        }
-    }
     
     
 }

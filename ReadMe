@@ -14,28 +14,38 @@ email : test_sohgoqx_pressshare@tfbnw.net
 
 PressShare est une application d'échange et de commercialisation de journaux
 
-Les fonctions attendues de PressShare sont :
+Les fonctions à tester sont :
 
-    Authentification par user/password ou tiers facebook
-    Localisation/recherche des produits/utilisateurs sur une carte
-    Gestion de produit
-    Vendre un produit
-    Acheter un produit
-    Echanger un produit
-    Souscrire à un abonnement
-    Paiement sécurisé
+    - Authentification par user/password (test1 / test1)
+    
+    - Authentification par facebook (test pressshare / testpressshare)
+    
+    - A verifier que le compte est créé dans la base de données core data entité user
+    
+    - Affichage de plusieurs épingles produits sur la carte du monde. (données provenant de l’api de mon serveur pressshare.fxpast.com)
+
+    - Sélectionner une épingle pour afficher les produits de la zone géolocalisée.
+     
+    - Affichage de l’onglet List (liste des produits des utilisateurs)
+
+   - Ajouter un produit en cliquant sur le bouton géolocalisation (saisir les informations sur le produit).
 
 
 
 PressShare is an exchange application and commercialization of newspapers
 
-The functions expected of PressShare are:
+The features to be tested are:
 
-     User authentication / password or third facebook
-     Location / search products / users on a map
-     Product Management
-     Selling a product
-     Buy product
-     Exchanging a product
-     A subscription
-     Secure payment
+     - Authentication by user / password (test1 / test1)
+    
+     - Authentication facebook (test pressshare / testpressshare)
+    
+     - checked that the account is created in the core data user entity
+    
+     - Display multiple products pins on the map. (Data from my own API pressshare.fxpast.com)
+
+     - Select a pin to display products of the geographic location area.
+     
+     - Viewing the List tab (list of user products)
+
+    - Add a product by clicking the geolocation button (enter product information).

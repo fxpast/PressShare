@@ -28,7 +28,8 @@ class SettingsTableViewContr : UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
+        
+        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
     }
 
     
@@ -85,6 +86,22 @@ class SettingsTableViewContr : UITableViewController {
             
         case 1:
             performSegueWithIdentifier("infoconnexion", sender: self)
+            
+        case 2:
+            
+            self.displayAlert("info", mess: "Under construction...")
+            
+        case 3:
+           
+            self.displayAlert("info", mess: "Under construction...")
+        case 4:
+            
+            self.displayAlert("info", mess: "Under construction...")
+            
+        case 5:
+            
+            self.displayAlert("info", mess: "Under construction...")
+            
             
         default:
             break

@@ -7,16 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB2515861D831C6400B286F7 /* Model.xcdatamodeld */; };
+		DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */; };
+		DB2515981D83226800B286F7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515961D83226800B286F7 /* User.swift */; };
 		DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA351CE0FB870065ECEB /* BlackBox.swift */; };
-		DB5EFA3A1CE39AE80065ECEB /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA391CE39AE80065ECEB /* Users.swift */; };
 		DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */; };
 		DB796C631CF4A2EE00BEA2F3 /* InternationalIHM.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */; };
 		DB796C651CF4A3E900BEA2F3 /* InternationalIHM.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */; };
-		DBA03CD81CECB31800B76896 /* Produits.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA03CD71CECB31800B76896 /* Produits.swift */; };
-		DBA3C5321CE5141800CD826D /* InfoPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */; };
+		DBA03CD81CECB31800B76896 /* Produit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA03CD71CECB31800B76896 /* Produit.swift */; };
+		DBA3C5321CE5141800CD826D /* ProduitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52E1CE5141800CD826D /* ProduitViewController.swift */; };
 		DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52F1CE5141800CD826D /* LoginViewController.swift */; };
 		DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5301CE5141800CD826D /* MapViewController.swift */; };
-		DBA3C5351CE5141900CD826D /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* ListViewController.swift */; };
+		DBA3C5351CE5141900CD826D /* ListProduitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* ListProduitViewController.swift */; };
 		DBBC9D231CED4DE900906E8E /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D201CED4DE900906E8E /* FBSDKCoreKit.framework */; };
 		DBBC9D241CED4DE900906E8E /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D211CED4DE900906E8E /* FBSDKLoginKit.framework */; };
 		DBBC9D251CED4DE900906E8E /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBBC9D221CED4DE900906E8E /* FBSDKShareKit.framework */; };
@@ -41,16 +43,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DB2515871D831C6400B286F7 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DB2515961D83226800B286F7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DB5EFA351CE0FB870065ECEB /* BlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackBox.swift; sourceTree = "<group>"; };
-		DB5EFA391CE39AE80065ECEB /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewContr.swift; sourceTree = "<group>"; };
 		DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InternationalIHM.plist; sourceTree = "<group>"; };
 		DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternationalIHM.swift; sourceTree = "<group>"; };
-		DBA03CD71CECB31800B76896 /* Produits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Produits.swift; sourceTree = "<group>"; };
-		DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPostViewController.swift; sourceTree = "<group>"; };
+		DBA03CD71CECB31800B76896 /* Produit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Produit.swift; sourceTree = "<group>"; };
+		DBA3C52E1CE5141800CD826D /* ProduitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProduitViewController.swift; sourceTree = "<group>"; };
 		DBA3C52F1CE5141800CD826D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DBA3C5301CE5141800CD826D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		DBA3C5311CE5141800CD826D /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		DBA3C5311CE5141800CD826D /* ListProduitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListProduitViewController.swift; sourceTree = "<group>"; };
 		DBA3C5411CE51A1B00CD826D /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DBBC9D201CED4DE900906E8E /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = PressShare/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		DBBC9D211CED4DE900906E8E /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = PressShare/FBSDKLoginKit.framework; sourceTree = "<group>"; };
@@ -81,9 +85,10 @@
 		DB5EFA371CE39AC80065ECEB /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */,
+				DB2515961D83226800B286F7 /* User.swift */,
 				DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */,
-				DB5EFA391CE39AE80065ECEB /* Users.swift */,
-				DBA03CD71CECB31800B76896 /* Produits.swift */,
+				DBA03CD71CECB31800B76896 /* Produit.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -91,6 +96,7 @@
 		DB5EFA3B1CE39AFB0065ECEB /* View */ = {
 			isa = PBXGroup;
 			children = (
+				DB2515861D831C6400B286F7 /* Model.xcdatamodeld */,
 				DBF8D8101CB99E9D00BF706E /* Main.storyboard */,
 			);
 			name = View;
@@ -99,8 +105,8 @@
 		DB5EFA3C1CE39B010065ECEB /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				DBA3C5311CE5141800CD826D /* ListViewController.swift */,
-				DBA3C52E1CE5141800CD826D /* InfoPostViewController.swift */,
+				DBA3C5311CE5141800CD826D /* ListProduitViewController.swift */,
+				DBA3C52E1CE5141800CD826D /* ProduitViewController.swift */,
 				DBA3C5301CE5141800CD826D /* MapViewController.swift */,
 				DBA3C52F1CE5141800CD826D /* LoginViewController.swift */,
 				DBF8D8221CB9A0B700BF706E /* NewUserTableViewContr.swift */,
@@ -236,15 +242,17 @@
 			files = (
 				DBF8D8271CB9A0B700BF706E /* NewUserTableViewContr.swift in Sources */,
 				DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */,
-				DBA3C5351CE5141900CD826D /* ListViewController.swift in Sources */,
+				DBA3C5351CE5141900CD826D /* ListProduitViewController.swift in Sources */,
 				DB796C651CF4A3E900BEA2F3 /* InternationalIHM.swift in Sources */,
 				DBF8D8251CB9A0B700BF706E /* ChangerPasse.swift in Sources */,
 				DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */,
 				DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */,
 				DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */,
-				DBA03CD81CECB31800B76896 /* Produits.swift in Sources */,
-				DBA3C5321CE5141800CD826D /* InfoPostViewController.swift in Sources */,
-				DB5EFA3A1CE39AE80065ECEB /* Users.swift in Sources */,
+				DB2515981D83226800B286F7 /* User.swift in Sources */,
+				DBA03CD81CECB31800B76896 /* Produit.swift in Sources */,
+				DBA3C5321CE5141800CD826D /* ProduitViewController.swift in Sources */,
+				DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */,
+				DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */,
 				DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -414,6 +422,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		DB2515861D831C6400B286F7 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				DB2515871D831C6400B286F7 /* Model.xcdatamodel */,
+			);
+			currentVersion = DB2515871D831C6400B286F7 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = DBF8D8011CB99E9C00BF706E /* Project object */;
 }

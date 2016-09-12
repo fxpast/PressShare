@@ -6,6 +6,8 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+import CoreData
 import UIKit
 
 class ChangerPasse : UIViewController, UITextFieldDelegate {
@@ -17,8 +19,17 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     @IBOutlet weak var IBPasswordVerif: UITextField!
     @IBOutlet weak var IBPassword: UITextField!
     
+    
     let config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
+    
+    
+    
+    var sharedContext: NSManagedObjectContext {
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return delegate.managedObjectContext
+    }
+    
     
     
     //MARK: View Controller Delegate
@@ -34,7 +45,8 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         }
         
         if config.previousView == "SettingsTableViewContr" {
-            navigationItem.title = "\(config.user_nom) \(config.user_prenom)"
+            
+            self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
             IBemail.text = config.user_email
             config.user_newpassword = true
         }
@@ -71,7 +83,6 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
         var password:String
         
-        var user = User(dico: [String : AnyObject]())
         
         if config.user_newpassword == true {
             
@@ -91,8 +102,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
             }
             
             password = IBPassword.text!
-            user.user_email = config.user_email
-            user.user_newpassword = false
+            config.user_newpassword = false
         }
         else {
             guard IBemail.text != "" else {
@@ -101,20 +111,31 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
             }
             
             password = randomAlphaNumericString(8)
-            user.user_email = IBemail.text!
-            user.user_newpassword = true
+            config.user_email = IBemail.text!
+            config.user_newpassword = true
             
         }
         
         
-        user.user_pass = password
+        sharedContext.deletedObjects
+        // Save the context.
+        do {
+            try sharedContext.save()
+        } catch let error as NSError {
+            print(error.debugDescription)
+            
+        }
         
         
-        setUpdatePass(user) { (success, errorString) in
+        config.user_pass = password
+        
+        
+        setUpdatePass(config) { (success, errorString) in
             if success {
                 performUIUpdatesOnMain {
-                    
-                    if user.user_newpassword == true {
+                  
+                    if self.config.user_newpassword == true {
+                        
                         
                         self.displayAlert("Mot de passe", mess: "Attention un mail a été envoyé dans votre boite aux lettes. \n Pensez à vérifier votre dossier spam si vous ne trouvez pas le mail.")
                         
