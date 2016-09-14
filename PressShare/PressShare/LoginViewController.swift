@@ -32,7 +32,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     
     var users = [User]()
-    var user:User!
     
     var config = Config.sharedInstance
     var traduction = InternationalIHM.sharedInstance
@@ -44,24 +43,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        users = fetchAllUser()
-        
-        loginWithCurrentToken()
-        
-    }
-    
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        IBoda1.text = traduction.oda1
-        IBLogin.titleLabel?.text = traduction.oda2
-        IBoda3.titleLabel?.text =  traduction.oda3
-        IBoda4.titleLabel?.text = traduction.oda4
-        IBuser.placeholder = traduction.pmp3
-        IBPassword.placeholder = traduction.pmp5
-
         
         config.latitude = 0
         config.longitude = 0
@@ -78,6 +59,44 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         config.user_newpassword = false
         config.previousView = "LoginViewController"
         
+        users = fetchAllUser()
+        
+        loginWithCurrentToken()
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        super.viewWillAppear(animated)
+        
+        
+        if users.count > 0 {
+            for aUser in users {
+                if aUser.user_logout == true && FBSDKAccessToken.currentAccessToken() != nil {
+                    
+                    let loginmanager = FBSDKLoginManager()
+                    loginmanager.logOut()
+                    
+                }
+            }
+        }
+        
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        
+        IBoda1.text = traduction.oda1
+        IBLogin.titleLabel?.text = traduction.oda2
+        IBoda3.titleLabel?.text =  traduction.oda3
+        IBoda4.titleLabel?.text = traduction.oda4
+        IBuser.placeholder = traduction.pmp3
+        IBPassword.placeholder = traduction.pmp5
+        
+        
+        
         
         facebookButton = FBSDKLoginButton()
         view.addSubview(facebookButton)
@@ -88,6 +107,10 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
         facebookButton.readPermissions = ["public_profile", "email", "user_friends"]
         facebookButton.delegate = self
+        
+        loginWithLogout()
+        
+        
         
     }
     
@@ -138,8 +161,9 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     //MARK: coreData function
     
     
-    func fetchAllUser() -> [User] {
+    private func fetchAllUser() -> [User] {
         
+        users.removeAll()
         // Create the Fetch Request
         let fetchRequest = NSFetchRequest(entityName: "User")
         
@@ -150,12 +174,12 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             return [User]()
         }
     }
-
+    
     
     //MARK: Facebook Delegate Methods
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
-
+        
         if ((error) != nil)
         {
             // Process error
@@ -190,11 +214,38 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         performSegueWithIdentifier("chgpass", sender: self)
         
     }
-
+    
+    
+    private func loginWithLogout() -> Bool {
+        
+        if (FBSDKAccessToken.currentAccessToken() != nil) {
+            return false
+        }
+        
+        if users.count > 0 {
+            for aUser in users {
+                if aUser.user_logout == false {
+                    // User is already logged in
+                    self.AffecterUser(aUser)
+                    return true
+                }
+            }
+        }
+        
+        
+        
+        IBuser.hidden = false
+        IBPassword.hidden = false
+        return false
+        
+    }
     
     
     @IBAction func ActionLogin(sender: AnyObject) {
         
+        if loginWithLogout() {
+            return
+        }
         
         if loginWithCurrentToken() {
             return
@@ -214,29 +265,150 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
         setUIEnabled(false)
         
+        var flgOK = false
         
-        config.user_pseudo = IBuser.text!
         config.user_pass = IBPassword.text!
+        config.user_pseudo = IBuser.text!
         
         if users.count > 0 {
             for aUser in users {
-                if aUser.user_pseudo == config.user_pseudo {
-                    user = aUser
-                    self.AffecterUser()
-                    break
+                
+                if aUser.user_pseudo == IBuser.text!  {
+                    
+                    if aUser.user_pass == config.user_pass {
+                        self.AffecterUser(aUser)
+                        flgOK = true
+                        return
+                    }
+                    
+                    
+                    if flgOK == false && aUser.user_pass != ""  {
+                        
+                        displayAlert("Error", mess:  "Error, login / password ")
+                        setUIEnabled(true)
+                        return
+                    }
+                    
+                }
+                else {
+                    
+                    sharedContext.deleteObject(users[0])
+                    users.removeLast()
+                    // Save the context.
+                    do {
+                        try sharedContext.save()
+                    } catch let error as NSError {
+                        print(error.debugDescription)
+                        
+                    }
+                    
+                    users = fetchAllUser()
+                    
+                }
+                
+                
+                
+            }
+        }
+        
+        
+        Authentification(config) { (success, userArray, errorString) in
+            
+            if success {
+                performUIUpdatesOnMain {
+                    
+                    if self.users.count > 0 {
+                        
+                        self.sharedContext.deleteObject(self.users[0])
+                        self.users.removeLast()
+                        // Save the context.
+                        do {
+                            try self.sharedContext.save()
+                        } catch _ {}
+                        
+                    }
+                    
+                    self.users = self.fetchAllUser()
+                    
+                    
+                    self.AffecterUser( User(dico: userArray![0], context: self.sharedContext))
+                    
+                }
+                
+            }
+            else {
+                performUIUpdatesOnMain {
+                    self.setUIEnabled(true)
+                    self.displayAlert("Error", mess: errorString!)
+                    
                 }
             }
+        }
+        
+        
+    }
+    
+    
+    private func loginWithCurrentToken() -> Bool {
+        
+        if (FBSDKAccessToken.currentAccessToken() != nil)
+        {
+            // User is already logged in
             
+            LoadFaceBook()
+            
+            return true
         }
         else {
             
-            Authentification(config) { (success, userArray, errorString) in
+            
+            IBuser.hidden = false
+            IBPassword.hidden = false
+            return false
+        }
+        
+    }
+    
+    private func LoadFaceBook() {
+        
+        let parameters = ["fields":"email"]
+        FBSDKGraphRequest(graphPath: "me", parameters: parameters).startWithCompletionHandler({ (connexion, result, error) in
+            
+            self.config.user_email = result["email"] as? String
+            
+            if self.users.count > 0 {
+                for aUser in self.users {
+                    if aUser.user_email == self.config.user_email  {
+                        self.AffecterUser(aUser)
+                        return
+                        
+                    }
+                }
+                
+            }
+            
+            AuthentiFacebook(self.config, completionHandlerOAuthFacebook: { (success, userArray, errorString) in
+                
                 
                 if success {
                     performUIUpdatesOnMain {
                         
-                        self.user = User(dico: userArray![0], context: self.sharedContext)
-                        self.AffecterUser()
+                        
+                        if self.users.count > 0 {
+                            
+                            self.sharedContext.deleteObject(self.users[0])
+                            self.users.removeLast()
+                            // Save the context.
+                            do {
+                                try self.sharedContext.save()
+                            } catch _ {}
+                            
+                        }
+                        
+                        
+                        self.users = self.fetchAllUser()
+                        
+                        self.AffecterUser(User(dico: userArray![0], context: self.sharedContext))
                         
                     }
                     
@@ -248,78 +420,12 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                         
                     }
                 }
-            }
-            
-        }
-        
-    }
-    
-    
-    private func loginWithCurrentToken() -> Bool {
-        
-        if (FBSDKAccessToken.currentAccessToken() != nil)
-        {
-            // User is already logged in
-            IBuser.hidden = true
-            IBPassword.hidden = true
-            
-            LoadFaceBook()
-     
-            return true
-        }
-        else {
-            
-            IBuser.hidden = false
-            IBPassword.hidden = false
-            return false
-        }
-        
-    }
-    
-    private func LoadFaceBook() {
-    
-        let parameters = ["fields":"email"]
-        FBSDKGraphRequest(graphPath: "me", parameters: parameters).startWithCompletionHandler({ (connexion, result, error) in
-            print(result)
-            self.config.user_email = result["email"] as? String
-            
-            if self.users.count > 0 {
-                for aUser in self.users {
-                    if aUser.user_email == self.config.user_email {
-                        self.user = aUser
-                        self.AffecterUser()
-                        break
-                    }
-                }
                 
                 
-            }
-            else {
-                
-                AuthentiFacebook(self.config, completionHandlerOAuthFacebook: { (success, userArray, errorString) in
-                    
-                    
-                    if success {
-                        performUIUpdatesOnMain {
-                            
-                            self.user = User(dico: userArray![0], context: self.sharedContext)
-                            self.AffecterUser()
-                            
-                        }
-                        
-                    }
-                    else {
-                        performUIUpdatesOnMain {
-                            self.setUIEnabled(true)
-                            self.displayAlert("Error", mess: errorString!)
-                            
-                        }
-                    }
-                    
-                    
-                })
-                
-            }
+            })
+            
+            
+            
             
         })
         
@@ -328,33 +434,62 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     
     
-    private func AffecterUser() {
+    
+    private func AffecterUser(aUser:User) {
         
         
-        // Save the context.
-        do {
-            try sharedContext.save()
-        } catch _ {}
+        config.user_id = aUser.user_id?.integerValue
+        config.user_pseudo = aUser.user_pseudo
+        config.user_email = aUser.user_email
+        config.user_nom = aUser.user_nom
+        config.user_prenom = aUser.user_prenom
+        config.user_newpassword = aUser.user_newpassword?.boolValue
+        config.user_pays = aUser.user_pays
+        config.user_ville = aUser.user_ville
+        config.user_adresse = aUser.user_adresse
+        config.user_codepostal = aUser.user_codepostal
+        config.verifpassword = ""
         
-        
-        config.user_id = user.user_id?.integerValue
-        config.user_pseudo = user.user_pseudo
-        config.user_email = user.user_email
-        config.user_nom = user.user_nom
-        config.user_prenom = user.user_prenom
-        config.user_newpassword = user.user_newpassword?.boolValue
-        config.user_pays = user.user_pays
-        config.user_ville = user.user_ville
-        config.user_adresse = user.user_adresse
-        config.user_codepostal = user.user_codepostal
-        IBPassword.text = ""
-        setUIEnabled(true)
-        if (config.user_newpassword == true) {
-            performSegueWithIdentifier("chgpass", sender: self)
+        if let pass = config.user_pass {
+            aUser.user_pass = pass
         }
         else {
-            performSegueWithIdentifier("tabbar", sender: self)
+            config.user_pass = ""
+            aUser.user_pass = ""
         }
+        
+        
+        aUser.user_logout = false
+        
+        
+        if let _ = config.user_pseudo {
+            
+            // Save the context.
+            do {
+                try sharedContext.save()
+            } catch _ {}
+            
+            
+            users = fetchAllUser()
+            
+            
+            IBPassword.text = ""
+            setUIEnabled(true)
+            
+            
+            if (config.user_newpassword == true) {
+                performSegueWithIdentifier("chgpass", sender: self)
+            }
+            else {
+                performSegueWithIdentifier("tabbar", sender: self)
+            }
+            
+            
+            
+        }
+        
+        
+        
         
         
     }

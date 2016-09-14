@@ -6,6 +6,8 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+import CoreData
 import Foundation
 import UIKit
 import MapKit
@@ -15,8 +17,8 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var IBTableView: UITableView!
     @IBOutlet weak var IBSearch: UISearchBar!
     @IBOutlet weak var IBLogout: UIBarButtonItem!
-   
     
+    var users = [User]()
     var produits = [Produit]()
     var config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
@@ -31,11 +33,19 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     let SearchLatRange = (-90.0, 90.0)
     let SearchLonRange = (-180.0, 180.0)
     
+    var sharedContext: NSManagedObjectContext {
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return delegate.managedObjectContext
+    }
     
     
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        users = fetchAllUser()
+        
         //IBSearch.text = traduction.titre
         
     }
@@ -43,6 +53,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewWillAppear(animated: Bool) {
         
         super.viewWillAppear(animated)
+        
         
         
         self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
@@ -56,7 +67,15 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.tabBarItem.title = traduction.pam2
-        IBLogout.title = traduction.pam4
+        if let _ = lat, _ = lon {
+            IBLogout.title = traduction.pmp1
+            
+        }
+        else {
+            IBLogout.title = traduction.pam4
+            
+        }
+        
         //IBSearch.becomeFirstResponder()
         
     }
@@ -64,9 +83,9 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-       
+        
         if segue.identifier == "fromtable" {
-          
+            
             if (aindex != 999) {
                 
                 let nav = segue.destinationViewController as! UINavigationController
@@ -84,13 +103,39 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     
     @IBAction func ActionEpingle(sender: AnyObject) {
         
-         aindex = 999
-         performSegueWithIdentifier("fromtable", sender: self)
+        aindex = 999
+        performSegueWithIdentifier("fromtable", sender: self)
     }
     
-  
+    
     
     @IBAction func ActionLogout(sender: AnyObject) {
+        
+        
+        if let _ = lat, _ = lon {
+            //Cancel list product
+        }
+        else {
+            //logout
+            if users.count > 0 {
+                for aUser in users {
+                    if aUser.user_pseudo == config.user_pseudo {
+                        aUser.user_logout = true
+                        
+                        // Save the context.
+                        do {
+                            try sharedContext.save()
+                        } catch _ {}
+                        
+                        break
+                    }
+                }
+                
+                users = fetchAllUser()
+                
+            }
+            
+        }
         
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -164,10 +209,28 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             let produ = Produit(dico: prod)
             let nom = produ.prod_nom.capitalizedString
             if nom.containsString(str.capitalizedString) {
-                    produits.append(produ)
-                }
+                produits.append(produ)
+            }
         }
         
+    }
+    
+    //MARK: coreData function
+    
+    
+    private func fetchAllUser() -> [User] {
+        
+        
+        users.removeAll()
+        // Create the Fetch Request
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        // Execute the Fetch Request
+        do {
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+        } catch _ {
+            return [User]()
+        }
     }
     
     
@@ -177,7 +240,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         var maximumLon = Double()
         var minimumLat = Double()
         var maximumLat = Double()
-
+        
         if let _ = lat, _ = lon {
             
             minimumLon = max(Double(lon!) - SearchBBoxHalfWidth, SearchLonRange.0)
@@ -202,9 +265,9 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
     }
-        
+    
     //MARK: Table View Controller data source
-
+    
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         

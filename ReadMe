@@ -12,11 +12,15 @@ email : test_sohgoqx_pressshare@tfbnw.net
 
 
 
-PressShare est une application d'échange et de commercialisation de journaux
+PressShare est une application qui met en contact des personnes souhaitant échanger leur journaux.
+l’utilisateur se connecte et crée un produit journal sur la carte qui sera visible par les autres utilisateurs.
+Les utilisateurs pourront par la suite entrer en contact pour faire des echanges selon leurs localisation.
+Il y a plusieurs fonctions qui sont en cours de développement et qui ne seront pas terminée avant plusieurs mois.
+Dans le cadre de la formation « iOS developer nanodegree program », j’ai sélectionné les premières fonctions à tester.
 
 Les fonctions à tester sont :
 
-    - Authentification par user/password (test1 / test1)
+    - Authentification par user/password (test1 / test1) ==> les données user sont stockées dans core data et réutilisées à la prochaine connexion
     
     - Authentification par facebook (test pressshare / testpressshare)
     
@@ -32,11 +36,17 @@ Les fonctions à tester sont :
 
 
 
-PressShare is an exchange application and commercialization of newspapers
+
+PressShare is an application that connects people who want to exchange their newspapers.
+the user logs in and creates a product on the map that will be visible to other users.
+Users will then be able to contact and making exchanges according to their location.
+There are several features that are in development and will not be completed for several months.
+As part of the training "iOS developer program nanodegree" I selected the first functions to be tested.
+
 
 The features to be tested are:
 
-     - Authentication by user / password (test1 / test1)
+     - Authentication by user / password (test1 / test1) ==> the data user are stored in core data and used for the next connection
     
      - Authentication facebook (test pressshare / testpressshare)
     

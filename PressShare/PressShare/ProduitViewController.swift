@@ -10,7 +10,7 @@ import Foundation
 import MapKit
 import UIKit
 
-class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldDelegate {
+class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate {
     
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
@@ -42,7 +42,20 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       
+        IBPrix.delegate = self
+        IBNom.delegate  = self
+        IBComment.delegate = self
+        IBInfoLocation.delegate = self
+        
+        let longPressGestureRecognizer = UILongPressGestureRecognizer.init(target: self, action:#selector(ProduitViewController.handleLongPressRecognizer(_:)))
+        longPressGestureRecognizer.numberOfTouchesRequired = 1
+        longPressGestureRecognizer.minimumPressDuration = 0.3
+        longPressGestureRecognizer.delaysTouchesBegan = true
+        longPressGestureRecognizer.delegate = self
+        view.addGestureRecognizer(longPressGestureRecognizer)
+        
+        
+        
         IBActivity.stopAnimating()
         
         setUIHidden(true)
@@ -52,7 +65,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
         IBSave.title = traduction.pse2
         IBInfoLocation.placeholder = traduction.pse3
         IBFind.titleLabel?.text = traduction.pse4
-
+        
         
     }
     
@@ -60,6 +73,8 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
         super.viewWillAppear(animated)
         
         self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
+        IBNoimage.image = UIImage(named: "noimage")
+        
         if let thisproduit = aproduit {
             IBNom.text =  thisproduit.prod_nom
             IBPrix.text = String(thisproduit.prod_prix)
@@ -71,6 +86,23 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
         
         
     }
+    
+    
+    func handleLongPressRecognizer(gesture:UILongPressGestureRecognizer)  {
+        
+        
+        if gesture.state == UIGestureRecognizerState.Ended {
+            
+            let point = gesture.locationInView(self.view)
+            let pointIo = IBNoimage.frame.origin
+            let pointIs = IBNoimage.frame.size
+            if pointIo.x <= point.x &&  point.x <= pointIs.width && pointIo.y <= point.y &&  point.x <= pointIs.height {
+                self.displayAlert("info", mess: "Under construction...")
+            }
+        }
+        
+    }
+    
     
     @IBAction func ActionCancel(sender: AnyObject) {
         
@@ -93,6 +125,19 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        
+        if textField.isEqual(IBPrix) {
+            
+            guard let _ = NSNumberFormatter().numberFromString(IBPrix.text!) else {
+                
+                displayAlert("Error", mess: "valeur incorrecte")
+                return false
+                
+            }
+            
+        }
+        
         textField.endEditing(true)
         return true
         
@@ -105,10 +150,16 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
         
         
         guard IBInfoLocation.text != "" else {
-            self.displayAlert("Error", mess: "localisation incorrecte")
+            displayAlert("Error", mess: "localisation incorrecte")
             return
         }
         
+        guard let _ = NSNumberFormatter().numberFromString(IBPrix.text!) else {
+            
+            displayAlert("Error", mess: "valeur prix incorrecte")
+            return
+            
+        }
         
         setUIHidden(false)
         
@@ -125,7 +176,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
                     
                     self.setUIHidden(true)
                     self.IBActivity.stopAnimating()
-                    self.displayAlert("Error", mess: "error geocodeadresse : \(error.debugDescription)")
+                    self.displayAlert("Error", mess: "error geocodeadresse : invalid address") //error.debugDescription
                 }
                 return
             }
@@ -183,7 +234,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
             return
         }
         
-
+        
         IBActivity.startAnimating()
         
         
@@ -244,7 +295,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
         NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
     }
     
-
+    
     
     //MARK: Map View Delegate
     
@@ -266,7 +317,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UITextFieldD
         return pinView
     }
     
-
+    
     
     
 }

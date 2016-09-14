@@ -95,7 +95,7 @@ func getAllProduits(userId:Int, completionHandlerProduits: (success: Bool, produ
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerProduits(success: false, produitArray: nil, errorString: "There was an error with your request: \(error)")
+            completionHandlerProduits(success: false, produitArray: nil, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
@@ -166,7 +166,7 @@ func setUpdateProduit(user: User, completionHandlerOAuth: (success: Bool, errorS
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error)")
+            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
@@ -233,7 +233,7 @@ func setAddProduit(produit: Produit, completionHandlerProduit: (success: Bool, e
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerProduit(success: false, errorString: "There was an error with your request: \(error)")
+            completionHandlerProduit(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         

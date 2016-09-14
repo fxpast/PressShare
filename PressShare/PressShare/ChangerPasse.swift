@@ -24,6 +24,9 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     let traduction = InternationalIHM.sharedInstance
     
     
+    var users = [User]()
+    
+    
     
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -36,6 +39,9 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        users = fetchAllUser()
+        
         
         if config.previousView == "LoginViewController" {
             setUIHidden(config.user_newpassword )
@@ -57,6 +63,9 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        
+        
         IBCancel.title = traduction.pic1
         IBValider.title = traduction.pic2
         IBPassword.placeholder = traduction.pic3
@@ -72,6 +81,21 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
     }
     
+    
+    private func fetchAllUser() -> [User] {
+        
+        
+        users.removeAll()
+        // Create the Fetch Request
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        // Execute the Fetch Request
+        do {
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+        } catch _ {
+            return [User]()
+        }
+    }
     
     
     
@@ -117,7 +141,9 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         }
         
         
-        sharedContext.deletedObjects
+        sharedContext.deleteObject(users[0])
+        users.removeLast()
+        
         // Save the context.
         do {
             try sharedContext.save()
@@ -133,7 +159,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         setUpdatePass(config) { (success, errorString) in
             if success {
                 performUIUpdatesOnMain {
-                  
+                    
                     if self.config.user_newpassword == true {
                         
                         

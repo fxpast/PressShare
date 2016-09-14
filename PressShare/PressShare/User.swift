@@ -42,6 +42,7 @@ class User: NSManagedObject {
             user_ville = dico["user_ville"] as? String
             user_pays = dico["user_pays"] as? String
             user_newpassword = Bool(Int(dico["user_newpassword"] as! String)!)
+            
         }
         else {
             user_id = 0
@@ -59,6 +60,8 @@ class User: NSManagedObject {
             user_newpassword = false
             
         }
+        
+        user_logout = false
         
     }
     
@@ -121,7 +124,7 @@ func getAllUsers(userId:Int, completionHandlerAllUsers: (success: Bool, usersArr
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerAllUsers(success: false, usersArray: nil, errorString: "There was an error with your request: \(error)")
+            completionHandlerAllUsers(success: false, usersArray: nil, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
@@ -186,7 +189,7 @@ func AuthentiFacebook(config: Config, completionHandlerOAuthFacebook: (success: 
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString: "There was an error with your request: \(error)")
+            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
@@ -253,7 +256,7 @@ func Authentification(config: Config, completionHandlerOAuth: (success: Bool, us
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuth(success: false, userArray: nil, errorString: "There was an error with your request: \(error)")
+            completionHandlerOAuth(success: false, userArray: nil, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
@@ -281,7 +284,7 @@ func Authentification(config: Config, completionHandlerOAuth: (success: Bool, us
             
         }
         
-        print(parsedResult)
+        //print(parsedResult)
         
         let resultDico = parsedResult as! [String:AnyObject]
         let resultArray = resultDico["user"] as! [[String:AnyObject]]
@@ -325,7 +328,7 @@ func setUpdatePass(config: Config, completionHandlerOAuth: (success: Bool, error
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error)")
+            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
@@ -391,7 +394,7 @@ func setUpdateUser(config: Config, completionHandlerUpdate: (success: Bool, erro
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerUpdate(success: false, errorString: "There was an error with your request: \(error)")
+            completionHandlerUpdate(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
@@ -457,7 +460,7 @@ func setAddUser(config: Config, completionHandlerOAuth: (success: Bool, errorStr
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error)")
+            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         

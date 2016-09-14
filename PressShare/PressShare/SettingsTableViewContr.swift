@@ -6,20 +6,33 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+import CoreData
 import UIKit
 import Foundation
 
 class SettingsTableViewContr : UITableViewController {
-
+    
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     
-     let config = Config.sharedInstance
-     let traduction = InternationalIHM.sharedInstance
+    let config = Config.sharedInstance
+    let traduction = InternationalIHM.sharedInstance
+    
+    var users = [User]()
+    
+    
+    
+    var sharedContext: NSManagedObjectContext {
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return delegate.managedObjectContext
+    }
     
     
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        users = fetchAllUser()
         
         config.previousView = "SettingsTableViewContr"
         
@@ -31,13 +44,13 @@ class SettingsTableViewContr : UITableViewController {
         
         self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
     }
-
+    
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.tabBarItem.title = traduction.pam3
         IBLogout.title = traduction.pam4
-
+        
         var cell:UITableViewCell
         
         cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0))!
@@ -67,16 +80,52 @@ class SettingsTableViewContr : UITableViewController {
     }
     
     
+    private func fetchAllUser() -> [User] {
+        
+        
+        users.removeAll()
+        // Create the Fetch Request
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        // Execute the Fetch Request
+        do {
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+        } catch _ {
+            return [User]()
+        }
+    }
+    
+    
     @IBAction func ActionLogout(sender: AnyObject) {
         
+        //logout
+        if users.count > 0 {
+            for aUser in users {
+                if aUser.user_pseudo == config.user_pseudo {
+                    aUser.user_logout = true
+                    
+                    // Save the context.
+                    do {
+                        try sharedContext.save()
+                    } catch _ {}
+                    
+                    break
+                }
+            }
+            
+            users = fetchAllUser()
+            
+        }
+        
         self.dismissViewControllerAnimated(true, completion: nil)
+        
     }
-
+    
     
     
     
     //MARK: Table View Controller Delegate
-   
+    
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -92,7 +141,7 @@ class SettingsTableViewContr : UITableViewController {
             self.displayAlert("info", mess: "Under construction...")
             
         case 3:
-           
+            
             self.displayAlert("info", mess: "Under construction...")
         case 4:
             
@@ -109,7 +158,7 @@ class SettingsTableViewContr : UITableViewController {
         
     }
     
-
+    
     
 }
 

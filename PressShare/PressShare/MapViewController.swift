@@ -6,6 +6,8 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+import CoreData
 import Foundation
 import MapKit
 import UIKit
@@ -15,8 +17,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var IBMap: MKMapView!
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     
+    
+    var users = [User]()
+    
     var user_pseudo:String!
-    var user_id:Int!    
+    var user_id:Int!
     var config = Config.sharedInstance
     var produits = Produits.sharedInstance
     var traduction = InternationalIHM.sharedInstance
@@ -31,6 +36,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     
+    var sharedContext: NSManagedObjectContext {
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        return delegate.managedObjectContext
+    }
+    
+    
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
@@ -40,13 +51,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         user_pseudo  = config.user_pseudo
         user_id = config.user_id
         
+        users = fetchAllUser()
+        
         
     }
     override func viewWillAppear(animated: Bool) {
         
         super.viewWillAppear(animated)
+        
+        
         restoreMapRegion(false)
-         RefreshData()
+        RefreshData()
         
         self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
         
@@ -58,9 +73,26 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         IBLogout.title = traduction.pam4
     }
     
+    
+    private func fetchAllUser() -> [User] {
+        
+        
+        users.removeAll()
+        // Create the Fetch Request
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        // Execute the Fetch Request
+        do {
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+        } catch _ {
+            return [User]()
+        }
+    }
+    
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-       
+        
         if segue.identifier == "mapproduit" {
             
             let nav = segue.destinationViewController as! UINavigationController
@@ -87,9 +119,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             IBMap.removeAnnotation(item as! MKAnnotation)
         }
         
-       
-        getAllProduits(config.user_id) { (success, produitArray, errorString) in
         
+        getAllProduits(config.user_id) { (success, produitArray, errorString) in
+            
             
             if success {
                 
@@ -130,14 +162,31 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
         }
         
-        
-        
     }
     
     
     @IBAction func ActionLogout(sender: AnyObject) {
         
-        self.dismissViewControllerAnimated(true, completion: nil)        
+        //logout
+        if users.count > 0 {
+            for aUser in users {
+                if aUser.user_pseudo == config.user_pseudo {
+                    aUser.user_logout = true
+                    
+                    // Save the context.
+                    do {
+                        try sharedContext.save()
+                    } catch _ {}
+                    
+                    break
+                }
+            }
+            
+            users = fetchAllUser()
+            
+        }
+        
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     
@@ -182,7 +231,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
     }
     
-
+    
     
     //MARK: Map View Delegate
     

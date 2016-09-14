@@ -20,6 +20,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     let config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
     
+    var users = [User]()
     
     
     var sharedContext: NSManagedObjectContext {
@@ -33,12 +34,17 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-      
+        
+        users = fetchAllUser()
+        
+        
+        
         
     }
     
     override func viewDidAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+        super.viewDidAppear(animated)
+        
         
         IBCancel.title = traduction.pmp1
         IBSave.title = traduction.pmp2
@@ -89,7 +95,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
         
         if config.previousView == "LoginViewController" {
-           navigationItem.title = traduction.pmp12
+            navigationItem.title = traduction.pmp12
             
         }
         
@@ -106,11 +112,11 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
             afficherData(NSIndexPath(forRow: 8, inSection: 0))
             afficherData(NSIndexPath(forRow: 9, inSection: 0))
             
-
+            
             
         }
         
-       
+        
         
         
     }
@@ -184,6 +190,27 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
     }
     
+    
+    
+    private func fetchAllUser() -> [User] {
+        
+        
+        users.removeAll()
+        // Create the Fetch Request
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        // Execute the Fetch Request
+        do {
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+        } catch _ {
+            return [User]()
+        }
+    }
+    
+    
+    
+    
+    
     @IBAction func ActionValier(sender: AnyObject) {
         
         guard config.user_pseudo != "" else {
@@ -206,21 +233,29 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
             return
         }
         
-        sharedContext.deletedObjects
-        // Save the context.
-        do {
-            try sharedContext.save()
-        } catch let error as NSError {
-            print(error.debugDescription)
-            
-        }
+        
+        
         
         if config.previousView == "LoginViewController" {
+            
             
             
             setAddUser(config) { (success, errorString) in
                 if success {
                     performUIUpdatesOnMain {
+                        
+                        self.sharedContext.deleteObject(self.users[0])
+                        self.users.removeLast()
+                        // Save the context.
+                        do {
+                            try self.sharedContext.save()
+                        } catch let error as NSError {
+                            print(error.debugDescription)
+                            
+                        }
+                        
+                        
+                        self.users = self.fetchAllUser()
                         
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
@@ -238,9 +273,16 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
         if config.previousView == "SettingsTableViewContr" {
             
+            
+            
             setUpdateUser(config) { (success, errorString) in
                 if success {
                     performUIUpdatesOnMain {
+                        
+                        if self.users.count > 0 {
+                            self.AffecterUser(self.users[0])
+                        }
+                        
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
                 }
@@ -294,6 +336,32 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     }
     
     
+    
+    private func AffecterUser(aUser:User) {
+        
+        aUser.user_pseudo = config.user_pseudo
+        aUser.user_email = config.user_email
+        aUser.user_nom = config.user_nom
+        aUser.user_prenom = config.user_prenom
+        aUser.user_pays = config.user_pays
+        aUser.user_ville = config.user_ville
+        aUser.user_adresse = config.user_adresse
+        aUser.user_codepostal = config.user_codepostal
+        aUser.user_pass = config.user_pass
+        
+        // Save the context.
+        do {
+            try sharedContext.save()
+        } catch _ {}
+        
+        
+        users = fetchAllUser()
+        
+        
+    }
+    
+    
+    
     //MARK: Table View Controller Delegate
     
     
@@ -329,7 +397,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
                 if valeur.text != "" {
                     zoneTexte.text = valeur.text
                 }
-               
+                
             }
         })
         
@@ -342,5 +410,8 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     }
     
     
+    
 }
+
+
 
