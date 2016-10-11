@@ -16,23 +16,21 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     @IBOutlet weak var IBValider: UIBarButtonItem!
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBemail: UITextField!
-    @IBOutlet weak var IBPasswordVerif: UITextField!
-    @IBOutlet weak var IBPassword: UITextField!
+    @IBOutlet weak var IBVerifPass: UITextField!
+    @IBOutlet weak var IBAncienPass: UITextField!
+    @IBOutlet weak var IBNouvPass: UITextField!
+    
     
     
     let config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
     
-    
     var users = [User]()
     
-    
-    
     var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
     }
-    
     
     
     //MARK: View Controller Delegate
@@ -42,118 +40,181 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
         users = fetchAllUser()
         
-        
         if config.previousView == "LoginViewController" {
-            setUIHidden(config.user_newpassword )
+            
             navigationItem.title = traduction.oda4
+            if let nouvPass = config.user_newpassword {
+                
+                if nouvPass == true {
+                    IBemail.isHidden = false
+                    IBemail.text = config.user_email
+                    
+                    IBNouvPass.isHidden = false
+                    IBVerifPass.isHidden = false
+                    
+                    IBAncienPass.isHidden = true
+                    
+                }
+            }
+            else {
+                config.user_newpassword = false
+            }
             
-            
+            if config.user_newpassword == false {
+                
+                IBemail.isHidden = false
+                IBemail.text = config.user_email
+                
+                IBAncienPass.isHidden = true
+                IBNouvPass.isHidden = true
+                IBVerifPass.isHidden = true
+                
+            }
         }
+        
         
         if config.previousView == "SettingsTableViewContr" {
             
-            self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
+            self.navigationItem.title = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
+            
+            IBemail.isHidden = false
             IBemail.text = config.user_email
-            config.user_newpassword = true
+            
+            IBAncienPass.isHidden = false
+            IBNouvPass.isHidden = false
+            IBVerifPass.isHidden = false
+            
         }
-        
         
         
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         IBCancel.title = traduction.pic1
         IBValider.title = traduction.pic2
-        IBPassword.placeholder = traduction.pic3
-        IBPasswordVerif.placeholder = traduction.pic4
+        
+        IBAncienPass.placeholder = traduction.pic3
+        IBNouvPass.placeholder = traduction.pic6
+        IBVerifPass.placeholder = traduction.pic4
         IBemail.placeholder = traduction.pic5
         
     }
     
-    private func setUIHidden(hidden: Bool) {
-        IBPassword.hidden = !hidden
-        IBPasswordVerif.hidden = !hidden
-        IBemail.hidden = hidden
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         
     }
     
-    
-    private func fetchAllUser() -> [User] {
+    fileprivate func fetchAllUser() -> [User] {
         
         
         users.removeAll()
         // Create the Fetch Request
-        let fetchRequest = NSFetchRequest(entityName: "User")
+       
+        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
         
         // Execute the Fetch Request
         do {
-            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+            return try sharedContext.fetch(request) as! [User]
         } catch _ {
             return [User]()
         }
     }
     
     
-    
-    @IBAction func ActionCancel(sender: AnyObject) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func ActionCancel(_ sender: AnyObject) {
+        dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func ActionValier(sender: AnyObject) {
+    
+    @IBAction func ActionValider(_ sender: AnyObject) {
         
-        var password:String
         
+        guard IBemail.text != "" else {
+            displayAlert("Error", mess: "Email is empty")
+            return
+        }
         
-        if config.user_newpassword == true {
+        //--- Login View Controller
+        if config.previousView == "LoginViewController" {
             
-            guard IBPassword.text != "" else {
-                displayAlert("Error", mess: "le mot de passe est incorrect")
+            if config.user_newpassword == true {
+                
+                guard IBNouvPass.text != "" else {
+                    displayAlert("Error", mess: "nouveau mot de passe incorrect")
+                    return
+                }
+                
+                guard IBVerifPass.text != "" else {
+                    displayAlert("Error", mess: "verification mot de passe incorrect")
+                    return
+                }
+                
+                guard IBNouvPass.text == IBVerifPass.text else {
+                    displayAlert("Error", mess: "nouveau et verification mot de passe differents")
+                    return
+                }
+                
+                config.user_lastpass = IBNouvPass.text!
+                config.user_newpassword = false
+            }
+            else {
+                
+                config.user_lastpass = randomAlphaNumericString(8)
+                config.user_email = IBemail.text!
+                config.user_newpassword = true
+                
+            }
+            
+        }
+        
+        //--- Settings Table View Controller
+        
+        if config.previousView == "SettingsTableViewContr" {
+            
+            guard IBAncienPass.text != "" else {
+                displayAlert("Error", mess: "ancien mot de passe incorrect")
                 return
             }
             
-            guard IBPasswordVerif.text != "" else {
-                displayAlert("Error", mess: "le mot de passe est incorrect")
+            guard IBNouvPass.text != "" else {
+                displayAlert("Error", mess: "nouveau mot de passe incorrect")
                 return
             }
             
-            guard IBPassword.text == IBPasswordVerif.text else {
-                displayAlert("Error", mess: "le mot de passe est incorrect")
+            guard IBVerifPass.text != "" else {
+                displayAlert("Error", mess: "verification mot de passe incorrect")
                 return
             }
             
-            password = IBPassword.text!
+            guard IBNouvPass.text == IBVerifPass.text else {
+                displayAlert("Error", mess: "nouveau et verification mot de passe differents")
+                return
+            }
+            
+            config.user_pass = IBAncienPass.text
+            config.user_lastpass = IBNouvPass.text!
             config.user_newpassword = false
         }
-        else {
-            guard IBemail.text != "" else {
-                displayAlert("Error", mess: "Email is empty")
-                return
+        
+        
+        if users.count > 0 {
+            
+            sharedContext.delete(users[0])
+            users.removeLast()
+            
+            // Save the context.
+            do {
+                try sharedContext.save()
+            } catch let error as NSError {
+                print(error.debugDescription)
+                
             }
             
-            password = randomAlphaNumericString(8)
-            config.user_email = IBemail.text!
-            config.user_newpassword = true
-            
         }
-        
-        
-        sharedContext.deleteObject(users[0])
-        users.removeLast()
-        
-        // Save the context.
-        do {
-            try sharedContext.save()
-        } catch let error as NSError {
-            print(error.debugDescription)
-            
-        }
-        
-        
-        config.user_pass = password
         
         
         setUpdatePass(config) { (success, errorString) in
@@ -167,11 +228,12 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
                         
                     }
                     else {
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        self.dismiss(animated: true, completion: nil)
                     }
                 }
             }
             else {
+                
                 performUIUpdatesOnMain {
                     self.displayAlert("Error", mess: errorString!)
                 }
@@ -183,7 +245,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     }
     
     
-    private func randomAlphaNumericString(length: Int) -> String {
+    fileprivate func randomAlphaNumericString(_ length: Int) -> String {
         
         let allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         let allowedCharsCount = UInt32(allowedChars.characters.count)
@@ -191,7 +253,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
         for _ in (0..<length) {
             let randomNum = Int(arc4random_uniform(allowedCharsCount))
-            let newCharacter = allowedChars[allowedChars.startIndex.advancedBy(randomNum)]
+            let newCharacter = allowedChars[allowedChars.characters.index(allowedChars.startIndex, offsetBy: randomNum)]
             randomString += String(newCharacter)
         }
         
@@ -200,9 +262,10 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     
     
     
+    
     //MARK: textfield Delegate
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(true)
         return true
         

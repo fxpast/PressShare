@@ -17,7 +17,7 @@ struct Produit {
     var prod_id:Int
     var prod_image:String
     var prod_nom:String
-    var prod_date:NSDate
+    var prod_date:Date
     var prod_prix:Double
     var prod_by_user:Int
     var prod_by_cat:Int
@@ -35,7 +35,7 @@ struct Produit {
             prod_id = Int(dico["prod_id"] as! String)!
             prod_image = dico["prod_image"] as! String
             prod_nom = dico["prod_nom"] as! String
-            prod_date = NSDate().dateFromString(dico["prod_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
+            prod_date = Date().dateFromString(dico["prod_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             prod_prix = Double(dico["prod_prix"] as! String)!
             prod_by_user = Int(dico["prod_by_user"] as! String)!
             prod_by_cat = Int(dico["prod_by_cat"] as! String)!
@@ -50,7 +50,7 @@ struct Produit {
             prod_image = ""
             prod_nom = ""
     
-            prod_date = NSDate()
+            prod_date = Date()
             prod_prix = 0
             prod_by_user = 0
             prod_by_cat = 0
@@ -76,48 +76,46 @@ class Produits {
 
 
 
-func getAllProduits(userId:Int, completionHandlerProduits: (success: Bool, produitArray: [[String:AnyObject]]?, errorString: String?) -> Void) {
+func getAllProduits(_ userId:Int, completionHandlerProduits: @escaping (_ success: Bool, _ produitArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
  
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_getAllProduits.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getAllProduits.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
     let jsonBody: String = "user_id=\(userId)"
-    request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
     
-    
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerProduits(success: false, produitArray: nil, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerProduits(false, nil, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerProduits(success: false, produitArray: nil, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerProduits(false, nil, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerProduits(success: false, produitArray: nil, errorString:"No data was returned by the request!")
+            completionHandlerProduits(false, nil, "No data was returned by the request!")
             return
             
         }
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerProduits(success: false, produitArray: nil, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerProduits(false, nil, "Could not parse the data as JSON: '\(data)'")
             
             return
             
@@ -129,15 +127,15 @@ func getAllProduits(userId:Int, completionHandlerProduits: (success: Bool, produ
         
         
         if resultDico["success"] as! String == "1" {
-            completionHandlerProduits(success: true, produitArray: resultArray, errorString: nil)
+            completionHandlerProduits(true, resultArray, nil)
         }
         else {
 
-            completionHandlerProduits(success: false, produitArray: nil, errorString: resultDico["error"] as? String)
+            completionHandlerProduits(false, nil, resultDico["error"] as? String)
             
         }
         
-    }
+    }) 
     
     
     task.resume()
@@ -146,49 +144,48 @@ func getAllProduits(userId:Int, completionHandlerProduits: (success: Bool, produ
 
 
 
-func setUpdateProduit(user: User, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
+func setUpdateProduit(_ user: User, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
     let jsonBody: String = "user_email=\(user.user_email)&user_pass=\(user.user_pass)"
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_updatepass.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updatepass.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
-    request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
     
     
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerOAuth(false, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuth(success: false, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerOAuth(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerOAuth(success: false, errorString:"No data was returned by the request!")
+            completionHandlerOAuth(false, "No data was returned by the request!")
             return
             
         }
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerOAuth(success: false, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerOAuth(false, "Could not parse the data as JSON: '\(data)'")
             
             return
             
@@ -197,14 +194,14 @@ func setUpdateProduit(user: User, completionHandlerOAuth: (success: Bool, errorS
         let result = parsedResult as! [String:String]
         
         if (result["success"] == "1") {
-            completionHandlerOAuth(success: true, errorString: nil)
+            completionHandlerOAuth(true, nil)
         }
         else {
-            completionHandlerOAuth(success: false, errorString: "impossible to update the passeword")
+            completionHandlerOAuth(false, "impossible to update the passeword")
             
         }
         
-    }
+    }) 
     
     
     task.resume()
@@ -213,49 +210,48 @@ func setUpdateProduit(user: User, completionHandlerOAuth: (success: Bool, errorS
 
 
 
-func setAddProduit(produit: Produit, completionHandlerProduit: (success: Bool, errorString: String?) -> Void) {
+func setAddProduit(_ produit: Produit, completionHandlerProduit: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
     let body: String = "prod_by_user=\(produit.prod_by_user)&prod_date=\(produit.prod_date)&prod_nom=\(produit.prod_nom)&prod_prix=\(produit.prod_prix)&prod_by_cat=\(produit.prod_by_cat)&prod_latitude=\(produit.prod_latitude)&prod_longitude=\(produit.prod_longitude)&prod_mapString=\(produit.prod_mapString)&prod_comment=\(produit.prod_comment)&prod_image=\(produit.prod_image)"
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_addproduit.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_addproduit.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
-    request.HTTPBody = body.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = body.data(using: String.Encoding.utf8)
     
     
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerProduit(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerProduit(false, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerProduit(success: false, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerProduit(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerProduit(success: false, errorString:"No data was returned by the request!")
+            completionHandlerProduit(false, "No data was returned by the request!")
             return
             
         }
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerProduit(success: false, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerProduit(false, "Could not parse the data as JSON: '\(data)'")
             
             return
             
@@ -264,14 +260,14 @@ func setAddProduit(produit: Produit, completionHandlerProduit: (success: Bool, e
         let result = parsedResult as! [String:String]
         
         if (result["success"] == "1") {
-            completionHandlerProduit(success: true, errorString: nil)
+            completionHandlerProduit(true, nil)
         }
         else {
-            completionHandlerProduit(success: false, errorString: result["error"])
+            completionHandlerProduit(false, result["error"])
             
         }
         
-    }
+    }) 
     
     
     task.resume()

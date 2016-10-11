@@ -11,8 +11,8 @@ import Foundation
 import UIKit
 
 
-func performUIUpdatesOnMain(updates: () -> Void) {
-    dispatch_async(dispatch_get_main_queue()) {
+func performUIUpdatesOnMain(_ updates: @escaping () -> Void) {
+    DispatchQueue.main.async {
         updates()
     }
 }
@@ -21,36 +21,36 @@ func performUIUpdatesOnMain(updates: () -> Void) {
 extension UIViewController {
     
     
-    func displayAlert(title:String, mess : String) {
+    func displayAlert(_ title:String, mess : String) {
         
-        let alertController = UIAlertController(title: title, message: mess, preferredStyle: .Alert)
+        let alertController = UIAlertController(title: title, message: mess, preferredStyle: .alert)
         
-        let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(defaultAction)
         
         
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
         
     }
     
 }
 
 
-extension NSDate {
-    func dateFromString(date: String, format: String) -> NSDate {
-        let formatter = NSDateFormatter()
-        let locale = NSLocale(localeIdentifier: "en_US_POSIX")
+extension Date {
+    func dateFromString(_ date: String, format: String) -> Date {
+        let formatter = DateFormatter()
+        let locale = Locale(identifier: "en_US_POSIX")
         
         formatter.locale = locale
         formatter.dateFormat = format
         
-        return formatter.dateFromString(date)!
+        return formatter.date(from: date)!
     }
 }
 
 
 
-func StatusCode (code:Int) -> String {
+func StatusCode (_ code:Int) -> String {
     
     var text:String
     

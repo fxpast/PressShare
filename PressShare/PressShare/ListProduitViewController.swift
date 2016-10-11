@@ -17,6 +17,10 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var IBTableView: UITableView!
     @IBOutlet weak var IBSearch: UISearchBar!
     @IBOutlet weak var IBLogout: UIBarButtonItem!
+    @IBOutlet weak var IBAddProduct: UIBarButtonItem!
+    
+    
+    
     
     var users = [User]()
     var produits = [Produit]()
@@ -25,6 +29,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     var aindex:Int!
     var lat:CLLocationDegrees?
     var lon:CLLocationDegrees?
+    var flgUser=false
     
     
     //Constants
@@ -34,7 +39,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     let SearchLonRange = (-180.0, 180.0)
     
     var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
     }
     
@@ -44,19 +49,37 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewDidLoad()
         
         
+        if config.user_pseudo == "anonymous" {
+            IBAddProduct.isEnabled = false
+        }
+        
         users = fetchAllUser()
         
         //IBSearch.text = traduction.titre
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
         
         
         
-        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
+        self.navigationItem.title = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
+        
+        navigationController?.tabBarItem.title = traduction.pam2
+        if let _ = lat, let _ = lon {
+            IBLogout.title = traduction.pmp1
+            
+        }
+        else if flgUser == false {
+            IBLogout.title = traduction.pam4
+            
+        }
+        else {
+            IBLogout.title = traduction.pmp1
+        }
+        
         
         chargerData()
         
@@ -64,31 +87,23 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.tabBarItem.title = traduction.pam2
-        if let _ = lat, _ = lon {
-            IBLogout.title = traduction.pmp1
-            
-        }
-        else {
-            IBLogout.title = traduction.pam4
-            
-        }
         
+    
         //IBSearch.becomeFirstResponder()
         
     }
     
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         
         if segue.identifier == "fromtable" {
             
             if (aindex != 999) {
                 
-                let nav = segue.destinationViewController as! UINavigationController
+                let nav = segue.destination as! UINavigationController
                 let controller = nav.topViewController as! ProduitViewController
                 
                 controller.aproduit = produits[aindex]
@@ -101,21 +116,21 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     
-    @IBAction func ActionEpingle(sender: AnyObject) {
+    @IBAction func ActionEpingle(_ sender: AnyObject) {
         
         aindex = 999
-        performSegueWithIdentifier("fromtable", sender: self)
+        performSegue(withIdentifier: "fromtable", sender: self)
     }
     
     
     
-    @IBAction func ActionLogout(sender: AnyObject) {
+    @IBAction func ActionLogout(_ sender: AnyObject) {
         
         
-        if let _ = lat, _ = lon {
+        if let _ = lat, let _ = lon {
             //Cancel list product
         }
-        else {
+        else if flgUser == false {
             //logout
             if users.count > 0 {
                 for aUser in users {
@@ -137,12 +152,12 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     
     
-    @IBAction func ActionRefresh(sender: AnyObject) {
+    @IBAction func ActionRefresh(_ sender: AnyObject) {
         
         
         getAllProduits(config.user_id) { (success, produitArray, errorString) in
@@ -172,7 +187,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - Search Bar Delegate
     
     // Each time the search text changes we want to cancel any current download and start a new one
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         // If the text is empty we are done
         if searchText == "" {
@@ -195,20 +210,20 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
     
     
     //MARK: Data Produit
     
-    private func searchData(str:String) {
+    fileprivate func searchData(_ str:String) {
         
         produits.removeAll()
         for prod in Produits.sharedInstance.produitsArray {
             let produ = Produit(dico: prod)
-            let nom = produ.prod_nom.capitalizedString
-            if nom.containsString(str.capitalizedString) {
+            let nom = produ.prod_nom.capitalized
+            if nom.contains(str.capitalized) {
                 produits.append(produ)
             }
         }
@@ -218,30 +233,31 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     //MARK: coreData function
     
     
-    private func fetchAllUser() -> [User] {
+    fileprivate func fetchAllUser() -> [User] {
         
         
         users.removeAll()
         // Create the Fetch Request
-        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
         
         // Execute the Fetch Request
         do {
-            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+            return try sharedContext.fetch(request) as! [User]
         } catch _ {
             return [User]()
         }
     }
     
     
-    private func chargerData() {
+    fileprivate func chargerData() {
         
         var minimumLon = Double()
         var maximumLon = Double()
         var minimumLat = Double()
         var maximumLat = Double()
         
-        if let _ = lat, _ = lon {
+        if let _ = lat, let _ = lon {
             
             minimumLon = max(Double(lon!) - SearchBBoxHalfWidth, SearchLonRange.0)
             minimumLat = max(Double(lat!) - SearchBBoxHalfHeight, SearchLatRange.0)
@@ -254,28 +270,36 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         produits.removeAll()
         for prod in Produits.sharedInstance.produitsArray {
             let produ = Produit(dico: prod)
-            if let _ = lat, _ = lon {
+            if let _ = lat, let _ = lon {
                 if (produ.prod_latitude >= minimumLat && produ.prod_latitude  <= maximumLat && produ.prod_longitude  >= minimumLon && produ.prod_longitude  <= maximumLon) {
+                    produits.append(produ)
+                }
+            }
+            else if flgUser {
+                
+                if produ.prod_by_user == config.user_id {
                     produits.append(produ)
                 }
             }
             else {
                 produits.append(produ)
             }
+            
         }
+        
         
     }
     
     //MARK: Table View Controller data source
     
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let CellReuseId = "Cell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(CellReuseId) as UITableViewCell!
-        let produit =  produits[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
+        let produit =  produits[(indexPath as NSIndexPath).row]
         
-        for view in cell.contentView.subviews {
+        for view in (cell?.contentView.subviews)! {
             
             if view.tag == 99 {
                 let firstlastname = view as! UILabel
@@ -284,18 +308,18 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
         
-        return cell
+        return cell!
     }
     
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return produits.count
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        aindex = indexPath.row
-        performSegueWithIdentifier("fromtable", sender: self)
+        aindex = (indexPath as NSIndexPath).row
+        performSegue(withIdentifier: "fromtable", sender: self)
         
         
     }

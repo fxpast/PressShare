@@ -6,16 +6,19 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
+import CoreLocation
 import CoreData
 import Foundation
 import MapKit
 import UIKit
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var IBMap: MKMapView!
     @IBOutlet weak var IBLogout: UIBarButtonItem!
+    @IBOutlet weak var IBtextfieldSearch: UITextField!
+    @IBOutlet weak var IBAddProduct: UIBarButtonItem!
+    
     
     
     var users = [User]()
@@ -27,17 +30,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var traduction = InternationalIHM.sharedInstance
     var lat:CLLocationDegrees!
     var lon:CLLocationDegrees!
+    var userLat:CLLocationDegrees!
+    var userLon:CLLocationDegrees!
+    var flgUser=false
+    var flgRegion=false
     
+    let locationManager = CLLocationManager()
     
-    var filePath : String {
-        let manager = NSFileManager.defaultManager()
-        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
-        return url.URLByAppendingPathComponent("mapRegionArchive").path!
-    }
     
     
     var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
     }
     
@@ -48,6 +51,22 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        if config.user_pseudo == "anonymous" {
+            IBAddProduct.isEnabled = false
+        }
+        
+        flgRegion = false
+        
+        IBtextfieldSearch.delegate = self
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        
+        if locationManager.responds(to: #selector(CLLocationManager.requestWhenInUseAuthorization)) {
+            locationManager.requestWhenInUseAuthorization()
+        }
+        
+        locationManager.startUpdatingLocation()
+        
         user_pseudo  = config.user_pseudo
         user_id = config.user_id
         
@@ -55,69 +74,119 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         
     }
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
         
-        
-        restoreMapRegion(false)
-        RefreshData()
-        
-        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
-        
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
         navigationController?.tabBarItem.title = traduction.pam1
         IBLogout.title = traduction.pam4
+        IBtextfieldSearch.placeholder = traduction.pse3
+        
+        flgUser = false
+        
+        RefreshData()
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+     
+        
     }
     
     
-    private func fetchAllUser() -> [User] {
+    fileprivate func fetchAllUser() -> [User] {
         
         
         users.removeAll()
         // Create the Fetch Request
-        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
         
         // Execute the Fetch Request
         do {
-            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+            return try sharedContext.fetch(request) as! [User]
         } catch _ {
             return [User]()
         }
     }
     
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         
         if segue.identifier == "mapproduit" {
             
-            let nav = segue.destinationViewController as! UINavigationController
+            let nav = segue.destination as! UINavigationController
             let controller = nav.topViewController as! ListProduitViewController
+            if flgUser {
+                
+                controller.flgUser = true
+            }
+            else {
+                controller.lon = lon
+                controller.lat = lat
+                
+            }
             
-            controller.lon = lon
-            controller.lat = lat
+            
         }
+        
+    }
+    
+    
+    //MARK: textfield Delegate
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        
+        let geoCode  = CLGeocoder()
+        
+        
+        geoCode.geocodeAddressString(textField.text!, completionHandler: {(marks,error) in
+            
+            guard error == nil else {
+                performUIUpdatesOnMain {
+                    
+                    self.displayAlert("error geocodeadresse", mess: error.debugDescription)
+                }
+                return
+            }
+            
+            performUIUpdatesOnMain {
+                
+                let placemark = marks![0] as CLPlacemark
+                
+                //Setting Visible Area
+                let regionRadius: CLLocationDistance = 1000
+                let coordinateRegion = MKCoordinateRegionMakeWithDistance((placemark.location?.coordinate)!,regionRadius * 2.0, regionRadius * 2.0)
+                self.IBMap.setRegion(coordinateRegion, animated: true)
+                
+            }
+            
+        })
+        
+        textField.endEditing(true)
+        return true
         
     }
     
     
     
     //MARK: Data Networking
-    @IBAction func ActionRefresh(sender: AnyObject) {
+    @IBAction func ActionRefresh(_ sender: AnyObject) {
         
         RefreshData()
     }
     
-    private func RefreshData()  {
+    fileprivate func RefreshData()  {
         
         let annoArray = IBMap.annotations as [AnyObject]
         for item in annoArray {
             IBMap.removeAnnotation(item as! MKAnnotation)
         }
+        
         
         
         getAllProduits(config.user_id) { (success, produitArray, errorString) in
@@ -150,8 +219,37 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     annotations.append(annotation)
                 }
                 
+                var coordinateRegion=MKCoordinateRegion()
+                if let _ = self.userLon, let _ = self.userLat {
+                    
+                    // The lat and long are used to create a CLLocationCoordinates2D instance.
+                    let coordinate = CLLocationCoordinate2D(latitude: self.userLat, longitude: self.userLon)
+                    
+                    // Here we create the annotation and set its coordiate, title, and subtitle properties
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = coordinate
+                    annotation.title = "user:"
+                    annotation.subtitle = "\(self.config.user_nom) \(self.config.user_prenom) (\(self.config.user_id))"
+                    
+                    // Finally we place the annotation in an array of annotations.
+                    annotations.append(annotation)
+                    
+                    //Setting Visible Area
+                    let regionRadius: CLLocationDistance = 1000
+                    coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate,regionRadius * 2.0, regionRadius * 2.0)
+                    
+                }
+                
                 performUIUpdatesOnMain {
                     self.IBMap.addAnnotations(annotations)
+                    if let _ = self.userLon, let _ = self.userLat {
+                        if !self.flgRegion {
+                            self.IBMap.setRegion(coordinateRegion, animated: true)
+                            self.flgRegion = true
+                        }
+                        
+                    }
+                    
                 }
                 
             }
@@ -165,7 +263,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     
-    @IBAction func ActionLogout(sender: AnyObject) {
+    @IBAction func ActionLogout(_ sender: AnyObject) {
         
         //logout
         if users.count > 0 {
@@ -186,82 +284,74 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
         }
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     
     
-    //MARK: Map function
+    //MARK: Location Delegate
     
-    
-    private func restoreMapRegion(animated: Bool) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        // if we can unarchive a dictionary, we will use it to set the map back to its
-        // previous center and span
-        if let regionDictionary = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as? [String : AnyObject] {
-            
-            let longitude = regionDictionary["longitude"] as! CLLocationDegrees
-            let latitude = regionDictionary["latitude"] as! CLLocationDegrees
-            let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            
-            let longitudeDelta = regionDictionary["latitudeDelta"] as! CLLocationDegrees
-            let latitudeDelta = regionDictionary["longitudeDelta"] as! CLLocationDegrees
-            let span = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
-            
-            let savedRegion = MKCoordinateRegion(center: center, span: span)
-            
-            IBMap.setRegion(savedRegion, animated: animated)
-        }
+        userLat = manager.location?.coordinate.latitude
+        userLon = manager.location?.coordinate.longitude
+        
     }
     
-    private func saveMapRegion() {
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         
-        // Place the "center" and "span" of the map into a dictionary
-        // The "span" is the width and height of the map in degrees.
-        // It represents the zoom level of the map.
+        print("Error while updating location \(error.localizedDescription)")
         
-        let dictionary = [
-            "latitude" : IBMap.region.center.latitude,
-            "longitude" : IBMap.region.center.longitude,
-            "latitudeDelta" : IBMap.region.span.latitudeDelta,
-            "longitudeDelta" : IBMap.region.span.longitudeDelta
-        ]
         
-        // Archive the dictionary into the filePath
-        NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
     }
-    
     
     
     //MARK: Map View Delegate
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
         
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView?.pinTintColor = UIColor.redColor()
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            pinView?.pinTintColor = UIColor.red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
         else {
             pinView!.annotation = annotation
         }
         
+        if (pinView?.annotation?.title)! == "user:" {
+            pinView?.pinTintColor = UIColor.blue
+        }
+        else {
+            pinView?.pinTintColor = UIColor.red
+        }
+        
         return pinView
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
         if control == view.rightCalloutAccessoryView {
-            performSegueWithIdentifier("mapproduit", sender: self)
+            if (view.annotation?.title)! == "user:" {
+                flgUser = true
+            }
+            
+            performSegue(withIdentifier: "mapproduit", sender: self)
+            
+            
+            
+            
         }
+        
     }
     
     
-    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
         
         if let coord = view.annotation?.coordinate {
@@ -274,8 +364,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        saveMapRegion()
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        
     }
     
     

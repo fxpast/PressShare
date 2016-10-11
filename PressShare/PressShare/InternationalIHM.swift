@@ -13,8 +13,8 @@ class InternationalIHM {
     
     
     
-    private var dico:[String:AnyObject]
-    private var langue:Int
+    fileprivate var dico:[String:AnyObject]
+    fileprivate var langue:Int
     
     
     
@@ -23,22 +23,22 @@ class InternationalIHM {
         dico = [String:AnyObject]()
         langue = 0
         
-        let plistPath = NSBundle.mainBundle().pathForResource("InternationalIHM", ofType: "plist")
-        let plistXML = NSFileManager.defaultManager().contentsAtPath(plistPath!)
+        let plistPath = Bundle.main.path(forResource: "InternationalIHM", ofType: "plist")
+        let plistXML = FileManager.default.contents(atPath: plistPath!)
         
         do {
-            dico = try NSPropertyListSerialization.propertyListWithData(plistXML!, options: .MutableContainersAndLeaves, format: nil) as! [String : AnyObject]
+            dico = try PropertyListSerialization.propertyList(from: plistXML!, options: .mutableContainersAndLeaves, format: nil) as! [String : AnyObject]
         }
         catch {
             
         }
         
         
-        let defaults = NSUserDefaults.standardUserDefaults()
-        langue = defaults.integerForKey("langue_de_preference")
+        let defaults = UserDefaults.standard
+        langue = defaults.integer(forKey: "langue_de_preference")
         if langue == 0 {
-            let langueIphone = NSLocale.preferredLanguages()[0]
-            if langueIphone.containsString("fr-") {
+            let langueIphone = Locale.preferredLanguages[0]
+            if langueIphone.contains("fr-") {
                 langue = 1
             }
             else {
@@ -93,6 +93,16 @@ class InternationalIHM {
         
         get {
             let resultat = dico["oda4"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var oda5:String!
+        {
+        
+        get {
+            let resultat = dico["oda5"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
@@ -370,12 +380,21 @@ class InternationalIHM {
         
     }
     
-    
     var pic5:String!
         {
         
         get {
             let resultat = dico["pic5"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var pic6:String!
+        {
+        
+        get {
+            let resultat = dico["pic6"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
@@ -423,6 +442,34 @@ class InternationalIHM {
         
     }
     
+    var pse5:String!
+        {
+        
+        get {
+            let resultat = dico["pse5"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
     
+    var pse6:String!
+        {
+        
+        get {
+            let resultat = dico["pse6"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var pse7:String!
+        {
+        
+        get {
+            let resultat = dico["pse7"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
     
 }

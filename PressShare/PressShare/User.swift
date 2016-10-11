@@ -15,33 +15,33 @@ class User: NSManagedObject {
 // Insert code here to add functionality to your managed object subclass
 
     
-    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
     }
     
     
     init(dico: [String : AnyObject], context: NSManagedObjectContext) {
         
         // Core Data
-        let entity =  NSEntityDescription.entityForName("User", inManagedObjectContext: context)!
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        let entity =  NSEntityDescription.entity(forEntityName: "User", in: context)!
+        super.init(entity: entity, insertInto: context)
         
         // Dictionary
         if dico.count > 1 {
             
-            user_id = Int((dico["user_id"] as! String))!
+            user_id = Int(dico["user_id"] as! String) as NSNumber?
             user_pseudo = dico["user_pseudo"] as? String
             user_pass = dico["user_pass"] as? String
             user_email = dico["user_email"] as? String
-            user_date = NSDate().dateFromString(dico["user_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
-            user_level = Int((dico["user_level"] as! String))!
+            user_date = Date().dateFromString(dico["user_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
+            user_level = Int(dico["user_level"] as! String) as NSNumber?
             user_nom = dico["user_nom"] as? String
             user_prenom = dico["user_prenom"] as? String
             user_adresse = dico["user_adresse"] as? String
             user_codepostal = dico["user_codepostal"] as? String
             user_ville = dico["user_ville"] as? String
             user_pays = dico["user_pays"] as? String
-            user_newpassword = Bool(Int(dico["user_newpassword"] as! String)!)
+            user_newpassword = Bool(dico["user_newpassword"] as! String) as NSNumber?
             
         }
         else {
@@ -49,7 +49,7 @@ class User: NSManagedObject {
             user_pseudo = ""
             user_pass = ""
             user_email = ""
-            user_date = NSDate()
+            user_date = Date()
             user_level = 0
             user_nom = ""
             user_prenom = ""
@@ -72,7 +72,7 @@ class User: NSManagedObject {
 
 
 
-//MARK: Students Array
+//MARK: Users Array
 class Users {
     
     var usersArray :[[String:AnyObject]]!
@@ -82,6 +82,12 @@ class Users {
 
 
 class Config {
+    
+    /*
+     users(user_pseudo, user_pass, user_email ,user_date, user_level, user_nom,
+     user_prenom, user_adresse, user_codepostal, user_ville, user_pays, user_derconnexion,
+     user_nbreconnexion, user_latitude, user_longitude, user_mapString, user_newpassword)
+     */
     
     var user_id:Int!
     var user_pseudo:String!
@@ -99,54 +105,81 @@ class Config {
     var user_pays:String!
     var verifpassword:String!
     var user_pass:String!
+    var user_lastpass:String!
+    
+ 
+    
+    func cleaner()  {
+        
+        user_id = 0
+        user_pseudo = ""
+        user_email = ""
+        latitude = 0
+        longitude = 0
+        mapString = ""
+        user_nom = ""
+        user_prenom = ""
+        user_newpassword = false
+        previousView = ""
+        user_adresse = ""
+        user_codepostal = ""
+        user_ville = ""
+        user_pays = ""
+        verifpassword = ""
+        user_pass = ""
+        user_lastpass = ""
+        
+    }
     
     static let sharedInstance = Config()
     
 }
 
 
-func getAllUsers(userId:Int, completionHandlerAllUsers: (success: Bool, usersArray: [[String : AnyObject]]?, errorString:String?) -> Void)
+
+func getAllUsers(_ userId:Int, completionHandlerAllUsers: @escaping (_ success: Bool, _ usersArray: [[String : AnyObject]]?, _ errorString:String?) -> Void)
 {
     // Create your request string with parameter name as defined in PHP file
     let body: String = "user_id=\(userId)"
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_getAllUsers.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getAllUsers.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set Request Body
-    request.HTTPBody = body.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = body.data(using: String.Encoding.utf8)
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
-    let session = NSURLSession.sharedSession()
     
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
+    
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerAllUsers(success: false, usersArray: nil, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerAllUsers(false, nil, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerAllUsers(success: false, usersArray: nil, errorString: "Your request returned a status code other than 2xx!, error : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerAllUsers(false, nil, "Your request returned a status code other than 2xx!, error : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerAllUsers(success: false, usersArray: nil, errorString: "No data was returned by the request!")
+            completionHandlerAllUsers(false, nil, "No data was returned by the request!")
             return
         }
         
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerAllUsers(success: false, usersArray: nil, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerAllUsers(false, nil, "Could not parse the data as JSON: '\(data)'")
             return
         }
         
@@ -155,63 +188,62 @@ func getAllUsers(userId:Int, completionHandlerAllUsers: (success: Bool, usersArr
         
         
         if resultDico["success"] as! String == "1" {
-            completionHandlerAllUsers(success: true, usersArray: resultArray, errorString: nil)
+            completionHandlerAllUsers(true, resultArray, nil)
         }
         else {
-            completionHandlerAllUsers(success: false, usersArray: nil, errorString: resultDico["error"] as? String)
+            completionHandlerAllUsers(false, nil, resultDico["error"] as? String)
             
         }
         
         
-    }
+    }) 
     task.resume()
     
 }
 
 
-func AuthentiFacebook(config: Config, completionHandlerOAuthFacebook: (success: Bool, userArray: [[String : AnyObject]]?, errorString: String?) -> Void) {
+func AuthentiFacebook(_ config: Config, completionHandlerOAuthFacebook: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
     let jsonBody: String = "user_email=\(config.user_email)"
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_Facebook.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_Facebook.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
-    request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
     
     
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerOAuthFacebook(false, nil, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerOAuthFacebook(false, nil, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString:"No data was returned by the request!")
+            completionHandlerOAuthFacebook(false, nil, "No data was returned by the request!")
             return
             
         }
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerOAuthFacebook(false, nil, "Could not parse the data as JSON: '\(data)'")
             
             return
             
@@ -222,13 +254,13 @@ func AuthentiFacebook(config: Config, completionHandlerOAuthFacebook: (success: 
         
         
         if resultDico["success"] as! String == "1" {
-            completionHandlerOAuthFacebook(success: true, userArray: resultArray, errorString: nil)
+            completionHandlerOAuthFacebook(true, resultArray, nil)
         }
         else {
-            completionHandlerOAuthFacebook(success: false, userArray: nil, errorString: resultDico["error"] as? String)
+            completionHandlerOAuthFacebook(false, nil, resultDico["error"] as? String)
         }
         
-    }
+    }) 
     
     
     task.resume()
@@ -236,49 +268,48 @@ func AuthentiFacebook(config: Config, completionHandlerOAuthFacebook: (success: 
 }
 
 
-func Authentification(config: Config, completionHandlerOAuth: (success: Bool, userArray: [[String : AnyObject]]?, errorString: String?) -> Void) {
+func Authentification(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)"
+    let jsonBody: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)"
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_signin.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_signin.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
-    request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
     
     
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuth(success: false, userArray: nil, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerOAuth(false, nil, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuth(success: false, userArray: nil, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerOAuth(false, nil, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerOAuth(success: false, userArray: nil, errorString:"No data was returned by the request!")
+            completionHandlerOAuth(false, nil, "No data was returned by the request!")
             return
             
         }
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerOAuth(success: false, userArray: nil, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerOAuth(false, nil, "Could not parse the data as JSON: '\(data)'")
             
             return
             
@@ -291,15 +322,15 @@ func Authentification(config: Config, completionHandlerOAuth: (success: Bool, us
         
         
         if resultDico["success"] as! String == "1" {
-            completionHandlerOAuth(success: true, userArray: resultArray, errorString: nil)
+            completionHandlerOAuth(true, resultArray, nil)
         }
         else {
-            completionHandlerOAuth(success: false, userArray: nil, errorString: resultDico["error"] as? String)
+            completionHandlerOAuth(false, nil, resultDico["error"] as? String)
             
         }
         
         
-    }
+    }) 
     
     
     task.resume()
@@ -307,50 +338,49 @@ func Authentification(config: Config, completionHandlerOAuth: (success: Bool, us
 }
 
 
-func setUpdatePass(config: Config, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
+func setUpdatePass(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
     
     let newpassword = (config.user_newpassword==true) ? 1 : 0
-    let jsonBody: String = "user_email=\(config.user_email)&user_pass=\(config.user_pass)&user_newpassword=\(newpassword)"
+    let jsonBody: String = "user_email=\(config.user_email)&user_pass=\(config.user_pass)&user_lastpass=\(config.user_lastpass)&user_newpassword=\(newpassword)"
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_updatepass.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updatepass.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
-    request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
     
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerOAuth(false, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuth(success: false, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerOAuth(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerOAuth(success: false, errorString:"No data was returned by the request!")
+            completionHandlerOAuth(false, "No data was returned by the request!")
             return
             
         }
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerOAuth(success: false, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerOAuth(false, "Could not parse the data as JSON: '\(data)'")
             
             return
             
@@ -359,14 +389,14 @@ func setUpdatePass(config: Config, completionHandlerOAuth: (success: Bool, error
         let result = parsedResult as! [String:String]
         
         if (result["success"] == "1") {
-            completionHandlerOAuth(success: true, errorString: nil)
+            completionHandlerOAuth(true, nil)
         }
         else {
-            completionHandlerOAuth(success: false, errorString: result["error"])
+            completionHandlerOAuth(false, result["error"])
             
         }
         
-    }
+    }) 
     
     
     task.resume()
@@ -374,49 +404,47 @@ func setUpdatePass(config: Config, completionHandlerOAuth: (success: Bool, error
 }
 
 
-func setUpdateUser(config: Config, completionHandlerUpdate: (success: Bool, errorString: String?) -> Void) {
+func setUpdateUser(_ config: Config, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
     let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)&user_adresse=\(config.user_adresse)&user_codepostal=\(config.user_codepostal)&user_nom=\(config.user_nom)&user_prenom=\(config.user_prenom)&user_email=\(config.user_email)&user_pays=\(config.user_pays)&user_ville=\(config.user_ville)&user_id=\(config.user_id)"
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_updateuser.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateuser.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
-    request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
     
-    
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerUpdate(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerUpdate(false, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerUpdate(success: false, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerUpdate(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerUpdate(success: false, errorString:"No data was returned by the request!")
+            completionHandlerUpdate(false, "No data was returned by the request!")
             return
             
         }
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerUpdate(success: false, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerUpdate(false, "Could not parse the data as JSON: '\(data)'")
             
             return
             
@@ -425,14 +453,14 @@ func setUpdateUser(config: Config, completionHandlerUpdate: (success: Bool, erro
         let result = parsedResult as! [String:String]
         
         if (result["success"] == "1") {
-            completionHandlerUpdate(success: true, errorString: nil)
+            completionHandlerUpdate(true, nil)
         }
         else {
-            completionHandlerUpdate(success: false, errorString: result["error"])
+            completionHandlerUpdate(false, result["error"])
             
         }
         
-    }
+    }) 
     
     
     task.resume()
@@ -440,49 +468,49 @@ func setUpdateUser(config: Config, completionHandlerUpdate: (success: Bool, erro
 }
 
 
-func setAddUser(config: Config, completionHandlerOAuth: (success: Bool, errorString: String?) -> Void) {
+func setAddUser(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
     
+
     // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)&user_adresse=\(config.user_adresse)&user_codepostal=\(config.user_codepostal)&user_nom=\(config.user_nom)&user_prenom=\(config.user_prenom)&user_email=\(config.user_email)&user_pays=\(config.user_pays)&user_ville=\(config.user_ville)"
+    let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)&user_adresse=\(config.user_adresse)&user_codepostal=\(config.user_codepostal)&user_nom=\(config.user_nom)&user_prenom=\(config.user_prenom)&user_email=\(config.user_email)&user_pays=\(config.user_pays)&user_latitude=\(config.latitude)&user_longitude=\(config.longitude)&user_mapString=\(config.mapString)&user_newpassword=\(config.user_newpassword)"
+    
     // Create Data from request
-    let request = NSMutableURLRequest(URL: NSURL(string: "http://pressshare.fxpast.com/api_signup.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_signup.php")!)
     // set Request Type
-    request.HTTPMethod = "POST"
+    request.httpMethod = "POST"
     // Set content-type
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
-    request.HTTPBody = jsonBody.dataUsingEncoding(NSUTF8StringEncoding)
+    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
     
-    
-    let session = NSURLSession.sharedSession()
-    let task = session.dataTaskWithRequest(request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerOAuth(success: false, errorString: "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerOAuth(false, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuth(success: false, errorString: "Your request returned a status code other than 2xx! : \(StatusCode(((response as? NSHTTPURLResponse)?.statusCode)!))")
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerOAuth(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerOAuth(success: false, errorString:"No data was returned by the request!")
+            completionHandlerOAuth(false, "No data was returned by the request!")
             return
             
         }
         
         /* Parse the data */
-        let parsedResult: AnyObject!
+        let parsedResult: Any!
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerOAuth(success: false, errorString: "Could not parse the data as JSON: '\(data)'")
+            completionHandlerOAuth(false, "Could not parse the data as JSON: '\(data)'")
             
             return
             
@@ -491,14 +519,14 @@ func setAddUser(config: Config, completionHandlerOAuth: (success: Bool, errorStr
         let result = parsedResult as! [String:String]
         
         if (result["success"] == "1") {
-            completionHandlerOAuth(success: true, errorString: nil)
+            completionHandlerOAuth(true, nil)
         }
         else {
-            completionHandlerOAuth(success: false, errorString: result["error"])
+            completionHandlerOAuth(false, result["error"])
             
         }
         
-    }
+    }) 
     
     
     task.resume()

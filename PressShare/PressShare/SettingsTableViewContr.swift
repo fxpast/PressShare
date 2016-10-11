@@ -23,7 +23,7 @@ class SettingsTableViewContr : UITableViewController {
     
     
     var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
     }
     
@@ -39,64 +39,68 @@ class SettingsTableViewContr : UITableViewController {
     }
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
-    }
-    
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        self.navigationItem.title = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
+        
+        
         navigationController?.tabBarItem.title = traduction.pam3
         IBLogout.title = traduction.pam4
         
         var cell:UITableViewCell
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 0, section: 0))!
         var label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.psp1
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 1, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 1, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.psp2
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 2, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 2, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.psp3
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 3, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 3, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.psp4
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 4, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 4, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.psp5
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 5, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 5, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.psp6
         
     }
     
     
-    private func fetchAllUser() -> [User] {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+    }
+    
+    
+    fileprivate func fetchAllUser() -> [User] {
         
         
         users.removeAll()
         // Create the Fetch Request
-        let fetchRequest = NSFetchRequest(entityName: "User")
+        
+        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
         
         // Execute the Fetch Request
         do {
-            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+            return try sharedContext.fetch(request) as! [User]
         } catch _ {
             return [User]()
         }
     }
     
     
-    @IBAction func ActionLogout(sender: AnyObject) {
+    @IBAction func ActionLogout(_ sender: AnyObject) {
         
         //logout
         if users.count > 0 {
@@ -117,7 +121,7 @@ class SettingsTableViewContr : UITableViewController {
             
         }
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
         
     }
     
@@ -127,14 +131,14 @@ class SettingsTableViewContr : UITableViewController {
     //MARK: Table View Controller Delegate
     
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        switch indexPath.row {
+        switch (indexPath as NSIndexPath).row {
         case 0:
-            performSegueWithIdentifier("profil", sender: self)
+            performSegue(withIdentifier: "profil", sender: self)
             
         case 1:
-            performSegueWithIdentifier("infoconnexion", sender: self)
+            performSegue(withIdentifier: "infoconnexion", sender: self)
             
         case 2:
             
@@ -142,7 +146,8 @@ class SettingsTableViewContr : UITableViewController {
             
         case 3:
             
-            self.displayAlert("info", mess: "Under construction...")
+            performSegue(withIdentifier: "carte", sender: self)
+            
         case 4:
             
             self.displayAlert("info", mess: "Under construction...")

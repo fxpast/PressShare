@@ -31,9 +31,9 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
     let traduction = InternationalIHM.sharedInstance
     
     var filePath : String {
-        let manager = NSFileManager.defaultManager()
-        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
-        return url.URLByAppendingPathComponent("mapRegionArchive").path!
+        let manager = FileManager.default
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as URL
+        return url.appendingPathComponent("mapRegionArchive").path
     }
     
     
@@ -69,31 +69,39 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
+        IBFind.setTitle(traduction.pse4, for: UIControlState())
+        IBNom.placeholder = traduction.pse5
+        IBPrix.placeholder = traduction.pse6
+        IBComment.placeholder = traduction.pse7
+        
         IBNoimage.image = UIImage(named: "noimage")
         
         if let thisproduit = aproduit {
             IBNom.text =  thisproduit.prod_nom
+            IBNom.isEnabled = false
             IBPrix.text = String(thisproduit.prod_prix)
+            IBPrix.isEnabled = false
             IBComment.text = thisproduit.prod_comment
+            IBComment.isEnabled = false
             IBInfoLocation.text = thisproduit.prod_mapString
-            IBSave.enabled = false
-            IBFind.enabled = false
+            IBInfoLocation.isEnabled = false
+            IBSave.isEnabled = false
+            IBFind.isEnabled = false
         }
         
         
     }
     
     
-    func handleLongPressRecognizer(gesture:UILongPressGestureRecognizer)  {
+    func handleLongPressRecognizer(_ gesture:UILongPressGestureRecognizer)  {
         
         
-        if gesture.state == UIGestureRecognizerState.Ended {
+        if gesture.state == UIGestureRecognizerState.ended {
             
-            let point = gesture.locationInView(self.view)
+            let point = gesture.location(in: self.view)
             let pointIo = IBNoimage.frame.origin
             let pointIs = IBNoimage.frame.size
             if pointIo.x <= point.x &&  point.x <= pointIs.width && pointIo.y <= point.y &&  point.x <= pointIs.height {
@@ -104,32 +112,32 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
     }
     
     
-    @IBAction func ActionCancel(sender: AnyObject) {
+    @IBAction func ActionCancel(_ sender: AnyObject) {
         
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     
-    private func setUIHidden(hidden: Bool) {
+    fileprivate func setUIHidden(_ hidden: Bool) {
         
-        IBSave.enabled = !hidden
-        IBMap.hidden = hidden
-        IBFind.hidden = !hidden
-        IBNom.hidden = !hidden
-        IBPrix.hidden = !hidden
-        IBComment.hidden = !hidden
-        IBNoimage.hidden = !hidden
-        IBInfoLocation.hidden = !hidden
+        IBSave.isEnabled = !hidden
+        IBMap.isHidden = hidden
+        IBFind.isHidden = !hidden
+        IBNom.isHidden = !hidden
+        IBPrix.isHidden = !hidden
+        IBComment.isHidden = !hidden
+        IBNoimage.isHidden = !hidden
+        IBInfoLocation.isHidden = !hidden
         
         
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         
         if textField.isEqual(IBPrix) {
             
-            guard let _ = NSNumberFormatter().numberFromString(IBPrix.text!) else {
+            guard let _ = NumberFormatter().number(from: IBPrix.text!) else {
                 
                 displayAlert("Error", mess: "valeur incorrecte")
                 return false
@@ -146,7 +154,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
     
     //MARK: Data Networking
     
-    @IBAction func ActionFindMap(sender: AnyObject) {
+    @IBAction func ActionFindMap(_ sender: AnyObject) {
         
         
         guard IBInfoLocation.text != "" else {
@@ -154,7 +162,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
             return
         }
         
-        guard let _ = NSNumberFormatter().numberFromString(IBPrix.text!) else {
+        guard let _ = NumberFormatter().number(from: IBPrix.text!) else {
             
             displayAlert("Error", mess: "valeur prix incorrecte")
             return
@@ -199,8 +207,8 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
                 // Here we create the annotation and set its coordiate, title, and subtitle properties
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = coordinate
-                annotation.title = "\(self.config.user_nom) \(self.config.user_prenom)"
-                annotation.subtitle = self.config.mapString
+                annotation.title = "\(self.config.user_nom!) \(self.config.user_prenom!)"
+                annotation.subtitle = self.config.mapString!
                 
                 self.IBMap.addAnnotation(annotation)
                 
@@ -220,7 +228,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
     }
     
     
-    @IBAction func ActionSubmit(sender: AnyObject) {
+    @IBAction func ActionSubmit(_ sender: AnyObject) {
         
         
         guard IBNom.text != "" else {
@@ -258,7 +266,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
             if success {
                 performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
-                    self.dismissViewControllerAnimated(true, completion: nil)
+                    self.dismiss(animated: true, completion: nil)
                 }
             }
             else {
@@ -278,7 +286,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
     
     //MARK: Map function
     
-    private func saveMapRegion() {
+    fileprivate func saveMapRegion() {
         
         // Place the "center" and "span" of the map into a dictionary
         // The "span" is the width and height of the map in degrees.
@@ -299,16 +307,16 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
     
     //MARK: Map View Delegate
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
         
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView?.pinTintColor = UIColor.redColor()
+            pinView?.pinTintColor = UIColor.red
         }
         else {
             pinView!.annotation = annotation

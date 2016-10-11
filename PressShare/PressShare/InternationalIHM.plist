@@ -22,6 +22,11 @@
 		<string>Mot de passe perdu</string>
 		<string>Lost password</string>
 	</array>
+	<key>oda5</key>
+	<array>
+		<string>Anonyme</string>
+		<string>Anonymous</string>
+	</array>
 	<key>pam1</key>
 	<array>
 		<string>Carte</string>
@@ -39,7 +44,7 @@
 	</array>
 	<key>pam4</key>
 	<array>
-		<string>Déconnexion</string>
+		<string>Déconnect</string>
 		<string>Logout</string>
 	</array>
 	<key>psp1</key>
@@ -67,7 +72,7 @@
 		<string>Mes alertes</string>
 		<string>Notification ou my alert</string>
 	</array>
-        <key>psp6</key>
+	<key>psp6</key>
 	<array>
 		<string>Explication ou tutoriel</string>
 		<string>Explanation or Tutorial</string>
@@ -144,8 +149,8 @@
 	</array>
 	<key>pic3</key>
 	<array>
-		<string>Entrer le mot de passe</string>
-		<string>Enter the password</string>
+		<string>Ancien mot de passe</string>
+		<string>Old password</string>
 	</array>
 	<key>pic4</key>
 	<array>
@@ -154,8 +159,13 @@
 	</array>
 	<key>pic5</key>
 	<array>
-		<string>Entrer l'email</string>
+		<string>Entrer l&apos;email</string>
 		<string>Enter the email</string>
+	</array>
+	<key>pic6</key>
+	<array>
+		<string>Nouveau mot de passe</string>
+		<string>New password</string>
 	</array>
 	<key>pse1</key>
 	<array>
@@ -169,13 +179,28 @@
 	</array>
 	<key>pse3</key>
 	<array>
-		<string>Coller ou taper le lieu</string>
+		<string>Taper un lieu</string>
 		<string>Tap a location</string>
 	</array>
 	<key>pse4</key>
 	<array>
 		<string>Trouver sur la carte</string>
 		<string>Find on the map</string>
+	</array>
+	<key>pse5</key>
+	<array>
+		<string>nom</string>
+		<string>description</string>
+	</array>
+	<key>pse6</key>
+	<array>
+		<string>prix</string>
+		<string>price</string>
+	</array>
+	<key>pse7</key>
+	<array>
+		<string>commentaire</string>
+		<string>comment</string>
 	</array>
 </dict>
 </plist>

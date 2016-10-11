@@ -17,17 +17,16 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBSave: UIBarButtonItem!
     
+    
     let config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
     
     var users = [User]()
     
-    
     var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
     }
-    
     
     
     //MARK: View Controller Delegate
@@ -37,13 +36,10 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
         users = fetchAllUser()
         
-        
-        
-        
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         
         IBCancel.title = traduction.pmp1
@@ -52,156 +48,120 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
         var cell:UITableViewCell
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 0, section: 0))!
         var label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp3
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 1, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 1, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp4
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 2, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 2, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp5
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 3, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 3, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp5
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 4, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 4, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp6
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 5, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 5, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp7
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 6, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 6, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp8
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 7, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 7, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp9
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 8, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 8, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp10
         
-        cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 9, inSection: 0))!
+        cell = tableView.cellForRow(at: IndexPath(item: 9, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.pmp11
         
         
         
         if config.previousView == "LoginViewController" {
+            
+            config.cleaner()
+            config.previousView = "LoginViewController"
             navigationItem.title = traduction.pmp12
             
+            setUIHidden(false, indexpath: IndexPath(row: 0, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 1, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 2, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 3, section: 0))
+            setUIHidden(true, indexpath: IndexPath(row: 4, section: 0))
+            setUIHidden(true, indexpath: IndexPath(row: 5, section: 0))
+            setUIHidden(true, indexpath: IndexPath(row: 6, section: 0))
+            setUIHidden(true, indexpath: IndexPath(row: 7, section: 0))
+            setUIHidden(true, indexpath: IndexPath(row: 8, section: 0))
+            setUIHidden(true, indexpath: IndexPath(row: 9, section: 0))
+            
         }
+        
         
         if config.previousView == "SettingsTableViewContr" {
             
-            self.navigationItem.title = "\(config.user_nom) \(config.user_prenom) (\(config.user_id))"
+            self.navigationItem.title = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
             
-            afficherData(NSIndexPath(forRow: 0, inSection: 0))
-            afficherData(NSIndexPath(forRow: 1, inSection: 0))
-            afficherData(NSIndexPath(forRow: 4, inSection: 0))
-            afficherData(NSIndexPath(forRow: 5, inSection: 0))
-            afficherData(NSIndexPath(forRow: 6, inSection: 0))
-            afficherData(NSIndexPath(forRow: 7, inSection: 0))
-            afficherData(NSIndexPath(forRow: 8, inSection: 0))
-            afficherData(NSIndexPath(forRow: 9, inSection: 0))
             
+            setUIHidden(false, indexpath: IndexPath(row: 0, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 1, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 2, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 3, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 4, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 5, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 6, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 7, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 8, section: 0))
+            setUIHidden(false, indexpath: IndexPath(row: 9, section: 0))
             
             
         }
         
         
-        
-        
+
     }
     
-    private func afficherData (indexpath:NSIndexPath)  {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        
-        let cell = tableView.cellForRowAtIndexPath(indexpath)
-        
-        
-        switch  cell?.reuseIdentifier {
-        case "Pseudo"?:
-            
-            let valeur =  cell!.contentView.subviews[1] as! UILabel
-            valeur.text = config.user_pseudo
-            config.user_pseudo = config.user_pseudo
-            
-        case  "Mail"?:
-            
-            let valeur =  cell!.contentView.subviews[1] as! UILabel
-            valeur.text = config.user_email
-            config.user_email = config.user_email
-            
-        case  "Nom"?:
-            
-            let valeur =  cell!.contentView.subviews[1] as! UILabel
-            valeur.text = config.user_nom
-            config.user_nom = config.user_nom
-            
-        case  "Prenom"?:
-            let valeur =  cell!.contentView.subviews[1] as! UILabel
-            valeur.text = config.user_prenom
-            config.user_prenom = config.user_prenom
-            
-        case  "Adresse"?:
-            
-            let valeur =  cell!.contentView.subviews[1] as! UILabel
-            valeur.text = config.user_adresse
-            config.user_adresse = config.user_adresse
-            
-        case "Code postal"?:
-            
-            let valeur =  cell!.contentView.subviews[1] as! UILabel
-            valeur.text = config.user_codepostal
-            config.user_codepostal = config.user_codepostal
-            
-        case "Ville"?:
-            
-            let valeur =  cell!.contentView.subviews[1] as! UILabel
-            valeur.text = config.user_ville
-            config.user_ville = config.user_ville
-            
-            
-        case "Pays"?:
-            
-            let valeur =  cell!.contentView.subviews[1] as! UILabel
-            valeur.text = config.user_pays
-            config.user_pays = config.user_pays
-            
-            
-        default: break
-        }
         
         
     }
     
     
-    @IBAction func ActionCancel(sender: AnyObject) {
+    @IBAction func ActionCancel(_ sender: AnyObject) {
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
         
     }
     
     
     
-    private func fetchAllUser() -> [User] {
+    fileprivate func fetchAllUser() -> [User] {
         
         
         users.removeAll()
+        
         // Create the Fetch Request
-        let fetchRequest = NSFetchRequest(entityName: "User")
+     
+        
+        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
         
         // Execute the Fetch Request
         do {
-            return try sharedContext.executeFetchRequest(fetchRequest) as! [User]
+            return try sharedContext.fetch(request) as! [User]
         } catch _ {
             return [User]()
         }
@@ -211,7 +171,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     
     
     
-    @IBAction func ActionValier(sender: AnyObject) {
+    @IBAction func ActionValider(_ sender: AnyObject) {
         
         guard config.user_pseudo != "" else {
             self.displayAlert("Error", mess: "Pseudo incorrect")
@@ -233,7 +193,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
             return
         }
         
-        
+        IBSave.isEnabled = false
         
         
         if config.previousView == "LoginViewController" {
@@ -241,28 +201,34 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
             
             
             setAddUser(config) { (success, errorString) in
+                self.IBSave.isEnabled = true
+                
                 if success {
                     performUIUpdatesOnMain {
                         
-                        self.sharedContext.deleteObject(self.users[0])
-                        self.users.removeLast()
-                        // Save the context.
-                        do {
-                            try self.sharedContext.save()
-                        } catch let error as NSError {
-                            print(error.debugDescription)
+                        if self.users.count > 0 {
+                            self.sharedContext.delete(self.users[0])
+                            self.users.removeLast()
+                            // Save the context.
+                            do {
+                                try self.sharedContext.save()
+                            } catch let error as NSError {
+                                print(error.debugDescription)
+                                
+                            }
+                            
+                            
+                            self.users = self.fetchAllUser()
                             
                         }
                         
-                        
-                        self.users = self.fetchAllUser()
-                        
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        self.dismiss(animated: true, completion: nil)
                     }
                 }
                 else {
                     performUIUpdatesOnMain {
                         self.displayAlert("Error", mess: errorString!)
+                        
                     }
                 }
                 
@@ -276,6 +242,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
             
             
             setUpdateUser(config) { (success, errorString) in
+                self.IBSave.isEnabled = true
                 if success {
                     performUIUpdatesOnMain {
                         
@@ -283,12 +250,13 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
                             self.AffecterUser(self.users[0])
                         }
                         
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        self.dismiss(animated: true, completion: nil)
                     }
                 }
                 else {
                     performUIUpdatesOnMain {
                         self.displayAlert("Error", mess: errorString!)
+                        
                     }
                 }
                 
@@ -302,7 +270,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     
     
     
-    private func AffecterValeur (nom: String, valeur: String) {
+    fileprivate func AffecterValeur (_ nom: String, valeur: String) {
         
         
         switch nom {
@@ -337,7 +305,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     
     
     
-    private func AffecterUser(aUser:User) {
+    fileprivate func AffecterUser(_ aUser:User) {
         
         aUser.user_pseudo = config.user_pseudo
         aUser.user_email = config.user_email
@@ -360,29 +328,76 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
     }
     
+    fileprivate func setUIHidden(_ hidden: Bool, indexpath:IndexPath) {
+        
+        
+        
+        let cell = tableView.cellForRow(at: indexpath)
+        let etiquette =  cell!.contentView.subviews[0] as! UILabel
+        let valeur =  cell!.contentView.subviews[1] as! UILabel
+        
+        etiquette.isHidden = hidden
+        valeur.isHidden = hidden
+        
+        switch  cell?.reuseIdentifier {
+        case "Pseudo"?:
+            valeur.text = config.user_pseudo
+            
+        case  "Mail"?:
+            valeur.text = config.user_email
+            
+        case  "Nom"?:
+            valeur.text = config.user_nom
+            
+        case  "Prenom"?:
+            valeur.text = config.user_prenom
+            
+        case  "Adresse"?:
+            valeur.text = config.user_adresse
+            
+        case "Code postal"?:
+            valeur.text = config.user_codepostal
+            
+        case "Ville"?:
+            valeur.text = config.user_ville
+            
+        case "Pays"?:
+            valeur.text = config.user_pays
+            
+        default: break
+        }
+        
+        
+        
+    }
     
     
     //MARK: Table View Controller Delegate
     
     
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as UITableViewCell!
         
-        let alertController = UIAlertController(title: cell.reuseIdentifier, message: "Entrer la valeur :", preferredStyle: .Alert)
+        if config.previousView == "LoginViewController" && (indexPath as NSIndexPath).row > 3  {
+            return
+        }
         
-        let actionValider = UIAlertAction(title: "Valider", style: .Destructive, handler: { (action) in
+        let cell = tableView.cellForRow(at: indexPath) as UITableViewCell!
+        
+        let alertController = UIAlertController(title: cell?.reuseIdentifier, message: "Entrer la valeur :", preferredStyle: .alert)
+        
+        let actionValider = UIAlertAction(title: "Valider", style: .destructive, handler: { (action) in
             performUIUpdatesOnMain {
-                let valeur =  cell.contentView.subviews[1] as! UILabel
+                let valeur =  cell?.contentView.subviews[1] as! UILabel
                 valeur.text = (alertController.textFields![0]).text
-                self.AffecterValeur(cell.reuseIdentifier!, valeur: valeur.text!)
+                self.AffecterValeur((cell?.reuseIdentifier!)!, valeur: valeur.text!)
                 
             }
             
         })
         
-        let actionCancel = UIAlertAction(title: "Annuler", style: .Destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: "Annuler", style: .destructive, handler: { (action) in
             
         })
         
@@ -390,10 +405,10 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         alertController.addAction(actionValider)
         
         
-        alertController.addTextFieldWithConfigurationHandler({ (zoneTexte) in
+        alertController.addTextField(configurationHandler: { (zoneTexte) in
             performUIUpdatesOnMain {
-                zoneTexte.placeholder = cell.reuseIdentifier
-                let valeur =  cell.contentView.subviews[1] as! UILabel
+                zoneTexte.placeholder = cell?.reuseIdentifier
+                let valeur =  cell?.contentView.subviews[1] as! UILabel
                 if valeur.text != "" {
                     zoneTexte.text = valeur.text
                 }
@@ -402,7 +417,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         })
         
         
-        self.presentViewController(alertController, animated: true) {
+        self.present(alertController, animated: true) {
             
         }
         

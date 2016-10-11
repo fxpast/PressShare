@@ -16,7 +16,7 @@ extension User {
 
     @NSManaged var user_adresse: String?
     @NSManaged var user_codepostal: String?
-    @NSManaged var user_date: NSDate?
+    @NSManaged var user_date: Date?
     @NSManaged var user_email: String?
     @NSManaged var user_id: NSNumber?
     @NSManaged var user_level: NSNumber?

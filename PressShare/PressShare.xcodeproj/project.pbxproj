@@ -10,6 +10,11 @@
 		DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB2515861D831C6400B286F7 /* Model.xcdatamodeld */; };
 		DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */; };
 		DB2515981D83226800B286F7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515961D83226800B286F7 /* User.swift */; };
+		DB314A741D929A0B0072D7D3 /* PayboxDirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A731D929A0B0072D7D3 /* PayboxDirect.swift */; };
+		DB314A761D92ACB40072D7D3 /* CarteBancaire.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A751D92ACB40072D7D3 /* CarteBancaire.swift */; };
+		DB314A781D92AF6F0072D7D3 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A771D92AF6F0072D7D3 /* Transaction.swift */; };
+		DB314A7A1D92AF890072D7D3 /* Commercant.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A791D92AF890072D7D3 /* Commercant.swift */; };
+		DB314A7C1D92D6EB0072D7D3 /* CBViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */; };
 		DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA351CE0FB870065ECEB /* BlackBox.swift */; };
 		DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */; };
 		DB796C631CF4A2EE00BEA2F3 /* InternationalIHM.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */; };
@@ -46,6 +51,11 @@
 		DB2515871D831C6400B286F7 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DB2515961D83226800B286F7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		DB314A731D929A0B0072D7D3 /* PayboxDirect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayboxDirect.swift; sourceTree = "<group>"; };
+		DB314A751D92ACB40072D7D3 /* CarteBancaire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarteBancaire.swift; sourceTree = "<group>"; };
+		DB314A771D92AF6F0072D7D3 /* Transaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		DB314A791D92AF890072D7D3 /* Commercant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Commercant.swift; sourceTree = "<group>"; };
+		DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBViewController.swift; sourceTree = "<group>"; };
 		DB5EFA351CE0FB870065ECEB /* BlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackBox.swift; sourceTree = "<group>"; };
 		DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewContr.swift; sourceTree = "<group>"; };
 		DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InternationalIHM.plist; sourceTree = "<group>"; };
@@ -89,6 +99,10 @@
 				DB2515961D83226800B286F7 /* User.swift */,
 				DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */,
 				DBA03CD71CECB31800B76896 /* Produit.swift */,
+				DB314A731D929A0B0072D7D3 /* PayboxDirect.swift */,
+				DB314A791D92AF890072D7D3 /* Commercant.swift */,
+				DB314A771D92AF6F0072D7D3 /* Transaction.swift */,
+				DB314A751D92ACB40072D7D3 /* CarteBancaire.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -111,6 +125,7 @@
 				DBA3C52F1CE5141800CD826D /* LoginViewController.swift */,
 				DBF8D8221CB9A0B700BF706E /* NewUserTableViewContr.swift */,
 				DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */,
+				DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */,
 				DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */,
 			);
 			name = Controller;
@@ -195,12 +210,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Pastouret Roger";
 				TargetAttributes = {
 					DBF8D8081CB99E9C00BF706E = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = TNC26WW3G9;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -242,17 +258,22 @@
 			files = (
 				DBF8D8271CB9A0B700BF706E /* NewUserTableViewContr.swift in Sources */,
 				DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */,
+				DB314A761D92ACB40072D7D3 /* CarteBancaire.swift in Sources */,
 				DBA3C5351CE5141900CD826D /* ListProduitViewController.swift in Sources */,
 				DB796C651CF4A3E900BEA2F3 /* InternationalIHM.swift in Sources */,
 				DBF8D8251CB9A0B700BF706E /* ChangerPasse.swift in Sources */,
+				DB314A781D92AF6F0072D7D3 /* Transaction.swift in Sources */,
 				DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */,
 				DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */,
 				DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */,
+				DB314A741D929A0B0072D7D3 /* PayboxDirect.swift in Sources */,
 				DB2515981D83226800B286F7 /* User.swift in Sources */,
 				DBA03CD81CECB31800B76896 /* Produit.swift in Sources */,
 				DBA3C5321CE5141800CD826D /* ProduitViewController.swift in Sources */,
 				DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */,
 				DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */,
+				DB314A7C1D92D6EB0072D7D3 /* CBViewController.swift in Sources */,
+				DB314A7A1D92AF890072D7D3 /* Commercant.swift in Sources */,
 				DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -285,8 +306,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: pastouret roger (TNC26WW3G9)";
@@ -332,8 +355,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: pastouret roger (TNC26WW3G9)";
@@ -354,6 +379,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -375,6 +401,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "68e56823-3c2e-4cdb-b161-db6d263254d9";
 				SWIFT_OBJC_BRIDGING_HEADER = "PressShare/Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -396,6 +423,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "68e56823-3c2e-4cdb-b161-db6d263254d9";
 				SWIFT_OBJC_BRIDGING_HEADER = "PressShare/Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
