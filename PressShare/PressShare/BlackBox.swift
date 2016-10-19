@@ -21,7 +21,7 @@ func performUIUpdatesOnMain(_ updates: @escaping () -> Void) {
 extension UIViewController {
     
     
-    func displayAlert(_ title:String, mess : String) {
+    func displayAlert(_ title:String!, mess : String!) {
         
         let alertController = UIAlertController(title: title, message: mess, preferredStyle: .alert)
         

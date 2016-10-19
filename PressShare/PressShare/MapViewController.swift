@@ -19,7 +19,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     @IBOutlet weak var IBtextfieldSearch: UITextField!
     @IBOutlet weak var IBAddProduct: UIBarButtonItem!
     
-    
+    var fieldName = ""
+    var keybordY:CGFloat! = 0
     
     var users = [User]()
     
@@ -34,6 +35,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var userLon:CLLocationDegrees!
     var flgUser=false
     var flgRegion=false
+    var flgFirst=false
     
     let locationManager = CLLocationManager()
     
@@ -59,18 +61,22 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         IBtextfieldSearch.delegate = self
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        
-        if locationManager.responds(to: #selector(CLLocationManager.requestWhenInUseAuthorization)) {
-            locationManager.requestWhenInUseAuthorization()
-        }
-        
-        locationManager.startUpdatingLocation()
         
         user_pseudo  = config.user_pseudo
         user_id = config.user_id
         
         users = fetchAllUser()
+        
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        
+        if locationManager.responds(to: #selector(CLLocationManager.requestWhenInUseAuthorization)) {
+            locationManager.requestWhenInUseAuthorization()
+            
+        }
+        
+        locationManager.startUpdatingLocation()
+        
+        
         
         
     }
@@ -78,14 +84,28 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         super.viewWillAppear(animated)
         
+        subscibeToKeyboardNotifications()
+        
+        
         navigationController?.tabBarItem.title = traduction.pam1
         IBLogout.title = traduction.pam4
         IBtextfieldSearch.placeholder = traduction.pse3
         
         flgUser = false
         
-        RefreshData()
+        if let _ = self.userLon, let _ = self.userLat {
+            
+            RefreshData()
+            
+        }
         
+        
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeFromKeyboardNotifications()
         
     }
     
@@ -95,7 +115,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
     }
     
-    
+
     fileprivate func fetchAllUser() -> [User] {
         
         
@@ -110,6 +130,29 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         } catch _ {
             return [User]()
         }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        guard fieldName != "" && keybordY > 0 else {
+            return
+        }
+        
+        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
+        if (location < keybordY) {
+            
+            var textField = UITextField()
+            
+            
+            if fieldName == "IBtextfieldSearch" {
+                textField = IBtextfieldSearch
+            }
+        
+            
+            textField.endEditing(true)
+            
+        }
+        
     }
     
     
@@ -141,6 +184,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         
+        guard textField.text != "" else {
+            textField.endEditing(true)
+            return true
+        }
+        
         let geoCode  = CLGeocoder()
         
         
@@ -149,7 +197,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             guard error == nil else {
                 performUIUpdatesOnMain {
                     
-                    self.displayAlert("error geocodeadresse", mess: error.debugDescription)
+                    self.displayAlert("error geocodeadresse", mess: error?.localizedDescription)
                 }
                 return
             }
@@ -173,6 +221,87 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+       if textField.isEqual(IBtextfieldSearch) {
+            fieldName = "IBtextfieldSearch"
+        }
+    }
+    
+    
+    //MARK: keyboard function
+    
+    
+    func  subscibeToKeyboardNotifications() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    
+    func unsubscribeFromKeyboardNotifications() {
+        
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        
+    }
+    
+    
+    func keyboardWillShow(notification:NSNotification) {
+        
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBtextfieldSearch" {
+            textField = IBtextfieldSearch
+        }
+        
+        if textField.isFirstResponder {
+            keybordY = view.frame.size.height - getkeyboardHeight(notification: notification)
+            if keybordY < textField.frame.origin.y {
+                view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    
+    func keyboardWillHide(notification:NSNotification) {
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBtextfieldSearch" {
+            textField = IBtextfieldSearch
+        }
+        
+        
+        if textField.isFirstResponder {
+            view.frame.origin.y = 0
+        }
+        
+        fieldName = ""
+        keybordY = 0
+        
+        
+    }
+    
+    func getkeyboardHeight(notification:NSNotification)->CGFloat {
+        
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
+        return keyboardSize.cgRectValue.height
+        
+    }
+    
+
     
     //MARK: Data Networking
     @IBAction func ActionRefresh(_ sender: AnyObject) {
@@ -182,6 +311,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     fileprivate func RefreshData()  {
         
+
         let annoArray = IBMap.annotations as [AnyObject]
         for item in annoArray {
             IBMap.removeAnnotation(item as! MKAnnotation)
@@ -229,7 +359,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = coordinate
                     annotation.title = "user:"
-                    annotation.subtitle = "\(self.config.user_nom) \(self.config.user_prenom) (\(self.config.user_id))"
+                    annotation.subtitle = "\(self.config.user_nom!) \(self.config.user_prenom!) (\(self.config.user_id!))"
                     
                     // Finally we place the annotation in an array of annotations.
                     annotations.append(annotation)
@@ -295,6 +425,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         userLat = manager.location?.coordinate.latitude
         userLon = manager.location?.coordinate.longitude
+        
+        if flgFirst==false {
+            flgFirst=true
+            RefreshData()
+        }
         
     }
     

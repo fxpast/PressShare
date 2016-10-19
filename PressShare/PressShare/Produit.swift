@@ -9,12 +9,14 @@
 import Foundation
 
 
+
 struct Produit {
     
     //MARK: Properties
     
      
     var prod_id:Int
+    var prod_imageData:Data
     var prod_image:String
     var prod_nom:String
     var prod_date:Date
@@ -25,6 +27,8 @@ struct Produit {
     var prod_longitude:Double
     var prod_mapString:String
     var prod_comment:String
+    var prod_tempsDispo:String
+    var prod_etat:Int
     
     //MARK: Initialisation
     
@@ -33,8 +37,18 @@ struct Produit {
         if dico.count > 1 {
             
             prod_id = Int(dico["prod_id"] as! String)!
+            
             prod_image = dico["prod_image"] as! String
+            let imageURL = URL(string: "http://pressshare.fxpast.com/images/\(prod_image).jpg")
+            do {
+               prod_imageData = try Data(contentsOf: imageURL!)
+            }
+            catch {
+                prod_imageData = Data()
+            }
+            
             prod_nom = dico["prod_nom"] as! String
+            
             prod_date = Date().dateFromString(dico["prod_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             prod_prix = Double(dico["prod_prix"] as! String)!
             prod_by_user = Int(dico["prod_by_user"] as! String)!
@@ -43,10 +57,13 @@ struct Produit {
             prod_longitude = Double(dico["prod_longitude"] as! String)!
             prod_mapString = dico["prod_mapString"] as! String
             prod_comment = dico["prod_comment"] as! String
+            prod_tempsDispo = dico["prod_tempsDispo"] as! String
+            prod_etat = Int(dico["prod_etat"] as! String)!
 
         }
         else {
             prod_id = 0
+            prod_imageData = Data()
             prod_image = ""
             prod_nom = ""
     
@@ -58,6 +75,8 @@ struct Produit {
             prod_longitude = 0
             prod_mapString = ""
             prod_comment = ""
+            prod_tempsDispo = ""
+            prod_etat = 0
 
         }
         
@@ -212,18 +231,37 @@ func setUpdateProduit(_ user: User, completionHandlerOAuth: @escaping (_ success
 
 func setAddProduit(_ produit: Produit, completionHandlerProduit: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
     
-    // Create your request string with parameter name as defined in PHP file
-    let body: String = "prod_by_user=\(produit.prod_by_user)&prod_date=\(produit.prod_date)&prod_nom=\(produit.prod_nom)&prod_prix=\(produit.prod_prix)&prod_by_cat=\(produit.prod_by_cat)&prod_latitude=\(produit.prod_latitude)&prod_longitude=\(produit.prod_longitude)&prod_mapString=\(produit.prod_mapString)&prod_comment=\(produit.prod_comment)&prod_image=\(produit.prod_image)"
+    
+    //add parameters
+    
+    let param = [
+        "prod_by_user" : produit.prod_by_user,
+        "prod_date" : produit.prod_date,
+        "prod_nom" : produit.prod_nom,
+        "prod_prix" : produit.prod_prix,
+        "prod_by_cat" : produit.prod_by_cat,
+        "prod_latitude" : produit.prod_latitude,
+        "prod_longitude" : produit.prod_longitude,
+        "prod_mapString" : produit.prod_mapString,
+        "prod_comment" : produit.prod_comment,
+        "prod_tempsDispo" : produit.prod_tempsDispo,
+        "prod_etat" : produit.prod_etat,
+        "prod_image" : produit.prod_image
+    ] as [String : Any]
+    
+    
     // Create Data from request
     let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_addproduit.php")!)
     // set Request Type
     request.httpMethod = "POST"
     // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
+    request.setValue("multipart/form-data; boundary=\(produit.prod_image)", forHTTPHeaderField: "Content-Type")
     request.addValue("application/json", forHTTPHeaderField: "Accept")
     // Set Request Body
-    request.httpBody = body.data(using: String.Encoding.utf8)
     
+    request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: produit.prod_imageData, boundary: produit.prod_image)
+
+
     
     let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
@@ -272,6 +310,48 @@ func setAddProduit(_ produit: Produit, completionHandlerProduit: @escaping (_ su
     
     task.resume()
     
+}
+
+
+func createBodyWithParameters(parameters: [String: Any]?, filePathKey: String?, imageDataKey: Data, boundary: String) -> Data {
+    var body = Data()
+    
+    var chaine:String
+    
+    if parameters != nil {
+        for (key, value) in parameters! {
+            chaine = "--\(boundary)\r\n"
+            body.append(chaine.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
+            chaine = "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n"
+            body.append(chaine.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
+            chaine = "\(value)\r\n"
+            body.append(chaine.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
+            
+        }
+    }
+    
+   
+    let filename = "\(boundary).jpg"
+    let mimetype = "image/jpg"
+    
+    chaine = "--\(boundary)\r\n"
+    body.append(chaine.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
+    
+    chaine = "Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n"
+    body.append(chaine.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
+    
+    chaine = "Content-Type: \(mimetype)\r\n\r\n"
+    body.append(chaine.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
+   
+    body.append(imageDataKey)
+    
+    chaine = "\r\n"
+    body.append(chaine.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
+    
+    chaine = "--\(boundary)--\r\n"
+    body.append(chaine.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
+    
+    return body
 }
 
 

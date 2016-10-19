@@ -12,6 +12,220 @@ import UIKit
 class CBViewController: UIViewController {
     
     
+    @IBOutlet weak var IBNom: UITextField!
+    @IBOutlet weak var IBCarte: UITextField!
+    @IBOutlet weak var IBCrypto: UITextField!
+    @IBOutlet weak var IBDateVal: UITextField!
+    
+    var fieldName = ""
+    var keybordY:CGFloat! = 0
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        super.viewWillAppear(animated)
+        
+        subscibeToKeyboardNotifications()
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeFromKeyboardNotifications()
+        
+    }
+    
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        guard fieldName != "" && keybordY > 0 else {
+            return
+        }
+        
+        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
+        if (location < keybordY) {
+            
+            var textField = UITextField()
+            
+            
+            if fieldName == "IBCarte" {
+                textField = IBCarte
+                
+                guard let _ = NumberFormatter().number(from: textField.text!) else {
+                    displayAlert("Error", mess: "valeur incorrecte")
+                    return
+                }
+                
+            }
+            else if fieldName == "IBCrypto" {
+                textField = IBCrypto
+            }
+            else if fieldName == "IBDateVal" {
+                textField = IBDateVal
+                
+                guard let _ = NumberFormatter().number(from: textField.text!) else {
+                    displayAlert("Error", mess: "valeur incorrecte")
+                    return
+                }
+                
+            }
+            else if fieldName == "IBNom" {
+                textField = IBNom
+            }
+            
+            
+            textField.endEditing(true)
+            
+        }
+        
+    }
+    
+    
+    //MARK: textfield Delegate
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        if textField.isEqual(IBCarte) || textField.isEqual(IBDateVal)  {
+            
+            guard let _ = NumberFormatter().number(from: textField.text!) else {
+                
+                displayAlert("Error", mess: "valeur incorrecte")
+                return false
+                
+            }
+            
+        }
+        
+        
+        textField.endEditing(true)
+        return true
+        
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        
+        if textField.isEqual(IBCarte) {
+            fieldName = "IBCarte"
+        }
+        else if textField.isEqual(IBCrypto) {
+            fieldName = "IBCrypto"
+        }
+        else if textField.isEqual(IBDateVal) {
+            fieldName = "IBDateVal"
+        }
+        else if textField.isEqual(IBNom) {
+            fieldName = "IBNom"
+        }
+        
+    }
+    
+    
+    //MARK: keyboard function
+    
+    
+    func  subscibeToKeyboardNotifications() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    
+    func unsubscribeFromKeyboardNotifications() {
+        
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        
+    }
+    
+    
+    func keyboardWillShow(notification:NSNotification) {
+        
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBCarte" {
+            textField = IBCarte
+        }
+        else if fieldName == "IBCrypto" {
+            textField = IBCrypto
+        }
+        else if fieldName == "IBDateVal" {
+            textField = IBDateVal
+        }
+        else if fieldName == "IBNom" {
+            textField = IBNom
+        }
+        
+        if textField.isFirstResponder {
+            keybordY = view.frame.size.height - getkeyboardHeight(notification: notification)
+            if keybordY < textField.frame.origin.y {
+                view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    
+    func keyboardWillHide(notification:NSNotification) {
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBCarte" {
+            textField = IBCarte
+            
+            guard let _ = NumberFormatter().number(from: textField.text!) else {
+                displayAlert("Error", mess: "valeur incorrecte")
+                return
+            }
+            
+        }
+        else if fieldName == "IBCrypto" {
+            textField = IBCrypto
+        }
+        else if fieldName == "IBDateVal" {
+            textField = IBDateVal
+            
+            guard let _ = NumberFormatter().number(from: textField.text!) else {
+                displayAlert("Error", mess: "valeur incorrecte")
+                return
+            }
+            
+        }
+        else if fieldName == "IBNom" {
+            textField = IBNom
+        }
+
+        
+        if textField.isFirstResponder {
+            view.frame.origin.y = 0
+        }
+        
+        
+        fieldName = ""
+        keybordY = 0
+        
+        
+    }
+    
+    func getkeyboardHeight(notification:NSNotification)->CGFloat {
+        
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
+        return keyboardSize.cgRectValue.height
+        
+    }
+    
+    
+    
     @IBAction func ActionDone(_ sender: AnyObject) {
         
     

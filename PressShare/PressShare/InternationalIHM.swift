@@ -472,4 +472,23 @@ class InternationalIHM {
         
     }
     
+    var pse8:String!
+        {
+        
+        get {
+            let resultat = dico["pse8"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    var pse9:String!
+        {
+        
+        get {
+            let resultat = dico["pse9"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
 }

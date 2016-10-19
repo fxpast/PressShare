@@ -21,6 +21,8 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     @IBOutlet weak var IBNouvPass: UITextField!
     
     
+    var fieldName = ""
+    var keybordY:CGFloat! = 0
     
     let config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
@@ -92,6 +94,8 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        subscibeToKeyboardNotifications()
+        
         IBCancel.title = traduction.pic1
         IBValider.title = traduction.pic2
         
@@ -99,6 +103,12 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         IBNouvPass.placeholder = traduction.pic6
         IBVerifPass.placeholder = traduction.pic4
         IBemail.placeholder = traduction.pic5
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeFromKeyboardNotifications()
         
     }
     
@@ -261,6 +271,37 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     }
     
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        guard fieldName != "" && keybordY > 0 else {
+            return
+        }
+        
+        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
+        if (location < keybordY) {
+            
+            var textField = UITextField()
+            
+            
+            if fieldName == "IBemail" {
+                textField = IBemail
+            }
+            else if fieldName == "IBNouvPass" {
+                textField = IBNouvPass
+            }
+            else if fieldName == "IBVerifPass" {
+                textField = IBVerifPass
+            }
+            else if fieldName == "IBAncienPass" {
+                textField = IBAncienPass
+            }
+            
+            textField.endEditing(true)
+            
+        }
+        
+    }
+    
     
     
     //MARK: textfield Delegate
@@ -270,6 +311,113 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         return true
         
     }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        if textField.isEqual(IBemail) {
+            fieldName = "IBemail"
+        }
+        else if textField.isEqual(IBNouvPass) {
+            fieldName = "IBNouvPass"
+        }
+        else if textField.isEqual(IBVerifPass) {
+            fieldName = "IBVerifPass"
+        }
+        else if textField.isEqual(IBAncienPass) {
+            fieldName = "IBAncienPass"
+        }
+    }
+    
+    
+    
+    //MARK: keyboard function
+    
+    
+    func  subscibeToKeyboardNotifications() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    func unsubscribeFromKeyboardNotifications() {
+        
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    func keyboardWillShow(notification:NSNotification) {
+        
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBemail" {
+            textField = IBemail
+        }
+        else if fieldName == "IBNouvPass" {
+            textField = IBNouvPass
+        }
+        else if fieldName == "IBVerifPass" {
+            textField = IBVerifPass
+        }
+        else if fieldName == "IBAncienPass" {
+            textField = IBAncienPass
+        }
+        
+        if textField.isFirstResponder {
+            keybordY = view.frame.size.height - getkeyboardHeight(notification: notification)
+            if keybordY < textField.frame.origin.y {
+                view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    
+    func keyboardWillHide(notification:NSNotification) {
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBemail" {
+            textField = IBemail
+        }
+        else if fieldName == "IBNouvPass" {
+            textField = IBNouvPass
+        }
+        else if fieldName == "IBVerifPass" {
+            textField = IBVerifPass
+        }
+        else if fieldName == "IBAncienPass" {
+            textField = IBAncienPass
+        }
+        
+        if textField.isFirstResponder {
+            view.frame.origin.y = 0
+        }
+    
+        fieldName = ""
+        keybordY = 0
+    
+    }
+    
+    func getkeyboardHeight(notification:NSNotification)->CGFloat {
+        
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
+        return keyboardSize.cgRectValue.height
+        
+    }
+    
+
+    
     
     
 }

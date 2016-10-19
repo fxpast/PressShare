@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>9</string>
 	<key>FacebookAppID</key>
 	<string>944081122375154</string>
 	<key>FacebookDisplayName</key>
@@ -49,6 +49,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>click on reflesh button.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Add a photo in a product.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>Main</string>
 	<key>UIMainStoryboardFile</key>

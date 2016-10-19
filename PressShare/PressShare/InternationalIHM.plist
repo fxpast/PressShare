@@ -202,5 +202,15 @@
 		<string>commentaire</string>
 		<string>comment</string>
 	</array>
+    <key>pse8</key>
+    <array>
+        <string>Temps dispo</string>
+        <string>Available time</string>
+    </array>
+    <key>pse9</key>
+    <array>
+        <string>Etat du produit</string>
+        <string>Product state</string>
+    </array>    
 </dict>
 </plist>

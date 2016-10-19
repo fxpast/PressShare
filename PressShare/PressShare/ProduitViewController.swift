@@ -9,8 +9,12 @@
 import Foundation
 import MapKit
 import UIKit
+import MobileCoreServices
 
-class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate {
+
+
+
+class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
@@ -22,7 +26,19 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
     @IBOutlet weak var IBNom: UITextField!
     @IBOutlet weak var IBPrix: UITextField!
     @IBOutlet weak var IBComment: UITextField!
-    @IBOutlet weak var IBNoimage: UIImageView!
+    @IBOutlet weak var IBStar1: UIButton!
+    @IBOutlet weak var IBStar2: UIButton!
+    @IBOutlet weak var IBStar3: UIButton!
+    @IBOutlet weak var IBStar4: UIButton!
+    @IBOutlet weak var IBStar5: UIButton!
+    @IBOutlet weak var IBTemps: UITextField!
+    @IBOutlet weak var IBEtat: UILabel!
+    @IBOutlet weak var IBAddImage: UIImageView!
+    @IBOutlet weak var IBAddImageButton: UIButton!
+    
+    var fieldName = ""
+    var keybordY:CGFloat! = 0
+    var star=0
     
     
     var aproduit:Produit?
@@ -42,50 +58,65 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBPrix.delegate = self
-        IBNom.delegate  = self
-        IBComment.delegate = self
-        IBInfoLocation.delegate = self
-        
-        let longPressGestureRecognizer = UILongPressGestureRecognizer.init(target: self, action:#selector(ProduitViewController.handleLongPressRecognizer(_:)))
-        longPressGestureRecognizer.numberOfTouchesRequired = 1
-        longPressGestureRecognizer.minimumPressDuration = 0.3
-        longPressGestureRecognizer.delaysTouchesBegan = true
-        longPressGestureRecognizer.delegate = self
-        view.addGestureRecognizer(longPressGestureRecognizer)
-        
-        
-        
         IBActivity.stopAnimating()
-        
         setUIHidden(true)
         
-        IBInfoLocation.text = config.mapString
-        IBCancel.title = traduction.pse1
-        IBSave.title = traduction.pse2
-        IBInfoLocation.placeholder = traduction.pse3
-        IBFind.titleLabel?.text = traduction.pse4
-        
+ 
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        subscibeToKeyboardNotifications()
+        
+        IBInfoLocation.text = config.mapString
+        IBCancel.title = traduction.pse1
+        IBSave.title = traduction.pse2
+        IBInfoLocation.placeholder = traduction.pse3
         IBFind.setTitle(traduction.pse4, for: UIControlState())
         IBNom.placeholder = traduction.pse5
         IBPrix.placeholder = traduction.pse6
         IBComment.placeholder = traduction.pse7
+        IBTemps.placeholder = traduction.pse8
+        IBEtat.text = traduction.pse9
         
-        IBNoimage.image = UIImage(named: "noimage")
         
         if let thisproduit = aproduit {
+            
+            IBAddImage.image = UIImage(data:thisproduit.prod_imageData)
             IBNom.text =  thisproduit.prod_nom
             IBNom.isEnabled = false
             IBPrix.text = String(thisproduit.prod_prix)
             IBPrix.isEnabled = false
             IBComment.text = thisproduit.prod_comment
             IBComment.isEnabled = false
+            IBTemps.text = thisproduit.prod_tempsDispo
+            IBTemps.isEnabled = false
+            
+            star = thisproduit.prod_etat
+            if star == 1 {
+                ActionStar1(IBStar1)
+            }
+            else if star == 2 {
+                ActionStar2(IBStar2)
+            }
+            else if star == 3 {
+                ActionStar3(IBStar3)
+            }
+            else if star == 4 {
+                ActionStar4(IBStar4)
+            }
+            else if star == 5 {
+                ActionStar5(IBStar5)
+            }
+            IBAddImageButton.isEnabled = false
+            IBStar1.isEnabled = false
+            IBStar2.isEnabled = false
+            IBStar3.isEnabled = false
+            IBStar4.isEnabled = false
+            IBStar5.isEnabled = false
+            
             IBInfoLocation.text = thisproduit.prod_mapString
             IBInfoLocation.isEnabled = false
             IBSave.isEnabled = false
@@ -95,30 +126,86 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
         
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeFromKeyboardNotifications()
+        
+    }
     
-    func handleLongPressRecognizer(_ gesture:UILongPressGestureRecognizer)  {
-        
-        
-        if gesture.state == UIGestureRecognizerState.ended {
+
+    @IBAction func ActionAddImage(_ sender: AnyObject) {
+   
+        guard UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) == true else {
             
-            let point = gesture.location(in: self.view)
-            let pointIo = IBNoimage.frame.origin
-            let pointIs = IBNoimage.frame.size
-            if pointIo.x <= point.x &&  point.x <= pointIs.width && pointIo.y <= point.y &&  point.x <= pointIs.height {
-                self.displayAlert("info", mess: "Under construction...")
+            imageFromCamera(camera: false)
+            return
+        }
+ 
+        let alertController = UIAlertController(title: "Capture photo", message: "Faites votre choix :", preferredStyle: .alert)
+        
+        let actionBiblio = UIAlertAction(title: "Photo", style: .destructive, handler: { (action) in
+            performUIUpdatesOnMain {
+                
+                self.imageFromCamera(camera: false)
+                
             }
+            
+        })
+        
+        let actionCamera = UIAlertAction(title: "Camera", style: .destructive, handler: { (action) in
+            
+            performUIUpdatesOnMain {
+                
+                self.imageFromCamera(camera: true)
+                
+            }
+        })
+        
+        alertController.addAction(actionBiblio)
+        alertController.addAction(actionCamera)
+    
+        
+        self.present(alertController, animated: true) {
+            
         }
         
+      
+    }
+    
+    
+    private func imageFromCamera(camera:Bool) {
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.modalPresentationStyle = UIModalPresentationStyle.currentContext;
+        imagePicker.mediaTypes = [kUTTypeImage as String]
+        
+        if camera {
+            imagePicker.sourceType = UIImagePickerControllerSourceType.camera
+        }
+        else {
+            imagePicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
+        }
+        
+        present(imagePicker, animated: true, completion: nil)
     }
     
     
     @IBAction func ActionCancel(_ sender: AnyObject) {
         
-        dismiss(animated: true, completion: nil)
+        if IBMap.isHidden == true {
+            dismiss(animated: true, completion: nil)
+        }
+        else {
+            self.setUIHidden(true)
+        }
+        
+    
     }
     
     
     fileprivate func setUIHidden(_ hidden: Bool) {
+        
         
         IBSave.isEnabled = !hidden
         IBMap.isHidden = hidden
@@ -126,11 +213,145 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
         IBNom.isHidden = !hidden
         IBPrix.isHidden = !hidden
         IBComment.isHidden = !hidden
-        IBNoimage.isHidden = !hidden
+        IBEtat.isHidden = !hidden
+        IBTemps.isHidden = !hidden
+        IBStar1.isHidden = !hidden
+        IBStar2.isHidden = !hidden
+        IBStar3.isHidden = !hidden
+        IBStar4.isHidden = !hidden
+        IBStar5.isHidden = !hidden
+        IBAddImageButton.isHidden = !hidden
+        
+        IBAddImage.isHidden = !hidden
         IBInfoLocation.isHidden = !hidden
         
         
     }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        guard fieldName != "" && keybordY > 0 else {
+            return
+        }
+        
+        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
+        if (location < keybordY) {
+            
+            var textField = UITextField()
+            
+            
+            if fieldName == "IBNom" {
+                textField = IBNom
+            }
+            else if fieldName == "IBPrix" {
+                textField = IBPrix
+                
+                guard let _ = NumberFormatter().number(from: textField.text!) else {
+                    displayAlert("Error", mess: "valeur incorrecte")
+                    return
+                }
+                
+            }
+            else if fieldName == "IBComment" {
+                textField = IBComment
+            }
+            else if fieldName == "IBTemps" {
+                textField = IBTemps
+            }
+            else if fieldName == "IBInfoLocation" {
+                textField = IBInfoLocation
+            }
+            
+            textField.endEditing(true)
+            
+        }
+        
+    }
+    
+    private func changeStar(_ sender: UIButton) {
+        
+        if sender.currentImage == #imageLiteral(resourceName: "whiteStar") {
+            sender.setImage(#imageLiteral(resourceName: "blackStar"), for: UIControlState.normal)
+            
+        }
+        else {
+            sender.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        }
+        
+    }
+    
+    private func initStar() {
+        
+        IBStar1.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        IBStar2.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        IBStar3.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        IBStar4.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        IBStar5.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        
+    }
+    
+    
+    @IBAction func ActionStar1(_ sender: AnyObject) {
+        star = 1
+    
+        initStar()
+        changeStar(sender as! UIButton)
+    }
+    
+    
+    @IBAction func ActionStar2(_ sender: AnyObject) {
+        star = 2
+        initStar()
+        changeStar(sender as! UIButton)
+        changeStar(IBStar1)
+    }
+    
+    
+    @IBAction func ActionStar3(_ sender: AnyObject) {
+        star = 3
+        initStar()
+        changeStar(sender as! UIButton)
+        changeStar(IBStar2)
+        changeStar(IBStar1)
+    }
+    
+    
+    @IBAction func ActionStar4(_ sender: AnyObject) {
+        star = 4
+        initStar()
+        changeStar(sender as! UIButton)
+        changeStar(IBStar3)
+        changeStar(IBStar2)
+        changeStar(IBStar1)
+    }
+    
+    
+    @IBAction func ActionStar5(_ sender: AnyObject) {
+        star = 5
+        initStar()
+        changeStar(sender as! UIButton)
+        changeStar(IBStar4)
+        changeStar(IBStar3)
+        changeStar(IBStar2)
+        changeStar(IBStar1)
+    }
+    
+    
+
+    //MARK: Image Picker Delegate
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    
+        
+        IBAddImage.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+        IBAddImage.contentMode = UIViewContentMode.scaleAspectFit
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
+
+    
+    //MARK: textfield Delegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
@@ -150,6 +371,132 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
         return true
         
     }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        
+        if textField.isEqual(IBNom) {
+            fieldName = "IBNom"
+        }
+        else if textField.isEqual(IBPrix) {
+            fieldName = "IBPrix"
+        }
+        else if textField.isEqual(IBComment) {
+            fieldName = "IBComment"
+        }
+        else if textField.isEqual(IBTemps) {
+            fieldName = "IBTemps"
+        }
+        else if textField.isEqual(IBInfoLocation) {
+            fieldName = "IBInfoLocation"
+        }
+        
+        
+    }
+    
+    
+    
+    //MARK: keyboard function
+    
+    
+    func  subscibeToKeyboardNotifications() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    
+    func unsubscribeFromKeyboardNotifications() {
+        
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        
+    }
+    
+    
+    func keyboardWillShow(notification:NSNotification) {
+        
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBNom" {
+            textField = IBNom
+        }
+        else if fieldName == "IBPrix" {
+            textField = IBPrix
+        }
+        else if fieldName == "IBComment" {
+            textField = IBComment
+        }
+        else if fieldName == "IBTemps" {
+            textField = IBTemps
+        }
+        else if fieldName == "IBInfoLocation" {
+            textField = IBInfoLocation
+        }
+        
+        if textField.isFirstResponder {
+            keybordY = view.frame.size.height - getkeyboardHeight(notification: notification)
+            if keybordY < textField.frame.origin.y {
+                view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    
+    func keyboardWillHide(notification:NSNotification) {
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBNom" {
+            textField = IBNom
+        }
+        else if fieldName == "IBPrix" {
+            textField = IBPrix
+            guard let _ = NumberFormatter().number(from: textField.text!) else {
+                displayAlert("Error", mess: "valeur incorrecte")
+                return
+            }
+        }
+        else if fieldName == "IBComment" {
+            textField = IBComment
+        }
+        else if fieldName == "IBTemps" {
+            textField = IBTemps
+        }
+        else if fieldName == "IBInfoLocation" {
+            textField = IBInfoLocation
+        }
+        
+        
+        if textField.isFirstResponder {
+            view.frame.origin.y = 0
+        }
+        
+        fieldName = ""
+        keybordY = 0
+        
+        
+    }
+    
+    func getkeyboardHeight(notification:NSNotification)->CGFloat {
+        
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
+        return keyboardSize.cgRectValue.height
+        
+    }
+    
+    
     
     
     //MARK: Data Networking
@@ -215,7 +562,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
                 //Setting Visible Area
                 let regionRadius: CLLocationDistance = 1000
                 let coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate,
-                    regionRadius * 2.0, regionRadius * 2.0)
+                                                                          regionRadius * 2.0, regionRadius * 2.0)
                 self.IBMap.setRegion(coordinateRegion, animated: true)
                 self.IBActivity.stopAnimating()
                 
@@ -253,13 +600,16 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIGestureRec
         var produit = Produit(dico: [String : AnyObject]())
         
         produit.prod_nom = IBNom.text!
-        produit.prod_image = ""
+        produit.prod_image = "photo-\(NSUUID().uuidString)"
+        produit.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
         produit.prod_prix = Double(IBPrix.text!)!
         produit.prod_by_user = config.user_id
         produit.prod_longitude = config.longitude
         produit.prod_latitude = config.latitude
         produit.prod_mapString = config.mapString
         produit.prod_comment = IBComment.text!
+        produit.prod_tempsDispo = IBTemps.text!
+        produit.prod_etat = star
         
         setAddProduit(produit) { (success, errorString) in
             

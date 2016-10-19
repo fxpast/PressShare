@@ -10,13 +10,15 @@
 import CoreData
 import UIKit
 
-class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
+class NewUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAlertViewDelegate {
     
     
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBSave: UIBarButtonItem!
     
+    
+    var ligne:Int = -1
     
     let config = Config.sharedInstance
     let traduction = InternationalIHM.sharedInstance
@@ -40,6 +42,9 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        
+        subscibeToKeyboardNotifications()
         
         
         IBCancel.title = traduction.pmp1
@@ -131,6 +136,12 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
         
 
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeFromKeyboardNotifications()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -334,7 +345,7 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
         let cell = tableView.cellForRow(at: indexpath)
         let etiquette =  cell!.contentView.subviews[0] as! UILabel
-        let valeur =  cell!.contentView.subviews[1] as! UILabel
+        let valeur =  cell!.contentView.subviews[1] as! UITextField
         
         etiquette.isHidden = hidden
         valeur.isHidden = hidden
@@ -371,58 +382,110 @@ class NewUserTableViewContr : UITableViewController , UIAlertViewDelegate {
         
     }
     
+
     
-    //MARK: Table View Controller Delegate
+    //MARK: textfield Delegate
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return true
+        
+    }
     
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        
-        if config.previousView == "LoginViewController" && (indexPath as NSIndexPath).row > 3  {
-            return
-        }
-        
-        let cell = tableView.cellForRow(at: indexPath) as UITableViewCell!
-        
-        let alertController = UIAlertController(title: cell?.reuseIdentifier, message: "Entrer la valeur :", preferredStyle: .alert)
-        
-        let actionValider = UIAlertAction(title: "Valider", style: .destructive, handler: { (action) in
-            performUIUpdatesOnMain {
-                let valeur =  cell?.contentView.subviews[1] as! UILabel
-                valeur.text = (alertController.textFields![0]).text
-                self.AffecterValeur((cell?.reuseIdentifier!)!, valeur: valeur.text!)
-                
-            }
-            
-        })
-        
-        let actionCancel = UIAlertAction(title: "Annuler", style: .destructive, handler: { (action) in
-            
-        })
-        
-        alertController.addAction(actionCancel)
-        alertController.addAction(actionValider)
-        
-        
-        alertController.addTextField(configurationHandler: { (zoneTexte) in
-            performUIUpdatesOnMain {
-                zoneTexte.placeholder = cell?.reuseIdentifier
-                let valeur =  cell?.contentView.subviews[1] as! UILabel
-                if valeur.text != "" {
-                    zoneTexte.text = valeur.text
+        var i = -1
+        while i < 9 {
+            i += 1
+            if let cell = tableView.cellForRow(at: IndexPath(item: i, section: 0)) {
+                let valeur =  cell.contentView.subviews[1] as! UITextField
+                if textField.isEqual(valeur) {
+                    ligne = i
+                    break
                 }
-                
             }
-        })
+        
+            
+        }
+      
+    }
+
+    
+    
+    //MARK: keyboard function
+    
+    
+    func  subscibeToKeyboardNotifications() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    
+    func unsubscribeFromKeyboardNotifications() {
+        
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         
-        self.present(alertController, animated: true) {
+    }
+    
+    
+    func keyboardWillShow(notification:NSNotification) {
+        
+        let cell = tableView.cellForRow(at: IndexPath(item: ligne, section: 0))!
+        let valeur =  cell.contentView.subviews[1] as! UITextField
+        
+        if valeur.isFirstResponder {
+            let keybordY = view.frame.size.height - getkeyboardHeight(notification: notification)
+            if keybordY < valeur.frame.origin.y {
+                view.frame.origin.y = keybordY - valeur.frame.origin.y - valeur.frame.size.height
+            }
+            
             
         }
         
         
     }
+    
+    
+    func keyboardWillHide(notification:NSNotification) {
+        
+        let cell = tableView.cellForRow(at: IndexPath(item: ligne, section: 0))!
+        let valeur =  cell.contentView.subviews[1] as! UITextField
+        
+        if valeur.isFirstResponder {
+            view.frame.origin.y = 0
+        }
+        
+        ligne = -1
+        
+    }
+    
+    func getkeyboardHeight(notification:NSNotification)->CGFloat {
+        
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
+        return keyboardSize.cgRectValue.height
+        
+    }
+    
+    
+    //MARK: delegate table view controller
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        guard ligne > 0 else {
+            return
+        }
+        
+        let cell = tableView.cellForRow(at: IndexPath(item: ligne, section: 0))!
+        let valeur =  cell.contentView.subviews[1] as! UITextField
+        valeur.endEditing(true)
+    }
+    
     
     
     

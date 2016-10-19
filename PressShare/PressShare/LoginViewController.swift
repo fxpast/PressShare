@@ -21,6 +21,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     @IBOutlet weak var IBoda3: UIButton!
     @IBOutlet weak var IBoda4: UIButton!
     @IBOutlet weak var IBAnonyme: UIButton!
+    @IBOutlet weak var testfield: UITextField!
     
     
     var sharedContext: NSManagedObjectContext {
@@ -33,7 +34,9 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     
     var users = [User]()
-
+    
+    var fieldName = ""
+    var keybordY:CGFloat! = 0
     
     let config = Config.sharedInstance
     var traduction = InternationalIHM.sharedInstance
@@ -43,8 +46,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
      
-       
         users = fetchAllUser()
         
         loginWithCurrentToken()
@@ -55,6 +58,10 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
         super.viewWillAppear(animated)
         
+        
+        subscibeToKeyboardNotifications()
+        
+        IBuser.text = ""
         config.previousView = "LoginViewController"
         
         IBoda1.text = traduction.oda1
@@ -85,10 +92,17 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeFromKeyboardNotifications()
+        
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-    
-    
+        
+        
+        
         facebookButton = FBSDKLoginButton()
         view.addSubview(facebookButton)
         
@@ -103,10 +117,50 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
     }
     
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+       
+        guard fieldName != "" && keybordY > 0 else {
+            return
+        }
+        
+        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
+        if (location < keybordY) {
+        
+            var textField = UITextField()
+            
+            
+            if fieldName == "IBPassword" {
+                textField = IBPassword
+            }
+            else if fieldName == "IBuser" {
+                textField = IBuser
+            }
+        
+            textField.endEditing(true)
+        
+        }
+        
+    }
+    
+    
+    //MARK: textfield Delegate
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(true)
         return true
         
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        
+        if textField.isEqual(IBuser) {
+            fieldName = "IBuser"
+        }
+        else if textField.isEqual(IBPassword) {
+            fieldName = "IBPassword"
+        }
     }
     
     
@@ -142,10 +196,88 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             
         }
         
+    }
+    
+    
+    //MARK: keyboard function
+    
+    
+    func  subscibeToKeyboardNotifications() {
         
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+
+    
+    func unsubscribeFromKeyboardNotifications() {
+        
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+       
+        
+    }
+    
+    
+    func keyboardWillShow(notification:NSNotification) {
+        
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBPassword" {
+            textField = IBPassword
+        }
+        else if fieldName == "IBuser" {
+            textField = IBuser
+        }
+        
+        if textField.isFirstResponder {
+            keybordY = view.frame.size.height - getkeyboardHeight(notification: notification)
+            if keybordY < textField.frame.origin.y {
+                view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
+            }
+            
+            
+        }
         
         
     }
+    
+    
+    func keyboardWillHide(notification:NSNotification) {
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBPassword" {
+            textField = IBPassword
+        }
+        else if fieldName == "IBuser" {
+            textField = IBuser
+        }
+        
+        
+        if textField.isFirstResponder {
+            view.frame.origin.y = 0
+        }
+        
+        fieldName = ""
+        keybordY = 0
+        
+        
+    }
+    
+    func getkeyboardHeight(notification:NSNotification)->CGFloat {
+        
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
+        return keyboardSize.cgRectValue.height
+        
+    }
+    
+    
     
     //MARK: coreData function
     
@@ -459,7 +591,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         else {
             
             if let pass = aUser.user_pass {
-              config.user_pass = pass
+                config.user_pass = pass
             }
             else {
                 config.user_pass = ""
