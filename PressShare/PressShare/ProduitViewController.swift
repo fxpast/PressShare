@@ -58,42 +58,21 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBActivity.stopAnimating()
         setUIHidden(true)
-        
- 
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        subscibeToKeyboardNotifications()
-        
-        IBInfoLocation.text = config.mapString
-        IBCancel.title = traduction.pse1
-        IBSave.title = traduction.pse2
-        IBInfoLocation.placeholder = traduction.pse3
-        IBFind.setTitle(traduction.pse4, for: UIControlState())
-        IBNom.placeholder = traduction.pse5
-        IBPrix.placeholder = traduction.pse6
-        IBComment.placeholder = traduction.pse7
-        IBTemps.placeholder = traduction.pse8
-        IBEtat.text = traduction.pse9
-        
         
         if let thisproduit = aproduit {
             
-            IBAddImage.image = UIImage(data:thisproduit.prod_imageData)
-            IBNom.text =  thisproduit.prod_nom
-            IBNom.isEnabled = false
-            IBPrix.text = String(thisproduit.prod_prix)
-            IBPrix.isEnabled = false
-            IBComment.text = thisproduit.prod_comment
-            IBComment.isEnabled = false
-            IBTemps.text = thisproduit.prod_tempsDispo
-            IBTemps.isEnabled = false
+            if thisproduit.prod_image == "" {
+                IBAddImage.image = #imageLiteral(resourceName: "noimage")
+            }
+            else {
+                IBAddImage.image = UIImage(data:thisproduit.prod_imageData)
+            }
             
+            IBNom.text =  thisproduit.prod_nom
+            IBPrix.text = String(thisproduit.prod_prix)
+            IBComment.text = thisproduit.prod_comment
+            IBTemps.text = thisproduit.prod_tempsDispo
             star = thisproduit.prod_etat
             if star == 1 {
                 ActionStar1(IBStar1)
@@ -110,21 +89,52 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             else if star == 5 {
                 ActionStar5(IBStar5)
             }
-            IBAddImageButton.isEnabled = false
-            IBStar1.isEnabled = false
-            IBStar2.isEnabled = false
-            IBStar3.isEnabled = false
-            IBStar4.isEnabled = false
-            IBStar5.isEnabled = false
-            
             IBInfoLocation.text = thisproduit.prod_mapString
-            IBInfoLocation.isEnabled = false
-            IBSave.isEnabled = false
-            IBFind.isEnabled = false
+            config.mapString = thisproduit.prod_mapString
+            config.latitude = thisproduit.prod_latitude
+            config.longitude = thisproduit.prod_longitude
+            
+            if config.user_id == thisproduit.prod_by_user {
+                
+                setUIEnabled(true)
+            }
+            else {
+                
+                setUIEnabled(false)
+                
+            }
+            
+            
         }
         
         
+        IBActivity.stopAnimating()
+        
+        
+        
+ 
+        
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        subscibeToKeyboardNotifications()
+        
+        IBCancel.title = traduction.pse1
+        IBSave.title = traduction.pse2
+        IBInfoLocation.placeholder = traduction.pse3
+        IBFind.setTitle(traduction.pse4, for: UIControlState())
+        IBNom.placeholder = traduction.pse5
+        IBPrix.placeholder = traduction.pse6
+        IBComment.placeholder = traduction.pse7
+        IBTemps.placeholder = traduction.pse8
+        IBEtat.text = traduction.pse9
+        
+     
+    }
+    
+    
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -135,6 +145,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
 
     @IBAction func ActionAddImage(_ sender: AnyObject) {
    
+        
         guard UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) == true else {
             
             imageFromCamera(camera: false)
@@ -194,6 +205,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     @IBAction func ActionCancel(_ sender: AnyObject) {
         
         if IBMap.isHidden == true {
+            config.produit_maj = false
             dismiss(animated: true, completion: nil)
         }
         else {
@@ -203,6 +215,27 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     
     }
     
+    fileprivate func setUIEnabled(_ enabled: Bool) {
+        
+        
+        IBNom.isEnabled = enabled
+        IBPrix.isEnabled = enabled
+        IBComment.isEnabled = enabled
+        IBTemps.isEnabled = enabled
+        
+        IBAddImageButton.isEnabled = enabled
+        IBStar1.isEnabled = enabled
+        IBStar2.isEnabled = enabled
+        IBStar3.isEnabled = enabled
+        IBStar4.isEnabled = enabled
+        IBStar5.isEnabled = enabled
+        
+        IBInfoLocation.isEnabled = enabled
+        IBSave.isEnabled = enabled
+        IBFind.isEnabled = enabled
+        
+        
+    }
     
     fileprivate func setUIHidden(_ hidden: Bool) {
         
@@ -344,7 +377,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         IBAddImage.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         IBAddImage.contentMode = UIViewContentMode.scaleAspectFit
-        
+    
         dismiss(animated: true, completion: nil)
     }
     
@@ -589,7 +622,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             return
         }
         
-        
+        config.produit_maj = false
         IBActivity.startAnimating()
         
         
@@ -600,8 +633,15 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         var produit = Produit(dico: [String : AnyObject]())
         
         produit.prod_nom = IBNom.text!
-        produit.prod_image = "photo-\(NSUUID().uuidString)"
-        produit.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
+        if (IBAddImage.image?.isEqual(#imageLiteral(resourceName: "noimage")))! {
+            produit.prod_image = ""
+        }
+        else {
+            
+            produit.prod_image = "photo-\(config.user_id!)\(NSUUID().uuidString)"
+            produit.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
+        }
+        
         produit.prod_prix = Double(IBPrix.text!)!
         produit.prod_by_user = config.user_id
         produit.prod_longitude = config.longitude
@@ -611,25 +651,69 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         produit.prod_tempsDispo = IBTemps.text!
         produit.prod_etat = star
         
-        setAddProduit(produit) { (success, errorString) in
+        
+        if let thisproduit = aproduit {
             
-            if success {
-                performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
-                    self.dismiss(animated: true, completion: nil)
+            //delete product
+            setDeleteProduit(thisproduit) { (success, errorString) in
+                
+                if success {
+                    
+                    //add product
+                    setAddProduit(produit) { (success, errorString) in
+                        
+                        if success {
+                            self.config.produit_maj = true
+                            performUIUpdatesOnMain {
+                                self.IBActivity.stopAnimating()
+                                self.dismiss(animated: true, completion: nil)
+                            }
+                        }
+                        else {
+                            performUIUpdatesOnMain {
+                                self.IBActivity.stopAnimating()
+                                self.displayAlert("Error", mess: errorString!)
+                            }
+                        }
+                        
+                    }
+                    
                 }
+                else {
+                    performUIUpdatesOnMain {
+                        self.displayAlert("Error", mess: errorString!)
+                    }
+                }
+                
+                
+                
             }
-            else {
-                performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
-                    self.displayAlert("Error", mess: errorString!)
+            
+        }
+        else {
+            
+            //add product
+            setAddProduit(produit) { (success, errorString) in
+                
+                if success {
+                    self.config.produit_maj = true
+                    performUIUpdatesOnMain {
+                        self.IBActivity.stopAnimating()
+                        self.dismiss(animated: true, completion: nil)
+                    }
                 }
+                else {
+                    performUIUpdatesOnMain {
+                        self.IBActivity.stopAnimating()
+                        self.displayAlert("Error", mess: errorString!)
+                    }
+                }
+                
             }
             
         }
         
-        
-        
+       
         
     }
     

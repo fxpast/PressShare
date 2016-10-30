@@ -6,7 +6,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
 import CoreData
 import Foundation
 import UIKit
@@ -18,9 +17,8 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var IBSearch: UISearchBar!
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     @IBOutlet weak var IBAddProduct: UIBarButtonItem!
-    
-    
-    
+    @IBOutlet weak var buttonEdit: UIBarButtonItem!
+    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
     var users = [User]()
     var produits = [Produit]()
@@ -30,7 +28,8 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     var lat:CLLocationDegrees?
     var lon:CLLocationDegrees?
     var flgUser=false
-    
+    var customOpeation = BlockOperation()
+    let myqueue = OperationQueue()
     
     //Constants
     let SearchBBoxHalfWidth = 1.0
@@ -48,22 +47,42 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+
         if config.user_pseudo == "anonymous" {
             IBAddProduct.isEnabled = false
         }
         
         users = fetchAllUser()
         
-        //IBSearch.text = traduction.titre
+        IBActivity.startAnimating()
+        myqueue.addOperation {
+            
+            self.customOpeation = BlockOperation()
+            self.customOpeation.addExecutionBlock {
+                if !self.customOpeation.isCancelled
+                {
+                    self.chargerData()
+                    performUIUpdatesOnMain {
+                        
+                        self.IBTableView.reloadData()
+                        self.IBActivity.stopAnimating()
+                        
+                    }
+                    
+                }
+            }
+            
+            self.customOpeation.start()
+            
+        }
+
+        
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
-        
-        
         
         self.navigationItem.title = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
         
@@ -80,8 +99,11 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             IBLogout.title = traduction.pmp1
         }
         
-        
-        chargerData()
+        if config.produit_maj == true {
+            config.produit_maj = false
+            RefreshData()
+        }
+       
         
         IBTableView.reloadData()
     }
@@ -90,12 +112,10 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-    
-        //IBSearch.becomeFirstResponder()
         
     }
     
-    
+      
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         
@@ -156,9 +176,31 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    
-    @IBAction func ActionRefresh(_ sender: AnyObject) {
+
+
+    @IBAction func ActionEdit(_ sender: AnyObject)  {
         
+        
+        
+        if buttonEdit.title == "Edit" {
+           IBTableView.isEditing=true
+            buttonEdit.title="Done"
+        }
+        else {
+            IBTableView.isEditing=false
+            buttonEdit.title="Edit"
+        }
+        
+    }
+
+    fileprivate func RefreshData()  {
+        
+        IBSearch.isHidden = true
+        
+        IBActivity.startAnimating()
+        
+        produits.removeAll()
+        IBTableView.reloadData()
         
         getAllProduits(config.user_id) { (success, produitArray, errorString) in
             
@@ -168,11 +210,15 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
                 self.chargerData()
                 
                 performUIUpdatesOnMain {
+                    self.IBSearch.isHidden = false
+                    self.IBActivity.stopAnimating()
                     self.IBTableView.reloadData()
                 }
             }
             else {
                 performUIUpdatesOnMain {
+                    self.IBSearch.isHidden = false
+                    self.IBActivity.stopAnimating()
                     self.displayAlert("Error", mess: errorString!)
                 }
             }
@@ -180,6 +226,12 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             
             
         }
+
+    }
+    
+    @IBAction func ActionRefresh(_ sender: AnyObject) {
+        
+        RefreshData()
         
     }
     
@@ -187,40 +239,80 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - Search Bar Delegate
     
     // Each time the search text changes we want to cancel any current download and start a new one
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         
-        // If the text is empty we are done
-        if searchText == "" {
+        
+        IBActivity.startAnimating()
+        
+        myqueue.cancelAllOperations()
+        
+        guard myqueue.operationCount == 0 else {
             
-            performUIUpdatesOnMain {
-                self.chargerData()
-                self.IBTableView.reloadData()
-            }
-            
-        }
-        else {
-            
-            performUIUpdatesOnMain {
-                self.searchData(searchText)
-                self.IBTableView.reloadData()
-            }
-            
+            return
         }
         
+        produits.removeAll()
+        
+        myqueue.addOperation {
+            
+            self.customOpeation = BlockOperation()
+            self.customOpeation.addExecutionBlock {
+                if !self.customOpeation.isCancelled
+                {
+                    if searchBar.text == "" {
+                        
+                        self.chargerData()
+                    }
+                    else {
+                        self.searchData(searchBar.text!)
+                    }
+                    
+                    performUIUpdatesOnMain {
+                        
+                        self.IBTableView.reloadData()
+                        self.IBActivity.stopAnimating()
+                        
+                    }
+                    
+                }
+            }
+            
+            self.customOpeation.start()
+            
+        }
+
         
     }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchText == "" {
+        
+            searchBar.endEditing(true)
+        }
+    }
+    
+    
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
     
     
+    
+    
     //MARK: Data Produit
     
-    fileprivate func searchData(_ str:String) {
+
+    private func searchData(_ str:String) {
         
         produits.removeAll()
         for prod in Produits.sharedInstance.produitsArray {
+         
+            if customOpeation.isCancelled {
+                break
+            }
+            
             let produ = Produit(dico: prod)
             let nom = produ.prod_nom.capitalized
             if nom.contains(str.capitalized) {
@@ -250,7 +342,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    fileprivate func chargerData() {
+    private func chargerData() {
         
         var minimumLon = Double()
         var maximumLon = Double()
@@ -266,9 +358,12 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
         
-        
-        produits.removeAll()
         for prod in Produits.sharedInstance.produitsArray {
+         
+            if customOpeation.isCancelled {
+                break
+            }
+            
             let produ = Produit(dico: prod)
             if let _ = lat, let _ = lon {
                 if (produ.prod_latitude >= minimumLat && produ.prod_latitude  <= maximumLat && produ.prod_longitude  >= minimumLon && produ.prod_longitude  <= maximumLon) {
@@ -290,7 +385,43 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
+    
     //MARK: Table View Controller data source
+    
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        //delete row
+        let produit =  produits[indexPath.row]
+        setDeleteProduit(produit) { (success, errorString) in
+            
+            if success {
+                
+                performUIUpdatesOnMain {
+                    self.produits.remove(at: indexPath.row)
+                    if self.produits.count == 0 {
+                        self.buttonEdit.title="Edit"
+                        self.buttonEdit.isEnabled=false
+                        self.IBTableView.isEditing = false
+                    }
+                    tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)
+                    self.IBTableView.reloadData()
+                }
+            }
+            else {
+                performUIUpdatesOnMain {
+                    self.displayAlert("Error", mess: errorString!)
+                }
+            }
+
+            
+     
+        }
+        
+        
+    }
+    
+
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -304,6 +435,16 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             if view.tag == 99 {
                 let firstlastname = view as! UILabel
                 firstlastname.text =  "\(produit.prod_nom) (user:\(produit.prod_by_user))"
+            }
+            else if view.tag == 88 {
+                let photo = view as! UIImageView                
+                if produit.prod_image == "" {
+                  photo.image = #imageLiteral(resourceName: "noimage")
+                }
+                else {
+                  photo.image =   UIImage(data:produit.prod_imageData)
+                }
+               
             }
             
         }

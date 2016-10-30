@@ -11,6 +11,7 @@ import CoreData
 import Foundation
 import UIKit
 
+
 class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var IBuser: UITextField!
@@ -21,17 +22,13 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     @IBOutlet weak var IBoda3: UIButton!
     @IBOutlet weak var IBoda4: UIButton!
     @IBOutlet weak var IBAnonyme: UIButton!
-    @IBOutlet weak var testfield: UITextField!
-    
     
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
     }
     
-    
     var facebookButton:FBSDKLoginButton!
-    
     
     var users = [User]()
     
@@ -47,7 +44,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-     
+        config.cleaner()
+        
         users = fetchAllUser()
         
         loginWithCurrentToken()
@@ -110,6 +108,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         facebookButton.center = IBFacebook.center
         IBFacebook.isHidden = true
         
+        
         facebookButton.readPermissions = ["public_profile", "email", "user_friends"]
         facebookButton.delegate = self
         
@@ -142,7 +141,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         }
         
     }
-    
+
     
     //MARK: textfield Delegate
     
@@ -297,6 +296,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     }
     
     
+    
     //MARK: Facebook Delegate Methods
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
@@ -321,6 +321,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             }
         }
     }
+    
+    
     
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
         loginWithCurrentToken()

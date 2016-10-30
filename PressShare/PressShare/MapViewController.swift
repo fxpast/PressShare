@@ -18,6 +18,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     @IBOutlet weak var IBtextfieldSearch: UITextField!
     @IBOutlet weak var IBAddProduct: UIBarButtonItem!
+    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
     var fieldName = ""
     var keybordY:CGFloat! = 0
@@ -39,8 +40,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     let locationManager = CLLocationManager()
     
-    
-    
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
@@ -52,6 +51,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        IBActivity.stopAnimating()
         
         if config.user_pseudo == "anonymous" {
             IBAddProduct.isEnabled = false
@@ -67,6 +68,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         users = fetchAllUser()
         
+        RefreshData()
+        
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         
         if locationManager.responds(to: #selector(CLLocationManager.requestWhenInUseAuthorization)) {
@@ -77,15 +80,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         locationManager.startUpdatingLocation()
         
         
-        
-        
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
         
         subscibeToKeyboardNotifications()
-        
         
         navigationController?.tabBarItem.title = traduction.pam1
         IBLogout.title = traduction.pam4
@@ -99,6 +100,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             
         }
         
+        if config.produit_maj == true {
+            config.produit_maj = false
+            RefreshData()
+        }
         
         
     }
@@ -111,13 +116,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-     
         
     }
     
-
     fileprivate func fetchAllUser() -> [User] {
-        
         
         users.removeAll()
         // Create the Fetch Request
@@ -155,9 +157,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
     }
     
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         
         if segue.identifier == "mapproduit" {
             
@@ -173,7 +173,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 
             }
             
-            
         }
         
     }
@@ -183,14 +182,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
-        
         guard textField.text != "" else {
             textField.endEditing(true)
             return true
         }
         
         let geoCode  = CLGeocoder()
-        
         
         geoCode.geocodeAddressString(textField.text!, completionHandler: {(marks,error) in
             
@@ -220,7 +217,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
     }
     
-    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
        if textField.isEqual(IBtextfieldSearch) {
@@ -228,9 +224,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
     }
     
-    
     //MARK: keyboard function
-    
     
     func  subscibeToKeyboardNotifications() {
         
@@ -240,21 +234,17 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     
-    
     func unsubscribeFromKeyboardNotifications() {
         
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        
         
     }
     
     
     func keyboardWillShow(notification:NSNotification) {
         
-        
         var textField = UITextField()
-        
         
         if fieldName == "IBtextfieldSearch" {
             textField = IBtextfieldSearch
@@ -266,17 +256,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
             }
             
-            
         }
         
-        
     }
-    
     
     func keyboardWillHide(notification:NSNotification) {
         
         var textField = UITextField()
-        
         
         if fieldName == "IBtextfieldSearch" {
             textField = IBtextfieldSearch
@@ -290,7 +276,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         fieldName = ""
         keybordY = 0
         
-        
     }
     
     func getkeyboardHeight(notification:NSNotification)->CGFloat {
@@ -301,8 +286,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
     }
     
-
-    
     //MARK: Data Networking
     @IBAction func ActionRefresh(_ sender: AnyObject) {
         
@@ -311,16 +294,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     fileprivate func RefreshData()  {
         
-
         let annoArray = IBMap.annotations as [AnyObject]
         for item in annoArray {
             IBMap.removeAnnotation(item as! MKAnnotation)
         }
         
-        
+        IBActivity.startAnimating()
         
         getAllProduits(config.user_id) { (success, produitArray, errorString) in
-            
             
             if success {
                 
@@ -371,6 +352,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
                 
                 performUIUpdatesOnMain {
+                    self.IBActivity.stopAnimating()
                     self.IBMap.addAnnotations(annotations)
                     if let _ = self.userLon, let _ = self.userLat {
                         if !self.flgRegion {
@@ -385,6 +367,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             }
             else {
                 performUIUpdatesOnMain {
+                    self.IBActivity.stopAnimating()
                     self.displayAlert("Error", mess: errorString!)
                 }
             }
@@ -437,7 +420,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         print("Error while updating location \(error.localizedDescription)")
         
-        
     }
     
     
@@ -477,9 +459,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             }
             
             performSegue(withIdentifier: "mapproduit", sender: self)
-            
-            
-            
             
         }
         

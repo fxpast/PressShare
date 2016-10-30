@@ -83,11 +83,6 @@ class Users {
 
 class Config {
     
-    /*
-     users(user_pseudo, user_pass, user_email ,user_date, user_level, user_nom,
-     user_prenom, user_adresse, user_codepostal, user_ville, user_pays, user_derconnexion,
-     user_nbreconnexion, user_latitude, user_longitude, user_mapString, user_newpassword)
-     */
     
     var user_id:Int!
     var user_pseudo:String!
@@ -106,6 +101,7 @@ class Config {
     var verifpassword:String!
     var user_pass:String!
     var user_lastpass:String!
+    var produit_maj:Bool!
     
  
     
@@ -128,6 +124,7 @@ class Config {
         verifpassword = ""
         user_pass = ""
         user_lastpass = ""
+        produit_maj=false
         
     }
     
@@ -205,7 +202,7 @@ func getAllUsers(_ userId:Int, completionHandlerAllUsers: @escaping (_ success: 
 func AuthentiFacebook(_ config: Config, completionHandlerOAuthFacebook: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_email=\(config.user_email)"
+    let jsonBody: String = "user_email=\(config.user_email!)"
     // Create Data from request
     let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_Facebook.php")!)
     // set Request Type

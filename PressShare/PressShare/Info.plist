@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>9</string>
+	<string>10</string>
 	<key>FacebookAppID</key>
 	<string>944081122375154</string>
 	<key>FacebookDisplayName</key>
@@ -36,9 +36,19 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
-		<string>fb-messenger-api</string>
+		<string>fbapi20130214</string>
+		<string>fbapi20130410</string>
+		<string>fbapi20130702</string>
+		<string>fbapi20131010</string>
+		<string>fbapi20131219</string>
+		<string>fbapi20140410</string>
+		<string>fbapi20140116</string>
+		<string>fbapi20150313</string>
+		<string>fbapi20150629</string>
+		<string>fbapi20160328</string>
+		<string>fbauth</string>
 		<string>fbauth2</string>
-		<string>fbshareextension</string>
+		<string>fb-messenger-api20140430</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -50,7 +60,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>click on reflesh button.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Add a photo in a product.</string>
+	<string>Get newspaper photo</string>
 	<key>UILaunchStoryboardName</key>
 	<string>Main</string>
 	<key>UIMainStoryboardFile</key>

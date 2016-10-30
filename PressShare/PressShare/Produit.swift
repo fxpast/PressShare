@@ -162,7 +162,6 @@ func getAllProduits(_ userId:Int, completionHandlerProduits: @escaping (_ succes
 }
 
 
-
 func setUpdateProduit(_ user: User, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
@@ -217,6 +216,71 @@ func setUpdateProduit(_ user: User, completionHandlerOAuth: @escaping (_ success
         }
         else {
             completionHandlerOAuth(false, "impossible to update the passeword")
+            
+        }
+        
+    })
+    
+    
+    task.resume()
+    
+}
+
+
+func setDeleteProduit(_ produit: Produit, completionHandlerDelProduit: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+    
+    // Create your request string with parameter name as defined in PHP file
+    let jsonBody: String = "prod_id=\(produit.prod_id)&prod_image=\(produit.prod_image)"
+    // Create Data from request
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_delproduit.php")!)
+    // set Request Type
+    request.httpMethod = "POST"
+    // Set content-type
+    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
+    request.addValue("application/json", forHTTPHeaderField: "Accept")
+    // Set Request Body
+    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
+    
+    
+    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+        
+        /* GUARD: Was there an error? */
+        guard (error == nil) else {
+            completionHandlerDelProduit(false, "There was an error with your request: \(error!.localizedDescription)")
+            return
+        }
+        
+        /* GUARD: Did we get a successful 2XX response? */
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+            completionHandlerDelProduit(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
+            return
+        }
+        
+        /* GUARD: Was there any data returned? */
+        guard let data = data else {
+            completionHandlerDelProduit(false, "No data was returned by the request!")
+            return
+            
+        }
+        
+        /* Parse the data */
+        let parsedResult: Any!
+        do {
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        } catch {
+            completionHandlerDelProduit(false, "Could not parse the data as JSON: '\(data)'")
+            
+            return
+            
+        }
+        
+        let result = parsedResult as! [String:String]
+        
+        if (result["success"] == "1") {
+            completionHandlerDelProduit(true, nil)
+        }
+        else {
+            completionHandlerDelProduit(false, "impossible to delete the product")
             
         }
         

@@ -435,10 +435,13 @@
                                     <outlet property="delegate" destination="oQi-TY-ljI" id="Lv9-Fh-ZiT"/>
                                 </connections>
                             </mapView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="9p2-Ky-aMR"/>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="9p2-Ky-aMR" firstAttribute="centerX" secondItem="phl-RG-pVU" secondAttribute="centerX" id="SmJ-Bq-7aO"/>
                             <constraint firstItem="DNW-4Q-bo6" firstAttribute="top" secondItem="phl-RG-pVU" secondAttribute="topMargin" constant="24" id="TOo-W9-aIg"/>
+                            <constraint firstItem="9p2-Ky-aMR" firstAttribute="centerY" secondItem="phl-RG-pVU" secondAttribute="centerY" id="czA-sb-IXJ"/>
                             <constraint firstAttribute="trailing" secondItem="DNW-4Q-bo6" secondAttribute="trailing" id="jkL-6r-m5a"/>
                             <constraint firstAttribute="bottom" secondItem="DNW-4Q-bo6" secondAttribute="bottom" id="ocB-Aj-rbT"/>
                             <constraint firstItem="DNW-4Q-bo6" firstAttribute="leading" secondItem="phl-RG-pVU" secondAttribute="leading" id="uWJ-1g-kFw"/>
@@ -471,6 +474,7 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="IBActivity" destination="9p2-Ky-aMR" id="30A-pM-uKL"/>
                         <outlet property="IBAddProduct" destination="2lP-v2-ehj" id="lt0-p8-vp0"/>
                         <outlet property="IBLogout" destination="FyV-YJ-11I" id="56H-6R-KFG"/>
                         <outlet property="IBMap" destination="DNW-4Q-bo6" id="OoH-b1-1PO"/>
@@ -989,7 +993,7 @@
                                     <action selector="ActionFindMap:" destination="z6q-iS-bcg" eventType="touchUpInside" id="CPb-KZ-v8H"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noimage" translatesAutoresizingMaskIntoConstraints="NO" id="rnO-Ad-bJ2"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rnO-Ad-bJ2"/>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0qm-wS-Pgr">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="25" id="dy1-ft-cEn"/>
@@ -1129,18 +1133,17 @@
                                             <frame key="frameInset" width="320" height="41"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R24-Wc-3bR">
-                                                    <frame key="frameInset" minY="-6" width="32" height="32"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" image="pin"/>
-                                                </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="99" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tE3-81-P9F">
-                                                    <frame key="frameInset" minX="38" minY="-8" width="274" height="35"/>
+                                                    <frame key="frameInset" minX="50" width="263" height="35"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" tag="88" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dHz-4q-QCg">
+                                                    <frame key="frameInset" minX="8" width="37" height="34"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -1150,6 +1153,7 @@
                                     <outlet property="delegate" destination="ouz-9n-xZz" id="YiW-WM-CcT"/>
                                 </connections>
                             </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="M1U-Pn-aAI"/>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -1157,9 +1161,11 @@
                             <constraint firstAttribute="trailingMargin" secondItem="fD9-ON-kx3" secondAttribute="trailing" constant="-20" id="SxM-sw-vsJ"/>
                             <constraint firstItem="bcx-0w-EHR" firstAttribute="leading" secondItem="6vU-Dj-M8f" secondAttribute="leadingMargin" constant="-20" id="Vfr-Bm-4uH"/>
                             <constraint firstAttribute="trailingMargin" secondItem="bcx-0w-EHR" secondAttribute="trailing" constant="-20" id="dHy-JQ-jRZ"/>
+                            <constraint firstItem="M1U-Pn-aAI" firstAttribute="centerX" secondItem="6vU-Dj-M8f" secondAttribute="centerX" id="eVx-Qe-4ke"/>
                             <constraint firstItem="fD9-ON-kx3" firstAttribute="leading" secondItem="6vU-Dj-M8f" secondAttribute="leadingMargin" constant="-20" id="fDZ-8T-bT6"/>
                             <constraint firstItem="plJ-JF-aze" firstAttribute="top" secondItem="bcx-0w-EHR" secondAttribute="bottom" id="fLc-K8-zw6"/>
                             <constraint firstItem="fD9-ON-kx3" firstAttribute="top" secondItem="MX9-VU-ck2" secondAttribute="bottom" id="guk-Rq-xn2"/>
+                            <constraint firstItem="M1U-Pn-aAI" firstAttribute="centerY" secondItem="6vU-Dj-M8f" secondAttribute="centerY" id="xdf-I5-xnd"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Iaf-rb-KX1">
@@ -1174,6 +1180,11 @@
                                     <action selector="ActionRefresh:" destination="ouz-9n-xZz" id="TCj-9s-Y7w"/>
                                 </connections>
                             </barButtonItem>
+                            <barButtonItem title="Edit" id="lF6-an-UhO">
+                                <connections>
+                                    <action selector="ActionEdit:" destination="ouz-9n-xZz" id="nfX-EU-RAo"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem systemItem="add" id="uxs-gB-Oxj">
                                 <connections>
                                     <action selector="ActionEpingle:" destination="ouz-9n-xZz" id="FtL-HG-AdK"/>
@@ -1182,16 +1193,18 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="IBActivity" destination="M1U-Pn-aAI" id="qBb-Rg-pm8"/>
                         <outlet property="IBAddProduct" destination="uxs-gB-Oxj" id="3RD-ah-dJe"/>
                         <outlet property="IBLogout" destination="iMZ-lJ-BHh" id="zox-Ar-zON"/>
                         <outlet property="IBSearch" destination="fD9-ON-kx3" id="no0-47-UB9"/>
                         <outlet property="IBTableView" destination="bcx-0w-EHR" id="jgz-Y2-PcL"/>
+                        <outlet property="buttonEdit" destination="lF6-an-UhO" id="b27-Mg-HHL"/>
                         <segue destination="29X-R3-2TP" kind="modal" identifier="fromtable" id="8j9-lg-kLp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pbf-m5-Y2m" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-918" y="1789"/>
+            <point key="canvasLocation" x="-918.5" y="1788.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="IyI-af-MVP">
@@ -1289,8 +1302,6 @@
     <resources>
         <image name="list" width="32" height="32"/>
         <image name="map" width="32" height="32"/>
-        <image name="noimage" width="330" height="170"/>
-        <image name="pin" width="32" height="32"/>
         <image name="press" width="2351" height="1574"/>
         <image name="settings" width="35" height="35"/>
         <image name="whiteStar" width="204" height="204"/>
@@ -1301,9 +1312,9 @@
         <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="zxH-SU-zaV"/>
-        <segue reference="DWX-zB-8u9"/>
-        <segue reference="3Xl-wN-eo5"/>
         <segue reference="8j9-lg-kLp"/>
+        <segue reference="zxH-SU-zaV"/>
+        <segue reference="3Xl-wN-eo5"/>
+        <segue reference="DWX-zB-8u9"/>
     </inferredMetricsTieBreakers>
 </document>
