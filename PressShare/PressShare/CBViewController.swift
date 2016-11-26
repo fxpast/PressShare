@@ -43,7 +43,7 @@ class CBViewController: UIViewController {
         }
         
         let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
-        if (location < keybordY) {
+        if (Double(location) < Double(keybordY)){
             
             var textField = UITextField()
             
@@ -234,7 +234,7 @@ class CBViewController: UIViewController {
             if success {
                 
                 performUIUpdatesOnMain {
-                    
+                    self.displayAlert("info", mess: "Under construction...")
                     print(cardArray!)
                     self.dismiss(animated: true, completion: nil)
                     

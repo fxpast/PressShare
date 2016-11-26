@@ -89,16 +89,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         subscibeToKeyboardNotifications()
         
         navigationController?.tabBarItem.title = traduction.pam1
-        IBLogout.title = traduction.pam4
+        //IBLogout.title = traduction.pam4
+        IBLogout.image = #imageLiteral(resourceName: "eteindre")
+        IBLogout.title = ""
         IBtextfieldSearch.placeholder = traduction.pse3
         
         flgUser = false
         
-        if let _ = self.userLon, let _ = self.userLat {
-            
-            RefreshData()
-            
-        }
         
         if config.produit_maj == true {
             config.produit_maj = false
@@ -141,7 +138,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
         
         let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
-        if (location < keybordY) {
+        
+        if (Double(location) < Double(keybordY)) {
             
             var textField = UITextField()
             

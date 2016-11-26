@@ -34,11 +34,12 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     @IBOutlet weak var IBTemps: UITextField!
     @IBOutlet weak var IBEtat: UILabel!
     @IBOutlet weak var IBAddImage: UIImageView!
-    @IBOutlet weak var IBAddImageButton: UIButton!
+    
     
     var fieldName = ""
     var keybordY:CGFloat! = 0
     var star=0
+    var client=false
     
     
     var aproduit:Produit?
@@ -95,10 +96,18 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             config.longitude = thisproduit.prod_longitude
             
             if config.user_id == thisproduit.prod_by_user {
-                
+                client=false
                 setUIEnabled(true)
             }
             else {
+                
+                if config.user_pseudo == "anonymous" {
+                    IBSave.isEnabled = false
+                    client=false
+                }
+                else {
+                    client=true
+                }
                 
                 setUIEnabled(false)
                 
@@ -106,13 +115,16 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             
             
         }
+        else {
+            IBAddImage.image = #imageLiteral(resourceName: "noimage")
+        }
         
         
         IBActivity.stopAnimating()
         
         
         
- 
+        
         
     }
     
@@ -122,7 +134,16 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         subscibeToKeyboardNotifications()
         
         IBCancel.title = traduction.pse1
-        IBSave.title = traduction.pse2
+        if client {
+            
+            IBSave.title = traduction.pse10
+            
+        }
+        else {
+            
+            IBSave.title = traduction.pse2
+            
+        }
         IBInfoLocation.placeholder = traduction.pse3
         IBFind.setTitle(traduction.pse4, for: UIControlState())
         IBNom.placeholder = traduction.pse5
@@ -131,7 +152,12 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         IBTemps.placeholder = traduction.pse8
         IBEtat.text = traduction.pse9
         
-     
+        if config.vendeur_maj == true {
+            config.vendeur_maj = false
+            dismiss(animated: true, completion: nil)
+        }
+        
+        
     }
     
     
@@ -142,16 +168,16 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
     }
     
-
-    @IBAction func ActionAddImage(_ sender: AnyObject) {
-   
+    
+    private func AddImage() {
+        
         
         guard UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) == true else {
             
             imageFromCamera(camera: false)
             return
         }
- 
+        
         let alertController = UIAlertController(title: "Capture photo", message: "Faites votre choix :", preferredStyle: .alert)
         
         let actionBiblio = UIAlertAction(title: "Photo", style: .destructive, handler: { (action) in
@@ -174,13 +200,13 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         alertController.addAction(actionBiblio)
         alertController.addAction(actionCamera)
-    
+        
         
         self.present(alertController, animated: true) {
             
         }
         
-      
+        
     }
     
     
@@ -212,10 +238,10 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             self.setUIHidden(true)
         }
         
-    
+        
     }
     
-    fileprivate func setUIEnabled(_ enabled: Bool) {
+    private func setUIEnabled(_ enabled: Bool) {
         
         
         IBNom.isEnabled = enabled
@@ -223,7 +249,6 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         IBComment.isEnabled = enabled
         IBTemps.isEnabled = enabled
         
-        IBAddImageButton.isEnabled = enabled
         IBStar1.isEnabled = enabled
         IBStar2.isEnabled = enabled
         IBStar3.isEnabled = enabled
@@ -231,16 +256,15 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         IBStar5.isEnabled = enabled
         
         IBInfoLocation.isEnabled = enabled
-        IBSave.isEnabled = enabled
+        
         IBFind.isEnabled = enabled
         
         
     }
     
-    fileprivate func setUIHidden(_ hidden: Bool) {
+    private func setUIHidden(_ hidden: Bool) {
         
         
-        IBSave.isEnabled = !hidden
         IBMap.isHidden = hidden
         IBFind.isHidden = !hidden
         IBNom.isHidden = !hidden
@@ -253,22 +277,41 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         IBStar3.isHidden = !hidden
         IBStar4.isHidden = !hidden
         IBStar5.isHidden = !hidden
-        IBAddImageButton.isHidden = !hidden
         
         IBAddImage.isHidden = !hidden
         IBInfoLocation.isHidden = !hidden
-        
         
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
+        if let thisproduit = aproduit {
+            
+            if config.user_id != thisproduit.prod_by_user {
+                
+                return
+            }
+        }
+        
+        
+        let location = (event?.allTouches?.first?.location(in: self.view))
+        
+        
+        print("location.x:", (location?.x)!, "location.y:",(location?.y)!)
+        print("IBAddImage.x:", IBAddImage.frame.origin.x, "IBAddImage.y:",IBAddImage.frame.origin.y)
+        print("IBAddImage.h:", IBAddImage.frame.size.height, "IBAddImage.w:",IBAddImage.frame.size.width)
+        if (location?.x)! > IBAddImage.frame.origin.x && (location?.x)! < IBAddImage.frame.size.width && (location?.y)! > IBAddImage.frame.origin.y  && (location?.y)! < (IBStar1.frame.origin.y+IBNom.frame.origin.y)/2{
+            
+            AddImage()
+        }
+        
+        
         guard fieldName != "" && keybordY > 0 else {
             return
         }
         
-        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
-        if (location < keybordY) {
+        
+        if Double((location?.y)!) < Double(keybordY) {
             
             var textField = UITextField()
             
@@ -326,7 +369,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     
     @IBAction func ActionStar1(_ sender: AnyObject) {
         star = 1
-    
+        
         initStar()
         changeStar(sender as! UIButton)
     }
@@ -370,19 +413,33 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        
+        if segue.identifier == "vendeur" {
+            
+            let nav = segue.destination as! UINavigationController
+            let controller = nav.topViewController as! VendeurViewController
+            controller.aproduit = aproduit
+        }
+        
+    }
+    
+    
+    
     //MARK: Image Picker Delegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-    
+        
         
         IBAddImage.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         IBAddImage.contentMode = UIViewContentMode.scaleAspectFit
-    
+        
         dismiss(animated: true, completion: nil)
     }
     
     
-
+    
     
     //MARK: textfield Delegate
     
@@ -622,98 +679,132 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             return
         }
         
-        config.produit_maj = false
-        IBActivity.startAnimating()
         
-        
-        saveMapRegion()
-        
-        
-        
-        var produit = Produit(dico: [String : AnyObject]())
-        
-        produit.prod_nom = IBNom.text!
-        if (IBAddImage.image?.isEqual(#imageLiteral(resourceName: "noimage")))! {
-            produit.prod_image = ""
-        }
-        else {
+        func ActionClient() {
             
-            produit.prod_image = "photo-\(config.user_id!)\(NSUUID().uuidString)"
-            produit.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
+            performSegue(withIdentifier: "vendeur", sender: self)
+            
         }
         
-        produit.prod_prix = Double(IBPrix.text!)!
-        produit.prod_by_user = config.user_id
-        produit.prod_longitude = config.longitude
-        produit.prod_latitude = config.latitude
-        produit.prod_mapString = config.mapString
-        produit.prod_comment = IBComment.text!
-        produit.prod_tempsDispo = IBTemps.text!
-        produit.prod_etat = star
-        
-        
-        if let thisproduit = aproduit {
+        func ActionUser() {
             
-            //delete product
-            setDeleteProduit(thisproduit) { (success, errorString) in
+            
+            config.produit_maj = false
+            IBActivity.startAnimating()
+            
+            IBSave.isEnabled = false
+            IBFind.isEnabled = false
+            
+            saveMapRegion()
+            
+            
+            
+            var produit = Produit(dico: [String : AnyObject]())
+            
+            produit.prod_nom = IBNom.text!
+            if (IBAddImage.image?.isEqual(#imageLiteral(resourceName: "noimage")))! {
+                produit.prod_image = ""
+            }
+            else {
                 
-                if success {
+                produit.prod_image = "photo-\(config.user_id!)\(NSUUID().uuidString)"
+                produit.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
+            }
+            
+            produit.prod_prix = Double(IBPrix.text!)!
+            produit.prod_by_user = config.user_id
+            produit.prod_longitude = config.longitude
+            produit.prod_latitude = config.latitude
+            produit.prod_mapString = config.mapString
+            produit.prod_comment = IBComment.text!
+            produit.prod_tempsDispo = IBTemps.text!
+            produit.prod_etat = star
+            
+            
+            if let thisproduit = aproduit {
+                
+                //delete product
+                setDeleteProduit(thisproduit) { (success, errorString) in
                     
-                    //add product
-                    setAddProduit(produit) { (success, errorString) in
+                    if success {
                         
-                        if success {
-                            self.config.produit_maj = true
-                            performUIUpdatesOnMain {
-                                self.IBActivity.stopAnimating()
-                                self.dismiss(animated: true, completion: nil)
+                        //add product
+                        setAddProduit(produit) { (success, errorString) in
+                            
+                            if success {
+                                self.config.produit_maj = true
+                                performUIUpdatesOnMain {
+                                    self.IBSave.isEnabled = true
+                                    self.IBFind.isEnabled = true
+                                    self.IBActivity.stopAnimating()
+                                    self.dismiss(animated: true, completion: nil)
+                                }
                             }
-                        }
-                        else {
-                            performUIUpdatesOnMain {
-                                self.IBActivity.stopAnimating()
-                                self.displayAlert("Error", mess: errorString!)
+                            else {
+                                
+                                performUIUpdatesOnMain {
+                                    self.IBSave.isEnabled = true
+                                    self.IBFind.isEnabled = true
+                                    self.IBActivity.stopAnimating()
+                                    self.displayAlert("Error", mess: errorString!)
+                                }
                             }
+                            
                         }
                         
                     }
+                    else {
+                        performUIUpdatesOnMain {
+                            self.IBSave.isEnabled = true
+                            self.IBFind.isEnabled = true
+                            self.displayAlert("Error", mess: errorString!)
+                        }
+                    }
+                    
+                    
                     
                 }
-                else {
-                    performUIUpdatesOnMain {
-                        self.displayAlert("Error", mess: errorString!)
+                
+            }
+            else {
+                
+                //add product
+                setAddProduit(produit) { (success, errorString) in
+                    
+                    if success {
+                        self.config.produit_maj = true
+                        performUIUpdatesOnMain {
+                            self.IBSave.isEnabled = true
+                            self.IBFind.isEnabled = true
+                            self.IBActivity.stopAnimating()
+                            self.dismiss(animated: true, completion: nil)
+                        }
                     }
+                    else {
+                        performUIUpdatesOnMain {
+                            self.IBSave.isEnabled = true
+                            self.IBFind.isEnabled = true
+                            self.IBActivity.stopAnimating()
+                            self.displayAlert("Error", mess: errorString!)
+                        }
+                    }
+                    
                 }
-                
-                
                 
             }
             
-        }
-        else {
             
-            //add product
-            setAddProduit(produit) { (success, errorString) in
-                
-                if success {
-                    self.config.produit_maj = true
-                    performUIUpdatesOnMain {
-                        self.IBActivity.stopAnimating()
-                        self.dismiss(animated: true, completion: nil)
-                    }
-                }
-                else {
-                    performUIUpdatesOnMain {
-                        self.IBActivity.stopAnimating()
-                        self.displayAlert("Error", mess: errorString!)
-                    }
-                }
-                
-            }
             
         }
         
-       
+        
+        if client {
+            ActionClient()
+        }
+        else {
+            ActionUser()
+        }
+        
         
     }
     

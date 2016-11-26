@@ -20,8 +20,7 @@ class SettingsTableViewContr : UITableViewController {
     
     var users = [User]()
     
-    
-    
+   
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
@@ -36,6 +35,9 @@ class SettingsTableViewContr : UITableViewController {
         
         config.previousView = "SettingsTableViewContr"
         
+   
+        
+        
     }
     
     
@@ -44,9 +46,10 @@ class SettingsTableViewContr : UITableViewController {
         
         self.navigationItem.title = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
         
-        
         navigationController?.tabBarItem.title = traduction.pam3
-        IBLogout.title = traduction.pam4
+        //IBLogout.title = traduction.pam4
+        IBLogout.image = #imageLiteral(resourceName: "eteindre")
+        IBLogout.title = ""
         
         var cell:UITableViewCell
         
@@ -66,9 +69,22 @@ class SettingsTableViewContr : UITableViewController {
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.psp4
         
+        
+        
         cell = tableView.cellForRow(at: IndexPath(item: 4, section: 0))!
+        
         label = cell.contentView.subviews[0] as! UILabel
         label.text = traduction.psp5
+        
+        if config.mess_badge > 0 {
+            let badge = BadgeLabel(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 0.0))
+            badge.setup()
+            badge.badgeValue = "\(config.mess_badge!)"
+            cell.contentView.addSubview(badge)
+            label.frame = CGRect(origin: CGPoint.init(x: 20.0, y: 0) , size: label.frame.size)
+            
+            tabBarController?.tabBar.items![2].badgeValue = "\(config.mess_badge!)"
+        }
         
         cell = tableView.cellForRow(at: IndexPath(item: 5, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
@@ -150,7 +166,7 @@ class SettingsTableViewContr : UITableViewController {
             
         case 4:
             
-            self.displayAlert("info", mess: "Under construction...")
+            performSegue(withIdentifier: "alerte", sender: self)
             
         case 5:
             

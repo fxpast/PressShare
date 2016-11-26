@@ -50,6 +50,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
 
         if config.user_pseudo == "anonymous" {
             IBAddProduct.isEnabled = false
+            buttonEdit.isEnabled = false
         }
         
         users = fetchAllUser()
@@ -89,14 +90,18 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         navigationController?.tabBarItem.title = traduction.pam2
         if let _ = lat, let _ = lon {
             IBLogout.title = traduction.pmp1
+            IBLogout.image = nil
             
         }
         else if flgUser == false {
-            IBLogout.title = traduction.pam4
+            //IBLogout.title = traduction.pam4
+            IBLogout.image = #imageLiteral(resourceName: "eteindre")
+            IBLogout.title = ""
             
         }
         else {
             IBLogout.title = traduction.pmp1
+            IBLogout.image = nil
         }
         
         if config.produit_maj == true {
@@ -105,7 +110,6 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         }
        
         
-        IBTableView.reloadData()
     }
     
     
@@ -193,7 +197,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
 
-    fileprivate func RefreshData()  {
+    private func RefreshData()  {
         
         IBSearch.isHidden = true
         
@@ -344,6 +348,11 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
     
     private func chargerData() {
         
+        
+        guard let lesProduits = Produits.sharedInstance.produitsArray else {
+            return
+        }
+        
         var minimumLon = Double()
         var maximumLon = Double()
         var minimumLat = Double()
@@ -358,7 +367,7 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
         
-        for prod in Produits.sharedInstance.produitsArray {
+        for prod in lesProduits {
          
             if customOpeation.isCancelled {
                 break
@@ -397,8 +406,19 @@ class ListProduitViewController: UIViewController, UITableViewDelegate, UITableV
             
             if success {
                 
+                let prod1 =  self.produits[indexPath.row]
+                var i = 0
+                for produ in Produits.sharedInstance.produitsArray {
+                    i+=1
+                    let prod2 = Produit(dico: produ)
+                    if (prod2.prod_id == prod1.prod_id) {
+                        self.produits.remove(at: indexPath.row)
+                        Produits.sharedInstance.produitsArray.remove(at: i-1)
+                        break
+                    }
+                }
+
                 performUIUpdatesOnMain {
-                    self.produits.remove(at: indexPath.row)
                     if self.produits.count == 0 {
                         self.buttonEdit.title="Edit"
                         self.buttonEdit.isEnabled=false

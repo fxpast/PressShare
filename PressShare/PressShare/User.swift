@@ -102,6 +102,11 @@ class Config {
     var user_pass:String!
     var user_lastpass:String!
     var produit_maj:Bool!
+    var message_maj:Bool!
+    var vendeur_maj:Bool!
+    var mess_badge:Int!
+    
+    
     
  
     
@@ -125,7 +130,9 @@ class Config {
         user_pass = ""
         user_lastpass = ""
         produit_maj=false
-        
+        vendeur_maj=false
+        message_maj=false
+        mess_badge=0
     }
     
     static let sharedInstance = Config()
@@ -134,12 +141,12 @@ class Config {
 
 
 
-func getAllUsers(_ userId:Int, completionHandlerAllUsers: @escaping (_ success: Bool, _ usersArray: [[String : AnyObject]]?, _ errorString:String?) -> Void)
+func getUser(_ userId:Int, completionHandlerUser: @escaping (_ success: Bool, _ usersArray: [[String : AnyObject]]?, _ errorString:String?) -> Void)
 {
     // Create your request string with parameter name as defined in PHP file
     let body: String = "user_id=\(userId)"
     // Create Data from request
-    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getAllUsers.php")!)
+    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getUser.php")!)
     // set Request Type
     request.httpMethod = "POST"
     // Set Request Body
@@ -151,22 +158,22 @@ func getAllUsers(_ userId:Int, completionHandlerAllUsers: @escaping (_ success: 
     
     let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
         
-    
+        
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHandlerAllUsers(false, nil, "There was an error with your request: \(error!.localizedDescription)")
+            completionHandlerUser(false, nil, "There was an error with your request: \(error!.localizedDescription)")
             return
         }
         
         /* GUARD: Did we get a successful 2XX response? */
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerAllUsers(false, nil, "Your request returned a status code other than 2xx!, error : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
+            completionHandlerUser(false, nil, "Your request returned a status code other than 2xx!, error : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHandlerAllUsers(false, nil, "No data was returned by the request!")
+            completionHandlerUser(false, nil, "No data was returned by the request!")
             return
         }
         
@@ -176,27 +183,29 @@ func getAllUsers(_ userId:Int, completionHandlerAllUsers: @escaping (_ success: 
         do {
             parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHandlerAllUsers(false, nil, "Could not parse the data as JSON: '\(data)'")
+            completionHandlerUser(false, nil, "Could not parse the data as JSON: '\(data)'")
             return
         }
         
+        //print(parsedResult)
         let resultDico = parsedResult as! [String:AnyObject]
-        let resultArray = resultDico["allusers"] as! [[String:AnyObject]]
+        let resultArray = resultDico["user"] as! [[String:AnyObject]]
         
         
         if resultDico["success"] as! String == "1" {
-            completionHandlerAllUsers(true, resultArray, nil)
+            completionHandlerUser(true, resultArray, nil)
         }
         else {
-            completionHandlerAllUsers(false, nil, resultDico["error"] as? String)
+            completionHandlerUser(false, nil, resultDico["error"] as? String)
             
         }
         
         
-    }) 
+    })
     task.resume()
     
 }
+
 
 
 func AuthentiFacebook(_ config: Config, completionHandlerOAuthFacebook: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {

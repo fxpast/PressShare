@@ -278,7 +278,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         }
         
         let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
-        if (location < keybordY) {
+        if (Double(location) < Double(keybordY)) {
             
             var textField = UITextField()
             

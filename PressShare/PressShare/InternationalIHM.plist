@@ -70,7 +70,7 @@
 	<key>psp5</key>
 	<array>
 		<string>Mes alertes</string>
-		<string>Notification ou my alert</string>
+		<string>My notifications or alerts</string>
 	</array>
 	<key>psp6</key>
 	<array>
@@ -202,15 +202,20 @@
 		<string>commentaire</string>
 		<string>comment</string>
 	</array>
-    <key>pse8</key>
-    <array>
-        <string>Temps dispo</string>
-        <string>Available time</string>
-    </array>
-    <key>pse9</key>
-    <array>
-        <string>Etat du produit</string>
-        <string>Product state</string>
-    </array>    
+	<key>pse8</key>
+	<array>
+		<string>Temps dispo</string>
+		<string>Available time</string>
+	</array>
+	<key>pse9</key>
+	<array>
+		<string>Etat du produit</string>
+		<string>Product state</string>
+	</array>
+	<key>pse10</key>
+	<array>
+		<string>Echanger - Acheter</string>
+		<string>Exchange - Buy</string>
+	</array>
 </dict>
 </plist>

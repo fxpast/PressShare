@@ -22,6 +22,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     @IBOutlet weak var IBoda3: UIButton!
     @IBOutlet weak var IBoda4: UIButton!
     @IBOutlet weak var IBAnonyme: UIButton!
+     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -44,11 +45,13 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         config.cleaner()
         
         users = fetchAllUser()
         
         loginWithCurrentToken()
+        
         
     }
     
@@ -56,7 +59,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
         super.viewWillAppear(animated)
         
-        
+        IBActivity.isHidden = true
         subscibeToKeyboardNotifications()
         
         IBuser.text = ""
@@ -124,7 +127,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         }
         
         let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
-        if (location < keybordY) {
+        if (Double(location) < Double(keybordY)) {
         
             var textField = UITextField()
             
@@ -184,13 +187,56 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
         if segue.identifier == "tabbar"  {
             
-            let controller = segue.destination as! UITabBarController
-            let item1 = controller.tabBar.items![0]
-            item1.title = traduction.pam1
-            let item2 = controller.tabBar.items![1]
-            item2.title = traduction.pam2
-            let item3 = controller.tabBar.items![2]
-            item3.title = traduction.pam3
+            IBActivity.isHidden = false
+            self.IBActivity.startAnimating()
+            
+            getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
+                
+                
+                if success {
+                    
+                    Messages.sharedInstance.MessagesArray = messageArray
+                    
+                    performUIUpdatesOnMain {
+                        
+                        let controller = segue.destination as! UITabBarController
+                        let item1 = controller.tabBar.items![0]
+                        item1.title = self.traduction.pam1
+                        let item2 = controller.tabBar.items![1]
+                        item2.title = self.traduction.pam2
+                        let item3 = controller.tabBar.items![2]
+                        item3.title = self.traduction.pam3
+                        
+                        var i = 0
+                        for mess in Messages.sharedInstance.MessagesArray {
+                            
+                            let mess1 = Message(dico: mess)
+                            
+                            if mess1.destinataire == self.config.user_id && mess1.deja_lu_dest == false {
+                                i+=1
+                            }
+                        
+                        }
+                        if i > 0 {
+                           self.config.mess_badge = i
+                           item3.badgeValue = "\(i)"
+                        }
+                        
+                        self.IBActivity.stopAnimating()
+                  
+                    }
+                }
+                else {
+                    
+                    performUIUpdatesOnMain {
+                        self.IBActivity.stopAnimating()
+                        self.displayAlert("Error", mess: errorString!)
+                    }
+                }
+                
+            })
+        
+            
             
             
         }

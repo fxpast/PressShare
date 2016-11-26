@@ -490,5 +490,15 @@ class InternationalIHM {
         }
         
     }
+    var pse10:String!
+        {
+        
+        get {
+            let resultat = dico["pse10"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
     
 }
