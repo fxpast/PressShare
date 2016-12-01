@@ -55,6 +55,26 @@ class InternationalIHM {
     
     //MARK: Ouverture de l'application
     
+    var lang:String!
+        {
+        
+        get {
+            let resultat = dico["lang"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var devise:String!
+        {
+        
+        get {
+            let resultat = dico["devise"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
     
     var oda1:String!
         {

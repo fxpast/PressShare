@@ -96,7 +96,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         flgUser = false
         
-        
         if config.produit_maj == true {
             config.produit_maj = false
             RefreshData()
@@ -290,14 +289,31 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         RefreshData()
     }
     
-    fileprivate func RefreshData()  {
-        
-        let annoArray = IBMap.annotations as [AnyObject]
-        for item in annoArray {
-            IBMap.removeAnnotation(item as! MKAnnotation)
-        }
+    private func RefreshData()  {
         
         IBActivity.startAnimating()
+        
+        getCapital(config.user_id, completionHandlerCapital: {(success, capitalArray, errorString) in        
+            
+            if success {
+                
+                Capitals.sharedInstance.capitalsArray = capitalArray
+                for dictionary in Capitals.sharedInstance.capitalsArray {
+                    let capital = Capital(dico: dictionary)
+                    self.config.solde = capital.solde
+                }
+            }
+            else {
+                
+                performUIUpdatesOnMain {
+                    self.IBActivity.stopAnimating()
+                    self.displayAlert("Error", mess: errorString!)
+                }
+            }
+            
+            
+        })
+        
         
         getAllProduits(config.user_id) { (success, produitArray, errorString) in
             
@@ -350,7 +366,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
                 
                 performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
+                    
+                    let annoArray = self.IBMap.annotations as [AnyObject]
+                    for item in annoArray {
+                        self.IBMap.removeAnnotation(item as! MKAnnotation)
+                    }
+                    
                     self.IBMap.addAnnotations(annotations)
                     if let _ = self.userLon, let _ = self.userLat {
                         if !self.flgRegion {
@@ -359,6 +380,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                         }
                         
                     }
+                    self.IBActivity.stopAnimating()
                     
                 }
                 

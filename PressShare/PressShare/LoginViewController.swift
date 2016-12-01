@@ -64,6 +64,9 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
         IBuser.text = ""
         config.previousView = "LoginViewController"
+        Operations.sharedInstance.operationArray = nil
+        Messages.sharedInstance.MessagesArray = nil
+        
         
         IBoda1.text = traduction.oda1
         IBuser.placeholder = traduction.pmp3
@@ -103,14 +106,12 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         super.viewDidAppear(animated)
         
         
-        
         facebookButton = FBSDKLoginButton()
         view.addSubview(facebookButton)
         
         facebookButton.frame = IBFacebook.frame
         facebookButton.center = IBFacebook.center
         IBFacebook.isHidden = true
-        
         
         facebookButton.readPermissions = ["public_profile", "email", "user_friends"]
         facebookButton.delegate = self
@@ -166,7 +167,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     }
     
     
-    fileprivate func setUIEnabled(_ enabled: Bool) {
+    private func setUIEnabled(_ enabled: Bool) {
         IBuser.isEnabled = enabled
         IBPassword.isEnabled = enabled
         IBLogin.isEnabled = enabled
@@ -191,7 +192,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             self.IBActivity.startAnimating()
             
             getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
-                
                 
                 if success {
                     
@@ -236,8 +236,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                 
             })
         
-            
-            
             
         }
         
@@ -327,7 +325,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     //MARK: coreData function
     
     
-    fileprivate func fetchAllUser() -> [User] {
+    private func fetchAllUser() -> [User] {
         
         users.removeAll()
         // Create the Fetch Request
@@ -385,7 +383,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     }
     
     
-    fileprivate func loginWithLogout() -> Bool {
+    private func loginWithLogout() -> Bool {
         
         if (FBSDKAccessToken.current() != nil) {
             return false
@@ -524,7 +522,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     }
     
     
-    fileprivate func loginWithCurrentToken() -> Bool {
+    private func loginWithCurrentToken() -> Bool {
         
         if (FBSDKAccessToken.current() != nil)
         {
@@ -544,7 +542,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
     }
     
-    fileprivate func LoadFaceBook() {
+    private func LoadFaceBook() {
         
         let parameters = ["fields":"email"]
         FBSDKGraphRequest(graphPath: "me", parameters: parameters).start(completionHandler: { (connexion, result, error) in
@@ -601,17 +599,13 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             })
             
             
-            
-            
         })
         
         
     }
     
     
-    
-    
-    fileprivate func AffecterUser(_ aUser:User) {
+    private func AffecterUser(_ aUser:User) {
         
         
         config.user_id = aUser.user_id?.intValue
@@ -674,11 +668,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             }
             
             
-            
         }
-        
-        
-        
         
         
     }

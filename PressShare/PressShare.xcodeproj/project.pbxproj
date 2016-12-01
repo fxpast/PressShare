@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0B485A1DEF51F500B76652 /* Capital.swift */; };
+		DB0B485D1DEF522D00B76652 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0B485C1DEF522D00B76652 /* Operation.swift */; };
 		DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB2515861D831C6400B286F7 /* Model.xcdatamodeld */; };
 		DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */; };
 		DB2515981D83226800B286F7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515961D83226800B286F7 /* User.swift */; };
@@ -19,6 +21,8 @@
 		DB385C8D1DE603B500AD95FF /* ListAlerteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB385C8C1DE603B500AD95FF /* ListAlerteViewController.swift */; };
 		DB385C8F1DE612CF00AD95FF /* DetailAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB385C8E1DE612CF00AD95FF /* DetailAlertViewController.swift */; };
 		DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA351CE0FB870065ECEB /* BlackBox.swift */; };
+		DB5FFA061DEC9F93003BCA55 /* TutoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5FFA051DEC9F93003BCA55 /* TutoViewController.swift */; };
+		DB5FFA0A1DECA0B6003BCA55 /* AbonnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5FFA091DECA0B6003BCA55 /* AbonnerViewController.swift */; };
 		DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */; };
 		DB6BDF2F1DE46F24007EAFA3 /* VendeurViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6BDF2E1DE46F24007EAFA3 /* VendeurViewController.swift */; };
 		DB796C631CF4A2EE00BEA2F3 /* InternationalIHM.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */; };
@@ -54,6 +58,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DB0B485A1DEF51F500B76652 /* Capital.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Capital.swift; sourceTree = "<group>"; };
+		DB0B485C1DEF522D00B76652 /* Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
 		DB2515871D831C6400B286F7 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DB2515961D83226800B286F7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -66,6 +72,8 @@
 		DB385C8C1DE603B500AD95FF /* ListAlerteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListAlerteViewController.swift; sourceTree = "<group>"; };
 		DB385C8E1DE612CF00AD95FF /* DetailAlertViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailAlertViewController.swift; sourceTree = "<group>"; };
 		DB5EFA351CE0FB870065ECEB /* BlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackBox.swift; sourceTree = "<group>"; };
+		DB5FFA051DEC9F93003BCA55 /* TutoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutoViewController.swift; sourceTree = "<group>"; };
+		DB5FFA091DECA0B6003BCA55 /* AbonnerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbonnerViewController.swift; sourceTree = "<group>"; };
 		DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewContr.swift; sourceTree = "<group>"; };
 		DB6BDF2E1DE46F24007EAFA3 /* VendeurViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VendeurViewController.swift; sourceTree = "<group>"; };
 		DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InternationalIHM.plist; sourceTree = "<group>"; };
@@ -114,6 +122,8 @@
 				DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */,
 				DBA03CD71CECB31800B76896 /* Produit.swift */,
 				DB385C8A1DE5D99D00AD95FF /* Message.swift */,
+				DB0B485A1DEF51F500B76652 /* Capital.swift */,
+				DB0B485C1DEF522D00B76652 /* Operation.swift */,
 				DB314A731D929A0B0072D7D3 /* PayboxDirect.swift */,
 				DB314A791D92AF890072D7D3 /* Commercant.swift */,
 				DB314A771D92AF6F0072D7D3 /* Transaction.swift */,
@@ -134,6 +144,7 @@
 		DB5EFA3C1CE39B010065ECEB /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				DB5FFA091DECA0B6003BCA55 /* AbonnerViewController.swift */,
 				DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */,
 				DBA3C5311CE5141800CD826D /* ListProduitViewController.swift */,
 				DBA3C52E1CE5141800CD826D /* ProduitViewController.swift */,
@@ -144,6 +155,7 @@
 				DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */,
 				DB385C8C1DE603B500AD95FF /* ListAlerteViewController.swift */,
 				DB385C8E1DE612CF00AD95FF /* DetailAlertViewController.swift */,
+				DB5FFA051DEC9F93003BCA55 /* TutoViewController.swift */,
 				DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */,
 				DBF8D8201CB9A0B700BF706E /* ChangerPasse.swift */,
 			);
@@ -291,12 +303,16 @@
 				DB796C651CF4A3E900BEA2F3 /* InternationalIHM.swift in Sources */,
 				DBF8D8251CB9A0B700BF706E /* ChangerPasse.swift in Sources */,
 				DB314A781D92AF6F0072D7D3 /* Transaction.swift in Sources */,
+				DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */,
 				DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */,
 				DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */,
+				DB5FFA0A1DECA0B6003BCA55 /* AbonnerViewController.swift in Sources */,
 				DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */,
 				DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */,
 				DB314A741D929A0B0072D7D3 /* PayboxDirect.swift in Sources */,
+				DB0B485D1DEF522D00B76652 /* Operation.swift in Sources */,
 				DB2515981D83226800B286F7 /* User.swift in Sources */,
+				DB5FFA061DEC9F93003BCA55 /* TutoViewController.swift in Sources */,
 				DBA03CD81CECB31800B76896 /* Produit.swift in Sources */,
 				DB385C8D1DE603B500AD95FF /* ListAlerteViewController.swift in Sources */,
 				DBA3C5321CE5141800CD826D /* ProduitViewController.swift in Sources */,

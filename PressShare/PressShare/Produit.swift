@@ -51,6 +51,8 @@ struct Produit {
             
             prod_date = Date().dateFromString(dico["prod_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             prod_prix = Double(dico["prod_prix"] as! String)!
+      
+            
             prod_by_user = Int(dico["prod_by_user"] as! String)!
             prod_by_cat = Int(dico["prod_by_cat"] as! String)!
             prod_latitude = Double(dico["prod_latitude"] as! String)!
@@ -155,71 +157,6 @@ func getAllProduits(_ userId:Int, completionHandlerProduits: @escaping (_ succes
         }
         
     }) 
-    
-    
-    task.resume()
-    
-}
-
-
-func setUpdateProduit(_ user: User, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
-    
-    // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_email=\(user.user_email)&user_pass=\(user.user_pass)"
-    // Create Data from request
-    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updatepass.php")!)
-    // set Request Type
-    request.httpMethod = "POST"
-    // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
-    // Set Request Body
-    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
-    
-    
-    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-        
-        /* GUARD: Was there an error? */
-        guard (error == nil) else {
-            completionHandlerOAuth(false, "There was an error with your request: \(error!.localizedDescription)")
-            return
-        }
-        
-        /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuth(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
-            return
-        }
-        
-        /* GUARD: Was there any data returned? */
-        guard let data = data else {
-            completionHandlerOAuth(false, "No data was returned by the request!")
-            return
-            
-        }
-        
-        /* Parse the data */
-        let parsedResult: Any!
-        do {
-            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        } catch {
-            completionHandlerOAuth(false, "Could not parse the data as JSON: '\(data)'")
-            
-            return
-            
-        }
-        
-        let result = parsedResult as! [String:String]
-        
-        if (result["success"] == "1") {
-            completionHandlerOAuth(true, nil)
-        }
-        else {
-            completionHandlerOAuth(false, "impossible to update the passeword")
-            
-        }
-        
-    })
     
     
     task.resume()

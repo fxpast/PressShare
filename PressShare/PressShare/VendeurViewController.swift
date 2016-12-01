@@ -19,18 +19,20 @@ class VendeurViewController: UIViewController, UITextViewDelegate {
     var aproduit:Produit?
     
     var config = Config.sharedInstance
+    let traduction = InternationalIHM.sharedInstance
+    
     var fieldName = ""
     var keybordY:CGFloat! = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBInfoProduit.text = "\(aproduit!.prod_nom), \(aproduit!.prod_prix)"
+        IBInfoProduit.text = "\(aproduit!.prod_nom), \(FormaterMontant((aproduit?.prod_prix)!)) \(traduction.devise!)"
         getUser((aproduit?.prod_by_user)!, completionHandlerUser: {(success, usersArray, errorString) in
-        
+            
             if success {
                 
-               
+                
                 performUIUpdatesOnMain {
                     
                     if (usersArray?.count)! > 0 {
@@ -51,7 +53,7 @@ class VendeurViewController: UIViewController, UITextViewDelegate {
                 }
             }
             
-        
+            
         })
         
     }
@@ -85,19 +87,75 @@ class VendeurViewController: UIViewController, UITextViewDelegate {
         
         let actionValider = UIAlertAction(title: "Valider", style: .destructive, handler: { (action) in
             
-            self.config.vendeur_maj = true
-            performUIUpdatesOnMain {
-                
-                self.IBMessage.text = "Le produit : \(self.IBInfoProduit.text!) vient d'être acheté. Prenez contact avec le client pour la suite..."
-                self.ActionSend(self)
-                self.dismiss(animated: true, completion: nil)
-                self.dismiss(animated: true, completion: nil)
+            guard self.config.solde >= Double(self.aproduit!.prod_prix) else {
+                performUIUpdatesOnMain {
+                    self.displayAlert("Error", mess: "solde insuffisant!")
+                }
+                return
             }
+            
+            
+            self.config.vendeur_maj = true
+            self.config.solde = self.config.solde - Double(self.aproduit!.prod_prix)
+            
+            var capital = Capital(dico: [String : AnyObject]())
+            capital.solde = self.config.solde
+            capital.user_id = self.config.user_id
+            
+            
+            var operation = Operation(dico: [String : AnyObject]())
+            operation.user_id = self.config.user_id
+            operation.op_type = 2
+            operation.op_montant = Double(self.aproduit!.prod_prix)
+            operation.op_libelle = "achat produit"
+            
+            setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
+                
+                if success {
+                    
+                    setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                        
+                        if success {
+                            
+                            Operations.sharedInstance.operationArray = nil
+                            performUIUpdatesOnMain {
+                                
+                                self.IBMessage.text = "Le produit : \(self.IBInfoProduit.text!) vient d'être acheté. Prenez contact avec le client pour la suite..."
+                                self.ActionSend(self)
+                                self.dismiss(animated: true, completion: nil)
+                                self.dismiss(animated: true, completion: nil)
+                            }
+                            
+                        }
+                        else {
+                            performUIUpdatesOnMain {
+                                
+                                self.displayAlert("Error", mess: errorString!)
+                            }
+                        }
+                        
+                        
+                    })
+                    
+                    
+                    
+                }
+                else {
+                    performUIUpdatesOnMain {
+                        
+                        self.displayAlert("Error", mess: errorString!)
+                    }
+                }
+                
+                
+            })
+
+    
         })
         
         let actionCancel = UIAlertAction(title: "Annuler", style: .destructive, handler: { (action) in
-           
-     
+            
+            
             
         })
         
@@ -136,15 +194,15 @@ class VendeurViewController: UIViewController, UITextViewDelegate {
         setAddMessage(message, completionHandlerMessages: { (success, errorString) in
             
             if success {
-             
+                
                 performUIUpdatesOnMain {
-                  self.IBMessage.text = ""
-                  self.displayAlert("message", mess: "message envoyé au vendeur.")
+                    self.IBMessage.text = ""
+                    self.displayAlert("message", mess: "message envoyé au vendeur.")
                 }
             }
             else {
                 performUIUpdatesOnMain {
-                   self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert("Error", mess: errorString!)
                 }
             }
             
@@ -172,7 +230,7 @@ class VendeurViewController: UIViewController, UITextViewDelegate {
     
     //MARK: keyboard function
     
-
+    
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         

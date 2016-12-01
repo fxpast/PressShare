@@ -98,14 +98,16 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
                 }
             }
             
+            
         })
         
         
         
         
     }
+ 
     
-    @IBAction func IBRetour(_ sender: Any) {
+    @IBAction func ActionRetour(_ sender: Any) {
         
         IBRetour.isEnabled = false
         if (fenetre == 1 && aMessage?.deja_lu_dest == false) || (fenetre == 2 && aMessage?.deja_lu_exp == false)  {

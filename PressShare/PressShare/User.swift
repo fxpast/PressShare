@@ -105,7 +105,7 @@ class Config {
     var message_maj:Bool!
     var vendeur_maj:Bool!
     var mess_badge:Int!
-    
+    var solde:Double!
     
     
  
@@ -133,6 +133,7 @@ class Config {
         vendeur_maj=false
         message_maj=false
         mess_badge=0
+        solde=0
     }
     
     static let sharedInstance = Config()

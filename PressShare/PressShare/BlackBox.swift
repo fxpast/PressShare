@@ -33,6 +33,7 @@ extension UIViewController {
         
     }
     
+    
 }
 
 
@@ -49,6 +50,28 @@ extension Date {
 }
 
 
+func FormaterMontant(_ montant:Double) -> String {
+    
+    let numberFormatter = NumberFormatter()
+    numberFormatter.locale = Locale.current
+    numberFormatter.numberStyle = NumberFormatter.Style.decimal
+    numberFormatter.usesGroupingSeparator = true
+    return numberFormatter.string(from: NSNumber.init(value: montant))!
+    
+}
+
+func FormaterMontant(_ montant:String) -> Double? {
+    
+    let numberFormatter = NumberFormatter()
+    numberFormatter.locale = Locale.current
+    numberFormatter.numberStyle = NumberFormatter.Style.decimal
+    numberFormatter.usesGroupingSeparator = true
+    
+    let mont = montant.replacingOccurrences(of: " ", with: "")
+
+    return (numberFormatter.number(from: mont)?.doubleValue)!
+    
+}
 
 func StatusCode (_ code:Int) -> String {
     

@@ -71,7 +71,10 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             }
             
             IBNom.text =  thisproduit.prod_nom
-            IBPrix.text = String(thisproduit.prod_prix)
+            
+        
+            IBPrix.text = "\(FormaterMontant(thisproduit.prod_prix)) \(traduction.devise!)"
+            
             IBComment.text = thisproduit.prod_comment
             IBTemps.text = thisproduit.prod_tempsDispo
             star = thisproduit.prod_etat
@@ -322,10 +325,15 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             else if fieldName == "IBPrix" {
                 textField = IBPrix
                 
-                guard let _ = NumberFormatter().number(from: textField.text!) else {
+                let valeurfinal = textField.text!.replacingOccurrences(of: traduction.devise!, with: "")
+                
+                guard let prix = FormaterMontant(valeurfinal) else {
                     displayAlert("Error", mess: "valeur incorrecte")
                     return
                 }
+                print("touchesEnded avant ",prix)
+                textField.text = FormaterMontant(prix)
+                print("touchesEnded apres ",textField.text!)
                 
             }
             else if fieldName == "IBComment" {
@@ -448,18 +456,33 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         if textField.isEqual(IBPrix) {
             
-            guard let _ = NumberFormatter().number(from: IBPrix.text!) else {
-                
+            let valeurfinal = textField.text!.replacingOccurrences(of: traduction.devise!, with: "")
+         
+            guard let prix = FormaterMontant(valeurfinal) else {
                 displayAlert("Error", mess: "valeur incorrecte")
                 return false
-                
             }
+            
+            print("textFieldShouldReturn avant ",prix)
+            textField.text = FormaterMontant(prix)
+            print("textFieldShouldReturn apres ",textField.text!)
             
         }
         
         textField.endEditing(true)
         return true
         
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        
+        if textField.isEqual(IBPrix) {
+           textField.text = textField.text?.replacingOccurrences(of: traduction.devise!, with: "")
+           textField.text = textField.text?.replacingOccurrences(of: " ", with: "")
+           
+        }
+        
+        return true
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -482,6 +505,17 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         }
         
         
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        
+        if textField.isEqual(IBPrix) {
+            
+            textField.text =  "\(FormaterMontant(textField.text!)!) \(traduction.devise!)"
+            
+        }
+        
+        return true
     }
     
     
@@ -552,10 +586,20 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         }
         else if fieldName == "IBPrix" {
             textField = IBPrix
-            guard let _ = NumberFormatter().number(from: textField.text!) else {
+            
+            let valeurfinal = IBPrix.text!.replacingOccurrences(of: traduction.devise!, with: "")
+            
+            guard let prix = FormaterMontant(valeurfinal) else {
                 displayAlert("Error", mess: "valeur incorrecte")
                 return
             }
+            
+            
+            print("keyboardWillHide avant ",prix)
+            textField.text = FormaterMontant(prix)
+            print("keyboardWillHide apres ",textField.text!)
+            
+            
         }
         else if fieldName == "IBComment" {
             textField = IBComment
@@ -599,7 +643,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             return
         }
         
-        guard let _ = NumberFormatter().number(from: IBPrix.text!) else {
+        guard let _ = FormaterMontant(IBPrix.text!) else {
             
             displayAlert("Error", mess: "valeur prix incorrecte")
             return
@@ -711,7 +755,9 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                 produit.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
             }
             
-            produit.prod_prix = Double(IBPrix.text!)!
+            let valeurfinal = IBPrix.text!.replacingOccurrences(of: traduction.devise!, with: "")
+            
+            produit.prod_prix = FormaterMontant(valeurfinal)!
             produit.prod_by_user = config.user_id
             produit.prod_longitude = config.longitude
             produit.prod_latitude = config.latitude

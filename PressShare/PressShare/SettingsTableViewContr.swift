@@ -80,10 +80,20 @@ class SettingsTableViewContr : UITableViewController {
             let badge = BadgeLabel(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 0.0))
             badge.setup()
             badge.badgeValue = "\(config.mess_badge!)"
+            if cell.contentView.subviews.count > 1 {
+                cell.contentView.subviews[1].removeFromSuperview()
+                label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x - 10.0, y: 0) , size: label.frame.size)
+            }
             cell.contentView.addSubview(badge)
-            label.frame = CGRect(origin: CGPoint.init(x: 20.0, y: 0) , size: label.frame.size)
+            label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x + 10.0, y: 0) , size: label.frame.size)
             
             tabBarController?.tabBar.items![2].badgeValue = "\(config.mess_badge!)"
+        }
+        else if tabBarController?.tabBar.items![2].badgeValue == "1" {
+      
+            cell.contentView.subviews[1].removeFromSuperview()
+            label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x - 10, y: 0) , size: label.frame.size)
+            tabBarController?.tabBar.items![2].badgeValue  = nil
         }
         
         cell = tableView.cellForRow(at: IndexPath(item: 5, section: 0))!
@@ -158,7 +168,7 @@ class SettingsTableViewContr : UITableViewController {
             
         case 2:
             
-            self.displayAlert("info", mess: "Under construction...")
+            performSegue(withIdentifier: "abonner", sender: self)
             
         case 3:
             
@@ -170,7 +180,7 @@ class SettingsTableViewContr : UITableViewController {
             
         case 5:
             
-            self.displayAlert("info", mess: "Under construction...")
+             performSegue(withIdentifier: "tutoriel", sender: self)
             
             
         default:
