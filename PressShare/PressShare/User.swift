@@ -2,18 +2,22 @@
 //  User.swift
 //  PressShare
 //
+// Description : User account with physical adresse and geolocalization
+//
 //  Created by MacbookPRV on 09/09/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
+
+
 
 import Foundation
 import CoreData
 
 
 class User: NSManagedObject {
-
-// Insert code here to add functionality to your managed object subclass
-
+    
+    // Insert code here to add functionality to your managed object subclass
+    
     
     override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
         super.init(entity: entity, insertInto: context)
@@ -50,7 +54,7 @@ class User: NSManagedObject {
             user_pass = ""
             user_email = ""
             user_date = Date()
-            user_level = 0
+            user_level = 0 //level 0 = anonymous, level 1 = subscriber, level 2 = admin
             user_nom = ""
             user_prenom = ""
             user_adresse = ""
@@ -67,18 +71,276 @@ class User: NSManagedObject {
     
     
     
-}
-
-
-
-
-//MARK: Users Array
-class Users {
     
-    var usersArray :[[String:AnyObject]]!
-    static let sharedInstance = Users()
     
 }
+
+
+
+class MDBUser {
+    
+    
+    func getUser(_ userId:Int, completionHandlerUser: @escaping (_ success: Bool, _ usersArray: [[String : AnyObject]]?, _ errorString:String?) -> Void)
+    {
+    
+        // Create your request string with parameter name as defined in PHP file
+        let body: String = "user_id=\(userId)"
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getUser.php")!)
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let resultArray = resultDico["user"] as! [[String:AnyObject]]
+                    
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completionHandlerUser(true, resultArray, nil)
+                    }
+                    else {
+                        completionHandlerUser(false, nil, resultDico["error"] as? String)
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerUser(false, nil, errorStr)
+                }
+                
+            })
+            
+        })
+        task.resume()
+        
+    }
+    
+    func AuthentiFacebook(_ config: Config, completionHandlerOAuthFacebook: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
+        
+        // Create your request string with parameter name as defined in PHP file
+        let body: String = "user_email=\(config.user_email!)"
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_facebook.php")!)
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let resultArray = resultDico["user"] as! [[String:AnyObject]]
+                    
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completionHandlerOAuthFacebook(true, resultArray, nil)
+                    }
+                    else {
+                        completionHandlerOAuthFacebook(false, nil, resultDico["error"] as? String)
+                    }
+                    
+                }
+                else {
+                    completionHandlerOAuthFacebook(false, nil, errorStr)
+                }
+                
+            })
+            
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
+    func Authentification(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
+        
+        // Create your request string with parameter name as defined in PHP file
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)"
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_signIn.php")!)
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let resultArray = resultDico["user"] as! [[String:AnyObject]]
+                    
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completionHandlerOAuth(true, resultArray, nil)
+                    }
+                    else {
+                        completionHandlerOAuth(false, nil, resultDico["error"] as? String)
+                    }
+                    
+                }
+                else {
+                    completionHandlerOAuth(false, nil, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
+    func setUpdatePass(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+        
+        
+        // Create your request string with parameter name as defined in PHP file
+        let newpassword = (config.user_newpassword==true) ? 1 : 0
+        let body: String = "user_email=\(config.user_email!)&user_pass=\(config.user_pass!)&user_lastpass=\(config.user_lastpass!)&user_newpassword=\(newpassword)"
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updatePassword.php")!)
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let res = result as! [String:String]
+                    
+                    if (res["success"] == "1") {
+                        completionHandlerOAuth(true, nil)
+                    }
+                    else {
+                        completionHandlerOAuth(false, res["error"])
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerOAuth(false, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
+    func setUpdateUser(_ config: Config, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+        
+        
+        // Create your request string with parameter name as defined in PHP file
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_ville=\(config.user_ville!)&user_id=\(config.user_id!)&user_level=\(config.level!)"
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateUser.php")!)
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let res = result as! [String:String]
+                    
+                    if (res["success"] == "1") {
+                        completionHandlerUpdate(true, nil)
+                    }
+                    else {
+                        completionHandlerUpdate(false, res["error"])
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerUpdate(false, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
+    func setAddUser(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+        
+        
+        // Create your request string with parameter name as defined in PHP file
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_latitude=\(config.latitude!)&user_longitude=\(config.longitude!)&user_mapString=\(config.mapString!)&user_newpassword=\(config.user_newpassword!)"
+        
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_signUp.php")!)
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let res = result as! [String:String]
+                    
+                    if (res["success"] == "1") {
+                        completionHandlerOAuth(true, nil)
+                    }
+                    else {
+                        completionHandlerOAuth(false, res["error"])
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerOAuth(false, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
+    static let sharedInstance = MDBUser()
+    
+    
+}
+
 
 
 class Config {
@@ -101,14 +363,15 @@ class Config {
     var verifpassword:String!
     var user_pass:String!
     var user_lastpass:String!
-    var produit_maj:Bool!
+    var product_maj:Bool!
     var message_maj:Bool!
     var vendeur_maj:Bool!
     var mess_badge:Int!
-    var solde:Double!
+    var balance:Double!
+    var level:Int!
     
     
- 
+    
     
     func cleaner()  {
         
@@ -129,11 +392,12 @@ class Config {
         verifpassword = ""
         user_pass = ""
         user_lastpass = ""
-        produit_maj=false
-        vendeur_maj=false
-        message_maj=false
-        mess_badge=0
-        solde=0
+        product_maj = false
+        vendeur_maj = false
+        message_maj = false
+        mess_badge = 0
+        balance = 0
+        level = 0
     }
     
     static let sharedInstance = Config()
@@ -142,404 +406,13 @@ class Config {
 
 
 
-func getUser(_ userId:Int, completionHandlerUser: @escaping (_ success: Bool, _ usersArray: [[String : AnyObject]]?, _ errorString:String?) -> Void)
-{
-    // Create your request string with parameter name as defined in PHP file
-    let body: String = "user_id=\(userId)"
-    // Create Data from request
-    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getUser.php")!)
-    // set Request Type
-    request.httpMethod = "POST"
-    // Set Request Body
-    request.httpBody = body.data(using: String.Encoding.utf8)
-    // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
+
+//MARK: Users Array
+class Users {
     
-    
-    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-        
-        
-        /* GUARD: Was there an error? */
-        guard (error == nil) else {
-            completionHandlerUser(false, nil, "There was an error with your request: \(error!.localizedDescription)")
-            return
-        }
-        
-        /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerUser(false, nil, "Your request returned a status code other than 2xx!, error : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
-            return
-        }
-        
-        /* GUARD: Was there any data returned? */
-        guard let data = data else {
-            completionHandlerUser(false, nil, "No data was returned by the request!")
-            return
-        }
-        
-        
-        /* Parse the data */
-        let parsedResult: Any!
-        do {
-            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        } catch {
-            completionHandlerUser(false, nil, "Could not parse the data as JSON: '\(data)'")
-            return
-        }
-        
-        //print(parsedResult)
-        let resultDico = parsedResult as! [String:AnyObject]
-        let resultArray = resultDico["user"] as! [[String:AnyObject]]
-        
-        
-        if resultDico["success"] as! String == "1" {
-            completionHandlerUser(true, resultArray, nil)
-        }
-        else {
-            completionHandlerUser(false, nil, resultDico["error"] as? String)
-            
-        }
-        
-        
-    })
-    task.resume()
+    var usersArray :[[String:AnyObject]]!
+    static let sharedInstance = Users()
     
 }
-
-
-
-func AuthentiFacebook(_ config: Config, completionHandlerOAuthFacebook: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
-    
-    // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_email=\(config.user_email!)"
-    // Create Data from request
-    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_Facebook.php")!)
-    // set Request Type
-    request.httpMethod = "POST"
-    // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
-    // Set Request Body
-    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
-    
-    
-    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-        
-        /* GUARD: Was there an error? */
-        guard (error == nil) else {
-            completionHandlerOAuthFacebook(false, nil, "There was an error with your request: \(error!.localizedDescription)")
-            return
-        }
-        
-        /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuthFacebook(false, nil, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
-            return
-        }
-        
-        /* GUARD: Was there any data returned? */
-        guard let data = data else {
-            completionHandlerOAuthFacebook(false, nil, "No data was returned by the request!")
-            return
-            
-        }
-        
-        /* Parse the data */
-        let parsedResult: Any!
-        do {
-            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        } catch {
-            completionHandlerOAuthFacebook(false, nil, "Could not parse the data as JSON: '\(data)'")
-            
-            return
-            
-        }
-        
-        let resultDico = parsedResult as! [String:AnyObject]
-        let resultArray = resultDico["user"] as! [[String:AnyObject]]
-        
-        
-        if resultDico["success"] as! String == "1" {
-            completionHandlerOAuthFacebook(true, resultArray, nil)
-        }
-        else {
-            completionHandlerOAuthFacebook(false, nil, resultDico["error"] as? String)
-        }
-        
-    }) 
-    
-    
-    task.resume()
-    
-}
-
-
-func Authentification(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
-    
-    // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)"
-    // Create Data from request
-    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_signin.php")!)
-    // set Request Type
-    request.httpMethod = "POST"
-    // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
-    // Set Request Body
-    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
-    
-    
-    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-        
-        /* GUARD: Was there an error? */
-        guard (error == nil) else {
-            completionHandlerOAuth(false, nil, "There was an error with your request: \(error!.localizedDescription)")
-            return
-        }
-        
-        /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuth(false, nil, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
-            return
-        }
-        
-        /* GUARD: Was there any data returned? */
-        guard let data = data else {
-            completionHandlerOAuth(false, nil, "No data was returned by the request!")
-            return
-            
-        }
-        
-        /* Parse the data */
-        let parsedResult: Any!
-        do {
-            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        } catch {
-            completionHandlerOAuth(false, nil, "Could not parse the data as JSON: '\(data)'")
-            
-            return
-            
-        }
-        
-        //print(parsedResult)
-        
-        let resultDico = parsedResult as! [String:AnyObject]
-        let resultArray = resultDico["user"] as! [[String:AnyObject]]
-        
-        
-        if resultDico["success"] as! String == "1" {
-            completionHandlerOAuth(true, resultArray, nil)
-        }
-        else {
-            completionHandlerOAuth(false, nil, resultDico["error"] as? String)
-            
-        }
-        
-        
-    }) 
-    
-    
-    task.resume()
-    
-}
-
-
-func setUpdatePass(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
-    
-    // Create your request string with parameter name as defined in PHP file
-    
-    let newpassword = (config.user_newpassword==true) ? 1 : 0
-    let jsonBody: String = "user_email=\(config.user_email)&user_pass=\(config.user_pass)&user_lastpass=\(config.user_lastpass)&user_newpassword=\(newpassword)"
-    // Create Data from request
-    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updatepass.php")!)
-    // set Request Type
-    request.httpMethod = "POST"
-    // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
-    // Set Request Body
-    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
-    
-    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-        
-        /* GUARD: Was there an error? */
-        guard (error == nil) else {
-            completionHandlerOAuth(false, "There was an error with your request: \(error!.localizedDescription)")
-            return
-        }
-        
-        /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuth(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
-            return
-        }
-        
-        /* GUARD: Was there any data returned? */
-        guard let data = data else {
-            completionHandlerOAuth(false, "No data was returned by the request!")
-            return
-            
-        }
-        
-        /* Parse the data */
-        let parsedResult: Any!
-        do {
-            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        } catch {
-            completionHandlerOAuth(false, "Could not parse the data as JSON: '\(data)'")
-            
-            return
-            
-        }
-        
-        let result = parsedResult as! [String:String]
-        
-        if (result["success"] == "1") {
-            completionHandlerOAuth(true, nil)
-        }
-        else {
-            completionHandlerOAuth(false, result["error"])
-            
-        }
-        
-    }) 
-    
-    
-    task.resume()
-    
-}
-
-
-func setUpdateUser(_ config: Config, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
-    
-    // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)&user_adresse=\(config.user_adresse)&user_codepostal=\(config.user_codepostal)&user_nom=\(config.user_nom)&user_prenom=\(config.user_prenom)&user_email=\(config.user_email)&user_pays=\(config.user_pays)&user_ville=\(config.user_ville)&user_id=\(config.user_id)"
-    // Create Data from request
-    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateuser.php")!)
-    // set Request Type
-    request.httpMethod = "POST"
-    // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
-    // Set Request Body
-    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
-    
-    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-        
-        /* GUARD: Was there an error? */
-        guard (error == nil) else {
-            completionHandlerUpdate(false, "There was an error with your request: \(error!.localizedDescription)")
-            return
-        }
-        
-        /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerUpdate(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
-            return
-        }
-        
-        /* GUARD: Was there any data returned? */
-        guard let data = data else {
-            completionHandlerUpdate(false, "No data was returned by the request!")
-            return
-            
-        }
-        
-        /* Parse the data */
-        let parsedResult: Any!
-        do {
-            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        } catch {
-            completionHandlerUpdate(false, "Could not parse the data as JSON: '\(data)'")
-            
-            return
-            
-        }
-        
-        let result = parsedResult as! [String:String]
-        
-        if (result["success"] == "1") {
-            completionHandlerUpdate(true, nil)
-        }
-        else {
-            completionHandlerUpdate(false, result["error"])
-            
-        }
-        
-    }) 
-    
-    
-    task.resume()
-    
-}
-
-
-func setAddUser(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
-    
-
-    // Create your request string with parameter name as defined in PHP file
-    let jsonBody: String = "user_pseudo=\(config.user_pseudo)&user_pass=\(config.user_pass)&user_adresse=\(config.user_adresse)&user_codepostal=\(config.user_codepostal)&user_nom=\(config.user_nom)&user_prenom=\(config.user_prenom)&user_email=\(config.user_email)&user_pays=\(config.user_pays)&user_latitude=\(config.latitude)&user_longitude=\(config.longitude)&user_mapString=\(config.mapString)&user_newpassword=\(config.user_newpassword)"
-    
-    // Create Data from request
-    let request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_signup.php")!)
-    // set Request Type
-    request.httpMethod = "POST"
-    // Set content-type
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
-    // Set Request Body
-    request.httpBody = jsonBody.data(using: String.Encoding.utf8)
-    
-    let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-        
-        /* GUARD: Was there an error? */
-        guard (error == nil) else {
-            completionHandlerOAuth(false, "There was an error with your request: \(error!.localizedDescription)")
-            return
-        }
-        
-        /* GUARD: Did we get a successful 2XX response? */
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHandlerOAuth(false, "Your request returned a status code other than 2xx! : \(StatusCode(((response as? HTTPURLResponse)?.statusCode)!))")
-            return
-        }
-        
-        /* GUARD: Was there any data returned? */
-        guard let data = data else {
-            completionHandlerOAuth(false, "No data was returned by the request!")
-            return
-            
-        }
-        
-        /* Parse the data */
-        let parsedResult: Any!
-        do {
-            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        } catch {
-            completionHandlerOAuth(false, "Could not parse the data as JSON: '\(data)'")
-            
-            return
-            
-        }
-        
-        let result = parsedResult as! [String:String]
-        
-        if (result["success"] == "1") {
-            completionHandlerOAuth(true, nil)
-        }
-        else {
-            completionHandlerOAuth(false, result["error"])
-            
-        }
-        
-    }) 
-    
-    
-    task.resume()
-    
-}
-
-
 
 

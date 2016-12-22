@@ -2,9 +2,13 @@
 //  BadgeLabel.swift
 //  BadgeLabel
 //
+//Description : Create red flag with a count.
+
 //  Created by Roger Pastouret on 25/11/2016.
 //  Copyright © 2016 RP. All rights reserved.
 //
+
+
 
 import Foundation
 import UIKit
@@ -50,7 +54,7 @@ class BadgeLabel: UILabel {
             updateBadgeFrame()
         }
     }
-
+    
     
     // In case of numbers, remove the badge when reaching zero
     var shouldHideBadgeAtZero = true
@@ -72,7 +76,7 @@ class BadgeLabel: UILabel {
         
     }
     
-  
+    
     //MARK: -
     func setup() {
         
@@ -120,7 +124,7 @@ class BadgeLabel: UILabel {
         let lbl_duplicate = UILabel(frame: lblCopy.frame)
         lbl_duplicate.text = lblCopy.text
         lbl_duplicate.font = lblCopy.font
-
+        
         return lbl_duplicate
     }
     
@@ -138,7 +142,7 @@ class BadgeLabel: UILabel {
     }
     
     func removeBadge() {
-        UIView.animate(withDuration: 0.3) { 
+        UIView.animate(withDuration: 0.3) {
             self.isHidden = true
         }
     }

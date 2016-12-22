@@ -1,31 +1,34 @@
 //
-//  ViewController.swift
-//  PresseEchange
+//  UpdatePasswordViewContr.swift
+//  PressShare
+//
+//  Desciption : Update password from setting list or lost password from sign in view.
 //
 //  Created by MacbookPRV on 05/03/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
 
+
 import CoreData
 import UIKit
 
-class ChangerPasse : UIViewController, UITextFieldDelegate {
+class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
     
     
-    @IBOutlet weak var IBValider: UIBarButtonItem!
+    @IBOutlet weak var IBDone: UIBarButtonItem!
     @IBOutlet weak var IBCancel: UIBarButtonItem!
-    @IBOutlet weak var IBemail: UITextField!
-    @IBOutlet weak var IBVerifPass: UITextField!
-    @IBOutlet weak var IBAncienPass: UITextField!
-    @IBOutlet weak var IBNouvPass: UITextField!
+    @IBOutlet weak var IBEmail: UITextField!
+    @IBOutlet weak var IBCheckPass: UITextField!
+    @IBOutlet weak var IBOldPass: UITextField!
+    @IBOutlet weak var IBNewPass: UITextField!
     
     
     var fieldName = ""
     var keybordY:CGFloat! = 0
     
     let config = Config.sharedInstance
-    let traduction = InternationalIHM.sharedInstance
+    let translate = InternationalIHM.sharedInstance
     
     var users = [User]()
     
@@ -33,6 +36,26 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
     }
+    
+    //MARK: Locked landscapee
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return false
+        }
+    }
+    
     
     
     //MARK: View Controller Delegate
@@ -44,17 +67,17 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
         if config.previousView == "LoginViewController" {
             
-            navigationItem.title = traduction.oda4
+            navigationItem.title = translate.lostPassword
             if let nouvPass = config.user_newpassword {
                 
                 if nouvPass == true {
-                    IBemail.isHidden = false
-                    IBemail.text = config.user_email
+                    IBEmail.isHidden = false
+                    IBEmail.text = config.user_email
                     
-                    IBNouvPass.isHidden = false
-                    IBVerifPass.isHidden = false
+                    IBNewPass.isHidden = false
+                    IBCheckPass.isHidden = false
                     
-                    IBAncienPass.isHidden = true
+                    IBOldPass.isHidden = true
                     
                 }
             }
@@ -64,12 +87,12 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
             
             if config.user_newpassword == false {
                 
-                IBemail.isHidden = false
-                IBemail.text = config.user_email
+                IBEmail.isHidden = false
+                IBEmail.text = config.user_email
                 
-                IBAncienPass.isHidden = true
-                IBNouvPass.isHidden = true
-                IBVerifPass.isHidden = true
+                IBOldPass.isHidden = true
+                IBNewPass.isHidden = true
+                IBCheckPass.isHidden = true
                 
             }
         }
@@ -77,14 +100,14 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
         if config.previousView == "SettingsTableViewContr" {
             
-            self.navigationItem.title = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
+            self.navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
             
-            IBemail.isHidden = false
-            IBemail.text = config.user_email
+            IBEmail.isHidden = false
+            IBEmail.text = config.user_email
             
-            IBAncienPass.isHidden = false
-            IBNouvPass.isHidden = false
-            IBVerifPass.isHidden = false
+            IBOldPass.isHidden = false
+            IBNewPass.isHidden = false
+            IBCheckPass.isHidden = false
             
         }
         
@@ -96,13 +119,13 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
         subscibeToKeyboardNotifications()
         
-        IBCancel.title = traduction.pic1
-        IBValider.title = traduction.pic2
+        IBCancel.title = translate.cancel
+        IBDone.title = translate.done
         
-        IBAncienPass.placeholder = traduction.pic3
-        IBNouvPass.placeholder = traduction.pic6
-        IBVerifPass.placeholder = traduction.pic4
-        IBemail.placeholder = traduction.pic5
+        IBOldPass.placeholder = translate.oldPass
+        IBNewPass.placeholder = translate.newPass
+        IBCheckPass.placeholder = translate.checkPass
+        IBEmail.placeholder = translate.enterEmail
         
     }
     
@@ -118,12 +141,20 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
     }
     
-    fileprivate func fetchAllUser() -> [User] {
+    @IBAction func actionCancel(_ sender: AnyObject) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
+    //MARK: coreData function
+    
+    
+    private func fetchAllUser() -> [User] {
         
         
         users.removeAll()
         // Create the Fetch Request
-       
+        
         let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
         
         // Execute the Fetch Request
@@ -135,15 +166,13 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     }
     
     
-    @IBAction func ActionCancel(_ sender: AnyObject) {
-        dismiss(animated: true, completion: nil)
-    }
     
+    //MARK: Data User with update password
     
-    @IBAction func ActionValider(_ sender: AnyObject) {
+    @IBAction func actionDone(_ sender: AnyObject) {
         
         
-        guard IBemail.text != "" else {
+        guard IBEmail.text != "" else {
             displayAlert("Error", mess: "Email is empty")
             return
         }
@@ -153,28 +182,28 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
             
             if config.user_newpassword == true {
                 
-                guard IBNouvPass.text != "" else {
+                guard IBNewPass.text != "" else {
                     displayAlert("Error", mess: "nouveau mot de passe incorrect")
                     return
                 }
                 
-                guard IBVerifPass.text != "" else {
+                guard IBCheckPass.text != "" else {
                     displayAlert("Error", mess: "verification mot de passe incorrect")
                     return
                 }
                 
-                guard IBNouvPass.text == IBVerifPass.text else {
+                guard IBNewPass.text == IBCheckPass.text else {
                     displayAlert("Error", mess: "nouveau et verification mot de passe differents")
                     return
                 }
                 
-                config.user_lastpass = IBNouvPass.text!
+                config.user_lastpass = IBNewPass.text!
                 config.user_newpassword = false
             }
             else {
                 
                 config.user_lastpass = randomAlphaNumericString(8)
-                config.user_email = IBemail.text!
+                config.user_email = IBEmail.text!
                 config.user_newpassword = true
                 
             }
@@ -185,28 +214,28 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
         if config.previousView == "SettingsTableViewContr" {
             
-            guard IBAncienPass.text != "" else {
+            guard IBOldPass.text != "" else {
                 displayAlert("Error", mess: "ancien mot de passe incorrect")
                 return
             }
             
-            guard IBNouvPass.text != "" else {
+            guard IBNewPass.text != "" else {
                 displayAlert("Error", mess: "nouveau mot de passe incorrect")
                 return
             }
             
-            guard IBVerifPass.text != "" else {
+            guard IBCheckPass.text != "" else {
                 displayAlert("Error", mess: "verification mot de passe incorrect")
                 return
             }
             
-            guard IBNouvPass.text == IBVerifPass.text else {
+            guard IBNewPass.text == IBCheckPass.text else {
                 displayAlert("Error", mess: "nouveau et verification mot de passe differents")
                 return
             }
             
-            config.user_pass = IBAncienPass.text
-            config.user_lastpass = IBNouvPass.text!
+            config.user_pass = IBOldPass.text
+            config.user_lastpass = IBNewPass.text!
             config.user_newpassword = false
         }
         
@@ -227,9 +256,9 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         }
         
         
-        setUpdatePass(config) { (success, errorString) in
+        MDBUser.sharedInstance.setUpdatePass(config) { (success, errorString) in
             if success {
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     if self.config.user_newpassword == true {
                         
@@ -244,7 +273,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
             }
             else {
                 
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.displayAlert("Error", mess: errorString!)
                 }
             }
@@ -255,7 +284,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     }
     
     
-    fileprivate func randomAlphaNumericString(_ length: Int) -> String {
+    private func randomAlphaNumericString(_ length: Int) -> String {
         
         let allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         let allowedCharsCount = UInt32(allowedChars.characters.count)
@@ -271,6 +300,11 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     }
     
     
+    
+    
+    //MARK: textfield Delegate
+    
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         guard fieldName != "" && keybordY > 0 else {
@@ -283,17 +317,17 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
             var textField = UITextField()
             
             
-            if fieldName == "IBemail" {
-                textField = IBemail
+            if fieldName == "IBEmail" {
+                textField = IBEmail
             }
-            else if fieldName == "IBNouvPass" {
-                textField = IBNouvPass
+            else if fieldName == "IBNewPass" {
+                textField = IBNewPass
             }
-            else if fieldName == "IBVerifPass" {
-                textField = IBVerifPass
+            else if fieldName == "IBCheckPass" {
+                textField = IBCheckPass
             }
-            else if fieldName == "IBAncienPass" {
-                textField = IBAncienPass
+            else if fieldName == "IBOldPass" {
+                textField = IBOldPass
             }
             
             textField.endEditing(true)
@@ -303,9 +337,6 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     }
     
     
-    
-    //MARK: textfield Delegate
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(true)
         return true
@@ -314,17 +345,17 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        if textField.isEqual(IBemail) {
-            fieldName = "IBemail"
+        if textField.isEqual(IBEmail) {
+            fieldName = "IBEmail"
         }
-        else if textField.isEqual(IBNouvPass) {
-            fieldName = "IBNouvPass"
+        else if textField.isEqual(IBNewPass) {
+            fieldName = "IBNewPass"
         }
-        else if textField.isEqual(IBVerifPass) {
-            fieldName = "IBVerifPass"
+        else if textField.isEqual(IBCheckPass) {
+            fieldName = "IBCheckPass"
         }
-        else if textField.isEqual(IBAncienPass) {
-            fieldName = "IBAncienPass"
+        else if textField.isEqual(IBOldPass) {
+            fieldName = "IBOldPass"
         }
     }
     
@@ -355,17 +386,17 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         var textField = UITextField()
         
         
-        if fieldName == "IBemail" {
-            textField = IBemail
+        if fieldName == "IBEmail" {
+            textField = IBEmail
         }
-        else if fieldName == "IBNouvPass" {
-            textField = IBNouvPass
+        else if fieldName == "IBNewPass" {
+            textField = IBNewPass
         }
-        else if fieldName == "IBVerifPass" {
-            textField = IBVerifPass
+        else if fieldName == "IBCheckPass" {
+            textField = IBCheckPass
         }
-        else if fieldName == "IBAncienPass" {
-            textField = IBAncienPass
+        else if fieldName == "IBOldPass" {
+            textField = IBOldPass
         }
         
         if textField.isFirstResponder {
@@ -386,26 +417,26 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         var textField = UITextField()
         
         
-        if fieldName == "IBemail" {
-            textField = IBemail
+        if fieldName == "IBEmail" {
+            textField = IBEmail
         }
-        else if fieldName == "IBNouvPass" {
-            textField = IBNouvPass
+        else if fieldName == "IBNewPass" {
+            textField = IBNewPass
         }
-        else if fieldName == "IBVerifPass" {
-            textField = IBVerifPass
+        else if fieldName == "IBCheckPass" {
+            textField = IBCheckPass
         }
-        else if fieldName == "IBAncienPass" {
-            textField = IBAncienPass
+        else if fieldName == "IBOldPass" {
+            textField = IBOldPass
         }
         
         if textField.isFirstResponder {
             view.frame.origin.y = 0
         }
-    
+        
         fieldName = ""
         keybordY = 0
-    
+        
     }
     
     func getkeyboardHeight(notification:NSNotification)->CGFloat {
@@ -416,7 +447,7 @@ class ChangerPasse : UIViewController, UITextFieldDelegate {
         
     }
     
-
+    
     
     
     

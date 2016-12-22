@@ -2,37 +2,67 @@
 //  DetailAlertViewController.swift
 //  PressShare
 //
+//  Description : Content of sent message from client. owner can reply wether necessary
+//
 //  Created by MacbookPRV on 23/11/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+//Todo :Replace USD with $ in the text message
+//Todo :Translate IHM
+//Todo :Le message recu doit est cadré en haut de la zone de texte
+//Todo :Le message recu ne doit est modifiable
+
+
+
+
 import Foundation
 
 class DetailAlertViewController: UIViewController , UITextViewDelegate {
- 
     
-    @IBOutlet weak var IBEcrire: UITextView!
-    @IBOutlet weak var IBLire: UITextView!
+    
+    @IBOutlet weak var IBWrite: UITextView!
+    @IBOutlet weak var IBRead: UITextView!
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBSend: UIBarButtonItem!
-    @IBOutlet weak var IBRetour: UIBarButtonItem!
+    @IBOutlet weak var IBReturn: UIBarButtonItem!
     
-   
+    
     var aMessage:Message?
-    var fenetre:Int?
+    var aWindow:Int?
     var fieldName = ""
     var keybordY:CGFloat! = 0
     
     var config = Config.sharedInstance
-   
     
     
+    //MARK: Locked landscapee
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return false
+        }
+    }
+    
+    
+    //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        IBLire.text = aMessage?.contenu
+        IBRead.text = aMessage?.contenu
         
-     
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,47 +82,48 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
         
     }
     
+    //MARK: Data Message
     
-    @IBAction func ActionEnvoyer(_ sender: Any) {
+    @IBAction func actionSend(_ sender: Any) {
         
-        guard IBEcrire.text != "" else {
+        guard IBWrite.text != "" else {
             displayAlert("Error", mess: "message vide.")
             return
         }
         
         
         IBSend.isEnabled = false
-        IBEcrire.endEditing(true)
-        IBLire.endEditing(true)
+        IBWrite.endEditing(true)
+        IBRead.endEditing(true)
         var message = Message(dico: [String : AnyObject]())
         
         message.expediteur = config.user_id
-        if fenetre == 1  {
+        if aWindow == 1  {
             message.destinataire = (aMessage?.expediteur)!
         }
-        else if fenetre == 2  {
+        else if aWindow == 2  {
             message.destinataire = (aMessage?.destinataire)!
         }
         
         message.proprietaire = config.user_id
         message.client_id = (aMessage?.client_id)!
         message.vendeur_id = (aMessage?.vendeur_id)!
-        message.produit_id = (aMessage?.produit_id)!
-        message.contenu = IBEcrire.text
+        message.product_id = (aMessage?.product_id)!
+        message.contenu = IBWrite.text
         
-        setAddMessage(message, completionHandlerMessages: { (success, errorString) in
+        MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
             
             if success {
                 
-                performUIUpdatesOnMain {
-                    self.IBEcrire.text = ""
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.IBWrite.text = ""
                     self.IBSend.isEnabled = true
                     self.config.message_maj = true
                     self.displayAlert("message", mess: "message envoyé.")
                 }
             }
             else {
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBSend.isEnabled = true
                     self.displayAlert("Error", mess: errorString!)
                 }
@@ -105,13 +136,13 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
         
         
     }
- 
     
-    @IBAction func ActionRetour(_ sender: Any) {
+    
+    @IBAction func actionReturn (_ sender: Any) {
         
-        IBRetour.isEnabled = false
-        if (fenetre == 1 && aMessage?.deja_lu_dest == false) || (fenetre == 2 && aMessage?.deja_lu_exp == false)  {
-            dejalu()
+        IBReturn.isEnabled = false
+        if (aWindow == 1 && aMessage?.deja_lu_dest == false) || (aWindow == 2 && aMessage?.deja_lu_exp == false)  {
+            alreadyRead()
         }
         else {
             dismiss(animated: true, completion: nil)
@@ -120,47 +151,47 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
     }
     
     
-    private func dejalu() {
+    private func alreadyRead() {
         
         IBActivity.isHidden = false
         IBActivity.startAnimating()
         
         
-        if (fenetre == 1 && aMessage?.deja_lu_dest == false) {
+        if (aWindow == 1 && aMessage?.deja_lu_dest == false) {
             
             aMessage?.deja_lu_dest = true
             
         }
-
-        if (fenetre == 2 && aMessage?.deja_lu_exp == false)  {
+        
+        if (aWindow == 2 && aMessage?.deja_lu_exp == false)  {
             
             aMessage?.deja_lu_exp = true
             
         }
         
-        setUpdateMessage(aMessage!, completionHandlerUpdate: { (success, errorString) in
+        MDBMessage.sharedInstance.setUpdateMessage(aMessage!, completionHandlerUpdate: { (success, errorString) in
             
             if success {
                 self.config.message_maj = true
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.dismiss(animated: true, completion: nil)
                 }
             }
             else {
                 
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBSend.isEnabled = true
-                    self.IBRetour.isEnabled = true
+                    self.IBReturn.isEnabled = true
                     self.IBActivity.stopAnimating()
                     self.displayAlert("Error", mess: errorString!)
                 }
             }
             
         })
-
+        
     }
-   
+    
     
     
     //MARK: textfield Delegate
@@ -171,11 +202,11 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
     }
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        if textView.isEqual(IBEcrire) {
-            fieldName = "IBEcrire"
+        if textView.isEqual(IBWrite) {
+            fieldName = "IBWrite"
         }
-        else if textView.isEqual(IBLire) {
-            fieldName = "IBLire"
+        else if textView.isEqual(IBRead) {
+            fieldName = "IBRead"
         }
         return true
     }
@@ -196,11 +227,11 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
         
         var textView = UITextView()
         
-        if fieldName == "IBEcrire" {
-            textView = IBEcrire
+        if fieldName == "IBWrite" {
+            textView = IBWrite
         }
-        else  if fieldName == "IBLire" {
-            textView = IBLire
+        else  if fieldName == "IBRead" {
+            textView = IBRead
         }
         textView.endEditing(true)
         
@@ -233,11 +264,11 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
         var textView = UITextView()
         
         
-        if fieldName == "IBEcrire" {
-            textView = IBEcrire
+        if fieldName == "IBWrite" {
+            textView = IBWrite
         }
-        else if fieldName == "IBLire" {
-            textView = IBLire
+        else if fieldName == "IBRead" {
+            textView = IBRead
         }
         
         if textView.isFirstResponder {
@@ -258,11 +289,11 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
         var textView = UITextView()
         
         
-        if fieldName == "IBEcrire" {
-            textView = IBEcrire
+        if fieldName == "IBWrite" {
+            textView = IBWrite
         }
-        else if fieldName == "IBLire" {
-            textView = IBLire
+        else if fieldName == "IBRead" {
+            textView = IBRead
         }
         
         if textView.isFirstResponder {
@@ -283,6 +314,6 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
         
     }
     
-
+    
     
 }

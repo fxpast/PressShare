@@ -2,9 +2,19 @@
 //  CBViewController.swift
 //  PressShare
 //
+//  Description : Record Credit Card
+//
 //  Created by MacbookPRV on 21/09/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
+
+
+//Todo :Ajouter une liste pour avoir plusieurs carte de credit
+//Todo :Ajouter un bouton paypal
+//Todo :Ajouter un bouton paybox
+//Todo :Ajouter un bouton ajouter une carte de credit
+//Todo :Supprimer le bouton de droite "OK"
+
 
 import Foundation
 import UIKit
@@ -21,11 +31,35 @@ class CBViewController: UIViewController {
     var keybordY:CGFloat! = 0
     
     
+    
+    //MARK: Locked landscapee
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return false
+        }
+    }
+    
+    
+    //MARK: View Controller Delegate
+    
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
         
         subscibeToKeyboardNotifications()
+        
         
     }
     
@@ -34,6 +68,9 @@ class CBViewController: UIViewController {
         unsubscribeFromKeyboardNotifications()
         
     }
+    
+    
+    
     
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -77,6 +114,43 @@ class CBViewController: UIViewController {
             textField.endEditing(true)
             
         }
+        
+    }
+    
+    
+    
+    @IBAction func actionDone(_ sender: AnyObject) {
+        
+        
+        MDBCarteB.sharedInstance.getAllCard(userId: 1) { (success, cardArray, errorString) in
+            
+            if success {
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.displayAlert("info", mess: "Under construction...")
+                    print(cardArray!)
+                    self.dismiss(animated: true, completion: nil)
+                    
+                }
+                
+            }
+            else {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
+                    self.displayAlert("Error", mess: errorString!)
+                    
+                }
+            }
+            
+        }
+        
+        
+        
+    }
+    
+    
+    @IBAction func actionCancel(_ sender: AnyObject) {
+        dismiss(animated: true, completion: nil)
         
     }
     
@@ -203,7 +277,7 @@ class CBViewController: UIViewController {
         else if fieldName == "IBNom" {
             textField = IBNom
         }
-
+        
         
         if textField.isFirstResponder {
             view.frame.origin.y = 0
@@ -225,40 +299,5 @@ class CBViewController: UIViewController {
     }
     
     
-    
-    @IBAction func ActionDone(_ sender: AnyObject) {
-        
-    
-        getAllCard(userId: 1) { (success, cardArray, errorString) in
-            
-            if success {
-                
-                performUIUpdatesOnMain {
-                    self.displayAlert("info", mess: "Under construction...")
-                    print(cardArray!)
-                    self.dismiss(animated: true, completion: nil)
-                    
-                }
-                
-            }
-            else {
-                performUIUpdatesOnMain {
-                    
-                    self.displayAlert("Error", mess: errorString!)
-                    
-                }
-            }
-            
-        }
-        
-        
-        
-    }
-    
-    
-    @IBAction func ActionCancel(_ sender: AnyObject) {
-        dismiss(animated: true, completion: nil)
-        
-    }
     
 }

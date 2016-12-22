@@ -2,9 +2,16 @@
 //  SettingsTableViewContr.swift
 //  PressShare
 //
+//  Description : List of setting functions
+//
 //  Created by MacbookPRV on 22/05/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
+
+
+//Todo :Refresh notification alerte in automatic
+//Todo : Ajouter pastille à Transaction en cours
+//Todo :la mise à jour de la pastille alerte et settings ne fonctionne pas correctement
 
 
 import CoreData
@@ -16,11 +23,11 @@ class SettingsTableViewContr : UITableViewController {
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     
     let config = Config.sharedInstance
-    let traduction = InternationalIHM.sharedInstance
+    let translate = InternationalIHM.sharedInstance
     
     var users = [User]()
     
-   
+    
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
@@ -35,19 +42,15 @@ class SettingsTableViewContr : UITableViewController {
         
         config.previousView = "SettingsTableViewContr"
         
-   
-        
         
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.navigationItem.title = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
+        self.navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
         
-        navigationController?.tabBarItem.title = traduction.pam3
-        //IBLogout.title = traduction.pam4
+        navigationController?.tabBarItem.title = translate.settings
         IBLogout.image = #imageLiteral(resourceName: "eteindre")
         IBLogout.title = ""
         
@@ -55,26 +58,24 @@ class SettingsTableViewContr : UITableViewController {
         
         cell = tableView.cellForRow(at: IndexPath(item: 0, section: 0))!
         var label = cell.contentView.subviews[0] as! UILabel
-        label.text = traduction.psp1
+        label.text = translate.editProfil
         
         cell = tableView.cellForRow(at: IndexPath(item: 1, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
-        label.text = traduction.psp2
+        label.text = translate.connectInfo
         
         cell = tableView.cellForRow(at: IndexPath(item: 2, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
-        label.text = traduction.psp3
+        label.text = translate.mySubscrit
         
         cell = tableView.cellForRow(at: IndexPath(item: 3, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
-        label.text = traduction.psp4
-        
-        
+        label.text = translate.myCB
         
         cell = tableView.cellForRow(at: IndexPath(item: 4, section: 0))!
         
         label = cell.contentView.subviews[0] as! UILabel
-        label.text = traduction.psp5
+        label.text = translate.myNotif
         
         if config.mess_badge > 0 {
             let badge = BadgeLabel(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 0.0))
@@ -90,15 +91,20 @@ class SettingsTableViewContr : UITableViewController {
             tabBarController?.tabBar.items![2].badgeValue = "\(config.mess_badge!)"
         }
         else if tabBarController?.tabBar.items![2].badgeValue == "1" {
-      
+            
             cell.contentView.subviews[1].removeFromSuperview()
             label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x - 10, y: 0) , size: label.frame.size)
             tabBarController?.tabBar.items![2].badgeValue  = nil
         }
         
+        
         cell = tableView.cellForRow(at: IndexPath(item: 5, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
-        label.text = traduction.psp6
+        label.text = translate.runTransac
+        
+        cell = tableView.cellForRow(at: IndexPath(item: 6, section: 0))!
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = translate.ExplanTuto
         
     }
     
@@ -109,8 +115,9 @@ class SettingsTableViewContr : UITableViewController {
     }
     
     
-    fileprivate func fetchAllUser() -> [User] {
-        
+    //MARK: coreData function
+    
+    private func fetchAllUser() -> [User] {
         
         users.removeAll()
         // Create the Fetch Request
@@ -126,7 +133,7 @@ class SettingsTableViewContr : UITableViewController {
     }
     
     
-    @IBAction func ActionLogout(_ sender: AnyObject) {
+    @IBAction func actionLogout(_ sender: AnyObject) {
         
         //logout
         if users.count > 0 {
@@ -152,10 +159,7 @@ class SettingsTableViewContr : UITableViewController {
     }
     
     
-    
-    
     //MARK: Table View Controller Delegate
-    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -180,8 +184,11 @@ class SettingsTableViewContr : UITableViewController {
             
         case 5:
             
-             performSegue(withIdentifier: "tutoriel", sender: self)
+            performSegue(withIdentifier: "transaction", sender: self)
             
+        case 6:
+            
+            performSegue(withIdentifier: "tutoriel", sender: self)
             
         default:
             break
@@ -194,4 +201,4 @@ class SettingsTableViewContr : UITableViewController {
 }
 
 
-    
+

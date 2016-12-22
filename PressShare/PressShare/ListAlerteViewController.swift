@@ -1,22 +1,29 @@
 //
-//  AlerteTableViewController.swift
+//  ListAlerteTableViewController.swift
 //  PressShare
+//
+//  Description : List of Alerte, with inbox and send
 //
 //  Created by MacbookPRV on 23/11/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+//Todo :In the view "Send", add the recipient in the top of the line, e.g "A:Roger pastouret".
+//Todo :Translate IHM
+
+
 import Foundation
 
-    
+
 class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-        
+    
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBTableView: UITableView!
     @IBOutlet weak var IBEdit: UIBarButtonItem!
     @IBOutlet weak var IBNav: UINavigationItem!
-    @IBOutlet weak var IBReception: UIBarButtonItem!
-    @IBOutlet weak var IBEnvoi: UIBarButtonItem!
+    @IBOutlet weak var IBInbox: UIBarButtonItem!
+    @IBOutlet weak var IBSend: UIBarButtonItem!
     
     let reception = "Boite de Reception"
     let envoi = "Boite d'Envoi"
@@ -25,7 +32,10 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     let myqueue = OperationQueue()
     var config = Config.sharedInstance
     var aindex:Int!
-     var fenetre = 1
+    var aWindow = 1
+    
+    
+    //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,9 +53,9 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                     if !self.customOpeation.isCancelled
                     {
                         
-                        self.chargerDataInbox()
+                        self.chargeDataInbox()
                         
-                        performUIUpdatesOnMain {
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
                             
                             self.IBTableView.reloadData()
                             self.IBActivity.stopAnimating()
@@ -63,11 +73,11 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             
         }
         else {
-            RefreshData()
+            refreshData()
         }
         
         
-
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -77,7 +87,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         if config.message_maj == true {
             config.mess_badge = config.mess_badge - 1
             config.message_maj = false
-         
+            
             setUIEnabled(false)
             IBActivity.startAnimating()
             IBTableView.isHidden = true
@@ -85,23 +95,23 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             messages.removeAll()
             IBTableView.reloadData()
             
-            getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
+            MDBMessage.sharedInstance.getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
                 
                 
                 if success {
                     
                     Messages.sharedInstance.MessagesArray = messageArray
-            
-                    performUIUpdatesOnMain {
+                    
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
-                        if self.fenetre == 1 {
+                        if self.aWindow == 1 {
                             self.IBNav.title = self.reception
-                            self.chargerDataInbox()
+                            self.chargeDataInbox()
                         }
                         
-                        if self.fenetre == 2 {
+                        if self.aWindow == 2 {
                             self.IBNav.title = self.envoi
-                            self.chargerDataSend()
+                            self.chargeDataSend()
                         }
                         self.IBActivity.stopAnimating()
                         self.IBTableView.isHidden = false
@@ -111,7 +121,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
                 else {
                     
-                    performUIUpdatesOnMain {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.IBActivity.stopAnimating()
                         self.IBTableView.isHidden = false
                         self.displayAlert("Error", mess: errorString!)
@@ -130,16 +140,14 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     private func setUIEnabled(_ enabled: Bool) {
         
         IBEdit.isEnabled = enabled
-        IBReception.isEnabled = enabled
-        IBEnvoi.isEnabled = enabled
+        IBInbox.isEnabled = enabled
+        IBSend.isEnabled = enabled
         
     }
     
-    
-    
-    @IBAction func ActionEnvoi(_ sender: Any) {
+    @IBAction func actionSend(_ sender: Any) {
         
-        fenetre = 2
+        aWindow = 2
         IBActivity.startAnimating()
         setUIEnabled(false)
         IBTableView.isHidden = true
@@ -156,10 +164,10 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                 if !self.customOpeation.isCancelled
                 {
                     if let _ = Messages.sharedInstance.MessagesArray {
-                        self.chargerDataSend()
+                        self.chargeDataSend()
                     }
                     
-                    performUIUpdatesOnMain {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.IBTableView.reloadData()
                         self.IBActivity.stopAnimating()
                         self.IBTableView.isHidden = false
@@ -176,15 +184,15 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         
     }
     
-   
-    @IBAction func ActionReception(_ sender: Any) {
+    
+    @IBAction func actionInBox(_ sender: Any) {
         
-         fenetre = 1
-         RefreshData()
+        aWindow = 1
+        refreshData()
         
     }
-   
-    @IBAction func ActionEdit(_ sender: Any) {
+    
+    @IBAction func actionEdit(_ sender: Any) {
         
         
         if IBEdit.title == "Edit" {
@@ -199,14 +207,34 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    @IBAction func ActionCancel(_ sender: Any) {
+    @IBAction func actionCancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
     
     
-    private func chargerDataInbox() {
-  
-      
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        
+        if segue.identifier == "fromalerte" {
+            
+            
+            let nav = segue.destination as! UINavigationController
+            let controller = nav.topViewController as! DetailAlertViewController
+            
+            controller.aMessage = messages[aindex]
+            controller.aWindow = aWindow
+            
+        }
+        
+    }
+    
+    
+    
+    //MARK: Data Message
+    
+    private func chargeDataInbox() {
+        
+        
         for mess in Messages.sharedInstance.MessagesArray {
             
             if customOpeation.isCancelled {
@@ -224,7 +252,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    private func chargerDataSend() {
+    private func chargeDataSend() {
         
         
         for mess in Messages.sharedInstance.MessagesArray {
@@ -244,25 +272,8 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        
-        if segue.identifier == "fromalerte" {
-            
-          
-                let nav = segue.destination as! UINavigationController
-                let controller = nav.topViewController as! DetailAlertViewController
-                
-                controller.aMessage = messages[aindex]
-                controller.fenetre = fenetre
-            
-        }
-        
-    }
-
     
-
-    private func RefreshData()  {
+    private func refreshData()  {
         
         
         IBActivity.startAnimating()
@@ -273,8 +284,8 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         messages.removeAll()
         IBTableView.reloadData()
         
-        getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
-        
+        MDBMessage.sharedInstance.getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
+            
             
             if success {
                 
@@ -292,13 +303,13 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
                 if i > 0 {
                     self.config.mess_badge = i
-                   
+                    
                 }
                 
                 
-                self.chargerDataInbox()
+                self.chargeDataInbox()
                 
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBTableView.isHidden = false
                     self.IBTableView.reloadData()
@@ -307,7 +318,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             else {
                 
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBTableView.isHidden = false
                     self.setUIEnabled(true)
@@ -329,25 +340,25 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         
         //delete row
         let message =  messages[indexPath.row]
-        setDeleteMessage(message, completionHandlerDelMessage: { (success, errorString) in
-        
+        MDBMessage.sharedInstance.setDeleteMessage(message, completionHandlerDelMessage: { (success, errorString) in
+            
             
             if success {
                 
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     let mess1 =  self.messages[indexPath.row]
                     var i = 0
                     for mess in Messages.sharedInstance.MessagesArray {
-                       i+=1
-                       let mess2 = Message(dico: mess)
+                        i+=1
+                        let mess2 = Message(dico: mess)
                         if (mess2.message_id == mess1.message_id) {
                             if mess1.destinataire == self.config.user_id && mess1.deja_lu_dest == false {
                                 self.config.mess_badge = self.config.mess_badge - 1
                             }
                             self.messages.remove(at: indexPath.row)
                             Messages.sharedInstance.MessagesArray.remove(at: i-1)
-                          
+                            
                             
                             break
                         }
@@ -365,12 +376,12 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             else {
                 
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.displayAlert("Error", mess: errorString!)
                 }
             }
             
-        
+            
         })
         
         
@@ -400,7 +411,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             
         }
         
-        if (fenetre == 1 && message.deja_lu_dest == false) || (fenetre == 2 && message.deja_lu_exp == false)  {
+        if (aWindow == 1 && message.deja_lu_dest == false) || (aWindow == 2 && message.deja_lu_exp == false)  {
             adate.textColor = UIColor.blue
             acontenu.textColor = UIColor.blue
         }
@@ -424,6 +435,6 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         
         
     }
-
+    
     
 }

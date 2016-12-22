@@ -6,6 +6,10 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+//Todo :Les commentaires doivent être en anglais
+//Todo :Les classes doivent avoir en entete l'auteur , la date de création, de modification, la definitions, leurs paramètres
+//Todo :Les methodes doivent avoir en entete leur definition, leurs paramètre et leur @return
+
 import Foundation
 
 
@@ -13,8 +17,8 @@ class InternationalIHM {
     
     
     
-    fileprivate var dico:[String:AnyObject]
-    fileprivate var langue:Int
+    private var dico:[String:AnyObject]
+    private var langue:Int
     
     
     
@@ -75,54 +79,193 @@ class InternationalIHM {
         
     }
     
-    
-    var oda1:String!
+    var connectToPress:String!
         {
         
         get {
-            let resultat = dico["oda1"] as! [AnyObject]
+            let resultat = dico["connectToPress"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var myAbsence:String!
+        {
+        
+        get {
+            let resultat = dico["myAbsence"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var other:String!
+        {
+        
+        get {
+            let resultat = dico["other"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var interlocutor:String!
+        {
+        
+        get {
+            let resultat = dico["interlocutor"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var compliant:String!
+        {
+        
+        get {
+            let resultat = dico["compliant"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var subscribe:String!
+        {
+        
+        get {
+            let resultat = dico["subscribe"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var unsubscribe:String!
+        {
+        
+        get {
+            let resultat = dico["unsubscribe"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var wording:String!
+        {
+        
+        get {
+            let resultat = dico["wording"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var date:String!
+        {
+        
+        get {
+            let resultat = dico["date"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var type:String!
+        {
+        
+        get {
+            let resultat = dico["type"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var amount:String!
+        {
+        
+        get {
+            let resultat = dico["amount"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var balance:String!
+        {
+        
+        get {
+            let resultat = dico["balance"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var withdrawal:String!
+        {
+        
+        get {
+            let resultat = dico["withdrawal"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var deposit:String!
+        {
+        
+        get {
+            let resultat = dico["deposit"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+ 
+    var product:String!
+        {
+        
+        get {
+            let resultat = dico["product"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var signin:String!
+        {
+        
+        get {
+            let resultat = dico["signin"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var signup:String!
+        {
+        
+        get {
+            let resultat = dico["signup"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
     
-    var oda2:String!
+    var lostPassword:String!
         {
         
         get {
-            let resultat = dico["oda2"] as! [AnyObject]
+            let resultat = dico["lostPassword"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var oda3:String!
+    var anonyme:String!
         {
         
         get {
-            let resultat = dico["oda3"] as! [AnyObject]
-            return resultat[langue-1] as! String
-        }
-        
-    }
-    
-    
-    var oda4:String!
-        {
-        
-        get {
-            let resultat = dico["oda4"] as! [AnyObject]
-            return resultat[langue-1] as! String
-        }
-        
-    }
-    
-    var oda5:String!
-        {
-        
-        get {
-            let resultat = dico["oda5"] as! [AnyObject]
+            let resultat = dico["anonyme"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
@@ -132,41 +275,31 @@ class InternationalIHM {
     
     //MARK: Page avec Map
     
-    var pam1:String!
+    var map:String!
         {
         
         get {
-            let resultat = dico["pam1"] as! [AnyObject]
+            let resultat = dico["map"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pam2:String!
+    var list:String!
         {
         
         get {
-            let resultat = dico["pam2"] as! [AnyObject]
+            let resultat = dico["list"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pam3:String!
+    var settings:String!
         {
         
         get {
-            let resultat = dico["pam3"] as! [AnyObject]
-            return resultat[langue-1] as! String
-        }
-        
-    }
-    
-    var pam4:String!
-        {
-        
-        get {
-            let resultat = dico["pam4"] as! [AnyObject]
+            let resultat = dico["settings"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
@@ -174,247 +307,269 @@ class InternationalIHM {
     
     //MARK: Page sur paramètre
     
-    var psp1:String!
+    var editProfil:String!
         {
         
         get {
-            let resultat = dico["psp1"] as! [AnyObject]
+            let resultat = dico["editProfil"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var psp2:String!
+    var connectInfo:String!
         {
         
         get {
-            let resultat = dico["psp2"] as! [AnyObject]
+            let resultat = dico["connectInfo"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var psp3:String!
+    var mySubscrit:String!
         {
         
         get {
-            let resultat = dico["psp3"] as! [AnyObject]
+            let resultat = dico["mySubscrit"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var psp4:String!
+    var myCB:String!
         {
         
         get {
-            let resultat = dico["psp4"] as! [AnyObject]
+            let resultat = dico["myCB"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var psp5:String!
+    var myNotif:String!
         {
         
         get {
-            let resultat = dico["psp5"] as! [AnyObject]
+            let resultat = dico["myNotif"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
     
-    var psp6:String!
+    var runTransac:String!
         {
         
         get {
-            let resultat = dico["psp6"] as! [AnyObject]
+            let resultat = dico["runTransac"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
+    
+    var ExplanTuto:String!
+        {
+        
+        get {
+            let resultat = dico["ExplanTuto"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+    }
+    
     //MARK: Page sur modifier mon profil
     
     
-    var pmp1:String!
+    var cancel:String!
         {
         
         get {
-            let resultat = dico["pmp1"] as! [AnyObject]
+            let resultat = dico["cancel"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp2:String!
+    var save:String!
         {
         
         get {
-            let resultat = dico["pmp2"] as! [AnyObject]
+            let resultat = dico["save"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp3:String!
+    var pseudo:String!
         {
         
         get {
-            let resultat = dico["pmp3"] as! [AnyObject]
+            let resultat = dico["pseudo"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp4:String!
+    var mail:String!
         {
         
         get {
-            let resultat = dico["pmp4"] as! [AnyObject]
+            let resultat = dico["mail"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp5:String!
+    var password:String!
         {
         
         get {
-            let resultat = dico["pmp5"] as! [AnyObject]
+            let resultat = dico["password"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp6:String!
+    var nickName:String!
         {
         
         get {
-            let resultat = dico["pmp6"] as! [AnyObject]
+            let resultat = dico["nickName"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp7:String!
+    var surname:String!
         {
         
         get {
-            let resultat = dico["pmp7"] as! [AnyObject]
+            let resultat = dico["surname"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp8:String!
+    var adresse:String!
         {
         
         get {
-            let resultat = dico["pmp8"] as! [AnyObject]
+            let resultat = dico["adresse"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp9:String!
+    var zipCode:String!
         {
         
         get {
-            let resultat = dico["pmp9"] as! [AnyObject]
+            let resultat = dico["zipCode"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp10:String!
+    var city:String!
         {
         
         get {
-            let resultat = dico["pmp10"] as! [AnyObject]
+            let resultat = dico["city"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var exchange:String!
+        {
+        
+        get {
+            let resultat = dico["exchange"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp11:String!
+    var confirm:String!
         {
         
         get {
-            let resultat = dico["pmp11"] as! [AnyObject]
+            let resultat = dico["confirm"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pmp12:String!
+    var trade:String!
         {
         
         get {
-            let resultat = dico["pmp12"] as! [AnyObject]
+            let resultat = dico["trade"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
+    
+    var country:String!
+        {
+        
+        get {
+            let resultat = dico["country"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
     
     //MARK: Page sur information de connexion
     
     
-    var pic1:String!
+    
+    var done:String!
         {
         
         get {
-            let resultat = dico["pic1"] as! [AnyObject]
+            let resultat = dico["done"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pic2:String!
+    var oldPass:String!
         {
         
         get {
-            let resultat = dico["pic2"] as! [AnyObject]
+            let resultat = dico["oldPass"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pic3:String!
+    var checkPass:String!
         {
         
         get {
-            let resultat = dico["pic3"] as! [AnyObject]
+            let resultat = dico["checkPass"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pic4:String!
+    var enterEmail:String!
         {
         
         get {
-            let resultat = dico["pic4"] as! [AnyObject]
+            let resultat = dico["enterEmail"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pic5:String!
+    var newPass:String!
         {
         
         get {
-            let resultat = dico["pic5"] as! [AnyObject]
-            return resultat[langue-1] as! String
-        }
-        
-    }
-    
-    var pic6:String!
-        {
-        
-        get {
-            let resultat = dico["pic6"] as! [AnyObject]
+            let resultat = dico["newPass"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
@@ -422,99 +577,81 @@ class InternationalIHM {
     
     //MARK: Page sur épingle
     
-    var pse1:String!
+    
+    var tapALoc:String!
         {
         
         get {
-            let resultat = dico["pse1"] as! [AnyObject]
+            let resultat = dico["tapALoc"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pse2:String!
+    var findOnMap:String!
         {
         
         get {
-            let resultat = dico["pse2"] as! [AnyObject]
+            let resultat = dico["findOnMap"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pse3:String!
+    var description:String!
         {
         
         get {
-            let resultat = dico["pse3"] as! [AnyObject]
+            let resultat = dico["description"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pse4:String!
+    var price:String!
         {
         
         get {
-            let resultat = dico["pse4"] as! [AnyObject]
+            let resultat = dico["price"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pse5:String!
+    var comment:String!
         {
         
         get {
-            let resultat = dico["pse5"] as! [AnyObject]
+            let resultat = dico["comment"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pse6:String!
+    var availableTime:String!
         {
         
         get {
-            let resultat = dico["pse6"] as! [AnyObject]
+            let resultat = dico["availableTime"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var pse7:String!
+    var state:String!
         {
         
         get {
-            let resultat = dico["pse7"] as! [AnyObject]
+            let resultat = dico["state"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
-    
-    var pse8:String!
+    var exchangeBuy:String!
         {
         
         get {
-            let resultat = dico["pse8"] as! [AnyObject]
-            return resultat[langue-1] as! String
-        }
-        
-    }
-    var pse9:String!
-        {
-        
-        get {
-            let resultat = dico["pse9"] as! [AnyObject]
-            return resultat[langue-1] as! String
-        }
-        
-    }
-    var pse10:String!
-        {
-        
-        get {
-            let resultat = dico["pse10"] as! [AnyObject]
+            let resultat = dico["exchangeBuy"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         

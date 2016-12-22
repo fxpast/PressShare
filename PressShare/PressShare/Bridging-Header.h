@@ -1,6 +1,6 @@
 //
 //  Bridging-Header.h
-//  On the Map
+//  PressShare
 //
 //  Created by MacbookPRV on 05/05/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.

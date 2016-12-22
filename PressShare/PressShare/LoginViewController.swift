@@ -1,6 +1,8 @@
 //
 //  LoginViewController.swift
-//  On the Map
+//  PressShare
+//
+//  Description : Sign in and if you have forgotten you can ask a new one. Connection by user/password or by facebook
 //
 //  Created by MacbookPRV on 02/05/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
@@ -14,15 +16,15 @@ import UIKit
 
 class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFieldDelegate {
     
-    @IBOutlet weak var IBuser: UITextField!
+    @IBOutlet weak var IBUser: UITextField!
     @IBOutlet weak var IBPassword: UITextField!
     @IBOutlet weak var IBLogin: UIButton!
     @IBOutlet weak var IBFacebook: UIButton!
-    @IBOutlet weak var IBoda1: UILabel!
-    @IBOutlet weak var IBoda3: UIButton!
-    @IBOutlet weak var IBoda4: UIButton!
+    @IBOutlet weak var IBPressConnect: UILabel!
+    @IBOutlet weak var IBNewAccount: UIButton!
+    @IBOutlet weak var IBLostPass: UIButton!
     @IBOutlet weak var IBAnonyme: UIButton!
-     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
+    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -40,10 +42,36 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     var traduction = InternationalIHM.sharedInstance
     
     
+    //MARK: Locked landscapee
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return false
+        }
+    }
+    
+    
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        super.viewWillAppear(animated)
         
         
         config.cleaner()
@@ -53,32 +81,29 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         loginWithCurrentToken()
         
         
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        
-        super.viewWillAppear(animated)
-        
         IBActivity.isHidden = true
         subscibeToKeyboardNotifications()
         
-        IBuser.text = ""
+        IBUser.text = ""
         config.previousView = "LoginViewController"
         Operations.sharedInstance.operationArray = nil
         Messages.sharedInstance.MessagesArray = nil
+        Transactions.sharedInstance.transactionArray = nil
+        Capitals.sharedInstance.capitalsArray = nil
+        Products.sharedInstance.productsArray = nil
         
         
-        IBoda1.text = traduction.oda1
-        IBuser.placeholder = traduction.pmp3
-        IBPassword.placeholder = traduction.pmp5
+        IBPressConnect.text = traduction.connectToPress
+        IBUser.placeholder = traduction.pseudo
+        IBPassword.placeholder = traduction.password
         
-        IBLogin.setTitle(traduction.oda2, for: UIControlState())
+        IBLogin.setTitle(traduction.signin, for: UIControlState())
         IBLogin.titleLabel?.textAlignment = NSTextAlignment.center
-        IBoda3.setTitle(traduction.oda3, for: UIControlState())
-        IBoda3.titleLabel?.textAlignment = NSTextAlignment.center
-        IBoda4.setTitle(traduction.oda4, for: UIControlState())
-        IBoda4.titleLabel?.textAlignment = NSTextAlignment.center
-        IBAnonyme.setTitle(traduction.oda5, for: UIControlState())
+        IBNewAccount.setTitle(traduction.signup, for: UIControlState())
+        IBNewAccount.titleLabel?.textAlignment = NSTextAlignment.center
+        IBLostPass.setTitle(traduction.lostPassword, for: UIControlState())
+        IBLostPass.titleLabel?.textAlignment = NSTextAlignment.center
+        IBAnonyme.setTitle(traduction.anonyme, for: UIControlState())
         IBAnonyme.titleLabel?.textAlignment = NSTextAlignment.center
         
         
@@ -98,7 +123,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        unsubscribeFromKeyboardNotifications()
+        unSubscribeFromKeyboardNotifications()
         
     }
     
@@ -122,30 +147,30 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-       
+        
         guard fieldName != "" && keybordY > 0 else {
             return
         }
         
         let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
         if (Double(location) < Double(keybordY)) {
-        
+            
             var textField = UITextField()
             
             
             if fieldName == "IBPassword" {
                 textField = IBPassword
             }
-            else if fieldName == "IBuser" {
-                textField = IBuser
+            else if fieldName == "IBUser" {
+                textField = IBUser
             }
-        
+            
             textField.endEditing(true)
-        
+            
         }
         
     }
-
+    
     
     //MARK: textfield Delegate
     
@@ -158,8 +183,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
         
-        if textField.isEqual(IBuser) {
-            fieldName = "IBuser"
+        if textField.isEqual(IBUser) {
+            fieldName = "IBUser"
         }
         else if textField.isEqual(IBPassword) {
             fieldName = "IBPassword"
@@ -168,7 +193,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     
     private func setUIEnabled(_ enabled: Bool) {
-        IBuser.isEnabled = enabled
+        IBUser.isEnabled = enabled
         IBPassword.isEnabled = enabled
         IBLogin.isEnabled = enabled
         // adjust login button alpha
@@ -191,21 +216,21 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             IBActivity.isHidden = false
             self.IBActivity.startAnimating()
             
-            getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
+            MDBMessage.sharedInstance.getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
                 
                 if success {
                     
                     Messages.sharedInstance.MessagesArray = messageArray
                     
-                    performUIUpdatesOnMain {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
                         let controller = segue.destination as! UITabBarController
                         let item1 = controller.tabBar.items![0]
-                        item1.title = self.traduction.pam1
+                        item1.title = self.traduction.map
                         let item2 = controller.tabBar.items![1]
-                        item2.title = self.traduction.pam2
+                        item2.title = self.traduction.list
                         let item3 = controller.tabBar.items![2]
-                        item3.title = self.traduction.pam3
+                        item3.title = self.traduction.settings
                         
                         var i = 0
                         for mess in Messages.sharedInstance.MessagesArray {
@@ -215,27 +240,27 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                             if mess1.destinataire == self.config.user_id && mess1.deja_lu_dest == false {
                                 i+=1
                             }
-                        
+                            
                         }
                         if i > 0 {
-                           self.config.mess_badge = i
-                           item3.badgeValue = "\(i)"
+                            self.config.mess_badge = i
+                            item3.badgeValue = "\(i)"
                         }
                         
                         self.IBActivity.stopAnimating()
-                  
+                        
                     }
                 }
                 else {
                     
-                    performUIUpdatesOnMain {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.IBActivity.stopAnimating()
                         self.displayAlert("Error", mess: errorString!)
                     }
                 }
                 
             })
-        
+            
             
         }
         
@@ -247,23 +272,23 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     func  subscibeToKeyboardNotifications() {
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
     }
     
-
     
-    func unsubscribeFromKeyboardNotifications() {
+    
+    func unSubscribeFromKeyboardNotifications() {
         
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-       
+        
         
     }
     
     
-    func keyboardWillShow(notification:NSNotification) {
+    func keyBoardWillShow(notification:NSNotification) {
         
         
         var textField = UITextField()
@@ -272,12 +297,12 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         if fieldName == "IBPassword" {
             textField = IBPassword
         }
-        else if fieldName == "IBuser" {
-            textField = IBuser
+        else if fieldName == "IBUser" {
+            textField = IBUser
         }
         
         if textField.isFirstResponder {
-            keybordY = view.frame.size.height - getkeyboardHeight(notification: notification)
+            keybordY = view.frame.size.height - getKeyBoardHeight(notification: notification)
             if keybordY < textField.frame.origin.y {
                 view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
             }
@@ -297,8 +322,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         if fieldName == "IBPassword" {
             textField = IBPassword
         }
-        else if fieldName == "IBuser" {
-            textField = IBuser
+        else if fieldName == "IBUser" {
+            textField = IBUser
         }
         
         
@@ -312,7 +337,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
     }
     
-    func getkeyboardHeight(notification:NSNotification)->CGFloat {
+    func getKeyBoardHeight(notification:NSNotification)->CGFloat {
         
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
@@ -359,8 +384,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             // should check if specific permissions missing
             if result.grantedPermissions.contains("email")
             {
-                LoadFaceBook()
-                IBuser.isHidden = true
+                loadFaceBook()
+                IBUser.isHidden = true
                 IBPassword.isHidden = true
             }
         }
@@ -393,28 +418,28 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             for aUser in users {
                 if aUser.user_logout == false {
                     // User is already logged in
-                    self.AffecterUser(aUser)
+                    self.assignUser(aUser)
                     return true
                 }
             }
         }
         
-        IBuser.isHidden = false
+        IBUser.isHidden = false
         IBPassword.isHidden = false
         return false
         
     }
     
-    @IBAction func ActionAnonyme(_ sender: AnyObject) {
-        IBuser.text = "anonymous"
+    @IBAction func actionAnonyme(_ sender: AnyObject) {
+        IBUser.text = "anonymous"
         IBPassword.text = "anonymous"
         
-        ActionLogin(self)
+        actionLogin(self)
         
     }
     
     
-    @IBAction func ActionLogin(_ sender: AnyObject) {
+    @IBAction func actionLogin(_ sender: AnyObject) {
         
         if loginWithLogout() {
             return
@@ -424,7 +449,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             return
         }
         
-        guard IBuser.text != "" else {
+        guard IBUser.text != "" else {
             
             displayAlert("Error", mess: "Error, login is empty")
             return
@@ -441,15 +466,15 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         var flgOK = false
         
         config.user_pass = IBPassword.text!
-        config.user_pseudo = IBuser.text!
+        config.user_pseudo = IBUser.text!
         
         if users.count > 0 {
             for aUser in users {
                 
-                if aUser.user_pseudo == IBuser.text!  {
+                if aUser.user_pseudo == IBUser.text!  {
                     
                     if aUser.user_pass == config.user_pass {
-                        self.AffecterUser(aUser)
+                        self.assignUser(aUser)
                         flgOK = true
                         return
                     }
@@ -485,10 +510,10 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         }
         
         
-        Authentification(config) { (success, userArray, errorString) in
+        MDBUser.sharedInstance.Authentification(config) { (success, userArray, errorString) in
             
             if success {
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     if self.users.count > 0 {
                         
@@ -504,13 +529,13 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                     self.users = self.fetchAllUser()
                     
                     
-                    self.AffecterUser( User(dico: userArray![0], context: self.sharedContext))
+                    self.assignUser( User(dico: userArray![0], context: self.sharedContext))
                     
                 }
                 
             }
             else {
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.setUIEnabled(true)
                     self.displayAlert("Error", mess: errorString!)
                     
@@ -528,21 +553,21 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         {
             // User is already logged in
             
-            LoadFaceBook()
+            loadFaceBook()
             
             return true
         }
         else {
             
             
-            IBuser.isHidden = false
+            IBUser.isHidden = false
             IBPassword.isHidden = false
             return false
         }
         
     }
     
-    private func LoadFaceBook() {
+    private func loadFaceBook() {
         
         let parameters = ["fields":"email"]
         FBSDKGraphRequest(graphPath: "me", parameters: parameters).start(completionHandler: { (connexion, result, error) in
@@ -553,7 +578,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             if self.users.count > 0 {
                 for aUser in self.users {
                     if aUser.user_email == self.config.user_email  {
-                        self.AffecterUser(aUser)
+                        self.assignUser(aUser)
                         return
                         
                     }
@@ -561,11 +586,11 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                 
             }
             
-            AuthentiFacebook(self.config, completionHandlerOAuthFacebook: { (success, userArray, errorString) in
+            MDBUser.sharedInstance.AuthentiFacebook(self.config, completionHandlerOAuthFacebook: { (success, userArray, errorString) in
                 
                 
                 if success {
-                    performUIUpdatesOnMain {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
                         
                         if self.users.count > 0 {
@@ -582,13 +607,13 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                         
                         self.users = self.fetchAllUser()
                         
-                        self.AffecterUser(User(dico: userArray![0], context: self.sharedContext))
+                        self.assignUser(User(dico: userArray![0], context: self.sharedContext))
                         
                     }
                     
                 }
                 else {
-                    performUIUpdatesOnMain {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.setUIEnabled(true)
                         self.displayAlert("Error", mess: errorString!)
                         
@@ -605,7 +630,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     }
     
     
-    private func AffecterUser(_ aUser:User) {
+    private func assignUser(_ aUser:User) {
         
         
         config.user_id = aUser.user_id?.intValue
@@ -626,6 +651,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         config.user_adresse = aUser.user_adresse
         config.user_codepostal = aUser.user_codepostal
         config.verifpassword = ""
+        config.level = aUser.user_level as Int!
         
         if let pass = config.user_pass {
             aUser.user_pass = pass

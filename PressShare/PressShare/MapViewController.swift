@@ -1,10 +1,21 @@
 //
 //  ViewController.swift
-//  On the Map
+//  PressShare
+//
+//  Description : Map all products according the selected area. It is possible to look for a city or place.
+//                  The user is geolocalized by a blue pin on the map.
 //
 //  Created by MacbookPRV on 28/04/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
+
+
+//Todo: Tous les produits d'un utilisateur resilié sont masqués
+//Todo :Par defaut afficher les products selon la zone géolocalisée du l'utilisateur
+//Todo :Zoomer/Dezoomer sur la carte permet de reduire/augmenter le nombre de products sur la carte.
+
+
+
 
 import CoreLocation
 import CoreData
@@ -25,11 +36,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     var users = [User]()
     
-    var user_pseudo:String!
-    var user_id:Int!
+    var userPseudo:String!
+    var userId:Int!
     var config = Config.sharedInstance
-    var produits = Produits.sharedInstance
-    var traduction = InternationalIHM.sharedInstance
+    var products = Products.sharedInstance
+    var translate = InternationalIHM.sharedInstance
     var lat:CLLocationDegrees!
     var lon:CLLocationDegrees!
     var userLat:CLLocationDegrees!
@@ -54,7 +65,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         IBActivity.stopAnimating()
         
-        if config.user_pseudo == "anonymous" {
+        if config.level == 0 {
             IBAddProduct.isEnabled = false
         }
         
@@ -63,12 +74,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         IBtextfieldSearch.delegate = self
         locationManager.delegate = self
         
-        user_pseudo  = config.user_pseudo
-        user_id = config.user_id
+        userPseudo  = config.user_pseudo
+        userId = config.user_id
         
         users = fetchAllUser()
         
-        RefreshData()
+        
+        refreshData()
         
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         
@@ -88,17 +100,16 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         subscibeToKeyboardNotifications()
         
-        navigationController?.tabBarItem.title = traduction.pam1
-        //IBLogout.title = traduction.pam4
+        navigationController?.tabBarItem.title = translate.map
         IBLogout.image = #imageLiteral(resourceName: "eteindre")
         IBLogout.title = ""
-        IBtextfieldSearch.placeholder = traduction.pse3
+        IBtextfieldSearch.placeholder = translate.tapALoc
         
         flgUser = false
         
-        if config.produit_maj == true {
-            config.produit_maj = false
-            RefreshData()
+        if config.product_maj == true {
+            config.product_maj = false
+            refreshData()
         }
         
         
@@ -115,7 +126,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
     }
     
-    fileprivate func fetchAllUser() -> [User] {
+    //MARK: coreData function
+    
+    private func fetchAllUser() -> [User] {
         
         users.removeAll()
         // Create the Fetch Request
@@ -130,36 +143,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        guard fieldName != "" && keybordY > 0 else {
-            return
-        }
-        
-        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
-        
-        if (Double(location) < Double(keybordY)) {
-            
-            var textField = UITextField()
-            
-            
-            if fieldName == "IBtextfieldSearch" {
-                textField = IBtextfieldSearch
-            }
-        
-            
-            textField.endEditing(true)
-            
-        }
-        
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "mapproduit" {
+        if segue.identifier == "mapproduct" {
             
             let nav = segue.destination as! UINavigationController
-            let controller = nav.topViewController as! ListProduitViewController
+            let controller = nav.topViewController as! ListProductViewController
             if flgUser {
                 
                 controller.flgUser = true
@@ -189,14 +178,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         geoCode.geocodeAddressString(textField.text!, completionHandler: {(marks,error) in
             
             guard error == nil else {
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     self.displayAlert("error geocodeadresse", mess: error?.localizedDescription)
                 }
                 return
             }
             
-            performUIUpdatesOnMain {
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
                 
                 let placemark = marks![0] as CLPlacemark
                 
@@ -216,12 +205,37 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-       if textField.isEqual(IBtextfieldSearch) {
+        if textField.isEqual(IBtextfieldSearch) {
             fieldName = "IBtextfieldSearch"
         }
     }
     
     //MARK: keyboard function
+    
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        guard fieldName != "" && keybordY > 0 else {
+            return
+        }
+        
+        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
+        
+        if (Double(location) < Double(keybordY)) {
+            
+            var textField = UITextField()
+            
+            
+            if fieldName == "IBtextfieldSearch" {
+                textField = IBtextfieldSearch
+            }
+            
+            
+            textField.endEditing(true)
+            
+        }
+        
+    }
     
     func  subscibeToKeyboardNotifications() {
         
@@ -230,14 +244,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
     }
     
-    
     func unsubscribeFromKeyboardNotifications() {
         
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
     }
-    
     
     func keyboardWillShow(notification:NSNotification) {
         
@@ -284,28 +296,28 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     //MARK: Data Networking
-    @IBAction func ActionRefresh(_ sender: AnyObject) {
+    @IBAction func actionRefresh(_ sender: AnyObject) {
         
-        RefreshData()
+        refreshData()
     }
     
-    private func RefreshData()  {
+    private func refreshData()  {
         
         IBActivity.startAnimating()
         
-        getCapital(config.user_id, completionHandlerCapital: {(success, capitalArray, errorString) in        
+        MDBCapital.sharedInstance.getCapital(config.user_id, completionHandlerCapital: {(success, capitalArray, errorString) in
             
             if success {
                 
                 Capitals.sharedInstance.capitalsArray = capitalArray
                 for dictionary in Capitals.sharedInstance.capitalsArray {
                     let capital = Capital(dico: dictionary)
-                    self.config.solde = capital.solde
+                    self.config.balance = capital.balance
                 }
             }
             else {
                 
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.displayAlert("Error", mess: errorString!)
                 }
@@ -315,21 +327,21 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         })
         
         
-        getAllProduits(config.user_id) { (success, produitArray, errorString) in
+        MDBProduct.sharedInstance.getAllProducts(config.user_id) { (success, productArray, errorString) in
             
             if success {
                 
-                self.produits.produitsArray = produitArray
+                self.products.productsArray = productArray
                 
                 var annotations = [MKPointAnnotation]()
                 
-                for dictionary in self.produits.produitsArray! {
+                for dictionary in self.products.productsArray! {
                     
-                    let produit = Produit(dico: dictionary)
+                    let product = Product(dico: dictionary)
                     // Notice that the float values are being used to create CLLocationDegree values.
                     // This is a version of the Double type.
-                    let lat = CLLocationDegrees(produit.prod_latitude)
-                    let long = CLLocationDegrees(produit.prod_longitude)
+                    let lat = CLLocationDegrees(product.prod_latitude)
+                    let long = CLLocationDegrees(product.prod_longitude)
                     
                     // The lat and long are used to create a CLLocationCoordinates2D instance.
                     let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
@@ -337,8 +349,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                     // Here we create the annotation and set its coordiate, title, and subtitle properties
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = coordinate
-                    annotation.title = "\(produit.prod_nom) (user:\(produit.prod_by_user))"
-                    annotation.subtitle = "\(produit.prod_mapString) / \(produit.prod_comment)"
+                    annotation.title = "\(product.prod_nom) (user:\(product.prod_by_user))"
+                    annotation.subtitle = "\(product.prod_mapString) / \(product.prod_comment)"
                     
                     // Finally we place the annotation in an array of annotations.
                     annotations.append(annotation)
@@ -365,7 +377,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                     
                 }
                 
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     let annoArray = self.IBMap.annotations as [AnyObject]
                     for item in annoArray {
@@ -386,7 +398,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 
             }
             else {
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.displayAlert("Error", mess: errorString!)
                 }
@@ -395,8 +407,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
     }
     
-    
-    @IBAction func ActionLogout(_ sender: AnyObject) {
+    @IBAction func actionLogout(_ sender: AnyObject) {
         
         //logout
         if users.count > 0 {
@@ -421,7 +432,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     
-    
     //MARK: Location Delegate
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -431,7 +441,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         if flgFirst==false {
             flgFirst=true
-            RefreshData()
+            refreshData()
         }
         
     }
@@ -478,12 +488,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 flgUser = true
             }
             
-            performSegue(withIdentifier: "mapproduit", sender: self)
+            performSegue(withIdentifier: "mapproduct", sender: self)
             
         }
         
     }
-    
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         

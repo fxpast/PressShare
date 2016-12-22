@@ -1,10 +1,18 @@
 //
 //  InfoPostViewController.swift
-//  On the Map
+//  PressShare
+//
+//  Description : Manage, buy or exchange a product
 //
 //  Created by MacbookPRV on 02/05/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
+
+//Todo :Add un button to call listalertviewcontroller  class
+//Todo :In the price, the sign $ must be before the value
+//Todo :Desactiver bouton Echange Acheter quand il y a une transaction sur le product
+//Todo :Il y a un plantage à l'ouverture de la fenetre
+
 
 import Foundation
 import MapKit
@@ -14,7 +22,7 @@ import MobileCoreServices
 
 
 
-class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
@@ -42,10 +50,10 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     var client=false
     
     
-    var aproduit:Produit?
+    var aProduct:Product?
     
     var config = Config.sharedInstance
-    let traduction = InternationalIHM.sharedInstance
+    let translate = InternationalIHM.sharedInstance
     
     var filePath : String {
         let manager = FileManager.default
@@ -54,57 +62,78 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
+    //Bloquer le mode paysage
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return false
+        }
+    }
+    
+    
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         setUIHidden(true)
         
-        if let thisproduit = aproduit {
+        if let thisproduct = aProduct {
             
-            if thisproduit.prod_image == "" {
+            if thisproduct.prod_image == "" {
                 IBAddImage.image = #imageLiteral(resourceName: "noimage")
             }
             else {
-                IBAddImage.image = UIImage(data:thisproduit.prod_imageData)
+                IBAddImage.image = UIImage(data:thisproduct.prod_imageData)
             }
             
-            IBNom.text =  thisproduit.prod_nom
+            IBNom.text =  thisproduct.prod_nom
             
-        
-            IBPrix.text = "\(FormaterMontant(thisproduit.prod_prix)) \(traduction.devise!)"
             
-            IBComment.text = thisproduit.prod_comment
-            IBTemps.text = thisproduit.prod_tempsDispo
-            star = thisproduit.prod_etat
+            IBPrix.text = "\(BlackBox.sharedInstance.formatedAmount(thisproduct.prod_prix)) \(translate.devise!)"
+            
+            IBComment.text = thisproduct.prod_comment
+            IBTemps.text = thisproduct.prod_tempsDispo
+            star = thisproduct.prod_etat
             if star == 1 {
-                ActionStar1(IBStar1)
+                actionStar1(IBStar1)
             }
             else if star == 2 {
-                ActionStar2(IBStar2)
+                actionStar2(IBStar2)
             }
             else if star == 3 {
-                ActionStar3(IBStar3)
+                actionStar3(IBStar3)
             }
             else if star == 4 {
-                ActionStar4(IBStar4)
+                actionStar4(IBStar4)
             }
             else if star == 5 {
-                ActionStar5(IBStar5)
+                actionStar5(IBStar5)
             }
-            IBInfoLocation.text = thisproduit.prod_mapString
-            config.mapString = thisproduit.prod_mapString
-            config.latitude = thisproduit.prod_latitude
-            config.longitude = thisproduit.prod_longitude
+            IBInfoLocation.text = thisproduct.prod_mapString
+            config.mapString = thisproduct.prod_mapString
+            config.latitude = thisproduct.prod_latitude
+            config.longitude = thisproduct.prod_longitude
             
-            if config.user_id == thisproduit.prod_by_user {
+            if config.user_id == thisproduct.prod_by_user {
                 client=false
                 setUIEnabled(true)
             }
             else {
                 
-                if config.user_pseudo == "anonymous" {
+                if config.level == 0 {
                     IBSave.isEnabled = false
                     client=false
                 }
@@ -136,24 +165,24 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         subscibeToKeyboardNotifications()
         
-        IBCancel.title = traduction.pse1
+        IBCancel.title = translate.cancel
         if client {
             
-            IBSave.title = traduction.pse10
+            IBSave.title = translate.exchangeBuy
             
         }
         else {
             
-            IBSave.title = traduction.pse2
+            IBSave.title = translate.save
             
         }
-        IBInfoLocation.placeholder = traduction.pse3
-        IBFind.setTitle(traduction.pse4, for: UIControlState())
-        IBNom.placeholder = traduction.pse5
-        IBPrix.placeholder = traduction.pse6
-        IBComment.placeholder = traduction.pse7
-        IBTemps.placeholder = traduction.pse8
-        IBEtat.text = traduction.pse9
+        IBInfoLocation.placeholder = translate.tapALoc
+        IBFind.setTitle(translate.findOnMap, for: UIControlState())
+        IBNom.placeholder = translate.description
+        IBPrix.placeholder = translate.price
+        IBComment.placeholder = translate.comment
+        IBTemps.placeholder = translate.availableTime
+        IBEtat.text = translate.state
         
         if config.vendeur_maj == true {
             config.vendeur_maj = false
@@ -164,7 +193,6 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
@@ -172,69 +200,10 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    private func AddImage() {
-        
-        
-        guard UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) == true else {
-            
-            imageFromCamera(camera: false)
-            return
-        }
-        
-        let alertController = UIAlertController(title: "Capture photo", message: "Faites votre choix :", preferredStyle: .alert)
-        
-        let actionBiblio = UIAlertAction(title: "Photo", style: .destructive, handler: { (action) in
-            performUIUpdatesOnMain {
-                
-                self.imageFromCamera(camera: false)
-                
-            }
-            
-        })
-        
-        let actionCamera = UIAlertAction(title: "Camera", style: .destructive, handler: { (action) in
-            
-            performUIUpdatesOnMain {
-                
-                self.imageFromCamera(camera: true)
-                
-            }
-        })
-        
-        alertController.addAction(actionBiblio)
-        alertController.addAction(actionCamera)
-        
-        
-        self.present(alertController, animated: true) {
-            
-        }
-        
-        
-    }
-    
-    
-    private func imageFromCamera(camera:Bool) {
-        
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.modalPresentationStyle = UIModalPresentationStyle.currentContext;
-        imagePicker.mediaTypes = [kUTTypeImage as String]
-        
-        if camera {
-            imagePicker.sourceType = UIImagePickerControllerSourceType.camera
-        }
-        else {
-            imagePicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
-        }
-        
-        present(imagePicker, animated: true, completion: nil)
-    }
-    
-    
-    @IBAction func ActionCancel(_ sender: AnyObject) {
+    @IBAction func actionCancel(_ sender: AnyObject) {
         
         if IBMap.isHidden == true {
-            config.produit_maj = false
+            config.product_maj = false
             dismiss(animated: true, completion: nil)
         }
         else {
@@ -243,6 +212,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         
     }
+    
     
     private func setUIEnabled(_ enabled: Bool) {
         
@@ -286,26 +256,95 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
     }
     
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        
+        if segue.identifier == "vendeur" {
+            
+            let nav = segue.destination as! UINavigationController
+            let controller = nav.topViewController as! CreateTransViewController
+            controller.aProduct = aProduct
+        }
+        
+    }
+    
+    
+    //MARK: Image placeholder
+    private func addImage() {
+        
+        
+        guard UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) == true else {
+            
+            imageFromCamera(camera: false)
+            return
+        }
+        
+        let alertController = UIAlertController(title: "Capture photo", message: "Faites votre choix :", preferredStyle: .alert)
+        
+        let actionBiblio = UIAlertAction(title: "Photo", style: .destructive, handler: { (action) in
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                self.imageFromCamera(camera: false)
+                
+            }
+            
+        })
+        
+        let actionCamera = UIAlertAction(title: "Camera", style: .destructive, handler: { (action) in
+            
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                self.imageFromCamera(camera: true)
+                
+            }
+        })
+        
+        alertController.addAction(actionBiblio)
+        alertController.addAction(actionCamera)
+        
+        
+        self.present(alertController, animated: true) {
+            
+        }
+        
+        
+    }
+    
+    
+    private func imageFromCamera(camera:Bool) {
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.modalPresentationStyle = UIModalPresentationStyle.currentContext;
+        imagePicker.mediaTypes = [kUTTypeImage as String]
+        
+        if camera {
+            imagePicker.sourceType = UIImagePickerControllerSourceType.camera
+        }
+        else {
+            imagePicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
+        }
+        
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        if let thisproduit = aproduit {
+        if let thisproduct = aProduct {
             
-            if config.user_id != thisproduit.prod_by_user {
+            if config.user_id != thisproduct.prod_by_user {
                 
                 return
             }
         }
         
-        
         let location = (event?.allTouches?.first?.location(in: self.view))
         
-        
-        print("location.x:", (location?.x)!, "location.y:",(location?.y)!)
-        print("IBAddImage.x:", IBAddImage.frame.origin.x, "IBAddImage.y:",IBAddImage.frame.origin.y)
-        print("IBAddImage.h:", IBAddImage.frame.size.height, "IBAddImage.w:",IBAddImage.frame.size.width)
         if (location?.x)! > IBAddImage.frame.origin.x && (location?.x)! < IBAddImage.frame.size.width && (location?.y)! > IBAddImage.frame.origin.y  && (location?.y)! < (IBStar1.frame.origin.y+IBNom.frame.origin.y)/2{
             
-            AddImage()
+            addImage()
         }
         
         
@@ -325,15 +364,15 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             else if fieldName == "IBPrix" {
                 textField = IBPrix
                 
-                let valeurfinal = textField.text!.replacingOccurrences(of: traduction.devise!, with: "")
+                let finalValue = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
                 
-                guard let prix = FormaterMontant(valeurfinal) else {
+                guard let prix = BlackBox.sharedInstance.formatedAmount(finalValue) else {
                     displayAlert("Error", mess: "valeur incorrecte")
                     return
                 }
-                print("touchesEnded avant ",prix)
-                textField.text = FormaterMontant(prix)
-                print("touchesEnded apres ",textField.text!)
+                
+                textField.text = BlackBox.sharedInstance.formatedAmount(prix)
+                
                 
             }
             else if fieldName == "IBComment" {
@@ -352,6 +391,8 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
     }
     
+    
+    //MARK: star placeholder
     private func changeStar(_ sender: UIButton) {
         
         if sender.currentImage == #imageLiteral(resourceName: "whiteStar") {
@@ -375,7 +416,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    @IBAction func ActionStar1(_ sender: AnyObject) {
+    @IBAction func actionStar1(_ sender: AnyObject) {
         star = 1
         
         initStar()
@@ -383,7 +424,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    @IBAction func ActionStar2(_ sender: AnyObject) {
+    @IBAction func actionStar2(_ sender: AnyObject) {
         star = 2
         initStar()
         changeStar(sender as! UIButton)
@@ -391,7 +432,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    @IBAction func ActionStar3(_ sender: AnyObject) {
+    @IBAction func actionStar3(_ sender: AnyObject) {
         star = 3
         initStar()
         changeStar(sender as! UIButton)
@@ -400,7 +441,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    @IBAction func ActionStar4(_ sender: AnyObject) {
+    @IBAction func actionStar4(_ sender: AnyObject) {
         star = 4
         initStar()
         changeStar(sender as! UIButton)
@@ -410,7 +451,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    @IBAction func ActionStar5(_ sender: AnyObject) {
+    @IBAction func actionStar5(_ sender: AnyObject) {
         star = 5
         initStar()
         changeStar(sender as! UIButton)
@@ -419,21 +460,6 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         changeStar(IBStar2)
         changeStar(IBStar1)
     }
-    
-    
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        
-        if segue.identifier == "vendeur" {
-            
-            let nav = segue.destination as! UINavigationController
-            let controller = nav.topViewController as! VendeurViewController
-            controller.aproduit = aproduit
-        }
-        
-    }
-    
     
     
     //MARK: Image Picker Delegate
@@ -447,45 +473,34 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    
-    
     //MARK: textfield Delegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
-        
-        if textField.isEqual(IBPrix) {
-            
-            let valeurfinal = textField.text!.replacingOccurrences(of: traduction.devise!, with: "")
-         
-            guard let prix = FormaterMontant(valeurfinal) else {
-                displayAlert("Error", mess: "valeur incorrecte")
-                return false
-            }
-            
-            print("textFieldShouldReturn avant ",prix)
-            textField.text = FormaterMontant(prix)
-            print("textFieldShouldReturn apres ",textField.text!)
-            
-        }
         
         textField.endEditing(true)
         return true
         
     }
     
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         
         if textField.isEqual(IBPrix) {
-           textField.text = textField.text?.replacingOccurrences(of: traduction.devise!, with: "")
-           textField.text = textField.text?.replacingOccurrences(of: " ", with: "")
-           
+            
+            let finalValue = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
+            
+            guard let prix = BlackBox.sharedInstance.formatedAmount(finalValue) else {
+                displayAlert("Error", mess: "valeur incorrecte")
+                return
+            }
+            
+            textField.text = BlackBox.sharedInstance.formatedAmount(prix)
         }
         
-        return true
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        
         
         
         if textField.isEqual(IBNom) {
@@ -493,6 +508,9 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         }
         else if textField.isEqual(IBPrix) {
             fieldName = "IBPrix"
+            textField.text = textField.text?.replacingOccurrences(of: translate.devise!, with: "")
+            textField.text = textField.text?.replacingOccurrences(of: " ", with: "")
+            
         }
         else if textField.isEqual(IBComment) {
             fieldName = "IBComment"
@@ -505,13 +523,16 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         }
         
         
+        return true
     }
+    
+    
     
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         
         if textField.isEqual(IBPrix) {
             
-            textField.text =  "\(FormaterMontant(textField.text!)!) \(traduction.devise!)"
+            textField.text =  "\(BlackBox.sharedInstance.formatedAmount(textField.text!)!) \(translate.devise!)"
             
         }
         
@@ -543,6 +564,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     
     func keyboardWillShow(notification:NSNotification) {
         
+        IBSave.isEnabled = false
         
         var textField = UITextField()
         
@@ -578,6 +600,8 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     
     func keyboardWillHide(notification:NSNotification) {
         
+        IBSave.isEnabled = true
+        
         var textField = UITextField()
         
         
@@ -586,20 +610,6 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         }
         else if fieldName == "IBPrix" {
             textField = IBPrix
-            
-            let valeurfinal = IBPrix.text!.replacingOccurrences(of: traduction.devise!, with: "")
-            
-            guard let prix = FormaterMontant(valeurfinal) else {
-                displayAlert("Error", mess: "valeur incorrecte")
-                return
-            }
-            
-            
-            print("keyboardWillHide avant ",prix)
-            textField.text = FormaterMontant(prix)
-            print("keyboardWillHide apres ",textField.text!)
-            
-            
         }
         else if fieldName == "IBComment" {
             textField = IBComment
@@ -635,7 +645,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     
     //MARK: Data Networking
     
-    @IBAction func ActionFindMap(_ sender: AnyObject) {
+    @IBAction func actionFindMap(_ sender: AnyObject) {
         
         
         guard IBInfoLocation.text != "" else {
@@ -643,7 +653,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             return
         }
         
-        guard let _ = FormaterMontant(IBPrix.text!) else {
+        guard let _ = BlackBox.sharedInstance.formatedAmount(IBPrix.text!) else {
             
             displayAlert("Error", mess: "valeur prix incorrecte")
             return
@@ -661,7 +671,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         geoCode.geocodeAddressString(IBInfoLocation.text!, completionHandler: {(marks,error) in
             
             guard error == nil else {
-                performUIUpdatesOnMain {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     self.setUIHidden(true)
                     self.IBActivity.stopAnimating()
@@ -674,7 +684,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             self.config.latitude = Double((placemark.location?.coordinate.latitude)!)
             self.config.longitude = Double((placemark.location?.coordinate.longitude)!)
             
-            performUIUpdatesOnMain {
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
                 
                 
                 // Notice that the float values are being used to create CLLocationDegree values.
@@ -709,7 +719,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    @IBAction func ActionSubmit(_ sender: AnyObject) {
+    @IBAction func actionSubmit(_ sender: AnyObject) {
         
         
         guard IBNom.text != "" else {
@@ -724,16 +734,16 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         }
         
         
-        func ActionClient() {
+        func actionClient() {
             
             performSegue(withIdentifier: "vendeur", sender: self)
             
         }
         
-        func ActionUser() {
+        func actionUser() {
             
             
-            config.produit_maj = false
+            config.product_maj = false
             IBActivity.startAnimating()
             
             IBSave.isEnabled = false
@@ -743,43 +753,43 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             
             
             
-            var produit = Produit(dico: [String : AnyObject]())
+            var product = Product(dico: [String : AnyObject]())
             
-            produit.prod_nom = IBNom.text!
+            product.prod_nom = IBNom.text!
             if (IBAddImage.image?.isEqual(#imageLiteral(resourceName: "noimage")))! {
-                produit.prod_image = ""
+                product.prod_image = ""
             }
             else {
                 
-                produit.prod_image = "photo-\(config.user_id!)\(NSUUID().uuidString)"
-                produit.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
+                product.prod_image = "photo-\(config.user_id!)\(NSUUID().uuidString)"
+                product.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
             }
             
-            let valeurfinal = IBPrix.text!.replacingOccurrences(of: traduction.devise!, with: "")
+            let finalValue = IBPrix.text!.replacingOccurrences(of: translate.devise!, with: "")
             
-            produit.prod_prix = FormaterMontant(valeurfinal)!
-            produit.prod_by_user = config.user_id
-            produit.prod_longitude = config.longitude
-            produit.prod_latitude = config.latitude
-            produit.prod_mapString = config.mapString
-            produit.prod_comment = IBComment.text!
-            produit.prod_tempsDispo = IBTemps.text!
-            produit.prod_etat = star
+            product.prod_prix = BlackBox.sharedInstance.formatedAmount(finalValue)!
+            product.prod_by_user = config.user_id
+            product.prod_longitude = config.longitude
+            product.prod_latitude = config.latitude
+            product.prod_mapString = config.mapString
+            product.prod_comment = IBComment.text!
+            product.prod_tempsDispo = IBTemps.text!
+            product.prod_etat = star
             
             
-            if let thisproduit = aproduit {
+            if let thisproduct = aProduct {
                 
                 //delete product
-                setDeleteProduit(thisproduit) { (success, errorString) in
+                MDBProduct.sharedInstance.setDeleteProduct(thisproduct) { (success, errorString) in
                     
                     if success {
                         
                         //add product
-                        setAddProduit(produit) { (success, errorString) in
+                        MDBProduct.sharedInstance.setAddProduct(product) { (success, errorString) in
                             
                             if success {
-                                self.config.produit_maj = true
-                                performUIUpdatesOnMain {
+                                self.config.product_maj = true
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
                                     self.IBSave.isEnabled = true
                                     self.IBFind.isEnabled = true
                                     self.IBActivity.stopAnimating()
@@ -788,7 +798,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                             }
                             else {
                                 
-                                performUIUpdatesOnMain {
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
                                     self.IBSave.isEnabled = true
                                     self.IBFind.isEnabled = true
                                     self.IBActivity.stopAnimating()
@@ -800,7 +810,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                         
                     }
                     else {
-                        performUIUpdatesOnMain {
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
                             self.IBSave.isEnabled = true
                             self.IBFind.isEnabled = true
                             self.displayAlert("Error", mess: errorString!)
@@ -815,11 +825,11 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             else {
                 
                 //add product
-                setAddProduit(produit) { (success, errorString) in
+                MDBProduct.sharedInstance.setAddProduct(product) { (success, errorString) in
                     
                     if success {
-                        self.config.produit_maj = true
-                        performUIUpdatesOnMain {
+                        self.config.product_maj = true
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
                             self.IBSave.isEnabled = true
                             self.IBFind.isEnabled = true
                             self.IBActivity.stopAnimating()
@@ -827,7 +837,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                         }
                     }
                     else {
-                        performUIUpdatesOnMain {
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
                             self.IBSave.isEnabled = true
                             self.IBFind.isEnabled = true
                             self.IBActivity.stopAnimating()
@@ -845,10 +855,10 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         
         if client {
-            ActionClient()
+            actionClient()
         }
         else {
-            ActionUser()
+            actionUser()
         }
         
         
@@ -857,7 +867,7 @@ class ProduitViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     
     //MARK: Map function
     
-    fileprivate func saveMapRegion() {
+    private func saveMapRegion() {
         
         // Place the "center" and "span" of the map into a dictionary
         // The "span" is the width and height of the map in degrees.

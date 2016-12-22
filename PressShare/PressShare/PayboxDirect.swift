@@ -70,7 +70,7 @@ struct ResponseRequete {
 
 
 
-
+/*
 func creationWallet(_ carte: CarteBancaire, commercant:Commercant, transaction:Transaction, completionHandlerCreWallet: @escaping (_ success: Bool, _ walletArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
     
     // Create your request string with parameter name as defined in PHP file
@@ -139,6 +139,7 @@ func creationWallet(_ carte: CarteBancaire, commercant:Commercant, transaction:T
     
 }
 
+*/
 
 
 
