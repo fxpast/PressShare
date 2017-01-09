@@ -22,6 +22,7 @@ struct Capital {
     var user_id:Int
     var date_maj:Date
     var balance:Double
+    var failure_count:Int
     
     //MARK: Initialisation
     
@@ -31,11 +32,13 @@ struct Capital {
             user_id = Int(dico["user_id"] as! String)!
             date_maj = Date().dateFromString(dico["date_maj"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             balance = Double(dico["balance"] as! String)!
+            failure_count = Int(dico["user_id"] as! String)!
         }
         else {
             user_id = 0
             date_maj = Date()
             balance = 0
+            failure_count = 0
             
         }
         
@@ -54,10 +57,12 @@ class Capitals {
 
 class MDBCapital {
     
+    let translate = TranslateMessage.sharedInstance
+    
     func setUpdateCapital(_ capital: Capital, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_id=\(capital.user_id)&balance=\(capital.balance)"
+        let body: String = "user_id=\(capital.user_id)&balance=\(capital.balance)&failure_count=\(capital.failure_count)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateCapital.php")!)
         
@@ -101,7 +106,7 @@ class MDBCapital {
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getCapital.php")!)
-        let body: String = "user_id=\(userId)"
+        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         

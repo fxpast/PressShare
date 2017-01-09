@@ -14,6 +14,8 @@ import UIKit
 
 class BlackBox  {
     
+    let translate = TranslateMessage.sharedInstance
+    
     //Main queue
     func performUIUpdatesOnMain(_ updates: @escaping () -> Void) {
         DispatchQueue.main.async {
@@ -29,21 +31,36 @@ class BlackBox  {
         numberFormatter.locale = Locale.current
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
         numberFormatter.usesGroupingSeparator = true
-        return numberFormatter.string(from: NSNumber.init(value: amount))!
+        if translate.lang == "fr" {
+            
+            return "\(numberFormatter.string(from: NSNumber.init(value: amount))!) \(translate.devise!)"
+        }
+        else if translate.lang == "us" {
+            
+            return "\(translate.devise!) \(numberFormatter.string(from: NSNumber.init(value: amount))!)"
+            
+        }
         
+        return ""
     }
     
     //formated string to double like 99,999.99
     func formatedAmount(_ amount:String) -> Double? {
         
-        let numberFormatter = NumberFormatter()
-        numberFormatter.locale = Locale.current
-        numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        numberFormatter.usesGroupingSeparator = true
+        var amountClear = amount.replacingOccurrences(of: " ", with: "")
+        if translate.lang == "fr" {
+             amountClear = amount.replacingOccurrences(of: ".", with: "")
+             amountClear = amount.replacingOccurrences(of: ",", with: ".")
+        }
+        else if translate.lang == "us" {
+            amountClear = amount.replacingOccurrences(of: ",", with: "")
+        }
         
-        let amountClear = amount.replacingOccurrences(of: " ", with: "")
+        if amountClear == "" {
+            amountClear = "0"
+        }
         
-        return (numberFormatter.number(from: amountClear)?.doubleValue)!
+        return Double(amountClear)
         
     }
     
@@ -52,7 +69,6 @@ class BlackBox  {
     func statusCode (_ code:Int) -> String {
         
         var text:String
-        
         
         switch (code) {
         case 100: text = "Continue"
@@ -188,6 +204,19 @@ extension UITabBarController {
         }
     }}
 
+
+
+
+extension UIAlertController {
+    
+    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
+    }
+    
+    override open var shouldAutorotate: Bool {
+        return false
+    }
+}
 
 
 

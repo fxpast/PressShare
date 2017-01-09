@@ -9,13 +9,10 @@
 //
 
 
-//Todo:
-
 import CoreData
 import Foundation
 
 class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate  {
-    
     
     @IBOutlet weak var IBBarCancel: UIBarButtonItem!
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
@@ -35,14 +32,14 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     var fieldName = ""
     var keybordY:CGFloat! = 0
     var config = Config.sharedInstance
-    let translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     
     var operations = [Operation]()
     
     var customOpeation = BlockOperation()
     let myQueue = OperationQueue()
     
-    
+    let subscriptAmount = 10.0
     
     //MARK: Locked landscapee
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
@@ -73,9 +70,24 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        IBBarCancel.title = translate.cancel
+        
         users = fetchAllUser()
         
-        IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(config.balance!)) \(translate.devise!)"
+        
+        if translate.lang == "fr" {
+            
+            IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(config.balance!)) \(translate.devise!)"
+            
+        }
+        else if translate.lang == "us" {
+            
+            IBBalance.text = "\(translate.devise!) \(BlackBox.sharedInstance.formatedAmount(config.balance!))"
+        
+            
+        }
+        
+        
         IBBalance.isEnabled = false
         
         
@@ -114,11 +126,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             refreshData()
         }
         
-        
-        
     }
-    
-    
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -130,7 +138,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         IBButtonWithdr.setTitle(translate.done, for: UIControlState.normal)
         IBButtonDeposit.setTitle(translate.done, for: UIControlState.normal)
         
-        if config.level == 0 {
+        if config.level <= 0 {
             IBButtonSubUnsub.setTitle(translate.subscribe, for: UIControlState.normal)
             IBButtonDeposit.isEnabled = false
             IBButtonWithdr.isEnabled = false
@@ -154,7 +162,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     }
     
     
-    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         if fieldName == "IBWithdrawal" {
@@ -164,12 +171,18 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             IBDeposit.endEditing(true)
         }
         
-        
     }
     
     
     @IBAction func actionCancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func actionRefresh(_ sender: Any) {
+        
+        refreshData()
+        
     }
     
     
@@ -183,7 +196,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
             guard let _ = NumberFormatter().number(from: IBWithdrawal.text!) else {
                 
-                displayAlert("Error", mess: "valeur incorrecte")
+                displayAlert(translate.error, mess: translate.ErrorPrice)
                 return false
                 
             }
@@ -215,15 +228,15 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     @IBAction func actionWithdrawal(_ sender: Any) {
         
-        let alertController = UIAlertController(title: "Retrait", message: "Confirmer votre retrait", preferredStyle: .alert)
+        let alertController = UIAlertController(title: translate.withdrawal, message: translate.confirmWithdrawal, preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: "Valider", style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
             
             guard self.IBWithdrawal.text != "" else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    self.displayAlert("Error", mess: "montant retrait incorrect!")
+                    self.displayAlert(self.translate.error, mess: "\(self.translate.withdrawal!) : \(self.translate.ErrorPrice!)")
                 }
                 
                 return
@@ -232,7 +245,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             guard let amount = BlackBox.sharedInstance.formatedAmount(self.IBWithdrawal.text!) else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: "montant retrait incorrect!")
+                    self.displayAlert(self.translate.error, mess: "\(self.translate.withdrawal!) : \(self.translate.ErrorPrice!)")
                 }
                 
                 return
@@ -244,7 +257,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
             guard let balance = BlackBox.sharedInstance.formatedAmount(finalValue) else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: "balance incorrect!")
+                    self.displayAlert(self.translate.error, mess: "\(self.translate.balance!) : \(self.translate.ErrorPrice!)")
                     
                 }
                 return
@@ -254,7 +267,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             guard balance >= amount else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: "balance insuffisant!")
+                    self.displayAlert(self.translate.error, mess: self.translate.errorBalanceTrans)
                     
                 }
                 
@@ -266,12 +279,13 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             var capital = Capital(dico: [String : AnyObject]())
             capital.balance = self.config.balance
             capital.user_id = self.config.user_id
+            capital.failure_count = self.config.failure_count
             
             var operation = Operation(dico: [String : AnyObject]())
             operation.user_id = self.config.user_id
             operation.op_type = 2
-            operation.op_amount = amount
-            operation.op_wording = "retrait ponctuel"
+            operation.op_amount = -1 * amount
+            operation.op_wording = self.translate.OneTimeWithd
             
             MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
                 
@@ -283,18 +297,31 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                             
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                 
-                                self.IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(self.config.balance!)) \(self.translate.devise!)"
+                                
+                                if self.translate.lang == "fr" {
+                                    
+                                    self.IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(self.config.balance!)) \(self.translate.devise!)"
+                                    
+                                }
+                                else if self.translate.lang == "us" {
+                                    
+                                    self.IBBalance.text = "\(self.translate.devise!) \(BlackBox.sharedInstance.formatedAmount(self.config.balance!))"
+                                    
+                                    
+                                }
+                                
+                                
                                 self.IBWithdrawal.text = ""
                                 self.IBWithdrawal.endEditing(true)
                                 self.refreshData()
-                                self.displayAlert("info", mess: "votre retrait a été effectué")
+                                self.displayAlert("info", mess: self.translate.withdrawalMade)
                             }
                             
                         }
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                 
-                                self.displayAlert("Error", mess: errorString!)
+                                self.displayAlert(self.translate.error, mess: errorString!)
                             }
                         }
                         
@@ -307,7 +334,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
-                        self.displayAlert("Error", mess: errorString!)
+                        self.displayAlert(self.translate.error, mess: errorString!)
                     }
                 }
                 
@@ -317,7 +344,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
         })
         
-        let actionCancel = UIAlertAction(title: "Annuler", style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: translate.cancel, style: .destructive, handler: { (action) in
             
             
             
@@ -337,15 +364,15 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     @IBAction func actionDeposit(_ sender: Any) {
         
         
-        let alertController = UIAlertController(title: "Versement", message: "Confirmer votre versement", preferredStyle: .alert)
+        let alertController = UIAlertController(title: translate.deposit, message: translate.confirmPayment, preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: "Valider", style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
             
             guard self.IBDeposit.text != "" else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    self.displayAlert("Error", mess: "montant versement incorrect!")
+                    self.displayAlert(self.translate.error, mess: "\(self.translate.deposit!) : \(self.translate.ErrorPrice!)")
                 }
                 
                 return
@@ -355,82 +382,17 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    self.displayAlert("Error", mess: "montant versement incorrect!")
+                    self.displayAlert(self.translate.error, mess: "\(self.translate.deposit!) : \(self.translate.ErrorPrice!)")
                 }
                 
                 return
             }
             
-            
-            var finalValue = self.IBBalance.text! as String
-            finalValue = finalValue.replacingOccurrences(of: self.translate.devise!, with: "")
-            finalValue = finalValue.replacingOccurrences(of: " ", with: "")
-            
-            guard let balance = BlackBox.sharedInstance.formatedAmount(finalValue) else {
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: "balance incorrect!")
-                    
-                }
-                return
-            }
-            
-            self.config.balance = balance + amount
-            var capital = Capital(dico: [String : AnyObject]())
-            capital.balance = self.config.balance
-            capital.user_id = self.config.user_id
-            
-            var operation = Operation(dico: [String : AnyObject]())
-            operation.user_id = self.config.user_id
-            operation.op_type = 1
-            operation.op_amount = amount
-            operation.op_wording = "depôt ponctuel"
-            
-            MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
-                
-                if success {
-                    
-                    MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
-                        
-                        if success {
-                            
-                            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                
-                                self.IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(self.config.balance!)) \(self.translate.devise!)"
-                                self.IBDeposit.text = ""
-                                self.IBDeposit.endEditing(true)
-                                self.refreshData()
-                                self.displayAlert("info", mess: "votre versement a été effectué")
-                            }
-                            
-                        }
-                        else {
-                            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                
-                                self.displayAlert("Error", mess: errorString!)
-                            }
-                        }
-                        
-                        
-                    })
-                    
-                    
-                    
-                }
-                else {
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        
-                        self.displayAlert("Error", mess: errorString!)
-                    }
-                }
-                
-                
-            })
-            
-            
+            self.addDeposit(amount)
             
         })
         
-        let actionCancel = UIAlertAction(title: "Annuler", style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: translate.cancel, style: .destructive, handler: { (action) in
             
             
         })
@@ -447,14 +409,105 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     }
     
     
+    private func addDeposit(_ amount: Double) {
+        
+        config.balance = config.balance + amount
+        var capital = Capital(dico: [String : AnyObject]())
+        capital.balance = config.balance
+        capital.user_id = config.user_id
+        capital.failure_count = config.failure_count
+        
+        var operation = Operation(dico: [String : AnyObject]())
+        operation.user_id = config.user_id
+        operation.op_type = 1
+        operation.op_amount = amount
+        operation.op_wording = translate.OneTimeDepo
+        
+        MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
+            
+            if success {
+                
+                MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                    
+                    if success {
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            
+                            if self.translate.lang == "fr" {
+                                
+                                self.IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(self.config.balance!)) \(self.translate.devise!)"
+                                
+                            }
+                            else if self.translate.lang == "us" {
+                                
+                                self.IBBalance.text = "\(self.translate.devise!) \(BlackBox.sharedInstance.formatedAmount(self.config.balance!))"
+                                
+                                
+                            }
+                            
+                            
+                            self.IBDeposit.text = ""
+                            self.IBDeposit.endEditing(true)
+                            self.refreshData()
+                            self.displayAlert("info", mess: self.translate.paymentMade)
+                        }
+                        
+                    }
+                    else {
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            self.displayAlert(self.translate.error, mess: errorString!)
+                        }
+                    }
+                    
+                    
+                })
+                
+                
+                
+            }
+            else {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
+                    self.displayAlert(self.translate.error, mess: errorString!)
+                }
+            }
+            
+            
+        })
+        
+        
+    }
+    
     @IBAction func actionSubUnsub(_ sender: Any) {
         
-        
-        let alertController = UIAlertController(title: (self.config.level == 0) ? "Souscrire abonnement" : "Resilier abonnement", message: (self.config.level == 0) ? "Confirmer l'abonnement" : "Confirmer la resilisation", preferredStyle: .alert)
-        
-        let actionValider = UIAlertAction(title: "Valider", style: .destructive, handler: { (action) in
+        var mess = ""
+        if self.config.level <= 0 && self.config.balance == 0 {
             
-            self.config.level = (self.config.level == 0) ? 1 : 0
+            mess = translate.confirmSubsWithDepot
+        }
+        else if self.config.level <= 0 && self.config.balance > 0 {
+            
+            mess = translate.confirmSubs
+        }
+        else if self.config.level > 0 {
+            
+            mess = translate.confirmTermin
+        }
+        
+        
+        let alertController = UIAlertController(title: (self.config.level <= 0) ? translate.subscribeSubs : translate.cancelSubs, message: mess, preferredStyle: .alert)
+        
+        let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
+            
+            if self.config.level <= 0 && self.config.balance == 0 {
+            
+                self.addDeposit(self.subscriptAmount)
+            }
+            
+            
+            self.config.level = (self.config.level <= 0) ? 1 : 0
             
             MDBUser.sharedInstance.setUpdateUser(self.config) { (success, errorString) in
                 
@@ -465,7 +518,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                             self.assignUser(self.users[0])
                         }
                         
-                        if self.config.level == 0 {
+                        if self.config.level <= 0 {
                             self.IBButtonSubUnsub.setTitle(self.translate.subscribe, for: UIControlState.normal)
                             self.IBButtonDeposit.isEnabled = false
                             self.IBButtonWithdr.isEnabled = false
@@ -476,13 +529,13 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                             self.IBButtonWithdr.isEnabled = true
                         }
                         
-                        self.displayAlert("info", mess: "votre abonnement a été \((self.config.level == 0) ? "validé": "résilié")")
+                        self.displayAlert("info", mess: "\(self.translate.subscriptionHas!) \((self.config.level <= 0) ?  self.translate.canceled!: self.translate.confirmed!)")
                         
                     }
                 }
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.displayAlert("Error", mess: errorString!)
+                        self.displayAlert(self.translate.error, mess: errorString!)
                         
                     }
                 }
@@ -494,7 +547,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
         })
         
-        let actionCancel = UIAlertAction(title: "Annuler", style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: translate.cancel, style: .destructive, handler: { (action) in
             
             
             
@@ -569,7 +622,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
                     self.IBTableView.isHidden = false
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -727,19 +780,23 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         let index = adate.text?.index((adate.text?.startIndex)!, offsetBy: 10)
         adate.text = adate.text?.substring(to: index!)
         
+        //1: deposit, 2: withdrawal, 3: buy, 4: sell, 5:Commission
         
         let atype =  cell?.contentView.viewWithTag(20) as! UILabel
         if operation.op_type == 1 {
-            atype.text =  "Depôt"
+            atype.text =  translate.deposit
         }
         else if operation.op_type == 2 {
-            atype.text =  "retrait"
+            atype.text =  translate.withdrawal
         }
         else if operation.op_type == 3 {
-            atype.text =  "Achat"
+            atype.text =  translate.buy
         }
         else if operation.op_type == 4 {
-            atype.text =  "Vente"
+            atype.text =  translate.sell
+        }
+        else if operation.op_type == 5 {
+            atype.text =  translate.commission
         }
         
         let aAmount = cell?.contentView.viewWithTag(30) as! UILabel

@@ -34,7 +34,8 @@ struct Product {
     var prod_mapString:String
     var prod_comment:String
     var prod_tempsDispo:String
-    var prod_etat:Int
+    var prod_etat:Int //number of star
+    var prod_hidden:Bool
     
     //MARK: Initialisation
     
@@ -66,7 +67,8 @@ struct Product {
             prod_mapString = dico["prod_mapString"] as! String
             prod_comment = dico["prod_comment"] as! String
             prod_tempsDispo = dico["prod_tempsDispo"] as! String
-            prod_etat = Int(dico["prod_etat"] as! String)!
+            prod_etat = Int(dico["prod_etat"] as! String)!            
+            prod_hidden = (Int(dico["prod_hidden"] as! String)! == 0) ? false : true
             
         }
         else {
@@ -85,6 +87,7 @@ struct Product {
             prod_comment = ""
             prod_tempsDispo = ""
             prod_etat = 0
+            prod_hidden=false
             
         }
         
@@ -104,11 +107,13 @@ class Products {
 
 class MDBProduct {
     
+    let translate = TranslateMessage.sharedInstance
+    
     func getAllProducts(_ userId:Int, completionHandlerProducts: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getAllProducts.php")!)
-        let body: String = "user_id=\(userId)"
+        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         
@@ -149,7 +154,7 @@ class MDBProduct {
     func setDeleteProduct(_ product: Product, completionHandlerDelProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "prod_id=\(product.prod_id)&prod_image=\(product.prod_image)"
+        let body: String = "prod_id=\(product.prod_id)&prod_image=\(product.prod_image)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_delProduct.php")!)
         
@@ -206,7 +211,8 @@ class MDBProduct {
             "prod_comment" : product.prod_comment,
             "prod_tempsDispo" : product.prod_tempsDispo,
             "prod_etat" : product.prod_etat,
-            "prod_image" : product.prod_image
+            "prod_image" : product.prod_image,
+            "lang" : translate.lang
             ] as [String : Any]
         
    

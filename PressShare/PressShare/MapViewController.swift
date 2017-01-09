@@ -10,7 +10,6 @@
 //
 
 
-//Todo: Tous les produits d'un utilisateur resilié sont masqués
 //Todo :Par defaut afficher les products selon la zone géolocalisée du l'utilisateur
 //Todo :Zoomer/Dezoomer sur la carte permet de reduire/augmenter le nombre de products sur la carte.
 
@@ -40,7 +39,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var userId:Int!
     var config = Config.sharedInstance
     var products = Products.sharedInstance
-    var translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     var lat:CLLocationDegrees!
     var lon:CLLocationDegrees!
     var userLat:CLLocationDegrees!
@@ -65,7 +64,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         IBActivity.stopAnimating()
         
-        if config.level == 0 {
+        if config.level <= 0 {
             IBAddProduct.isEnabled = false
         }
         
@@ -313,13 +312,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 for dictionary in Capitals.sharedInstance.capitalsArray {
                     let capital = Capital(dico: dictionary)
                     self.config.balance = capital.balance
+                    self.config.failure_count = capital.failure_count
                 }
             }
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -400,7 +400,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
         }

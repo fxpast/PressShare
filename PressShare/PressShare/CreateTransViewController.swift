@@ -8,9 +8,10 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo :Translate the view
-//Todo :Problème d'affichage avec ipad
+
 //Todo :Améliorer le texte du message. ajouter un style courtois.
+
+
 
 
 import Foundation
@@ -23,11 +24,15 @@ class CreateTransViewController: UIViewController {
     @IBOutlet weak var IBInfoProduct: UILabel!
     @IBOutlet weak var IBTrade: UISwitch!
     @IBOutlet weak var IBExchange: UISwitch!
+    @IBOutlet weak var IBCancel: UIBarButtonItem!
+    @IBOutlet weak var IBValidate: UIBarButtonItem!
+    @IBOutlet weak var IBLabelTrade: UILabel!
+    @IBOutlet weak var IBLabelExchange: UILabel!
     
     var aProduct:Product?
     
     var config = Config.sharedInstance
-    let traduction = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     
     
     //Bloquer le mode paysage
@@ -53,10 +58,15 @@ class CreateTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        IBLabelTrade.text = translate.trade
+        IBLabelExchange.text = translate.exchange
+        IBCancel.title = translate.cancel
+        IBValidate.title = translate.done
+        
         IBExchange.isOn = false
         IBTrade.isOn = false
         
-        IBInfoProduct.text = "\(aProduct!.prod_nom), \(BlackBox.sharedInstance.formatedAmount((aProduct?.prod_prix)!)) \(traduction.devise!)"
+        IBInfoProduct.text = "\(aProduct!.prod_nom), \(BlackBox.sharedInstance.formatedAmount((aProduct?.prod_prix)!)) \(translate.devise!)"
         
         MDBUser.sharedInstance.getUser((aProduct?.prod_by_user)!, completionHandlerUser: {(success, usersArray, errorString) in
             
@@ -79,7 +89,7 @@ class CreateTransViewController: UIViewController {
             }
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -111,19 +121,19 @@ class CreateTransViewController: UIViewController {
         
         guard IBTrade.isOn || IBExchange.isOn else {
             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                self.displayAlert("Error", mess: "Vous devez choisir le type de transaction!")
+                self.displayAlert(self.translate.error, mess: self.translate.errorTypeTrans)
             }
             return
         }
         
         
-        let alertController = UIAlertController(title: "Contact", message: "Entrez en contact avec le vendeur", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Contact", message: translate.errorContactSeller, preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: "Valider", style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: self.translate.done, style: .destructive, handler: { (action) in
             
             guard self.config.balance >= Double(self.aProduct!.prod_prix) else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: "Votre solde est insuffisant pour effectuer une transaction..!")
+                    self.displayAlert(self.translate.error, mess: self.translate.errorBalanceTrans)
                 }
                 return
             }
@@ -143,14 +153,14 @@ class CreateTransViewController: UIViewController {
             var typetransaction = ""
             if self.IBTrade.isOn {
                 
-                typetransaction = "Achat"
+                typetransaction = self.translate.buy
             }
             else if self.IBExchange.isOn {
                 
-                typetransaction = "Echange"
+                typetransaction = self.translate.exchange
             }
             
-            message.contenu = "Le produit : \(self.IBInfoProduct.text!) vient d'être choisi pour un \(typetransaction). Prenez contact avec le client pour la suite..."
+            message.contenu = "\(self.translate.theProduct!) \(self.IBInfoProduct.text!) \(self.translate.hastobechosen!) \(typetransaction). \(self.translate.customerFor!)"
             
             
             MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
@@ -162,7 +172,7 @@ class CreateTransViewController: UIViewController {
                     atransaction.vendeur_id = message.vendeur_id
                     atransaction.prod_id = message.product_id
                     atransaction.proprietaire = message.proprietaire
-                    atransaction.trans_wording = "transaction sur : \(self.aProduct!.prod_nom)"
+                    atransaction.trans_wording = "transaction : \(self.aProduct!.prod_nom)"
                     atransaction.trans_amount = Double(self.aProduct!.prod_prix)
                     
                     if self.IBTrade.isOn {
@@ -185,7 +195,7 @@ class CreateTransViewController: UIViewController {
                         }
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                self.displayAlert("Error", mess: errorString!)
+                                self.displayAlert(self.translate.error, mess: errorString!)
                             }
                         }
                         
@@ -195,7 +205,7 @@ class CreateTransViewController: UIViewController {
                 }
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.displayAlert("Error", mess: errorString!)
+                        self.displayAlert(self.translate.error, mess: errorString!)
                     }
                 }
                 
@@ -206,7 +216,7 @@ class CreateTransViewController: UIViewController {
             
         })
         
-        let actionCancel = UIAlertAction(title: "Annuler", style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: self.translate.cancel, style: .destructive, handler: { (action) in
             
             
             

@@ -10,7 +10,6 @@
 
 
 //Todo :In the view "Send", add the recipient in the top of the line, e.g "A:Roger pastouret".
-//Todo :Translate IHM
 
 
 import Foundation
@@ -21,31 +20,36 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBTableView: UITableView!
     @IBOutlet weak var IBEdit: UIBarButtonItem!
+    @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBNav: UINavigationItem!
     @IBOutlet weak var IBInbox: UIBarButtonItem!
     @IBOutlet weak var IBSend: UIBarButtonItem!
     
-    let reception = "Boite de Reception"
-    let envoi = "Boite d'Envoi"
     var messages = [Message]()
     var customOpeation = BlockOperation()
     let myqueue = OperationQueue()
     var config = Config.sharedInstance
     var aindex:Int!
     var aWindow = 1
-    
+    let translate = TranslateMessage.sharedInstance
     
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        IBInbox.title = translate.inBox
+        IBSend.title = translate.sendBox
+        
+        IBCancel.title = translate.cancel
+        IBEdit.title = translate.delete
+        
         
         IBActivity.startAnimating()
         setUIEnabled(false)
         IBTableView.isHidden = true
         if let _ = Messages.sharedInstance.MessagesArray {
-            IBNav.title = reception
+            IBNav.title = translate.inBox
             myqueue.addOperation {
                 
                 self.customOpeation = BlockOperation()
@@ -105,12 +109,12 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
                         if self.aWindow == 1 {
-                            self.IBNav.title = self.reception
+                            self.IBNav.title = self.translate.inBox
                             self.chargeDataInbox()
                         }
                         
                         if self.aWindow == 2 {
-                            self.IBNav.title = self.envoi
+                            self.IBNav.title = self.translate.sendBox
                             self.chargeDataSend()
                         }
                         self.IBActivity.stopAnimating()
@@ -124,7 +128,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.IBActivity.stopAnimating()
                         self.IBTableView.isHidden = false
-                        self.displayAlert("Error", mess: errorString!)
+                        self.displayAlert(self.translate.error, mess: errorString!)
                     }
                 }
                 
@@ -151,7 +155,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         IBActivity.startAnimating()
         setUIEnabled(false)
         IBTableView.isHidden = true
-        IBNav.title = envoi
+        IBNav.title = translate.sendBox
         
         messages.removeAll()
         IBTableView.reloadData()
@@ -195,13 +199,13 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBAction func actionEdit(_ sender: Any) {
         
         
-        if IBEdit.title == "Edit" {
+        if IBEdit.title == translate.delete {
             IBTableView.isEditing=true
-            IBEdit.title="Done"
+            IBEdit.title = translate.done
         }
         else {
             IBTableView.isEditing=false
-            IBEdit.title="Edit"
+            IBEdit.title = translate.delete
         }
         
     }
@@ -279,7 +283,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         IBActivity.startAnimating()
         setUIEnabled(false)
         IBTableView.isHidden = true
-        IBNav.title = reception
+        IBNav.title = translate.inBox
         
         messages.removeAll()
         IBTableView.reloadData()
@@ -322,7 +326,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                     self.IBActivity.stopAnimating()
                     self.IBTableView.isHidden = false
                     self.setUIEnabled(true)
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -365,7 +369,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                     }
                     
                     if self.messages.count == 0 {
-                        self.IBEdit.title="Edit"
+                        self.IBEdit.title = self.translate.delete
                         self.IBEdit.isEnabled=false
                         self.IBTableView.isEditing = false
                     }
@@ -377,7 +381,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             

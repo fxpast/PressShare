@@ -9,13 +9,20 @@
 //
 
 
+/*Todo :
+ 
 
-//Todo :Translate IHM
-//Todo :Ajouter une pastille à la transaction.
-//Todo :Gerer la saisie de zone de texte autre
-//Todo :Afficher le wording transaction
-//Todo :Refaire la disposition des zone IHM
-//Todo :Ajouter un control de validation des deux parties avant de créer des operations et de mettre à jour le capital
+ - Dans le cas d'un achat, c'est le client qui a le pouvoir de valider la transaction.
+ Si le client valide une commission de 5% est débité pour chacun des intervenants. Au total on a 10% pour PressShare.
+ Si le client annule son compteur rejet est incrémenté.
+ 
+ - Dans le cas d'un échange les deux parties ont le pouvoir de valider la transaction. Il y a une commission de 5%.
+ Si l'un annule et l'autre confirme la transaction, une commission de 5% est débité pour celui qui a confirmé et le compteur rejet est incrémenté pour celui qui a annulé et la transaction. La transaction passe en mode enquête et arbitrage humain.
+ 
+ Si l'un annule et l'autre ne decide rien, le compteur rejet est incrémenté pour celui qui a annulé et au bout d'un certain temps MAX JOUR le compteur de rejet est incrémenté pour celui qui n'a rien décidé.
+ 
+ Si l'un confirme et l'autre ne decide rien, une commission de 5% est débité pour celui qui a confirmé et au bout d'un certain temps MAX JOUR une commission de 0,5€ est débité pour celui qui n'a rien décidé.
+ */
 
 
 
@@ -55,9 +62,11 @@ class DetailTransViewController: UIViewController {
     
     
     let config = Config.sharedInstance
-    let translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     var aTransaction:Transaction?
-    
+    var fieldName = ""
+    var keybordY:CGFloat! = 0
+    let commissionPrice = 0.5
     
     //MARK: Locked landscapee
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
@@ -82,6 +91,48 @@ class DetailTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if (aTransaction?.trans_valide == 1 || aTransaction?.trans_valide == 2)  {
+          IBEnded.isEnabled = false
+        }
+        else if (aTransaction?.trans_type == 1 && aTransaction?.vendeur_id == aTransaction?.proprietaire)  {
+            IBEnded.isEnabled = false
+        }
+        else {
+            IBEnded.isEnabled = true
+        }
+        
+        
+        IBConfirm.isOn = false
+        IBCancel.isOn = false
+        
+       
+        
+        //La transaction a été annulée
+        if aTransaction?.trans_valide == 1 {
+            IBCancel.isOn = true
+        
+        }
+        else if aTransaction?.trans_valide == 2  {
+            //La transaction est confirmée
+            IBConfirm.isOn = true
+            
+        }
+        
+        if aTransaction?.trans_avis == "interlocuteur" {
+            IBInterlo.isOn = true //l'interlocuteur était absent
+        }
+        else if aTransaction?.trans_avis == "absence" {
+            IBMyAbsent.isOn = true //Je n'ai pu etre au rendez-vous
+        }
+        else if aTransaction?.trans_avis == "conformite" {
+            IBCompliant.isOn = true //le produit vendu ou echangé n'était pas conforme à l'annonce
+        }
+        else {
+            IBOther.isOn = true
+            IBOtherText.text = aTransaction?.trans_avis
+        }
+        
+        
         setUIHidden(true)
         
         
@@ -89,9 +140,7 @@ class DetailTransViewController: UIViewController {
         IBAmount.text = "\(translate.amount!) \(BlackBox.sharedInstance.formatedAmount(aTransaction!.trans_amount)) \(translate.devise!)"
         
         
-        IBConfirm.isOn = false
-        IBCancel.isOn = false
-        
+  
         if aTransaction?.trans_type == 1 {
             IBLabelType.text = "\(IBLabelType.text!) \(translate.trade!)"
         }
@@ -116,7 +165,7 @@ class DetailTransViewController: UIViewController {
                     
                     if (usersArray?.count)! > 0 {
                         for userDico in usersArray! {
-                            self.IBClient.text = (self.aTransaction?.client_id == self.aTransaction?.proprietaire) ? "Vendeur :" : "Client :"
+                            self.IBClient.text = (self.aTransaction?.client_id == self.aTransaction?.proprietaire) ? self.translate.seller: self.translate.customer
                             self.IBClient.text = "\(self.IBClient.text!) \(userDico["user_nom"]!) \(userDico["user_prenom"]!) (\(paramId!))"
                             self.IBInfoContact.text = "\(self.IBInfoContact.text!) \(userDico["user_ville"]!), \(userDico["user_pays"]!))"
                             
@@ -134,7 +183,7 @@ class DetailTransViewController: UIViewController {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -147,6 +196,9 @@ class DetailTransViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        subscibeToKeyboardNotifications()
+        
         IBButtonCancelr.title = translate.cancel
         IBEnded.title = translate.done
         IBLabelConfirm.text = translate.confirm
@@ -156,24 +208,417 @@ class DetailTransViewController: UIViewController {
         IBOtherText.placeholder = translate.other
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unsubscribeFromKeyboardNotifications()
+        
+    }
+    
+    
     @IBAction func actionButtonCancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
     
     
+    
+    //MARK: textfield Delegate
+    
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        guard fieldName != "" && keybordY > 0 else {
+            return
+        }
+        
+        let location = (event?.allTouches?.first?.location(in: self.view).y)! as CGFloat
+        if (Double(location) < Double(keybordY)) {
+            
+            var textField = UITextField()
+            
+            
+            if fieldName == "IBOtherText" {
+                textField = IBOtherText
+            }
+            
+            textField.endEditing(true)
+            
+        }
+        
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return true
+        
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        if textField.isEqual(IBOtherText) {
+            fieldName = "IBOtherText"
+        }
+        
+    }
+    
+    //MARK: keyboard function
+    
+    
+    func  subscibeToKeyboardNotifications() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    func unsubscribeFromKeyboardNotifications() {
+        
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+    }
+    
+    
+    func keyboardWillShow(notification:NSNotification) {
+        
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBOtherText" {
+            textField = IBOtherText
+        }
+        
+        if textField.isFirstResponder {
+            keybordY = view.frame.size.height - getkeyboardHeight(notification: notification)
+            if keybordY < textField.frame.origin.y {
+                view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    
+    func keyboardWillHide(notification:NSNotification) {
+        
+        var textField = UITextField()
+        
+        
+        if fieldName == "IBOtherText" {
+            textField = IBOtherText
+        }
+        
+        if textField.isFirstResponder {
+            view.frame.origin.y = 0
+        }
+        
+        fieldName = ""
+        keybordY = 0
+        
+    }
+    
+    func getkeyboardHeight(notification:NSNotification)->CGFloat {
+        
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
+        return keyboardSize.cgRectValue.height
+        
+    }
+    
     //MARK: Data Transaction
     
     @IBAction func actionEnded(_ sender: Any) {
         
+        func tradeConfirmTransact() {
+            
+            config.balance = config.balance - Double(aTransaction!.trans_amount)
+            config.balance = config.balance - commissionPrice
+            var capital = Capital(dico: [String : AnyObject]())
+            var operation = Operation(dico: [String : AnyObject]())
+            
+            //Acheteur confirme la transaction commerciale
+            
+            capital.balance = config.balance
+            capital.user_id = aTransaction!.proprietaire
+            capital.failure_count = config.failure_count
+            
+            MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
+                
+                if success {
+                    
+                    var commission = Commission(dico: [String : AnyObject]())
+                    
+                    commission.user_id = self.aTransaction!.proprietaire
+                    commission.product_id = self.aTransaction!.prod_id
+                    commission.com_amount = self.commissionPrice
+                    
+                    //Création d'une commission d'achat pour le client
+                    MDBCommission.sharedInstance.setAddCommission(commission, self.config.balance, completionHandlerCommission: { (success, errorString) in
+                        
+                        if success {
+                            
+                            //OK
+                        }
+                        else {
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                
+                                self.displayAlert(self.translate.error, mess: errorString!)
+                            }
+                        }
+                        
+                        
+                        
+                    })
+                    
+                    operation.user_id = self.aTransaction!.proprietaire
+                    operation.op_type = 3 //c'est une operation d'achat de produit
+                    operation.op_amount = -1 * Double(self.aTransaction!.trans_amount)
+                    operation.op_wording = "\(self.translate.buy!) \(self.translate.product!)"
+                    
+                    //Création d'un operation d'achat pour le client
+                    MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                        
+                        if success {
+                            
+                            Operations.sharedInstance.operationArray = nil
+                            
+                            
+                            //Le compte du vendeur est consulté
+                            MDBCapital.sharedInstance.getCapital(self.aTransaction!.vendeur_id, completionHandlerCapital: {(success, capitalArray, errorString) in
+                                
+                                if success {
+                                    
+                                    
+                                    for dictionary in capitalArray!{
+                                        let cap = Capital(dico: dictionary)
+                                        capital.balance = cap.balance + Double(self.aTransaction!.trans_amount)
+                                        capital.balance = capital.balance - self.commissionPrice
+                                        capital.user_id = cap.user_id
+                                        capital.failure_count = cap.failure_count
+                                    }
+                                    
+                                    //Le compte du vendeur est crédité
+                                    MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
+                                        
+                                        if success {
+                                            
+                                            var commission = Commission(dico: [String : AnyObject]())
+                                            
+                                            commission.user_id = self.aTransaction!.vendeur_id
+                                            commission.product_id = self.aTransaction!.prod_id
+                                            commission.com_amount = self.commissionPrice
+                                            
+                                            //Création d'une commission d'achat pour le client
+                                            MDBCommission.sharedInstance.setAddCommission(commission, capital.balance,  completionHandlerCommission: { (success, errorString) in
+                                                
+                                                if success {
+                                                    
+                                                    //OK
+                                                }
+                                                else {
+                                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                        
+                                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                                    }
+                                                }
+                                                
+                                                
+                                                
+                                            })
+                                            
+                                            operation.user_id = self.aTransaction!.vendeur_id
+                                            operation.op_type = 4 //C'est une opération de vente de produit
+                                            operation.op_amount = Double(self.aTransaction!.trans_amount)
+                                            operation.op_wording = "\(self.translate.sell!) \(self.translate.product!)"
+                                            
+                                            //Création d'un operation de vente pour le vendeur
+                                            MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                                                
+                                                if success {
+                                                    
+                                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                        self.IBActivity.stopAnimating()
+                                                        self.dismiss(animated: true, completion: nil)
+                                                    }
+                                                    
+                                                }
+                                                else {
+                                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                        
+                                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                                    }
+                                                }
+                                                
+                                                
+                                            })
+                                            
+                                            
+                                            
+                                        }
+                                        else {
+                                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                
+                                                self.displayAlert(self.translate.error, mess: errorString!)
+                                            }
+                                        }
+                                        
+                                        
+                                    })
+                                    
+                                    
+                                    
+                                }
+                                else {
+                                    
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.stopAnimating()
+                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                    }
+                                }
+                                
+                                
+                            })
+                            
+                            
+                        }
+                        else {
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                
+                                self.displayAlert(self.translate.error, mess: errorString!)
+                            }
+                        }
+                        
+                        
+                    })
+                    
+                    
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.displayAlert(self.translate.error, mess: errorString!)
+                    }
+                }
+                
+                
+            })
+            
+        }
+        
+        func tradeCancelTransact() {
+            
+            config.failure_count = config.failure_count + 1
+            
+            var capital = Capital(dico: [String : AnyObject]())
+            
+            //Acheteur annule
+            
+            capital.balance = config.balance
+            capital.user_id = aTransaction!.proprietaire
+            capital.failure_count = config.failure_count
+            
+            MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
+                
+                if success {
+                    
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.IBActivity.stopAnimating()
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.displayAlert(self.translate.error, mess: errorString!)
+                    }
+                }
+                
+            })
+            
+        }
+        
+        func exchangeConfirmTransact() {
+            
+            var commission = Commission(dico: [String : AnyObject]())
+            //l'utilisateur confirme l'echange
+            config.balance = config.balance - commissionPrice
+            
+            
+            commission.user_id = aTransaction!.proprietaire
+            commission.product_id = aTransaction!.prod_id
+            commission.com_amount = commissionPrice
+            
+            //Création d'une commission d'achat pour le client
+            MDBCommission.sharedInstance.setAddCommission(commission, config.balance, completionHandlerCommission: { (success, errorString) in
+                
+                if success {
+                    
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.IBActivity.stopAnimating()
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.displayAlert(self.translate.error, mess: errorString!)
+                    }
+                }
+                
+                
+                
+            })
+            
+        }
+        
+        func exchangeCancelTransact() {
+            
+            config.failure_count = config.failure_count + 1
+            
+            var capital = Capital(dico: [String : AnyObject]())
+            
+            //Acheteur annule
+            
+            capital.balance = config.balance
+            capital.user_id = aTransaction!.proprietaire
+            capital.failure_count = config.failure_count
+            
+            MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
+                
+                if success {
+                    
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.IBActivity.stopAnimating()
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.displayAlert(self.translate.error, mess: errorString!)
+                    }
+                }
+                
+            })
+            
+        }
+        
+        
         guard IBConfirm.isOn || IBCancel.isOn else {
-            displayAlert("Error", mess: "Vous n'avez pas accepté ou rejeté la transaction")
+            displayAlert(translate.error, mess: translate.errorAcceptReject)
             return
         }
         
         
-        let alertController = UIAlertController(title: "Transaction", message: "Attention vous allez terminer la transaction.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Transaction", message: translate.errorEndedTrans, preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: "Valider", style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
             
             if self.IBOther.isOn {
                 self.aTransaction?.trans_avis = self.IBOtherText.text!
@@ -208,142 +653,27 @@ class DetailTransViewController: UIViewController {
                 
                 if success {
                     
-                    //Cas où le client confirme la transaction. alors son compte est debité
-                    if self.aTransaction?.trans_type == 2 && self.aTransaction?.client_id == self.aTransaction?.proprietaire {
+                    if self.aTransaction?.trans_type == 1 && self.aTransaction?.trans_valide == 2 && self.aTransaction?.client_id == self.aTransaction?.proprietaire {
+                        //Cas où le client confirme la transaction commerciale. Alors son compte est debité produit + la commission
+                        tradeConfirmTransact()
                         
-                        self.config.balance = self.config.balance - Double(self.aTransaction!.trans_amount)
+                    }
+                    else if self.aTransaction?.trans_type == 1 && self.aTransaction?.trans_valide == 1 && self.aTransaction?.client_id == self.aTransaction?.proprietaire   {
+                        //Cas où le client annule la transaction commerciale. alors son compte n'est pas debité
+                        tradeCancelTransact()
                         
-                        var capital = Capital(dico: [String : AnyObject]())
-                        var operation = Operation(dico: [String : AnyObject]())
-                        
-                        //Acheteur
-                        
-                        capital.balance = self.config.balance
-                        capital.user_id = self.aTransaction!.proprietaire
-                        
-                        MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
-                            
-                            if success {
-                                
-                                operation.user_id = self.aTransaction!.proprietaire
-                                operation.op_type = 3 //c'est une operation d'achat de produit
-                                operation.op_amount = Double(self.aTransaction!.trans_amount)
-                                operation.op_wording = "achat produit"
-                                
-                                //Création d'un operation d'achat pour le client
-                                MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
-                                    
-                                    if success {
-                                        
-                                        Operations.sharedInstance.operationArray = nil
-                                        
-                                        
-                                        //Le compte du vendeur est consulté
-                                        MDBCapital.sharedInstance.getCapital(self.aTransaction!.vendeur_id, completionHandlerCapital: {(success, capitalArray, errorString) in
-                                            
-                                            if success {
-                                                
-                                                
-                                                for dictionary in capitalArray!{
-                                                    let cap = Capital(dico: dictionary)
-                                                    capital.balance = cap.balance + Double(self.aTransaction!.trans_amount)
-                                                    capital.user_id = cap.user_id
-                                                }
-                                                
-                                                //Le compte du vendeur est crédité
-                                                MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
-                                                    
-                                                    if success {
-                                                        
-                                                        
-                                                        operation.user_id = self.aTransaction!.vendeur_id
-                                                        operation.op_type = 4 //C'est une opération de vente de produit
-                                                        operation.op_amount = Double(self.aTransaction!.trans_amount)
-                                                        operation.op_wording = "vente produit"
-                                                        
-                                                        //Création d'un operation de vente pour le vendeur
-                                                        MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
-                                                            
-                                                            if success {
-                                                                
-                                                                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                                                    self.IBActivity.stopAnimating()
-                                                                    self.dismiss(animated: true, completion: nil)
-                                                                }
-                                                                
-                                                            }
-                                                            else {
-                                                                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                                                    
-                                                                    self.displayAlert("Error", mess: errorString!)
-                                                                }
-                                                            }
-                                                            
-                                                            
-                                                        })
-                                                        
-                                                        
-                                                        
-                                                    }
-                                                    else {
-                                                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                                            
-                                                            self.displayAlert("Error", mess: errorString!)
-                                                        }
-                                                    }
-                                                    
-                                                    
-                                                })
-                                                
-                                                
-                                                
-                                            }
-                                            else {
-                                                
-                                                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                                    self.IBActivity.stopAnimating()
-                                                    self.displayAlert("Error", mess: errorString!)
-                                                }
-                                            }
-                                            
-                                            
-                                        })
-                                        
-                                        
-                                    }
-                                    else {
-                                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                            
-                                            self.displayAlert("Error", mess: errorString!)
-                                        }
-                                    }
-                                    
-                                    
-                                })
-                                
-                                
-                                
-                            }
-                            else {
-                                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                    
-                                    self.displayAlert("Error", mess: errorString!)
-                                }
-                            }
-                            
-                            
-                        })
+                    }
+                    else if self.aTransaction?.trans_type == 2 && self.aTransaction?.trans_valide == 2 {
+                        //Cas où l'utilisateur confirme la transaction d'echange. Alors son compte est debité de la commission
+                        exchangeConfirmTransact()
                         
                         
                     }
-                    else {
-                        //Cas où le client annule la transaction ou bien le vendeur confirme la transaction.
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.IBActivity.stopAnimating()
-                            self.dismiss(animated: true, completion: nil)
-                        }
+                    else if self.aTransaction?.trans_type == 2 && self.aTransaction?.trans_valide == 1 {
+                        //Cas où l'utilisateur annule la transaction d'echange. alors son compte n'est pas debité
+                        exchangeCancelTransact()
+                        
                     }
-                    
                     
                     
                 }
@@ -352,7 +682,7 @@ class DetailTransViewController: UIViewController {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
                         self.IBActivity.stopAnimating()
-                        self.displayAlert("Error", mess: errorString!)
+                        self.displayAlert(self.translate.error, mess: errorString!)
                     }
                 }
                 
@@ -363,7 +693,7 @@ class DetailTransViewController: UIViewController {
             
         })
         
-        let actionCancel = UIAlertAction(title: "Annuler", style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: translate.cancel, style: .destructive, handler: { (action) in
             
         })
         

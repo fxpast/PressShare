@@ -1,20 +1,21 @@
 //
-//  InternationalIHM.swift
+//  TraductionMessage.swift
 //  PressShare
 //
-//  Created by MacbookPRV on 24/05/2016.
+//  Created by MacbookPRV on 07/12/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
+
+//Todo : Traduction des messages d'alertes anglais / français
 
 //Todo :Les commentaires doivent être en anglais
 //Todo :Les classes doivent avoir en entete l'auteur , la date de création, de modification, la definitions, leurs paramètres
 //Todo :Les methodes doivent avoir en entete leur definition, leurs paramètre et leur @return
 
+
 import Foundation
 
-
-class InternationalIHM {
-    
+class TranslateMessage {
     
     
     private var dico:[String:AnyObject]
@@ -27,7 +28,7 @@ class InternationalIHM {
         dico = [String:AnyObject]()
         langue = 0
         
-        let plistPath = Bundle.main.path(forResource: "InternationalIHM", ofType: "plist")
+        let plistPath = Bundle.main.path(forResource: "TranslateMessage", ofType: "plist")
         let plistXML = FileManager.default.contents(atPath: plistPath!)
         
         do {
@@ -53,11 +54,7 @@ class InternationalIHM {
         
     }
     
-    
-    static let sharedInstance = InternationalIHM()
-    
-    
-    //MARK: Ouverture de l'application
+    static let sharedInstance = TranslateMessage()
     
     var lang:String!
         {
@@ -68,6 +65,578 @@ class InternationalIHM {
         }
         
     }
+    
+    var errorLogin:String!
+        {
+        
+        get {
+            let resultat = dico["errorLogin"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorPassword:String!
+        {
+        
+        get {
+            let resultat = dico["errorPassword"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var loginPassword:String!
+        {
+        
+        get {
+            let resultat = dico["loginPassword"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+      }
+    
+    var confirmSubsWithDepot:String!
+        {
+        
+        get {
+            let resultat = dico["confirmSubsWithDepot"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var commission:String!
+        {
+        
+        get {
+            let resultat = dico["commission"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    var errorMail:String!
+        {
+        
+        get {
+            let resultat = dico["errorMail"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+  
+    var withdrawalMade:String!
+        {
+        
+        get {
+            let resultat = dico["withdrawalMade"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorAcceptReject:String!
+        {
+        
+        get {
+            let resultat = dico["errorAcceptReject"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    
+    var errorEndedTrans:String!
+        {
+        
+        get {
+            let resultat = dico["errorEndedTrans"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var seller:String!
+        {
+        
+        get {
+            let resultat = dico["seller"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var customer:String!
+        {
+        
+        get {
+            let resultat = dico["customer"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var canceled:String!
+        {
+        
+        get {
+            let resultat = dico["canceled"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var confirmed:String!
+        {
+        
+        get {
+            let resultat = dico["confirmed"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var subscriptionHas:String!
+        {
+        
+        get {
+            let resultat = dico["subscriptionHas"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    
+    var subscribeSubs:String!
+        {
+        
+        get {
+            let resultat = dico["subscribeSubs"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    
+    var sell:String!
+        {
+        
+        get {
+            let resultat = dico["sell"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var cancelSubs:String!
+        {
+        
+        get {
+            let resultat = dico["cancelSubs"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var confirmTermin:String!
+        {
+        
+        get {
+            let resultat = dico["confirmTermin"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    var confirmSubs:String!
+        {
+        
+        get {
+            let resultat = dico["confirmSubs"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var paymentMade:String!
+        {
+        
+        get {
+            let resultat = dico["paymentMade"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    var OneTimeDepo:String!
+        {
+        
+        get {
+            let resultat = dico["OneTimeDepo"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var OneTimeWithd:String!
+        {
+        
+        get {
+            let resultat = dico["OneTimeWithd"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var confirmPayment:String!
+        {
+        
+        get {
+            let resultat = dico["confirmPayment"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var confirmWithdrawal:String!
+        {
+        
+        get {
+            let resultat = dico["confirmWithdrawal"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var error:String!
+        {
+        
+        get {
+            let resultat = dico["error"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    var ErrorDescription:String!
+        {
+        
+        get {
+            let resultat = dico["ErrorDescription"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var takePicture:String!
+        {
+        
+        get {
+            let resultat = dico["takePicture"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var ErrorGeolocation:String!
+        {
+        
+        get {
+            let resultat = dico["ErrorGeolocation"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+ 
+    var ErrorGeocode:String!
+        {
+        
+        get {
+            let resultat = dico["ErrorGeocode"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var ErrorPrice:String!
+        {
+        
+        get {
+            let resultat = dico["ErrorPrice"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var makeChoice:String!
+        {
+        
+        get {
+            let resultat = dico["makeChoice"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var customerFor:String!
+        {
+        
+        get {
+            let resultat = dico["customerFor"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+   
+    var deletionFor:String!
+        {
+        
+        get {
+            let resultat = dico["deletionFor"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    var hastobechosen:String!
+        {
+        
+        get {
+            let resultat = dico["hastobechosen"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var theProduct:String!
+        {
+        
+        get {
+            let resultat = dico["theProduct"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var buy:String!
+        {
+        
+        get {
+            let resultat = dico["buy"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var reply:String!
+        {
+        
+        get {
+            let resultat = dico["reply"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorNoDataRequest:String!
+        {
+        
+        get {
+            let resultat = dico["errorNoDataRequest"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorParseJSON:String!
+        {
+        
+        get {
+            let resultat = dico["errorParseJSON"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var errorTypeTrans:String!
+        {
+        
+        get {
+            let resultat = dico["errorTypeTrans"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var errorBalanceTrans:String!
+        {
+        
+        get {
+            let resultat = dico["errorBalanceTrans"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var errorContactSeller:String!
+        {
+        
+        get {
+            let resultat = dico["errorContactSeller"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    
+    var errorUpdateTrans:String!
+        {
+        
+        get {
+            let resultat = dico["errorUpdateTrans"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var errorAddOperat:String!
+        {
+        
+        get {
+            let resultat = dico["errorAddOperat"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorDelMessage:String!
+        {
+        
+        get {
+            let resultat = dico["errorDelMessage"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorAddTrans:String!
+        {
+        
+        get {
+            let resultat = dico["errorAddTrans"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+
+    var errorRequest:String!
+        {
+        
+        get {
+            let resultat = dico["errorRequest"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorRequestReturn:String!
+        {
+        
+        get {
+            let resultat = dico["errorRequestReturn"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    
+    var emailPassword:String!
+        {
+        
+        get {
+            let resultat = dico["emailPassword"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorNewPassword:String!
+        {
+        
+        get {
+            let resultat = dico["errorNewPassword"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    
+    var errorCheckPassword:String!
+        {
+        
+        get {
+            let resultat = dico["errorCheckPassword"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var errorOldPassword:String!
+        {
+        
+        get {
+            let resultat = dico["errorOldPassword"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var message:String!
+        {
+        
+        get {
+            let resultat = dico["message"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var emptyMessage:String!
+        {
+        
+        get {
+            let resultat = dico["emptyMessage"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    
+    var sentMessage:String!
+        {
+        
+        get {
+            let resultat = dico["sentMessage"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    var inBox:String!
+        {
+        
+        get {
+            let resultat = dico["inBox"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var sendBox:String!
+        {
+        
+        get {
+            let resultat = dico["sendBox"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
     
     var devise:String!
         {
@@ -98,7 +667,27 @@ class InternationalIHM {
         }
         
     }
-
+    
+    var send:String!
+        {
+        
+        get {
+            let resultat = dico["send"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var delete:String!
+        {
+        
+        get {
+            let resultat = dico["delete"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
     var other:String!
         {
         
@@ -118,7 +707,7 @@ class InternationalIHM {
         }
         
     }
-
+    
     var compliant:String!
         {
         
@@ -138,7 +727,7 @@ class InternationalIHM {
         }
         
     }
-
+    
     var unsubscribe:String!
         {
         
@@ -148,7 +737,7 @@ class InternationalIHM {
         }
         
     }
-
+    
     var wording:String!
         {
         
@@ -168,7 +757,7 @@ class InternationalIHM {
         }
         
     }
-
+    
     var type:String!
         {
         
@@ -178,7 +767,7 @@ class InternationalIHM {
         }
         
     }
-
+    
     var amount:String!
         {
         
@@ -219,7 +808,7 @@ class InternationalIHM {
         
     }
     
- 
+    
     var product:String!
         {
         
@@ -479,7 +1068,7 @@ class InternationalIHM {
         }
         
     }
-
+    
     var exchange:String!
         {
         
@@ -656,6 +1245,5 @@ class InternationalIHM {
         }
         
     }
-    
     
 }

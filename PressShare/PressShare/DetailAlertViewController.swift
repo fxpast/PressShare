@@ -8,10 +8,11 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo :Replace USD with $ in the text message
-//Todo :Translate IHM
+
+
 //Todo :Le message recu doit est cadré en haut de la zone de texte
 //Todo :Le message recu ne doit est modifiable
+
 
 
 
@@ -26,6 +27,8 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBSend: UIBarButtonItem!
     @IBOutlet weak var IBReturn: UIBarButtonItem!
+    @IBOutlet weak var IBMessage: UILabel!
+    @IBOutlet weak var IBReply: UILabel!
     
     
     var aMessage:Message?
@@ -34,6 +37,8 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
     var keybordY:CGFloat! = 0
     
     var config = Config.sharedInstance
+   
+    let translate = TranslateMessage.sharedInstance
     
     
     //MARK: Locked landscapee
@@ -60,6 +65,11 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        IBReturn.title = translate.cancel
+        IBSend.title = translate.send
+        IBMessage.text = translate.message
+        IBReply.text = translate.reply
         IBRead.text = aMessage?.contenu
         
         
@@ -87,7 +97,7 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
     @IBAction func actionSend(_ sender: Any) {
         
         guard IBWrite.text != "" else {
-            displayAlert("Error", mess: "message vide.")
+            displayAlert(translate.error, mess: "message vide.")
             return
         }
         
@@ -119,13 +129,13 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
                     self.IBWrite.text = ""
                     self.IBSend.isEnabled = true
                     self.config.message_maj = true
-                    self.displayAlert("message", mess: "message envoyé.")
+                    self.displayAlert("message", mess: self.translate.sentMessage)
                 }
             }
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBSend.isEnabled = true
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -184,7 +194,7 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
                     self.IBSend.isEnabled = true
                     self.IBReturn.isEnabled = true
                     self.IBActivity.stopAnimating()
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             

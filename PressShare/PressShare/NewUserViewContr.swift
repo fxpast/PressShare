@@ -30,7 +30,7 @@ class NewUserViewContr : UIViewController, UITextFieldDelegate {
     var keybordY:CGFloat! = 0
     
     let config = Config.sharedInstance
-    let traduction = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     
     var users = [User]()
     
@@ -53,12 +53,12 @@ class NewUserViewContr : UIViewController, UITextFieldDelegate {
         
         subscibeToKeyboardNotifications()
         
-        IBCancel.title = traduction.cancel
-        IBDone.title = traduction.done
+        IBCancel.title = translate.cancel
+        IBDone.title = translate.done
         
-        IBAncienPass.placeholder = traduction.oldPass
-        IBVerifPass.placeholder = traduction.checkPass
-        IBemail.placeholder = traduction.enterEmail
+        IBAncienPass.placeholder = translate.oldPass
+        IBVerifPass.placeholder = translate.checkPass
+        IBemail.placeholder = translate.enterEmail
         
     }
     
@@ -105,22 +105,22 @@ class NewUserViewContr : UIViewController, UITextFieldDelegate {
     @IBAction func actionDone(_ sender: AnyObject) {
         
         guard IBPseudo.text != "" else {
-            self.displayAlert("Error", mess: "Pseudo incorrect")
+            self.displayAlert(self.translate.error, mess: translate.errorLogin)
             return
         }
         
         guard IBemail.text != "" else {
-            self.displayAlert("Error", mess: "mail incorrect")
+            self.displayAlert(self.translate.error, mess: translate.errorMail)
             return
         }
         
         guard IBAncienPass.text != "" else {
-            self.displayAlert("Error", mess: "mot de passe incorrect")
+            self.displayAlert(self.translate.error, mess: translate.errorPassword)
             return
         }
         
         guard IBAncienPass.text == IBVerifPass.text else {
-            self.displayAlert("Error", mess: "mot de passe incorrect")
+            self.displayAlert(self.translate.error, mess: translate.errorPassword)
             return
         }
         
@@ -156,7 +156,7 @@ class NewUserViewContr : UIViewController, UITextFieldDelegate {
             }
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                     
                 }
             }

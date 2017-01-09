@@ -28,7 +28,7 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
     var keybordY:CGFloat! = 0
     
     let config = Config.sharedInstance
-    let translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     
     var users = [User]()
     
@@ -173,7 +173,7 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         
         
         guard IBEmail.text != "" else {
-            displayAlert("Error", mess: "Email is empty")
+            displayAlert(translate.error, mess: translate.errorMail)
             return
         }
         
@@ -183,17 +183,17 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
             if config.user_newpassword == true {
                 
                 guard IBNewPass.text != "" else {
-                    displayAlert("Error", mess: "nouveau mot de passe incorrect")
+                    displayAlert(translate.error, mess: translate.errorNewPassword)
                     return
                 }
                 
                 guard IBCheckPass.text != "" else {
-                    displayAlert("Error", mess: "verification mot de passe incorrect")
+                    displayAlert(translate.error, mess: translate.errorCheckPassword)
                     return
                 }
                 
                 guard IBNewPass.text == IBCheckPass.text else {
-                    displayAlert("Error", mess: "nouveau et verification mot de passe differents")
+                    displayAlert(translate.error, mess: translate.loginPassword)
                     return
                 }
                 
@@ -215,22 +215,22 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         if config.previousView == "SettingsTableViewContr" {
             
             guard IBOldPass.text != "" else {
-                displayAlert("Error", mess: "ancien mot de passe incorrect")
+                displayAlert(translate.error, mess: translate.errorOldPassword)
                 return
             }
             
             guard IBNewPass.text != "" else {
-                displayAlert("Error", mess: "nouveau mot de passe incorrect")
+                displayAlert(translate.error, mess: translate.errorNewPassword)
                 return
             }
             
             guard IBCheckPass.text != "" else {
-                displayAlert("Error", mess: "verification mot de passe incorrect")
+                displayAlert(translate.error, mess: translate.errorCheckPassword)
                 return
             }
             
             guard IBNewPass.text == IBCheckPass.text else {
-                displayAlert("Error", mess: "nouveau et verification mot de passe differents")
+                displayAlert(translate.error, mess: translate.loginPassword)
                 return
             }
             
@@ -261,9 +261,8 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     if self.config.user_newpassword == true {
-                        
-                        
-                        self.displayAlert("Mot de passe", mess: "Attention un mail a été envoyé dans votre boite aux lettes. \n Pensez à vérifier votre dossier spam si vous ne trouvez pas le mail.")
+                        self.IBDone.isEnabled = false
+                        self.displayAlert(self.translate.password, mess: self.translate.emailPassword)
                         
                     }
                     else {
@@ -274,7 +273,7 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             

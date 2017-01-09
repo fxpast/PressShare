@@ -25,7 +25,7 @@ struct Operation {
     var op_id:Int
     var user_id:Int
     var op_date:Date
-    var op_type:Int
+    var op_type:Int //1: deposit, 2: withdrawal, 3: buy, 4: sell, 5:Commission
     var op_amount:Double
     var op_wording:String
     
@@ -68,12 +68,14 @@ class Operations {
 
 class MDBOperation {
     
+    let translate = TranslateMessage.sharedInstance
+    
     func getAllOperations(_ userId:Int, completionHandlerOperations: @escaping (_ success: Bool, _ operationArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getAllOperations.php")!)
         // Set Request Body
-        let body: String = "user_id=\(userId)"
+        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
         
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
@@ -114,7 +116,7 @@ class MDBOperation {
     func setAddOperation(_ operation: Operation, completionHandlerAddOp: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "op_wording=\(operation.op_wording)&op_amount=\(operation.op_amount)&op_type=\(operation.op_type)&user_id=\(operation.user_id)"
+        let body: String = "op_wording=\(operation.op_wording)&op_amount=\(operation.op_amount)&op_type=\(operation.op_type)&user_id=\(operation.user_id)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_addOperation.php")!)
         
@@ -135,7 +137,7 @@ class MDBOperation {
                         completionHandlerAddOp(true, nil)
                     }
                     else {
-                        completionHandlerAddOp(false, "impossible d'ajouter l'operation")
+                        completionHandlerAddOp(false, self.translate.errorAddOperat!)
                         
                     }
                     

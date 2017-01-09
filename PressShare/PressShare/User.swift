@@ -54,7 +54,7 @@ class User: NSManagedObject {
             user_pass = ""
             user_email = ""
             user_date = Date()
-            user_level = 0 //level 0 = anonymous, level 1 = subscriber, level 2 = admin
+            user_level = 0 //level -1 = anonymous, level 0 = sign up, level 1 = subscriber, level 2 = admin
             user_nom = ""
             user_prenom = ""
             user_adresse = ""
@@ -79,12 +79,13 @@ class User: NSManagedObject {
 
 class MDBUser {
     
+    let translate = TranslateMessage.sharedInstance
     
     func getUser(_ userId:Int, completionHandlerUser: @escaping (_ success: Bool, _ usersArray: [[String : AnyObject]]?, _ errorString:String?) -> Void)
     {
     
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_id=\(userId)"
+        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getUser.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -122,7 +123,7 @@ class MDBUser {
     func AuthentiFacebook(_ config: Config, completionHandlerOAuthFacebook: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_email=\(config.user_email!)"
+        let body: String = "user_email=\(config.user_email!)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_facebook.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -166,7 +167,7 @@ class MDBUser {
     func Authentification(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)"
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_signIn.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -211,7 +212,7 @@ class MDBUser {
         
         // Create your request string with parameter name as defined in PHP file
         let newpassword = (config.user_newpassword==true) ? 1 : 0
-        let body: String = "user_email=\(config.user_email!)&user_pass=\(config.user_pass!)&user_lastpass=\(config.user_lastpass!)&user_newpassword=\(newpassword)"
+        let body: String = "user_email=\(config.user_email!)&user_pass=\(config.user_pass!)&user_lastpass=\(config.user_lastpass!)&user_newpassword=\(newpassword)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updatePassword.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -253,7 +254,7 @@ class MDBUser {
         
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_pseudo=\(config.user_pseudo!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_ville=\(config.user_ville!)&user_id=\(config.user_id!)&user_level=\(config.level!)"
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_ville=\(config.user_ville!)&user_id=\(config.user_id!)&user_level=\(config.level!)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateUser.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -296,7 +297,7 @@ class MDBUser {
         
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_latitude=\(config.latitude!)&user_longitude=\(config.longitude!)&user_mapString=\(config.mapString!)&user_newpassword=\(config.user_newpassword!)"
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_latitude=\(config.latitude!)&user_longitude=\(config.longitude!)&user_mapString=\(config.mapString!)&user_newpassword=\(config.user_newpassword!)&lang=\(translate.lang!)"
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_signUp.php")!)
@@ -368,6 +369,7 @@ class Config {
     var vendeur_maj:Bool!
     var mess_badge:Int!
     var balance:Double!
+    var failure_count:Int!
     var level:Int!
     
     
@@ -397,6 +399,7 @@ class Config {
         message_maj = false
         mess_badge = 0
         balance = 0
+        failure_count = 0
         level = 0
     }
     

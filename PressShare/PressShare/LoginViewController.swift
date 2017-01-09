@@ -8,6 +8,7 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+//Todo : sur valider claver zone mot de passe executer bouton s'identifier
 
 import CoreData
 import Foundation
@@ -38,8 +39,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     var fieldName = ""
     var keybordY:CGFloat! = 0
     
-    let config = Config.sharedInstance
-    var traduction = InternationalIHM.sharedInstance
+    let config = Config.sharedInstance   
+    let translate = TranslateMessage.sharedInstance
     
     
     //MARK: Locked landscapee
@@ -93,17 +94,17 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         Products.sharedInstance.productsArray = nil
         
         
-        IBPressConnect.text = traduction.connectToPress
-        IBUser.placeholder = traduction.pseudo
-        IBPassword.placeholder = traduction.password
+        IBPressConnect.text = translate.connectToPress
+        IBUser.placeholder = translate.pseudo
+        IBPassword.placeholder = translate.password
         
-        IBLogin.setTitle(traduction.signin, for: UIControlState())
+        IBLogin.setTitle(translate.signin, for: UIControlState())
         IBLogin.titleLabel?.textAlignment = NSTextAlignment.center
-        IBNewAccount.setTitle(traduction.signup, for: UIControlState())
+        IBNewAccount.setTitle(translate.signup, for: UIControlState())
         IBNewAccount.titleLabel?.textAlignment = NSTextAlignment.center
-        IBLostPass.setTitle(traduction.lostPassword, for: UIControlState())
+        IBLostPass.setTitle(translate.lostPassword, for: UIControlState())
         IBLostPass.titleLabel?.textAlignment = NSTextAlignment.center
-        IBAnonyme.setTitle(traduction.anonyme, for: UIControlState())
+        IBAnonyme.setTitle(translate.anonyme, for: UIControlState())
         IBAnonyme.titleLabel?.textAlignment = NSTextAlignment.center
         
         
@@ -226,11 +227,11 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                         
                         let controller = segue.destination as! UITabBarController
                         let item1 = controller.tabBar.items![0]
-                        item1.title = self.traduction.map
+                        item1.title = self.translate.map
                         let item2 = controller.tabBar.items![1]
-                        item2.title = self.traduction.list
+                        item2.title = self.translate.list
                         let item3 = controller.tabBar.items![2]
-                        item3.title = self.traduction.settings
+                        item3.title = self.translate.settings
                         
                         var i = 0
                         for mess in Messages.sharedInstance.MessagesArray {
@@ -255,7 +256,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                     
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.IBActivity.stopAnimating()
-                        self.displayAlert("Error", mess: errorString!)
+                        self.displayAlert(self.translate.error, mess: errorString!)
                     }
                 }
                 
@@ -373,7 +374,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         if ((error) != nil)
         {
             // Process error
-            displayAlert("Error", mess: error.localizedDescription)
+            displayAlert(translate.error, mess: error.localizedDescription)
         }
         else if result.isCancelled {
             // Handle cancellations
@@ -451,13 +452,13 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         
         guard IBUser.text != "" else {
             
-            displayAlert("Error", mess: "Error, login is empty")
+            displayAlert(translate.error, mess: translate.errorLogin!)
             return
         }
         
         guard IBPassword.text != "" else {
             
-            displayAlert("Error", mess:  "Error, password is empty")
+            displayAlert(translate.error, mess:  translate.errorPassword)
             return
         }
         
@@ -482,7 +483,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                     
                     if flgOK == false && aUser.user_pass != ""  {
                         
-                        displayAlert("Error", mess:  "Error, login / password ")
+                        displayAlert(translate.error, mess:  translate.loginPassword)
                         setUIEnabled(true)
                         return
                     }
@@ -537,7 +538,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.setUIEnabled(true)
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                     
                 }
             }
@@ -615,7 +616,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.setUIEnabled(true)
-                        self.displayAlert("Error", mess: errorString!)
+                        self.displayAlert(self.translate.error, mess: errorString!)
                         
                     }
                 }

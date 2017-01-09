@@ -27,14 +27,14 @@ struct Transaction {
     
     var trans_id:Int
     var trans_date:Date
-    var trans_type:Int
+    var trans_type:Int   //1 : Trade. 2 : Exchange
     var trans_wording:String
     var prod_id:Int
     var trans_amount:Double
     var client_id:Int
     var vendeur_id:Int
     var proprietaire:Int
-    var trans_valide:Int
+    var trans_valide:Int  //1 : La transaction a été annulée. 2 : La transaction est confirmée.
     var trans_avis:String
     
     
@@ -133,18 +133,16 @@ class Transactions {
 
 class MDBTransact {
     
+    let translate = TranslateMessage.sharedInstance
     
     func getAllTransactions(_ userId:Int, completionHandlerTransactions: @escaping (_ success: Bool, _ transactionArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getAllTransactions.php")!)
-        let body: String = "user_id=\(userId)"
+        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
-        
         let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-            
-            
             
             CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
                 
@@ -182,7 +180,7 @@ class MDBTransact {
     func setUpdateTransaction(_ transaction: Transaction, completionHandlerUpdTrans: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "trans_id=\(transaction.trans_id)&trans_avis=\(transaction.trans_avis)&trans_valide=\(transaction.trans_valide)"
+        let body: String = "trans_id=\(transaction.trans_id)&trans_avis=\(transaction.trans_avis)&trans_valide=\(transaction.trans_valide)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateTransaction.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -200,7 +198,7 @@ class MDBTransact {
                         completionHandlerUpdTrans(true, nil)
                     }
                     else {
-                        completionHandlerUpdTrans(false, "impossible to update the transaction")
+                        completionHandlerUpdTrans(false, self.translate.errorUpdateTrans!)
                         
                     }
                     
@@ -222,7 +220,7 @@ class MDBTransact {
     func setAddTransaction(_ transaction: Transaction, completionHandlerAddTrans: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "trans_type=\(transaction.trans_type)&trans_valide=\(transaction.trans_valide)&client_id=\(transaction.client_id)&prod_id=\(transaction.prod_id)&trans_wording=\(transaction.trans_wording)&trans_amount=\(transaction.trans_amount)&vendeur_id=\(transaction.vendeur_id)&proprietaire=\(transaction.proprietaire)&trans_avis=\(transaction.trans_avis)"
+        let body: String = "trans_type=\(transaction.trans_type)&trans_valide=\(transaction.trans_valide)&client_id=\(transaction.client_id)&prod_id=\(transaction.prod_id)&trans_wording=\(transaction.trans_wording)&trans_amount=\(transaction.trans_amount)&vendeur_id=\(transaction.vendeur_id)&proprietaire=\(transaction.proprietaire)&trans_avis=\(transaction.trans_avis)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_addTransaction.php")!)
         
@@ -243,7 +241,7 @@ class MDBTransact {
                         completionHandlerAddTrans(true, nil)
                     }
                     else {
-                        completionHandlerAddTrans(false, "impossible d'ajouter la transaction")
+                        completionHandlerAddTrans(false, self.translate.errorAddTrans!)
                         
                     }
                     

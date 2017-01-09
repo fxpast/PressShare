@@ -85,11 +85,13 @@ class Messages {
 
 class MDBMessage {
     
+    let translate = TranslateMessage.sharedInstance
+    
     func getAllMessages(_ userId:Int, completionHandlerMessages: @escaping (_ success: Bool, _ messageArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getAllMessages.php")!)
-        let body: String = "user_id=\(userId)"
+        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         
@@ -131,7 +133,7 @@ class MDBMessage {
     func setDeleteMessage(_ message: Message, completionHandlerDelMessage: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "message_id=\(message.message_id)"
+        let body: String = "message_id=\(message.message_id)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_delMessage.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -175,7 +177,7 @@ class MDBMessage {
     func setUpdateMessage(_ message: Message, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "message_id=\(message.message_id)&deja_lu_exp=\(message.deja_lu_exp)&deja_lu_dest=\(message.deja_lu_dest)"
+        let body: String = "message_id=\(message.message_id)&deja_lu_exp=\(message.deja_lu_exp)&deja_lu_dest=\(message.deja_lu_dest)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateMessage.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -217,7 +219,7 @@ class MDBMessage {
         
         // Create your request string with parameter name as defined in PHP file
         
-        let body: String = "expediteur=\(message.expediteur)&destinataire=\(message.destinataire)&vendeur_id=\(message.vendeur_id)&client_id=\(message.client_id)&product_id=\(message.product_id)&contenu=\(message.contenu)"
+        let body: String = "expediteur=\(message.expediteur)&destinataire=\(message.destinataire)&vendeur_id=\(message.vendeur_id)&client_id=\(message.client_id)&product_id=\(message.product_id)&contenu=\(message.contenu)&lang=\(translate.lang!)"
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_addMessage.php")!)

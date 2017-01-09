@@ -23,7 +23,7 @@ class SettingsTableViewContr : UITableViewController {
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     
     let config = Config.sharedInstance
-    let translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     
     var users = [User]()
     
@@ -165,26 +165,39 @@ class SettingsTableViewContr : UITableViewController {
         
         switch (indexPath as NSIndexPath).row {
         case 0:
-            performSegue(withIdentifier: "profil", sender: self)
-            
+            if config.level > -1 {
+                performSegue(withIdentifier: "profil", sender: self)
+            }
         case 1:
-            performSegue(withIdentifier: "infoconnexion", sender: self)
+            
+            if config.level > -1 {
+                performSegue(withIdentifier: "infoconnexion", sender: self)
+            }
+            
             
         case 2:
             
-            performSegue(withIdentifier: "abonner", sender: self)
+            if config.level > -1 {
+                performSegue(withIdentifier: "abonner", sender: self)
+            }
             
         case 3:
             
-            performSegue(withIdentifier: "carte", sender: self)
+            if config.level > -1 {
+                performSegue(withIdentifier: "carte", sender: self)
+            }
             
         case 4:
             
-            performSegue(withIdentifier: "alerte", sender: self)
+            if config.level > -1 {
+                performSegue(withIdentifier: "alerte", sender: self)
+            }
             
         case 5:
             
-            performSegue(withIdentifier: "transaction", sender: self)
+            if config.level > -1 {
+                performSegue(withIdentifier: "transaction", sender: self)
+            }
             
         case 6:
             

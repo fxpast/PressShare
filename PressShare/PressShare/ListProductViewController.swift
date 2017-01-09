@@ -8,9 +8,9 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo: Tous les produits d'un utilisateur resilié sont masqués
-//Todo :Les produits avec transaction ne doivent plus apparaitre dans la liste
-//Todo :Les produits avec transaction ne peuvent plus être échangés ou commercés.
+
+
+//Todo : Remplacer bouton delete par une icone de poubelle
 //Todo :Le raffraichissement de la liste est fonction de la zone affichée sur la carte.
 //Todo :Comment reduire la lenteur de chargement? les photos sont en cause.
 
@@ -33,7 +33,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     var users = [User]()
     var products = [Product]()
     var config = Config.sharedInstance
-    let translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     var aindex:Int!
     var lat:CLLocationDegrees?
     var lon:CLLocationDegrees?
@@ -57,8 +57,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        buttonEdit.title = translate.delete
         
-        if config.level == 0 {
+        if config.level <= 0 {
             IBAddProduct.isEnabled = false
             buttonEdit.isEnabled = false
         }
@@ -86,7 +87,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             self.customOpeation.start()
             
         }
-        
         
         
     }
@@ -199,13 +199,13 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         
         
-        if buttonEdit.title == "Edit" {
+        if buttonEdit.title == translate.delete {
             IBTableView.isEditing=true
-            buttonEdit.title="Done"
+            buttonEdit.title = translate.done
         }
         else {
             IBTableView.isEditing=false
-            buttonEdit.title="Edit"
+            buttonEdit.title = translate.delete
         }
         
     }
@@ -360,7 +360,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBSearch.isHidden = false
                     self.IBActivity.stopAnimating()
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -418,7 +418,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         let product =  products[indexPath.row]
         
         guard config.user_id == product.prod_by_user else {
-            displayAlert("Error", mess: "Suppression impossible")
+            displayAlert(translate.error, mess: translate.deletionFor)
             return
         }
         MDBProduct.sharedInstance.setDeleteProduct(product) { (success, errorString) in
@@ -439,7 +439,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     if self.products.count == 0 {
-                        self.buttonEdit.title="Edit"
+                        self.buttonEdit.title = self.translate.delete
                         self.buttonEdit.isEnabled=false
                         self.IBTableView.isEditing = false
                     }
@@ -449,7 +449,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             }
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             

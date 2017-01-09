@@ -10,16 +10,12 @@
 
 //Todo :Add un button to call listalertviewcontroller  class
 //Todo :In the price, the sign $ must be before the value
-//Todo :Desactiver bouton Echange Acheter quand il y a une transaction sur le product
-//Todo :Il y a un plantage à l'ouverture de la fenetre
 
 
 import Foundation
 import MapKit
 import UIKit
 import MobileCoreServices
-
-
 
 
 class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
@@ -49,11 +45,10 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     var star=0
     var client=false
     
-    
     var aProduct:Product?
     
     var config = Config.sharedInstance
-    let translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     
     var filePath : String {
         let manager = FileManager.default
@@ -63,6 +58,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     
     
     //Bloquer le mode paysage
+    
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -101,8 +97,17 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             
             IBNom.text =  thisproduct.prod_nom
             
+            if translate.lang == "fr" {
+                
+                IBPrix.text = "\(BlackBox.sharedInstance.formatedAmount(thisproduct.prod_prix)) \(translate.devise!)"
+                
+            }
+            else if translate.lang == "us" {
+                
+                IBPrix.text = "\(translate.devise!) \(BlackBox.sharedInstance.formatedAmount(thisproduct.prod_prix))"
+                
+            }
             
-            IBPrix.text = "\(BlackBox.sharedInstance.formatedAmount(thisproduct.prod_prix)) \(translate.devise!)"
             
             IBComment.text = thisproduct.prod_comment
             IBTemps.text = thisproduct.prod_tempsDispo
@@ -133,7 +138,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             }
             else {
                 
-                if config.level == 0 {
+                if config.level <= 0 {
                     IBSave.isEnabled = false
                     client=false
                 }
@@ -260,7 +265,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         
-        if segue.identifier == "vendeur" {
+        if segue.identifier == "seller" {
             
             let nav = segue.destination as! UINavigationController
             let controller = nav.topViewController as! CreateTransViewController
@@ -280,7 +285,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             return
         }
         
-        let alertController = UIAlertController(title: "Capture photo", message: "Faites votre choix :", preferredStyle: .alert)
+        let alertController = UIAlertController(title: translate.takePicture, message: translate.makeChoice, preferredStyle: .alert)
         
         let actionBiblio = UIAlertAction(title: "Photo", style: .destructive, handler: { (action) in
             BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -305,7 +310,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         
         self.present(alertController, animated: true) {
-            
+      
         }
         
         
@@ -357,22 +362,28 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             
             var textField = UITextField()
             
-            
             if fieldName == "IBNom" {
                 textField = IBNom
             }
             else if fieldName == "IBPrix" {
                 textField = IBPrix
                 
-                let finalValue = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
+                var finalValue = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
+                if finalValue == "0.0" || finalValue == "0"  {
+                    finalValue = ""
+                }
                 
                 guard let prix = BlackBox.sharedInstance.formatedAmount(finalValue) else {
-                    displayAlert("Error", mess: "valeur incorrecte")
+                    displayAlert(translate.error, mess: translate.ErrorPrice)
                     return
                 }
                 
-                textField.text = BlackBox.sharedInstance.formatedAmount(prix)
-                
+                if prix == 0 {
+                    textField.text = ""
+                }
+                else {
+                    textField.text = BlackBox.sharedInstance.formatedAmount(prix)                    
+                }
                 
             }
             else if fieldName == "IBComment" {
@@ -486,14 +497,23 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         if textField.isEqual(IBPrix) {
             
-            let finalValue = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
-            
+            var finalValue = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
+            if finalValue == "0.0" || finalValue == "0"  {
+                finalValue = ""
+            }
             guard let prix = BlackBox.sharedInstance.formatedAmount(finalValue) else {
-                displayAlert("Error", mess: "valeur incorrecte")
+                displayAlert(translate.error, mess: translate.ErrorPrice)
                 return
             }
             
-            textField.text = BlackBox.sharedInstance.formatedAmount(prix)
+            if prix == 0 {
+                textField.text = ""
+            }
+            else {
+               textField.text = BlackBox.sharedInstance.formatedAmount(prix)
+            }
+            
+            
         }
         
     }
@@ -532,7 +552,21 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         if textField.isEqual(IBPrix) {
             
-            textField.text =  "\(BlackBox.sharedInstance.formatedAmount(textField.text!)!) \(translate.devise!)"
+            if translate.lang == "fr" {
+                
+                
+                textField.text =  "\(BlackBox.sharedInstance.formatedAmount(textField.text!)!) \(translate.devise!)"
+                
+                
+            }
+            else if translate.lang == "us" {
+                
+                textField.text =  "\(translate.devise!) \(BlackBox.sharedInstance.formatedAmount(textField.text!)!)"
+                
+                
+            }
+            
+            
             
         }
         
@@ -649,13 +683,13 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         
         guard IBInfoLocation.text != "" else {
-            displayAlert("Error", mess: "localisation incorrecte")
+            displayAlert(translate.error, mess: translate.ErrorGeolocation)
             return
         }
         
         guard let _ = BlackBox.sharedInstance.formatedAmount(IBPrix.text!) else {
             
-            displayAlert("Error", mess: "valeur prix incorrecte")
+            displayAlert(translate.error, mess: translate.ErrorPrice)
             return
             
         }
@@ -675,7 +709,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                     
                     self.setUIHidden(true)
                     self.IBActivity.stopAnimating()
-                    self.displayAlert("Error", mess: "error geocodeadresse : invalid address") //error.debugDescription
+                    self.displayAlert(self.translate.error, mess: self.translate.ErrorGeocode) //error.debugDescription
                 }
                 return
             }
@@ -723,20 +757,20 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         
         guard IBNom.text != "" else {
-            self.displayAlert("Error", mess: "nom incorrect")
+            self.displayAlert(self.translate.error, mess: translate.ErrorDescription)
             return
         }
         
         
         guard IBPrix.text != "" else {
-            self.displayAlert("Error", mess: "prix incorrect")
+            self.displayAlert(self.translate.error, mess: translate.ErrorPrice)
             return
         }
         
         
         func actionClient() {
             
-            performSegue(withIdentifier: "vendeur", sender: self)
+            performSegue(withIdentifier: "seller", sender: self)
             
         }
         
@@ -765,8 +799,10 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                 product.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
             }
             
-            let finalValue = IBPrix.text!.replacingOccurrences(of: translate.devise!, with: "")
-            
+            var finalValue = IBPrix.text!.replacingOccurrences(of: translate.devise!, with: "")
+            if finalValue == "0.0" || finalValue == "0"  {
+                finalValue = ""
+            }
             product.prod_prix = BlackBox.sharedInstance.formatedAmount(finalValue)!
             product.prod_by_user = config.user_id
             product.prod_longitude = config.longitude
@@ -802,7 +838,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                                     self.IBSave.isEnabled = true
                                     self.IBFind.isEnabled = true
                                     self.IBActivity.stopAnimating()
-                                    self.displayAlert("Error", mess: errorString!)
+                                    self.displayAlert(self.translate.error, mess: errorString!)
                                 }
                             }
                             
@@ -813,7 +849,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             self.IBSave.isEnabled = true
                             self.IBFind.isEnabled = true
-                            self.displayAlert("Error", mess: errorString!)
+                            self.displayAlert(self.translate.error, mess: errorString!)
                         }
                     }
                     
@@ -841,7 +877,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                             self.IBSave.isEnabled = true
                             self.IBFind.isEnabled = true
                             self.IBActivity.stopAnimating()
-                            self.displayAlert("Error", mess: errorString!)
+                            self.displayAlert(self.translate.error, mess: errorString!)
                         }
                     }
                     

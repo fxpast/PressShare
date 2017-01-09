@@ -17,8 +17,15 @@ import Foundation
 
 class TutoViewController: UIViewController  {
     
+    @IBOutlet weak var IBCancel: UIBarButtonItem!
+    let translate = TranslateMessage.sharedInstance
     
     
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        IBCancel.title = translate.cancel
+    }
     //MARK: Locked landscapee
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {

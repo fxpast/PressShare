@@ -26,7 +26,7 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
     var ligne:Int = -1
     
     let config = Config.sharedInstance
-    let translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     
     var users = [User]()
     
@@ -212,12 +212,12 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
     @IBAction func actionDone(_ sender: AnyObject) {
         
         guard config.user_pseudo != "" else {
-            self.displayAlert("Error", mess: "Pseudo incorrect")
+            self.displayAlert(self.translate.error, mess: translate.errorLogin)
             return
         }
         
         guard config.user_email != "" else {
-            self.displayAlert("Error", mess: "mail incorrect")
+            self.displayAlert(self.translate.error, mess: translate.errorMail)
             return
         }
         
@@ -240,7 +240,7 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
             }
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                     
                 }
             }

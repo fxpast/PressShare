@@ -6,10 +6,8 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo :Translate IHM
-//Todo :Bien formater la liste
-//Todo :Enlever la flèche sur la liste
-//Todo :Colorer en bleu les transaction non terminée
+
+//Todo :Ajouter une pastille à la transaction.
 
 
 import Foundation
@@ -25,7 +23,7 @@ class ListTransactTablViewContr: UITableViewController {
     var aindex:Int!
     
     var config = Config.sharedInstance
-    let translate = InternationalIHM.sharedInstance
+    let translate = TranslateMessage.sharedInstance
     
     var customOpeation = BlockOperation()
     let myqueue = OperationQueue()
@@ -139,7 +137,7 @@ class ListTransactTablViewContr: UITableViewController {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
-                    self.displayAlert("Error", mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -179,14 +177,14 @@ class ListTransactTablViewContr: UITableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        return "Date        Type    amount  wording"
+        return "\(translate.date!)        \(translate.type!)    \(translate.amount!)  \(translate.wording!)"
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let CellReuseId = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
-        let transaction =  transactions[(indexPath as NSIndexPath).row]
+        let transaction =  transactions[indexPath.row]
         
         
         let adate = cell?.contentView.viewWithTag(10) as! UILabel
@@ -198,10 +196,10 @@ class ListTransactTablViewContr: UITableViewController {
         
         let atype =  cell?.contentView.viewWithTag(20) as! UILabel
         if transaction.trans_type == 1 {
-            atype.text =  "commerce"
+            atype.text =  translate.trade
         }
         else if transaction.trans_type == 2 {
-            atype.text =  "echange"
+            atype.text =  translate.exchange
         }
         else {
             atype.text =  ""
@@ -215,6 +213,18 @@ class ListTransactTablViewContr: UITableViewController {
         let awording = cell?.contentView.viewWithTag(40) as! UILabel
         awording.text = transaction.trans_wording
         
+        if (transaction.trans_valide == 1 || transaction.trans_valide == 2)  {
+            aamount.textColor = UIColor.black
+            atype.textColor = UIColor.black
+            adate.textColor = UIColor.black
+            awording.textColor = UIColor.black
+        }
+        else {
+            aamount.textColor = UIColor.blue
+            atype.textColor = UIColor.blue
+            adate.textColor = UIColor.blue
+            awording.textColor = UIColor.blue
+        }
         
         return cell!
     }

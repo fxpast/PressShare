@@ -10,27 +10,29 @@ import Foundation
 
 class CommunRequest {
     
+    let translate = TranslateMessage.sharedInstance
+    
     
     func responseRequest(_ data:Data?, _ response:URLResponse, _ error:Error?, completionHdler:(_ success:Bool, _ result:Any?, _ errorString:String?) -> Void) {
         
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHdler(false, nil, "There was an error with your request: \(error?.localizedDescription)")
+            completionHdler(false, nil, "\(translate.errorRequest!) \(error?.localizedDescription)")
             return
             
         }
         
         /* GUARD: Did we get a successful 2XX response? */
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHdler(false, nil, "Your request returned a status code other than 2xx!, error : \(BlackBox.sharedInstance.statusCode(((response as? HTTPURLResponse)?.statusCode)!))")
+            completionHdler(false, nil, "\(translate.errorRequestReturn!) \(BlackBox.sharedInstance.statusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
             
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHdler(false, nil, "No data was returned by the request!")
+            completionHdler(false, nil, translate.errorNoDataRequest)
             return
             
         }
@@ -41,7 +43,7 @@ class CommunRequest {
         do {
             parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHdler(false, nil, "Could not parse the data as JSON: '\(data)'")
+            completionHdler(false, nil, "\(translate.errorParseJSON!) '\(data)'")
             return
             
         }

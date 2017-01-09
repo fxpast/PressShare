@@ -25,21 +25,20 @@
 		DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64B97E1E06880C00013628 /* CommunRequest.swift */; };
 		DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */; };
 		DB6BDF2F1DE46F24007EAFA3 /* CreateTransViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */; };
-		DB796C631CF4A2EE00BEA2F3 /* InternationalIHM.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */; };
-		DB796C651CF4A3E900BEA2F3 /* InternationalIHM.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */; };
 		DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB879CEC1DF76BEC00B05D5F /* Transaction.swift */; };
 		DBA03CD81CECB31800B76896 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA03CD71CECB31800B76896 /* Product.swift */; };
 		DBA3C5321CE5141800CD826D /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52E1CE5141800CD826D /* ProductViewController.swift */; };
 		DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52F1CE5141800CD826D /* LoginViewController.swift */; };
 		DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5301CE5141800CD826D /* MapViewController.swift */; };
 		DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* ListProductViewController.swift */; };
-		DBB4221B1DF8A70D00CB3F5E /* TraductionMessage.plist in Resources */ = {isa = PBXBuildFile; fileRef = DBB4221A1DF8A70D00CB3F5E /* TraductionMessage.plist */; };
-		DBB4221D1DF8A76600CB3F5E /* TraductionMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4221C1DF8A76600CB3F5E /* TraductionMessage.swift */; };
+		DBB4221B1DF8A70D00CB3F5E /* TranslateMessage.plist in Resources */ = {isa = PBXBuildFile; fileRef = DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */; };
+		DBB4221D1DF8A76600CB3F5E /* TranslateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */; };
 		DBBBDAE41DE8C2D9000B5E9E /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */; };
 		DBEDBDB31DC2A0C600EECF0F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDAF1DC2A0C600EECF0F /* Bolts.framework */; };
 		DBEDBDB41DC2A0C600EECF0F /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB01DC2A0C600EECF0F /* FBSDKCoreKit.framework */; };
 		DBEDBDB51DC2A0C600EECF0F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB11DC2A0C600EECF0F /* FBSDKLoginKit.framework */; };
 		DBEDBDB61DC2A0C600EECF0F /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB21DC2A0C600EECF0F /* FBSDKShareKit.framework */; };
+		DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7B3831E1EE71200024DA6 /* Commission.swift */; };
 		DBF7CE141DF5EBB300966F29 /* NewUserViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE131DF5EBB300966F29 /* NewUserViewContr.swift */; };
 		DBF7CE161DF6064600966F29 /* ListTransactTablViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */; };
 		DBF7CE181DF72DBD00966F29 /* DetailTransViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */; };
@@ -83,8 +82,6 @@
 		DB64B97E1E06880C00013628 /* CommunRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunRequest.swift; sourceTree = "<group>"; };
 		DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewContr.swift; sourceTree = "<group>"; };
 		DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateTransViewController.swift; sourceTree = "<group>"; };
-		DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InternationalIHM.plist; sourceTree = "<group>"; };
-		DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternationalIHM.swift; sourceTree = "<group>"; };
 		DB879CEC1DF76BEC00B05D5F /* Transaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		DBA03CD71CECB31800B76896 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		DBA3C52E1CE5141800CD826D /* ProductViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
@@ -92,14 +89,15 @@
 		DBA3C5301CE5141800CD826D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		DBA3C5311CE5141800CD826D /* ListProductViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListProductViewController.swift; sourceTree = "<group>"; };
 		DBA3C5411CE51A1B00CD826D /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
-		DBB4221A1DF8A70D00CB3F5E /* TraductionMessage.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TraductionMessage.plist; sourceTree = "<group>"; };
-		DBB4221C1DF8A76600CB3F5E /* TraductionMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TraductionMessage.swift; sourceTree = "<group>"; };
+		DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TranslateMessage.plist; sourceTree = "<group>"; };
+		DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslateMessage.swift; sourceTree = "<group>"; };
 		DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BadgeLabel.swift; sourceTree = "<group>"; };
 		DBEDBD9E1DC284FF00EECF0F /* PressShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PressShare.entitlements; sourceTree = "<group>"; };
 		DBEDBDAF1DC2A0C600EECF0F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = PressShare/Bolts.framework; sourceTree = "<group>"; };
 		DBEDBDB01DC2A0C600EECF0F /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = PressShare/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		DBEDBDB11DC2A0C600EECF0F /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = PressShare/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		DBEDBDB21DC2A0C600EECF0F /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = PressShare/FBSDKShareKit.framework; sourceTree = "<group>"; };
+		DBF7B3831E1EE71200024DA6 /* Commission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Commission.swift; sourceTree = "<group>"; };
 		DBF7CE131DF5EBB300966F29 /* NewUserViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewContr.swift; sourceTree = "<group>"; };
 		DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListTransactTablViewContr.swift; sourceTree = "<group>"; };
 		DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailTransViewController.swift; sourceTree = "<group>"; };
@@ -131,14 +129,14 @@
 		DB5EFA371CE39AC80065ECEB /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DB796C641CF4A3E900BEA2F3 /* InternationalIHM.swift */,
-				DBB4221C1DF8A76600CB3F5E /* TraductionMessage.swift */,
+				DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */,
 				DB64B97E1E06880C00013628 /* CommunRequest.swift */,
 				DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */,
 				DB2515961D83226800B286F7 /* User.swift */,
 				DB879CEC1DF76BEC00B05D5F /* Transaction.swift */,
 				DBA03CD71CECB31800B76896 /* Product.swift */,
 				DB385C8A1DE5D99D00AD95FF /* Message.swift */,
+				DBF7B3831E1EE71200024DA6 /* Commission.swift */,
 				DB0B485A1DEF51F500B76652 /* Capital.swift */,
 				DB0B485C1DEF522D00B76652 /* Operation.swift */,
 				DB314A751D92ACB40072D7D3 /* CarteBancaire.swift */,
@@ -160,23 +158,23 @@
 		DB5EFA3C1CE39B010065ECEB /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */,
 				DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */,
 				DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */,
-				DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */,
+				DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */,
+				DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */,
 				DBA3C5311CE5141800CD826D /* ListProductViewController.swift */,
 				DBA3C52E1CE5141800CD826D /* ProductViewController.swift */,
-				DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */,
 				DBA3C5301CE5141800CD826D /* MapViewController.swift */,
 				DBA3C52F1CE5141800CD826D /* LoginViewController.swift */,
+				DBF8D8201CB9A0B700BF706E /* UpdatePasswordViewContr.swift */,
+				DBF7CE131DF5EBB300966F29 /* NewUserViewContr.swift */,
 				DBF8D8221CB9A0B700BF706E /* UpdateUserTableViewContr.swift */,
 				DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */,
-				DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */,
 				DB385C8C1DE603B500AD95FF /* ListAlerteViewController.swift */,
 				DB385C8E1DE612CF00AD95FF /* DetailAlertViewController.swift */,
 				DB5FFA051DEC9F93003BCA55 /* TutoViewController.swift */,
 				DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */,
-				DBF7CE131DF5EBB300966F29 /* NewUserViewContr.swift */,
-				DBF8D8201CB9A0B700BF706E /* UpdatePasswordViewContr.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -230,8 +228,7 @@
 				DBF8D8131CB99E9D00BF706E /* Assets.xcassets */,
 				DBF8D8181CB99E9D00BF706E /* Info.plist */,
 				DBFE144C1E0305AB00BCAD79 /* design pattern.rtf */,
-				DB796C621CF4A2EE00BEA2F3 /* InternationalIHM.plist */,
-				DBB4221A1DF8A70D00CB3F5E /* TraductionMessage.plist */,
+				DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */,
 			);
 			path = PressShare;
 			sourceTree = "<group>";
@@ -306,8 +303,7 @@
 				DBF8D8141CB99E9D00BF706E /* Assets.xcassets in Resources */,
 				DBF8D8121CB99E9D00BF706E /* Main.storyboard in Resources */,
 				DBFE144D1E0305AB00BCAD79 /* design pattern.rtf in Resources */,
-				DB796C631CF4A2EE00BEA2F3 /* InternationalIHM.plist in Resources */,
-				DBB4221B1DF8A70D00CB3F5E /* TraductionMessage.plist in Resources */,
+				DBB4221B1DF8A70D00CB3F5E /* TranslateMessage.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,7 +319,6 @@
 				DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */,
 				DB314A761D92ACB40072D7D3 /* CarteBancaire.swift in Sources */,
 				DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */,
-				DB796C651CF4A3E900BEA2F3 /* InternationalIHM.swift in Sources */,
 				DBF7CE141DF5EBB300966F29 /* NewUserViewContr.swift in Sources */,
 				DBF8D8251CB9A0B700BF706E /* UpdatePasswordViewContr.swift in Sources */,
 				DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */,
@@ -333,13 +328,14 @@
 				DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */,
 				DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */,
 				DB314A741D929A0B0072D7D3 /* PayboxDirect.swift in Sources */,
+				DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */,
 				DB0B485D1DEF522D00B76652 /* Operation.swift in Sources */,
 				DB2515981D83226800B286F7 /* User.swift in Sources */,
 				DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */,
 				DB5FFA061DEC9F93003BCA55 /* TutoViewController.swift in Sources */,
 				DBA03CD81CECB31800B76896 /* Product.swift in Sources */,
 				DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */,
-				DBB4221D1DF8A76600CB3F5E /* TraductionMessage.swift in Sources */,
+				DBB4221D1DF8A76600CB3F5E /* TranslateMessage.swift in Sources */,
 				DB385C8D1DE603B500AD95FF /* ListAlerteViewController.swift in Sources */,
 				DBA3C5321CE5141800CD826D /* ProductViewController.swift in Sources */,
 				DB6BDF2F1DE46F24007EAFA3 /* CreateTransViewController.swift in Sources */,
