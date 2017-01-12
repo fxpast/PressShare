@@ -9,22 +9,15 @@
 //
 
 
-/*Todo :
- 
+// Todo: Faire un scripte php de traitement de fin de journée pour verifier et confirmer/infirmer les transaction en mode arbitrage humain
 
- - Dans le cas d'un achat, c'est le client qui a le pouvoir de valider la transaction.
- Si le client valide une commission de 5% est débité pour chacun des intervenants. Au total on a 10% pour PressShare.
- Si le client annule son compteur rejet est incrémenté.
- 
- - Dans le cas d'un échange les deux parties ont le pouvoir de valider la transaction. Il y a une commission de 5%.
- Si l'un annule et l'autre confirme la transaction, une commission de 5% est débité pour celui qui a confirmé et le compteur rejet est incrémenté pour celui qui a annulé et la transaction. La transaction passe en mode enquête et arbitrage humain.
- 
- Si l'un annule et l'autre ne decide rien, le compteur rejet est incrémenté pour celui qui a annulé et au bout d'un certain temps MAX JOUR le compteur de rejet est incrémenté pour celui qui n'a rien décidé.
- 
- Si l'un confirme et l'autre ne decide rien, une commission de 5% est débité pour celui qui a confirmé et au bout d'un certain temps MAX JOUR une commission de 0,5€ est débité pour celui qui n'a rien décidé.
- */
+//Todo: Faire un scripte php de traitment de fin de journée pour : à partir de MAX JOUR le compteur de rejet est incrémenté pour celui qui n'a rien décidé sur sa transaction alors que l'autre l'a annulé.
+
+//Todo: Faire un scripte php de traitment de fin de journée pour : à partir de MAX JOUR une commission de 5% est débité pour celui qui n'a rien décidé sur sa transaction alors que l'autre l'a confirmé.
 
 
+//Todo: Si la transaction est annulé alors remettre le produit en ligne.
+//Todo: detail option annuler non affiché en consultation
 
 import Foundation
 import UIKit
@@ -66,9 +59,9 @@ class DetailTransViewController: UIViewController {
     var aTransaction:Transaction?
     var fieldName = ""
     var keybordY:CGFloat! = 0
-    let commissionPrice = 0.5
+    let commissionPrice = 0.05  //5% of product price
     
-    //MARK: Locked landscapee
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -91,7 +84,7 @@ class DetailTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if (aTransaction?.trans_valide == 1 || aTransaction?.trans_valide == 2)  {
+        if (aTransaction?.trans_valide == 1 || aTransaction?.trans_valide == 2 )  {
           IBEnded.isEnabled = false
         }
         else if (aTransaction?.trans_type == 1 && aTransaction?.vendeur_id == aTransaction?.proprietaire)  {
@@ -137,7 +130,7 @@ class DetailTransViewController: UIViewController {
         
         
         IBWording.text = "\(translate.wording!) \(aTransaction!.trans_wording)"
-        IBAmount.text = "\(translate.amount!) \(BlackBox.sharedInstance.formatedAmount(aTransaction!.trans_amount)) \(translate.devise!)"
+        IBAmount.text = "\(translate.amount!) \(BlackBox.sharedInstance.formatedAmount(aTransaction!.trans_amount))"
         
         
   
@@ -335,7 +328,7 @@ class DetailTransViewController: UIViewController {
         func tradeConfirmTransact() {
             
             config.balance = config.balance - Double(aTransaction!.trans_amount)
-            config.balance = config.balance - commissionPrice
+            config.balance = config.balance - commissionPrice * Double(aTransaction!.trans_amount)
             var capital = Capital(dico: [String : AnyObject]())
             var operation = Operation(dico: [String : AnyObject]())
             
@@ -353,7 +346,7 @@ class DetailTransViewController: UIViewController {
                     
                     commission.user_id = self.aTransaction!.proprietaire
                     commission.product_id = self.aTransaction!.prod_id
-                    commission.com_amount = self.commissionPrice
+                    commission.com_amount = self.commissionPrice * Double(self.aTransaction!.trans_amount)
                     
                     //Création d'une commission d'achat pour le client
                     MDBCommission.sharedInstance.setAddCommission(commission, self.config.balance, completionHandlerCommission: { (success, errorString) in
@@ -395,7 +388,7 @@ class DetailTransViewController: UIViewController {
                                     for dictionary in capitalArray!{
                                         let cap = Capital(dico: dictionary)
                                         capital.balance = cap.balance + Double(self.aTransaction!.trans_amount)
-                                        capital.balance = capital.balance - self.commissionPrice
+                                        capital.balance = capital.balance - self.commissionPrice * Double(self.aTransaction!.trans_amount)
                                         capital.user_id = cap.user_id
                                         capital.failure_count = cap.failure_count
                                     }
@@ -409,7 +402,7 @@ class DetailTransViewController: UIViewController {
                                             
                                             commission.user_id = self.aTransaction!.vendeur_id
                                             commission.product_id = self.aTransaction!.prod_id
-                                            commission.com_amount = self.commissionPrice
+                                            commission.com_amount = self.commissionPrice * Double(self.aTransaction!.trans_amount)
                                             
                                             //Création d'une commission d'achat pour le client
                                             MDBCommission.sharedInstance.setAddCommission(commission, capital.balance,  completionHandlerCommission: { (success, errorString) in
@@ -525,11 +518,29 @@ class DetailTransViewController: UIViewController {
                 
                 if success {
                     
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.IBActivity.stopAnimating()
-                        self.dismiss(animated: true, completion: nil)
-                    }
+                    var product = Product(dico: [String : AnyObject]())
+                    product.prod_id = (self.aTransaction?.prod_id)!
+                    product.prod_hidden = false
                     
+                    MDBProduct.sharedInstance.setUpdateProduct(product) { (success, errorString) in
+                        
+                        if success {
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.IBActivity.stopAnimating()
+                                self.dismiss(animated: true, completion: nil)
+                            }
+                            
+                        }
+                        else {
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                
+                                self.displayAlert(self.translate.error, mess: errorString!)
+                            }
+                        }
+                        
+                    }
+                
                 }
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -539,6 +550,7 @@ class DetailTransViewController: UIViewController {
                 }
                 
             })
+            
             
         }
         
@@ -551,7 +563,7 @@ class DetailTransViewController: UIViewController {
             
             commission.user_id = aTransaction!.proprietaire
             commission.product_id = aTransaction!.prod_id
-            commission.com_amount = commissionPrice
+            commission.com_amount = commissionPrice * Double(aTransaction!.trans_amount)
             
             //Création d'une commission d'achat pour le client
             MDBCommission.sharedInstance.setAddCommission(commission, config.balance, completionHandlerCommission: { (success, errorString) in
@@ -592,9 +604,27 @@ class DetailTransViewController: UIViewController {
                 
                 if success {
                     
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.IBActivity.stopAnimating()
-                        self.dismiss(animated: true, completion: nil)
+                    var product = Product(dico: [String : AnyObject]())
+                    product.prod_id = (self.aTransaction?.prod_id)!
+                    product.prod_hidden = false
+                    
+                    MDBProduct.sharedInstance.setUpdateProduct(product) { (success, errorString) in
+                        
+                        if success {
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.IBActivity.stopAnimating()
+                                self.dismiss(animated: true, completion: nil)
+                            }
+                            
+                        }
+                        else {
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                
+                                self.displayAlert(self.translate.error, mess: errorString!)
+                            }
+                        }
+                        
                     }
                     
                 }
@@ -649,9 +679,22 @@ class DetailTransViewController: UIViewController {
                 
             }
             
+            if self.aTransaction?.trans_type == 2 && self.aTransaction?.trans_valide == 1 {
+                //Transaction d'echange annulée
+                self.aTransaction?.trans_arbitrage = true
+            }
+            else {
+                self.aTransaction?.trans_arbitrage = false
+            }
+            
+            
             MDBTransact.sharedInstance.setUpdateTransaction(self.aTransaction!, completionHandlerUpdTrans: { (success, errorString) in
                 
                 if success {
+                    
+                    self.config.trans_badge = self.config.trans_badge - 1
+                    self.config.transaction_maj = true
+            
                     
                     if self.aTransaction?.trans_type == 1 && self.aTransaction?.trans_valide == 2 && self.aTransaction?.client_id == self.aTransaction?.proprietaire {
                         //Cas où le client confirme la transaction commerciale. Alors son compte est debité produit + la commission
@@ -659,7 +702,7 @@ class DetailTransViewController: UIViewController {
                         
                     }
                     else if self.aTransaction?.trans_type == 1 && self.aTransaction?.trans_valide == 1 && self.aTransaction?.client_id == self.aTransaction?.proprietaire   {
-                        //Cas où le client annule la transaction commerciale. alors son compte n'est pas debité
+                        //Cas où le client annule la transaction commerciale. alors son compte n'est pas debité et le compteur rejet est incrémenté
                         tradeCancelTransact()
                         
                     }
@@ -670,7 +713,7 @@ class DetailTransViewController: UIViewController {
                         
                     }
                     else if self.aTransaction?.trans_type == 2 && self.aTransaction?.trans_valide == 1 {
-                        //Cas où l'utilisateur annule la transaction d'echange. alors son compte n'est pas debité
+                        //Cas où l'utilisateur annule la transaction d'echange. alors son compte n'est pas debité et le compteur rejet est incrémenté
                         exchangeCancelTransact()
                         
                     }

@@ -9,14 +9,10 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo : improve view fields
-
-
 import CoreData
 import UIKit
 
 class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAlertViewDelegate {
-    
     
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
@@ -35,8 +31,7 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
         return delegate.managedObjectContext
     }
     
-    
-    //MARK: Locked landscapee
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -55,7 +50,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
         }
     }
     
-    
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
@@ -69,11 +63,8 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        
         subscibeToKeyboardNotifications()
         
-        
-        IBCancel.title = translate.cancel
         IBSave.title = translate.save
         
         navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
@@ -113,8 +104,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
         label.text = translate.country
         
         
-        
-        
         setUIHidden(false, indexpath: IndexPath(row: 0, section: 0))
         setUIHidden(false, indexpath: IndexPath(row: 1, section: 0))
         setUIHidden(false, indexpath: IndexPath(row: 2, section: 0))
@@ -123,9 +112,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
         setUIHidden(false, indexpath: IndexPath(row: 5, section: 0))
         setUIHidden(false, indexpath: IndexPath(row: 6, section: 0))
         setUIHidden(false, indexpath: IndexPath(row: 7, section: 0))
-        
-        
-        
         
         
     }
@@ -142,8 +128,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
     }
     
     private func setUIHidden(_ hidden: Bool, indexpath:IndexPath) {
-        
-        
         
         let cell = tableView.cellForRow(at: indexpath)
         let etiquette =  cell!.contentView.subviews[0] as! UILabel
@@ -193,7 +177,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
     
     private func fetchAllUser() -> [User] {
         
-        
         users.removeAll()
         
         // Create the Fetch Request
@@ -221,10 +204,7 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
             return
         }
         
-        
         IBSave.isEnabled = false
-        
-        
         
         MDBUser.sharedInstance.setUpdateUser(config) { (success, errorString) in
             self.IBSave.isEnabled = true
@@ -251,7 +231,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
     
     private func assignValue (_ nom: String, valeur: String) {
         
-        
         switch nom {
         case "Pseudo":
             config.user_pseudo = valeur
@@ -275,7 +254,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
             
         }
         
-        
     }
     
     private func assignUser(_ aUser:User) {
@@ -298,7 +276,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
         
         
         users = fetchAllUser()
-        
         
     }
     
@@ -325,7 +302,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
             }
         }
         
-        
     }
     
     
@@ -343,7 +319,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
                     return true
                 }
             }
-            
             
         }
         
@@ -366,7 +341,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        
     }
     
     
@@ -382,9 +356,7 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
                 view.frame.origin.y = keybordY - valeur.frame.origin.y - valeur.frame.size.height
             }
             
-            
         }
-        
         
     }
     
@@ -394,7 +366,6 @@ class UpdateUserTableViewContr : UITableViewController ,UITextFieldDelegate,  UI
         IBSave.isEnabled = true
         let cell = tableView.cellForRow(at: IndexPath(item: ligne, section: 0))!
         let textField =  cell.contentView.subviews[1] as! UITextField
-        
         
         if textField.isFirstResponder {
             view.frame.origin.y = 0

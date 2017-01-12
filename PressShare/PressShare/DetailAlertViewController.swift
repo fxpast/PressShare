@@ -9,14 +9,6 @@
 //
 
 
-
-//Todo :Le message recu doit est cadré en haut de la zone de texte
-//Todo :Le message recu ne doit est modifiable
-
-
-
-
-
 import Foundation
 
 class DetailAlertViewController: UIViewController , UITextViewDelegate {
@@ -41,7 +33,7 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
     let translate = TranslateMessage.sharedInstance
     
     
-    //MARK: Locked landscapee
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -66,11 +58,11 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBReturn.title = translate.cancel
         IBSend.title = translate.send
         IBMessage.text = translate.message
         IBReply.text = translate.reply
         IBRead.text = aMessage?.contenu
+        IBRead.isEditable = false
         
         
     }
@@ -119,7 +111,7 @@ class DetailAlertViewController: UIViewController , UITextViewDelegate {
         message.client_id = (aMessage?.client_id)!
         message.vendeur_id = (aMessage?.vendeur_id)!
         message.product_id = (aMessage?.product_id)!
-        message.contenu = IBWrite.text
+        message.contenu = "\(translate.emailSender!) \(config.user_nom!) \(config.user_prenom!) \n \(IBWrite.text!) \n \n \n \n \n \n \n \n \n"
         
         MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
             

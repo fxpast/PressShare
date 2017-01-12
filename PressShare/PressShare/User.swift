@@ -366,8 +366,10 @@ class Config {
     var user_lastpass:String!
     var product_maj:Bool!
     var message_maj:Bool!
+    var transaction_maj:Bool!
     var vendeur_maj:Bool!
     var mess_badge:Int!
+    var trans_badge:Int!
     var balance:Double!
     var failure_count:Int!
     var level:Int!
@@ -397,7 +399,9 @@ class Config {
         product_maj = false
         vendeur_maj = false
         message_maj = false
+        transaction_maj = false
         mess_badge = 0
+        trans_badge = 0
         balance = 0
         failure_count = 0
         level = 0

@@ -30,9 +30,7 @@ class CBViewController: UIViewController {
     var fieldName = ""
     var keybordY:CGFloat! = 0
     
-    
-    
-    //MARK: Locked landscapee
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait

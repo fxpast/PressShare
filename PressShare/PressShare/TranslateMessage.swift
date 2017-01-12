@@ -86,6 +86,46 @@ class TranslateMessage {
         
     }
     
+    var impossibleDeldMes:String!
+        {
+        
+        get {
+            let resultat = dico["impossibleDeldMes"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var impossibleDeldPr:String!
+        {
+        
+        get {
+            let resultat = dico["impossibleDeldPr"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
+    var impossibleUpdPr:String!
+        {
+        
+        get {
+            let resultat = dico["impossibleUpdPr"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+      }
+    
+    var emailSender:String!
+        {
+        
+        get {
+            let resultat = dico["emailSender"] as! [AnyObject]
+            return resultat[langue-1] as! String
+        }
+        
+    }
+    
     var loginPassword:String!
         {
         
@@ -94,7 +134,7 @@ class TranslateMessage {
             return resultat[langue-1] as! String
         }
         
-      }
+    }
     
     var confirmSubsWithDepot:String!
         {

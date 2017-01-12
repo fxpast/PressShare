@@ -426,8 +426,8 @@
         </array>
         <key>customerFor</key>
         <array>
-            <string>Prenez contact avec le client pour la suite...</string>
-            <string>Contact the customer for more...</string>
+            <string>Prenez contact avec le client pour la suite de la transaction...</string>
+            <string>Contact the customer to following the transaction...</string>
         </array>
         <key>theProduct</key>
         <array>
@@ -514,6 +514,21 @@
             <string>Commerce</string>
             <string>Trade</string>
         </array>
+        <key>impossibleDeldMes</key>
+        <array>
+            <string>impossible de supprimer le message</string>
+            <string>impossible to delete the message</string>
+        </array>
+        <key>impossibleDeldPr</key>
+        <array>
+            <string>impossible de supprimer le produit</string>
+            <string>impossible to delete the product</string>
+        </array>
+        <key>impossibleUpdPr</key>
+        <array>
+            <string>impossible de modifier le produit</string>
+            <string>impossible to update the product</string>
+        </array>
         <key>product</key>
         <array>
             <string>produit</string>
@@ -568,6 +583,11 @@
         <array>
             <string>Boite de Reception</string>
             <string>Inbox</string>
+        </array>
+        <key>emailSender</key>
+        <array>
+            <string>De :</string>
+            <string>From :</string>
         </array>
         <key>sendBox</key>
         <array>

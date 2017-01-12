@@ -153,7 +153,7 @@ class MDBMessage {
                         completionHandlerDelMessage(true, nil)
                     }
                     else {
-                        completionHandlerDelMessage(false, "impossible to delete the message")
+                        completionHandlerDelMessage(false, self.translate.impossibleDeldMes!)
                         
                     }
                     

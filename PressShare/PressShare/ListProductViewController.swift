@@ -8,13 +8,9 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
-
-//Todo : Remplacer bouton delete par une icone de poubelle
 //Todo :Le raffraichissement de la liste est fonction de la zone affichée sur la carte.
 //Todo :Comment reduire la lenteur de chargement? les photos sont en cause.
-
-
+//Todo : fusionner modifier et ajouter un produit
 
 import CoreData
 import Foundation
@@ -56,8 +52,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        buttonEdit.title = translate.delete
         
         if config.level <= 0 {
             IBAddProduct.isEnabled = false
@@ -127,9 +121,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        
     }
-    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -152,13 +144,11 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    
     @IBAction func actionEpingle(_ sender: AnyObject) {
         
         aindex = 999
         performSegue(withIdentifier: "fromtable", sender: self)
     }
-    
     
     
     @IBAction func actionLogout(_ sender: AnyObject) {
@@ -193,21 +183,10 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    
-    
     @IBAction func actionEdit(_ sender: AnyObject)  {
         
-        
-        
-        if buttonEdit.title == translate.delete {
-            IBTableView.isEditing=true
-            buttonEdit.title = translate.done
-        }
-        else {
-            IBTableView.isEditing=false
-            buttonEdit.title = translate.delete
-        }
-        
+        IBTableView.isEditing = !IBTableView.isEditing
+ 
     }
     
     @IBAction func actionRefresh(_ sender: AnyObject) {
@@ -280,10 +259,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    
-    
     //MARK: Data Product
-    
     
     private func chargeData() {
         
@@ -330,7 +306,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
         
-        
     }
     
     
@@ -364,8 +339,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 }
             }
             
-            
-            
         }
         
     }
@@ -390,7 +363,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     //MARK: coreData function
     
-    
     fileprivate func fetchAllUser() -> [User] {
         
         
@@ -407,10 +379,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    
-    
     //MARK: Table View Controller data source
-    
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
@@ -439,7 +408,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     if self.products.count == 0 {
-                        self.buttonEdit.title = self.translate.delete
                         self.buttonEdit.isEnabled=false
                         self.IBTableView.isEditing = false
                     }
@@ -453,15 +421,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 }
             }
             
-            
-            
         }
         
-        
     }
-    
-    
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         

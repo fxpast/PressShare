@@ -7,9 +7,6 @@
 //
 
 
-//Todo :Ajouter une pastille à la transaction.
-
-
 import Foundation
 import UIKit
 
@@ -67,8 +64,6 @@ class ListTransactTablViewContr: UITableViewController {
             refreshData()
         }
         
-        
-        
     }
     
     
@@ -76,19 +71,21 @@ class ListTransactTablViewContr: UITableViewController {
         
         super.viewWillAppear(animated)
         
-        IBCancel.title = translate.cancel
+        if config.transaction_maj == true {
+            config.transaction_maj = false
+            refreshData()
+        }
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "detailtransaction" {
             
-            
             let nav = segue.destination as! UINavigationController
             let controller = nav.topViewController as! DetailTransViewController
             
             controller.aTransaction = transactions[aindex]
-            
             
         }
         
@@ -142,7 +139,6 @@ class ListTransactTablViewContr: UITableViewController {
             }
             
         })
-        
         
         
     }

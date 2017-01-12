@@ -9,7 +9,6 @@
 //
 
 //Todo :Add un button to call listalertviewcontroller  class
-//Todo :In the price, the sign $ must be before the value
 
 
 import Foundation
@@ -57,8 +56,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    //Bloquer le mode paysage
-    
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -97,17 +95,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             
             IBNom.text =  thisproduct.prod_nom
             
-            if translate.lang == "fr" {
-                
-                IBPrix.text = "\(BlackBox.sharedInstance.formatedAmount(thisproduct.prod_prix)) \(translate.devise!)"
-                
-            }
-            else if translate.lang == "us" {
-                
-                IBPrix.text = "\(translate.devise!) \(BlackBox.sharedInstance.formatedAmount(thisproduct.prod_prix))"
-                
-            }
-            
+            IBPrix.text = BlackBox.sharedInstance.formatedAmount(thisproduct.prod_prix)
             
             IBComment.text = thisproduct.prod_comment
             IBTemps.text = thisproduct.prod_tempsDispo
@@ -170,7 +158,6 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         subscibeToKeyboardNotifications()
         
-        IBCancel.title = translate.cancel
         if client {
             
             IBSave.title = translate.exchangeBuy
@@ -368,21 +355,10 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             else if fieldName == "IBPrix" {
                 textField = IBPrix
                 
-                var finalValue = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
-                if finalValue == "0.0" || finalValue == "0"  {
-                    finalValue = ""
-                }
-                
-                guard let prix = BlackBox.sharedInstance.formatedAmount(finalValue) else {
-                    displayAlert(translate.error, mess: translate.ErrorPrice)
-                    return
-                }
-                
-                if prix == 0 {
+                textField.text = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
+                textField.text = textField.text!.replacingOccurrences(of: " ", with: "")
+                if textField.text == "0.0" || textField.text == "0"  {
                     textField.text = ""
-                }
-                else {
-                    textField.text = BlackBox.sharedInstance.formatedAmount(prix)                    
                 }
                 
             }
@@ -498,9 +474,11 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         if textField.isEqual(IBPrix) {
             
             var finalValue = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
+            finalValue = finalValue.replacingOccurrences(of: " ", with: "")
             if finalValue == "0.0" || finalValue == "0"  {
                 finalValue = ""
             }
+            
             guard let prix = BlackBox.sharedInstance.formatedAmount(finalValue) else {
                 displayAlert(translate.error, mess: translate.ErrorPrice)
                 return
@@ -542,33 +520,6 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             fieldName = "IBInfoLocation"
         }
         
-        
-        return true
-    }
-    
-    
-    
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        
-        if textField.isEqual(IBPrix) {
-            
-            if translate.lang == "fr" {
-                
-                
-                textField.text =  "\(BlackBox.sharedInstance.formatedAmount(textField.text!)!) \(translate.devise!)"
-                
-                
-            }
-            else if translate.lang == "us" {
-                
-                textField.text =  "\(translate.devise!) \(BlackBox.sharedInstance.formatedAmount(textField.text!)!)"
-                
-                
-            }
-            
-            
-            
-        }
         
         return true
     }
@@ -800,6 +751,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             }
             
             var finalValue = IBPrix.text!.replacingOccurrences(of: translate.devise!, with: "")
+            finalValue = finalValue.replacingOccurrences(of:  " ", with: "")
             if finalValue == "0.0" || finalValue == "0"  {
                 finalValue = ""
             }

@@ -9,14 +9,11 @@
 //
 
 
-
-//Todo :Ajouter le contenu recu de Arnaud
-
-
 import Foundation
 
 class TutoViewController: UIViewController  {
     
+    @IBOutlet weak var IBWebView: UIWebView!
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     let translate = TranslateMessage.sharedInstance
     
@@ -24,27 +21,39 @@ class TutoViewController: UIViewController  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        IBCancel.title = translate.cancel
+        
     }
-    //MARK: Locked landscapee
-    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+    
+    //MARK: Locked landscapeLeft
+     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
-            return .portrait
+            return .landscapeLeft
         }
     }
     
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
         get {
-            return .portrait
+            return .landscapeLeft
         }
     }
-    
+ 
     open override var shouldAutorotate: Bool {
         get {
             return false
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+        let url = URL(string: String(format: "http://pressshare.fxpast.com/Tuto_PressShare/index.html"))
+        
+        let request = URLRequest.init(url: url!)
+        IBWebView.loadRequest(request)
+
+        
+    }
     
     @IBAction func actionCancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)

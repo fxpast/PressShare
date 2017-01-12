@@ -41,7 +41,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     let subscriptAmount = 10.0
     
-    //MARK: Locked landscapee
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -70,23 +70,10 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBBarCancel.title = translate.cancel
-        
+      
         users = fetchAllUser()
         
-        
-        if translate.lang == "fr" {
-            
-            IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(config.balance!)) \(translate.devise!)"
-            
-        }
-        else if translate.lang == "us" {
-            
-            IBBalance.text = "\(translate.devise!) \(BlackBox.sharedInstance.formatedAmount(config.balance!))"
-        
-            
-        }
-        
+        IBBalance.text = BlackBox.sharedInstance.formatedAmount(config.balance!)
         
         IBBalance.isEnabled = false
         
@@ -148,8 +135,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             IBButtonDeposit.isEnabled = true
             IBButtonWithdr.isEnabled = true
         }
-        
-        IBBarCancel.title = translate.cancel
         
         subscibeToKeyboardNotifications()
         
@@ -300,12 +285,11 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                                 
                                 if self.translate.lang == "fr" {
                                     
-                                    self.IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(self.config.balance!)) \(self.translate.devise!)"
-                                    
+                                    self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
                                 }
                                 else if self.translate.lang == "us" {
                                     
-                                    self.IBBalance.text = "\(self.translate.devise!) \(BlackBox.sharedInstance.formatedAmount(self.config.balance!))"
+                                    self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
                                     
                                     
                                 }
@@ -436,12 +420,12 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                             
                             if self.translate.lang == "fr" {
                                 
-                                self.IBBalance.text = "\(BlackBox.sharedInstance.formatedAmount(self.config.balance!)) \(self.translate.devise!)"
+                                self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
                                 
                             }
                             else if self.translate.lang == "us" {
                                 
-                                self.IBBalance.text = "\(self.translate.devise!) \(BlackBox.sharedInstance.formatedAmount(self.config.balance!))"
+                                self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
                                 
                                 
                             }

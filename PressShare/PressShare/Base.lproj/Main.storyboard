@@ -74,7 +74,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="bna-6b-rdA">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="9mk-zO-k3H">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="9mk-zO-k3H">
                             <connections>
                                 <action selector="actionCancel:" destination="Ujs-0X-esF" id="Vjc-Yw-hrb"/>
                             </connections>
@@ -125,7 +125,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="e6A-3C-R0x">
-                                                    <rect key="frame" x="113" y="7" width="237" height="30"/>
+                                                    <rect key="frame" x="113" y="7" width="190" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -152,7 +152,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="c2S-y2-rJY">
-                                                    <rect key="frame" x="113" y="7" width="237" height="30"/>
+                                                    <rect key="frame" x="113" y="7" width="190" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -179,7 +179,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WFO-Qg-Kab">
-                                                    <rect key="frame" x="121" y="7" width="237" height="30"/>
+                                                    <rect key="frame" x="121" y="7" width="180" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -206,7 +206,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="swy-ub-Nfy">
-                                                    <rect key="frame" x="124" y="7" width="237" height="30"/>
+                                                    <rect key="frame" x="124" y="7" width="178" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -233,7 +233,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8GT-3s-Eej">
-                                                    <rect key="frame" x="126" y="7" width="237" height="30"/>
+                                                    <rect key="frame" x="126" y="7" width="175" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -335,7 +335,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Nouveau Compte" id="Vi6-el-16x">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="XDS-8b-I6U">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="XDS-8b-I6U">
                             <connections>
                                 <action selector="actionCancel:" destination="emF-q2-fen" id="M8X-1b-Efa"/>
                             </connections>
@@ -353,7 +353,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gMD-jc-5hV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3614" y="6264"/>
+            <point key="canvasLocation" x="-3614.5" y="6263.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="BBk-7N-BgP">
@@ -621,6 +621,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <activityIndicatorView key="tableFooterView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="MuQ-gv-hkf">
+                            <rect key="frame" x="0.0" y="308" width="375" height="20"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </activityIndicatorView>
                         <sections>
                             <tableViewSection id="rCl-Lr-ioD">
                                 <cells>
@@ -757,8 +761,14 @@
                                 <action selector="actionLogout:" destination="kx3-Ro-FmN" id="3yg-pf-tgv"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="VXa-58-eYW">
+                            <connections>
+                                <action selector="actionRefresh:" destination="kx3-Ro-FmN" id="n0x-9Z-LNZ"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="IBActivity" destination="MuQ-gv-hkf" id="D85-c0-TG1"/>
                         <outlet property="IBLogout" destination="MwK-qG-YJP" id="k0b-bA-abs"/>
                         <segue destination="ibb-9M-Bp0" kind="modal" identifier="infoconnexion" id="F4A-tf-dKi"/>
                         <segue destination="Jn9-mQ-aQP" kind="modal" identifier="profil" id="YVC-dO-xGg"/>
@@ -963,7 +973,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="XOv-Vy-1Ch">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="Kxp-ES-JNh">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="Kxp-ES-JNh">
                             <connections>
                                 <action selector="actionCancel:" destination="k6h-g3-WwR" id="Vvk-Bf-sDo"/>
                             </connections>
@@ -1056,7 +1066,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="7vP-gr-Sb2">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="umf-LJ-NWn">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="umf-LJ-NWn">
                             <connections>
                                 <action selector="actionCancel:" destination="2vZ-PJ-ayf" id="6vf-2q-BV1"/>
                             </connections>
@@ -1280,7 +1290,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="D9j-7J-TfJ">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="faC-fd-Egf">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="faC-fd-Egf">
                             <connections>
                                 <action selector="actionCancel:" destination="z6q-iS-bcg" id="YWX-Vf-nPc"/>
                             </connections>
@@ -1394,7 +1404,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="PZP-s4-5fd">
-                        <barButtonItem key="leftBarButtonItem" title="Annuler" id="pP2-tl-YWm">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="pP2-tl-YWm">
                             <connections>
                                 <action selector="actionCancel:" destination="mtj-Ge-Imh" id="ode-12-ehU"/>
                             </connections>
@@ -1557,7 +1567,7 @@
                         <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.63921568630000003" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="Tzl-lZ-Aro">
-                        <barButtonItem key="leftBarButtonItem" title="Annuler" id="HNY-N9-hgL">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="HNY-N9-hgL">
                             <connections>
                                 <action selector="actionButtonCancel:" destination="kJG-20-XdA" id="aZD-S8-GpG"/>
                             </connections>
@@ -1674,7 +1684,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="wlX-f0-1q4">
-                        <barButtonItem key="leftBarButtonItem" title="Annuler" id="eiM-1Y-lyd">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="eiM-1Y-lyd">
                             <connections>
                                 <action selector="actionCancel:" destination="c3G-UY-nt3" id="jbV-BX-j0n"/>
                             </connections>
@@ -1780,7 +1790,7 @@
                                     <action selector="actionRefresh:" destination="ouz-9n-xZz" id="yn7-Fc-DqS"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="Edit" id="lF6-an-UhO">
+                            <barButtonItem systemItem="trash" id="lF6-an-UhO">
                                 <connections>
                                     <action selector="actionEdit:" destination="ouz-9n-xZz" id="Tpi-Sz-toA"/>
                                 </connections>
@@ -1908,7 +1918,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="QMx-2l-Aii">
-                        <barButtonItem key="leftBarButtonItem" title="Annuler" id="IbU-2z-Gyh">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="IbU-2z-Gyh">
                             <connections>
                                 <action selector="actionCancel:" destination="s1J-hI-cHQ" id="gBP-zZ-GNH"/>
                             </connections>
@@ -1981,10 +1991,22 @@
                     <view key="view" contentMode="scaleToFill" id="O53-PE-y0A">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gd1-cb-As2">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.63921568630000003" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="Gd1-cb-As2" firstAttribute="bottom" secondItem="boq-Pv-deT" secondAttribute="top" id="7nt-l0-5vG"/>
+                            <constraint firstAttribute="trailing" secondItem="Gd1-cb-As2" secondAttribute="trailing" id="AHY-8t-GGt"/>
+                            <constraint firstItem="Gd1-cb-As2" firstAttribute="leading" secondItem="O53-PE-y0A" secondAttribute="leading" id="gnF-PL-an8"/>
+                            <constraint firstItem="Gd1-cb-As2" firstAttribute="top" secondItem="eTc-kS-dT3" secondAttribute="bottom" id="hTO-ox-mAW"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ZlM-TS-Ug0">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="KQB-Vq-f2d">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="KQB-Vq-f2d">
                             <connections>
                                 <action selector="actionCancel:" destination="kms-uE-xxz" id="85P-uq-tYs"/>
                             </connections>
@@ -1992,11 +2014,12 @@
                     </navigationItem>
                     <connections>
                         <outlet property="IBCancel" destination="KQB-Vq-f2d" id="ZMO-c0-O6i"/>
+                        <outlet property="IBWebView" destination="Gd1-cb-As2" id="KIt-w5-43V"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="973-O4-eEF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2477" y="6264"/>
+            <point key="canvasLocation" x="-2477.5" y="6263.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="tyd-A9-a2v">
@@ -2039,18 +2062,18 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ano-yZ-NSQ" id="Yea-QY-TFV">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" tag="10" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="P0q-J2-2QI">
-                                                    <rect key="frame" x="15" y="5" width="33.5" height="20.5"/>
+                                                    <rect key="frame" x="15" y="4" width="34" height="21"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" tag="20" contentMode="left" text="Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="i9S-bU-M44">
-                                                    <rect key="frame" x="15" y="25.5" width="33" height="14.5"/>
+                                                    <rect key="frame" x="15" y="25" width="33" height="15"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <nil key="textColor"/>
@@ -2096,12 +2119,12 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="G4E-eZ-WOj">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="F6i-LR-Z96">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="F6i-LR-Z96">
                             <connections>
                                 <action selector="actionCancel:" destination="4Mt-Ga-iK0" id="yXB-iT-U7e"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="32d-3j-cPM">
+                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="32d-3j-cPM">
                             <connections>
                                 <action selector="actionEdit:" destination="4Mt-Ga-iK0" id="naN-Ji-uZb"/>
                             </connections>
@@ -2134,7 +2157,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7oU-Fx-V4B">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7oU-Fx-V4B">
                                 <rect key="frame" x="16" y="344" width="343" height="160"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -2161,7 +2184,7 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="MHg-QS-aRZ">
                                 <rect key="frame" x="177" y="323" width="20" height="20"/>
                             </activityIndicatorView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gry-OY-6qv">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gry-OY-6qv">
                                 <rect key="frame" x="16" y="129" width="343" height="154"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -2193,7 +2216,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="c06-ga-s46">
-                        <barButtonItem key="leftBarButtonItem" title="Retour" id="L6p-3S-gdu">
+                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="L6p-3S-gdu">
                             <connections>
                                 <action selector="actionReturn:" destination="azs-T6-f6I" id="Dq2-Hl-sXq"/>
                             </connections>

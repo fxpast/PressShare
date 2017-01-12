@@ -47,13 +47,14 @@ class BlackBox  {
     //formated string to double like 99,999.99
     func formatedAmount(_ amount:String) -> Double? {
         
-        var amountClear = amount.replacingOccurrences(of: " ", with: "")
+        var amountClear = amount.replacingOccurrences(of: translate.devise!, with: "")
+        amountClear = amountClear.replacingOccurrences(of: " ", with: "")
         if translate.lang == "fr" {
-             amountClear = amount.replacingOccurrences(of: ".", with: "")
-             amountClear = amount.replacingOccurrences(of: ",", with: ".")
+             amountClear = amountClear.replacingOccurrences(of: ".", with: "")
+             amountClear = amountClear.replacingOccurrences(of: ",", with: ".")
         }
         else if translate.lang == "us" {
-            amountClear = amount.replacingOccurrences(of: ",", with: "")
+            amountClear = amountClear.replacingOccurrences(of: ",", with: "")
         }
         
         if amountClear == "" {

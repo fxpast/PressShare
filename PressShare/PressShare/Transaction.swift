@@ -36,6 +36,7 @@ struct Transaction {
     var proprietaire:Int
     var trans_valide:Int  //1 : La transaction a été annulée. 2 : La transaction est confirmée.
     var trans_avis:String
+    var trans_arbitrage:Bool
     
     
     
@@ -70,7 +71,8 @@ struct Transaction {
             proprietaire = Int(dico["proprietaire"] as! String)!
             trans_valide = Int(dico["trans_valide"] as! String)!
             trans_avis = dico["trans_avis"] as! String
-            
+            trans_arbitrage = (Int(dico["trans_arbitrage"] as! String)! == 0) ? false : true
+
             /*
              NUMQUESTION = Int(dico["NUMQUESTION"] as! String)!
              MONTANT = Int(dico["MONTANT"] as! String)!
@@ -99,6 +101,7 @@ struct Transaction {
             proprietaire = 0
             trans_valide = 0
             trans_avis = ""
+            trans_arbitrage = false
             
             
             /*
@@ -180,7 +183,7 @@ class MDBTransact {
     func setUpdateTransaction(_ transaction: Transaction, completionHandlerUpdTrans: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "trans_id=\(transaction.trans_id)&trans_avis=\(transaction.trans_avis)&trans_valide=\(transaction.trans_valide)&lang=\(translate.lang!)"
+        let body: String = "trans_id=\(transaction.trans_id)&trans_avis=\(transaction.trans_avis)&trans_arbitrage=\(transaction.trans_arbitrage)&trans_valide=\(transaction.trans_valide)&lang=\(translate.lang!)"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateTransaction.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)

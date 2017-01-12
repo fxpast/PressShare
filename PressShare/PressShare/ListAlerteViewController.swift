@@ -9,9 +9,6 @@
 //
 
 
-//Todo :In the view "Send", add the recipient in the top of the line, e.g "A:Roger pastouret".
-
-
 import Foundation
 
 
@@ -40,10 +37,6 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         
         IBInbox.title = translate.inBox
         IBSend.title = translate.sendBox
-        
-        IBCancel.title = translate.cancel
-        IBEdit.title = translate.delete
-        
         
         IBActivity.startAnimating()
         setUIEnabled(false)
@@ -198,15 +191,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @IBAction func actionEdit(_ sender: Any) {
         
-        
-        if IBEdit.title == translate.delete {
-            IBTableView.isEditing=true
-            IBEdit.title = translate.done
-        }
-        else {
-            IBTableView.isEditing=false
-            IBEdit.title = translate.delete
-        }
+        IBTableView.isEditing = !IBTableView.isEditing
         
     }
     
@@ -332,8 +317,6 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             
         })
         
-        
-        
     }
     
     
@@ -369,7 +352,6 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                     }
                     
                     if self.messages.count == 0 {
-                        self.IBEdit.title = self.translate.delete
                         self.IBEdit.isEnabled=false
                         self.IBTableView.isEditing = false
                     }

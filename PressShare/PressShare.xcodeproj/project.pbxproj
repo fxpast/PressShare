@@ -47,7 +47,6 @@
 		DBF8D8141CB99E9D00BF706E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBF8D8131CB99E9D00BF706E /* Assets.xcassets */; };
 		DBF8D8251CB9A0B700BF706E /* UpdatePasswordViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8201CB9A0B700BF706E /* UpdatePasswordViewContr.swift */; };
 		DBF8D8271CB9A0B700BF706E /* UpdateUserTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8221CB9A0B700BF706E /* UpdateUserTableViewContr.swift */; };
-		DBFE144D1E0305AB00BCAD79 /* design pattern.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DBFE144C1E0305AB00BCAD79 /* design pattern.rtf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -108,7 +107,6 @@
 		DBF8D8181CB99E9D00BF706E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DBF8D8201CB9A0B700BF706E /* UpdatePasswordViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePasswordViewContr.swift; sourceTree = "<group>"; };
 		DBF8D8221CB9A0B700BF706E /* UpdateUserTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUserTableViewContr.swift; sourceTree = "<group>"; };
-		DBFE144C1E0305AB00BCAD79 /* design pattern.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = "design pattern.rtf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,7 +225,6 @@
 				DB5EFA371CE39AC80065ECEB /* Model */,
 				DBF8D8131CB99E9D00BF706E /* Assets.xcassets */,
 				DBF8D8181CB99E9D00BF706E /* Info.plist */,
-				DBFE144C1E0305AB00BCAD79 /* design pattern.rtf */,
 				DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */,
 			);
 			path = PressShare;
@@ -302,7 +299,6 @@
 			files = (
 				DBF8D8141CB99E9D00BF706E /* Assets.xcassets in Resources */,
 				DBF8D8121CB99E9D00BF706E /* Main.storyboard in Resources */,
-				DBFE144D1E0305AB00BCAD79 /* design pattern.rtf in Resources */,
 				DBB4221B1DF8A70D00CB3F5E /* TranslateMessage.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

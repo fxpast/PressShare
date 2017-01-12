@@ -8,9 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo :Les zone de texte ne doivent pas deborder à droite de la liste
-
-
 
 import CoreData
 import UIKit
@@ -39,6 +36,25 @@ class NewUserViewContr : UIViewController, UITextFieldDelegate {
         return delegate.managedObjectContext
     }
     
+    //MARK: Locked portrait
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return false
+        }
+    }
+    
     
     //MARK: View Controller Delegate
     override func viewDidLoad() {
@@ -53,7 +69,6 @@ class NewUserViewContr : UIViewController, UITextFieldDelegate {
         
         subscibeToKeyboardNotifications()
         
-        IBCancel.title = translate.cancel
         IBDone.title = translate.done
         
         IBAncienPass.placeholder = translate.oldPass

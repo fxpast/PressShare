@@ -8,13 +8,10 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
-
 import CoreData
 import UIKit
 
 class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
-    
     
     @IBOutlet weak var IBDone: UIBarButtonItem!
     @IBOutlet weak var IBCancel: UIBarButtonItem!
@@ -37,7 +34,7 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         return delegate.managedObjectContext
     }
     
-    //MARK: Locked landscapee
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -55,7 +52,6 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
             return false
         }
     }
-    
     
     
     //MARK: View Controller Delegate
@@ -111,7 +107,6 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
             
         }
         
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -119,7 +114,6 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         
         subscibeToKeyboardNotifications()
         
-        IBCancel.title = translate.cancel
         IBDone.title = translate.done
         
         IBOldPass.placeholder = translate.oldPass
@@ -148,7 +142,6 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
     
     //MARK: coreData function
     
-    
     private func fetchAllUser() -> [User] {
         
         
@@ -165,12 +158,9 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         }
     }
     
-    
-    
     //MARK: Data User with update password
     
     @IBAction func actionDone(_ sender: AnyObject) {
-        
         
         guard IBEmail.text != "" else {
             displayAlert(translate.error, mess: translate.errorMail)
@@ -255,7 +245,6 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
             
         }
         
-        
         MDBUser.sharedInstance.setUpdatePass(config) { (success, errorString) in
             if success {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -279,7 +268,6 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
             
         }
         
-        
     }
     
     
@@ -298,11 +286,7 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         return randomString
     }
     
-    
-    
-    
     //MARK: textfield Delegate
-    
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
@@ -358,10 +342,7 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         }
     }
     
-    
-    
     //MARK: keyboard function
-    
     
     func  subscibeToKeyboardNotifications() {
         
@@ -378,12 +359,9 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         
     }
     
-    
     func keyboardWillShow(notification:NSNotification) {
         
-        
         var textField = UITextField()
-        
         
         if fieldName == "IBEmail" {
             textField = IBEmail
@@ -404,17 +382,13 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
                 view.frame.origin.y = keybordY - textField.frame.origin.y - textField.frame.size.height
             }
             
-            
         }
         
-        
     }
-    
     
     func keyboardWillHide(notification:NSNotification) {
         
         var textField = UITextField()
-        
         
         if fieldName == "IBEmail" {
             textField = IBEmail
@@ -445,9 +419,6 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
         return keyboardSize.cgRectValue.height
         
     }
-    
-    
-    
     
     
 }

@@ -9,11 +9,6 @@
 //
 
 
-//Todo :Refresh notification alerte in automatic
-//Todo : Ajouter pastille à Transaction en cours
-//Todo :la mise à jour de la pastille alerte et settings ne fonctionne pas correctement
-
-
 import CoreData
 import UIKit
 import Foundation
@@ -21,6 +16,7 @@ import Foundation
 class SettingsTableViewContr : UITableViewController {
     
     @IBOutlet weak var IBLogout: UIBarButtonItem!
+    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
@@ -39,9 +35,8 @@ class SettingsTableViewContr : UITableViewController {
         super.viewDidLoad()
         
         users = fetchAllUser()
-        
+        IBActivity.isHidden = true
         config.previousView = "SettingsTableViewContr"
-        
         
     }
     
@@ -55,9 +50,10 @@ class SettingsTableViewContr : UITableViewController {
         IBLogout.title = ""
         
         var cell:UITableViewCell
+        var label:UILabel
         
         cell = tableView.cellForRow(at: IndexPath(item: 0, section: 0))!
-        var label = cell.contentView.subviews[0] as! UILabel
+        label = cell.contentView.subviews[0] as! UILabel
         label.text = translate.editProfil
         
         cell = tableView.cellForRow(at: IndexPath(item: 1, section: 0))!
@@ -72,35 +68,10 @@ class SettingsTableViewContr : UITableViewController {
         label = cell.contentView.subviews[0] as! UILabel
         label.text = translate.myCB
         
-        cell = tableView.cellForRow(at: IndexPath(item: 4, section: 0))!
+        chargeData(item: 4, labelText: translate.myNotif, badgeValue: config.mess_badge!)
         
-        label = cell.contentView.subviews[0] as! UILabel
-        label.text = translate.myNotif
+        chargeData(item: 5, labelText: translate.runTransac, badgeValue: config.trans_badge!)
         
-        if config.mess_badge > 0 {
-            let badge = BadgeLabel(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 0.0))
-            badge.setup()
-            badge.badgeValue = "\(config.mess_badge!)"
-            if cell.contentView.subviews.count > 1 {
-                cell.contentView.subviews[1].removeFromSuperview()
-                label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x - 10.0, y: 0) , size: label.frame.size)
-            }
-            cell.contentView.addSubview(badge)
-            label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x + 10.0, y: 0) , size: label.frame.size)
-            
-            tabBarController?.tabBar.items![2].badgeValue = "\(config.mess_badge!)"
-        }
-        else if tabBarController?.tabBar.items![2].badgeValue == "1" {
-            
-            cell.contentView.subviews[1].removeFromSuperview()
-            label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x - 10, y: 0) , size: label.frame.size)
-            tabBarController?.tabBar.items![2].badgeValue  = nil
-        }
-        
-        
-        cell = tableView.cellForRow(at: IndexPath(item: 5, section: 0))!
-        label = cell.contentView.subviews[0] as! UILabel
-        label.text = translate.runTransac
         
         cell = tableView.cellForRow(at: IndexPath(item: 6, section: 0))!
         label = cell.contentView.subviews[0] as! UILabel
@@ -108,12 +79,10 @@ class SettingsTableViewContr : UITableViewController {
         
     }
     
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
     }
-    
     
     //MARK: coreData function
     
@@ -132,6 +101,11 @@ class SettingsTableViewContr : UITableViewController {
         }
     }
     
+    @IBAction func actionRefresh(_ sender: AnyObject) {
+        
+        refreshData()
+        
+    }
     
     @IBAction func actionLogout(_ sender: AnyObject) {
         
@@ -155,6 +129,138 @@ class SettingsTableViewContr : UITableViewController {
         }
         
         self.dismiss(animated: true, completion: nil)
+        
+    }
+    
+    private func refreshData()  {
+        
+        IBActivity.isHidden = false
+        IBActivity.startAnimating()
+        
+        
+        MDBMessage.sharedInstance.getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
+            
+            if success {
+                
+                Messages.sharedInstance.MessagesArray = messageArray
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
+                    var i = 0
+                    for mess in Messages.sharedInstance.MessagesArray {
+                        
+                        let mess1 = Message(dico: mess)
+                        
+                        if mess1.destinataire == self.config.user_id && mess1.deja_lu_dest == false {
+                            i+=1
+                        }
+                        
+                    }
+                    if i > 0 {
+                        self.config.mess_badge = i
+                        
+                    }
+                    
+                    
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.chargeData(item: 4, labelText: self.translate.myNotif, badgeValue: self.config.mess_badge!)
+                        
+                        self.IBActivity.stopAnimating()
+                        self.IBActivity.isHidden = true
+                    }
+                    
+                    
+                }
+            }
+            else {
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.IBActivity.stopAnimating()
+                    self.displayAlert(self.translate.error, mess: errorString!)
+                }
+            }
+            
+        })
+        
+        MDBTransact.sharedInstance.getAllTransactions(config.user_id) { (success, transactionArray, errorString) in
+            
+            if success {
+                
+                Transactions.sharedInstance.transactionArray = transactionArray
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
+                    var i = 0
+                    for tran in Transactions.sharedInstance.transactionArray  {
+                        
+                        let tran1 = Transaction(dico: tran)
+                        
+                        if (tran1.trans_valide != 1 && tran1.trans_valide != 2 )  {
+                            i+=1
+                        }
+                        
+                    }
+                    if i > 0 {
+                        self.config.trans_badge = i
+                        
+                    }
+                    
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.chargeData(item: 5, labelText: self.translate.runTransac, badgeValue: self.config.trans_badge!)
+                        
+                        self.IBActivity.stopAnimating()
+                        self.IBActivity.isHidden = true
+                    }
+                    
+                    
+                }
+            }
+            else {
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.IBActivity.stopAnimating()
+                    self.displayAlert(self.translate.error, mess: errorString!)
+                }
+            }
+            
+        }
+        
+        
+    }
+    
+    private func chargeData(item:Int, labelText:String, badgeValue:Int)  {
+        
+        var cell:UITableViewCell
+        var label:UILabel
+        
+        cell = tableView.cellForRow(at: IndexPath(item: item, section: 0))!
+        
+        label = cell.contentView.subviews[0] as! UILabel
+        label.text = labelText
+        
+        if cell.contentView.subviews.count > 1 {
+            
+            cell.contentView.subviews[1].removeFromSuperview()
+            label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x - 10, y: 0) , size: label.frame.size)
+            if item == 4 {
+                tabBarController?.tabBar.items![2].badgeValue  = nil
+            }
+            
+        }
+        
+        if badgeValue > 0 {
+            let badge = BadgeLabel(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 0.0))
+            badge.setup()
+            badge.badgeValue = "\(badgeValue)"
+            
+            cell.contentView.addSubview(badge)
+            label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x + 10.0, y: 0) , size: label.frame.size)
+            
+            if item == 4 {
+                tabBarController?.tabBar.items![2].badgeValue = "\(badgeValue)"
+            }
+            
+        }
         
     }
     
@@ -208,7 +314,6 @@ class SettingsTableViewContr : UITableViewController {
         }
         
     }
-    
     
     
 }

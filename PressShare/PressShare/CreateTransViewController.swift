@@ -9,11 +9,6 @@
 //
 
 
-//Todo :Améliorer le texte du message. ajouter un style courtois.
-
-
-
-
 import Foundation
 import UIKit
 
@@ -35,7 +30,7 @@ class CreateTransViewController: UIViewController {
     let translate = TranslateMessage.sharedInstance
     
     
-    //Bloquer le mode paysage
+   //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -59,14 +54,13 @@ class CreateTransViewController: UIViewController {
         super.viewDidLoad()
         
         IBLabelTrade.text = translate.trade
-        IBLabelExchange.text = translate.exchange
-        IBCancel.title = translate.cancel
+        IBLabelExchange.text = translate.exchange        
         IBValidate.title = translate.done
         
         IBExchange.isOn = false
         IBTrade.isOn = false
         
-        IBInfoProduct.text = "\(aProduct!.prod_nom), \(BlackBox.sharedInstance.formatedAmount((aProduct?.prod_prix)!)) \(translate.devise!)"
+        IBInfoProduct.text = "\(aProduct!.prod_nom), \(BlackBox.sharedInstance.formatedAmount((aProduct?.prod_prix)!))"
         
         MDBUser.sharedInstance.getUser((aProduct?.prod_by_user)!, completionHandlerUser: {(success, usersArray, errorString) in
             
@@ -160,7 +154,7 @@ class CreateTransViewController: UIViewController {
                 typetransaction = self.translate.exchange
             }
             
-            message.contenu = "\(self.translate.theProduct!) \(self.IBInfoProduct.text!) \(self.translate.hastobechosen!) \(typetransaction). \(self.translate.customerFor!)"
+            message.contenu = "\(self.translate.emailSender!) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.theProduct!) \(self.IBInfoProduct.text!) \(self.translate.hastobechosen!) \(typetransaction). \(self.translate.customerFor!) \n \n \n \n \n \n \n \n \n"
             
             
             MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in

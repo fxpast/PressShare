@@ -8,7 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo : sur valider claver zone mot de passe executer bouton s'identifier
 
 import CoreData
 import Foundation
@@ -43,7 +42,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     let translate = TranslateMessage.sharedInstance
     
     
-    //MARK: Locked landscapee
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -177,6 +176,13 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(true)
+        
+        if IBUser.text != "" && IBPassword.text != "" {
+            
+            actionLogin(self)
+            
+        }
+        
         return true
         
     }
@@ -217,7 +223,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             IBActivity.isHidden = false
             self.IBActivity.startAnimating()
             
-            MDBMessage.sharedInstance.getAllMessages(config.user_id, completionHandlerMessages: {(success, messageArray, errorString) in
+            MDBMessage.sharedInstance.getAllMessages(config.user_id) {(success, messageArray, errorString) in
                 
                 if success {
                     
@@ -260,7 +266,50 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                     }
                 }
                 
-            })
+            }
+            
+            MDBTransact.sharedInstance.getAllTransactions(config.user_id) { (success, transactionArray, errorString) in
+                
+                if success {
+                    
+                    Transactions.sharedInstance.transactionArray = transactionArray
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        var i = 0
+                        for tran in Transactions.sharedInstance.transactionArray  {
+                            
+                            let tran1 = Transaction(dico: tran)
+                            
+                            if (tran1.trans_valide != 1 && tran1.trans_valide != 2 )  {
+                                i+=1
+                            }
+                            
+                        }
+                        if i > 0 {
+                            self.config.trans_badge = i
+                            
+                        }
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                       
+                            self.IBActivity.stopAnimating()
+                            self.IBActivity.isHidden = true
+                        }
+                        
+                      
+                        
+                    }
+                }
+                else {
+                    
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.IBActivity.stopAnimating()
+                        self.displayAlert(self.translate.error, mess: errorString!)
+                    }
+                }
+                
+            }
+            
             
             
         }

@@ -151,6 +151,48 @@ class MDBProduct {
     }
     
     
+    
+    func setUpdateProduct(_ product: Product, completionHandlerUpdProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+        
+        // Create your request string with parameter name as defined in PHP file
+        let body: String = "prod_id=\(product.prod_id)&prod_hidden=\(product.prod_hidden)&lang=\(translate.lang!)"
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateProduct.php")!)
+        
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let res = result as! [String:String]
+                    
+                    if (res["success"] == "1") {
+                        completionHandlerUpdProduct(true, nil)
+                    }
+                    else {
+                        completionHandlerUpdProduct(false, self.translate.impossibleUpdPr!)
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerUpdProduct(false, errorStr)
+                }
+                
+            })
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
+    
     func setDeleteProduct(_ product: Product, completionHandlerDelProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Create your request string with parameter name as defined in PHP file
@@ -174,7 +216,7 @@ class MDBProduct {
                         completionHandlerDelProduct(true, nil)
                     }
                     else {
-                        completionHandlerDelProduct(false, "impossible to delete the product")
+                        completionHandlerDelProduct(false, self.translate.impossibleDeldPr!)
                         
                     }
                     
