@@ -16,8 +16,6 @@
 //Todo: Faire un scripte php de traitment de fin de journée pour : à partir de MAX JOUR une commission de 5% est débité pour celui qui n'a rien décidé sur sa transaction alors que l'autre l'a confirmé.
 
 
-//Todo: Si la transaction est annulé alors remettre le produit en ligne.
-//Todo: detail option annuler non affiché en consultation
 
 import Foundation
 import UIKit
@@ -53,7 +51,6 @@ class DetailTransViewController: UIViewController {
     @IBOutlet weak var IBLabelInterlo: UILabel!
     
     
-    
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     var aTransaction:Transaction?
@@ -84,49 +81,44 @@ class DetailTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if (aTransaction?.trans_valide == 1 || aTransaction?.trans_valide == 2 )  {
-          IBEnded.isEnabled = false
-        }
-        else if (aTransaction?.trans_type == 1 && aTransaction?.vendeur_id == aTransaction?.proprietaire)  {
-            IBEnded.isEnabled = false
-        }
-        else {
-            IBEnded.isEnabled = true
-        }
+
+      IBCancel.isOn = false
+      IBConfirm.isOn = false
         
+        setUIHidden(true)
         
-        IBConfirm.isOn = false
-        IBCancel.isOn = false
-        
-       
         
         //La transaction a été annulée
         if aTransaction?.trans_valide == 1 {
             IBCancel.isOn = true
+            actionCancel(self)
         
         }
         else if aTransaction?.trans_valide == 2  {
             //La transaction est confirmée
             IBConfirm.isOn = true
+            actionConfirm(self)
             
         }
         
         if aTransaction?.trans_avis == "interlocuteur" {
             IBInterlo.isOn = true //l'interlocuteur était absent
+            actionInterlo(self)
         }
         else if aTransaction?.trans_avis == "absence" {
             IBMyAbsent.isOn = true //Je n'ai pu etre au rendez-vous
+            actionMyAbsent(self)
         }
         else if aTransaction?.trans_avis == "conformite" {
             IBCompliant.isOn = true //le produit vendu ou echangé n'était pas conforme à l'annonce
+            actionCompliant(self)
         }
         else {
             IBOther.isOn = true
             IBOtherText.text = aTransaction?.trans_avis
+            actionOther(self)
         }
         
-        
-        setUIHidden(true)
         
         
         IBWording.text = "\(translate.wording!) \(aTransaction!.trans_wording)"
@@ -143,6 +135,20 @@ class DetailTransViewController: UIViewController {
         }
         
         
+        if (aTransaction?.trans_valide == 1 || aTransaction?.trans_valide == 2 || (aTransaction?.trans_type == 1 && aTransaction?.vendeur_id == aTransaction?.proprietaire))  {
+            
+            IBEnded.isEnabled = false
+            IBOther.isEnabled = false
+            IBMyAbsent.isEnabled = false
+            IBCompliant.isEnabled = false
+            IBInterlo.isEnabled = false
+            IBConfirm.isEnabled = false
+            IBCancel.isEnabled = false
+            
+        }
+        else {
+            IBEnded.isEnabled = true
+        }
         
         
         IBActivity.isHidden = false
@@ -199,6 +205,7 @@ class DetailTransViewController: UIViewController {
         IBCompliantLabel.text = translate.compliant
         IBLabelMyAbsent.text = translate.myAbsence
         IBOtherText.placeholder = translate.other
+        navigationItem.title = translate.runTransac
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -522,7 +529,7 @@ class DetailTransViewController: UIViewController {
                     product.prod_id = (self.aTransaction?.prod_id)!
                     product.prod_hidden = false
                     
-                    MDBProduct.sharedInstance.setUpdateProduct(product) { (success, errorString) in
+                    MDBProduct.sharedInstance.setUpdateProduct("ProductTrans", product) { (success, errorString) in
                         
                         if success {
                             
@@ -607,8 +614,8 @@ class DetailTransViewController: UIViewController {
                     var product = Product(dico: [String : AnyObject]())
                     product.prod_id = (self.aTransaction?.prod_id)!
                     product.prod_hidden = false
-                    
-                    MDBProduct.sharedInstance.setUpdateProduct(product) { (success, errorString) in
+                   
+                    MDBProduct.sharedInstance.setUpdateProduct("ProductTrans", product) { (success, errorString) in
                         
                         if success {
                             
@@ -821,6 +828,11 @@ class DetailTransViewController: UIViewController {
         IBLabelInterlo.isHidden = hidden
         IBCompliantLabel.isHidden = hidden
         IBLabelMyAbsent.isHidden = hidden
+        
+        IBOther.isOn = false
+        IBMyAbsent.isOn = false
+        IBCompliant.isOn = false
+        IBInterlo.isOn = false
         
         
         

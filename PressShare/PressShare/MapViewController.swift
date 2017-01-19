@@ -14,8 +14,6 @@
 //Todo :Zoomer/Dezoomer sur la carte permet de reduire/augmenter le nombre de products sur la carte.
 
 
-
-
 import CoreLocation
 import CoreData
 import Foundation
@@ -38,7 +36,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var userPseudo:String!
     var userId:Int!
     var config = Config.sharedInstance
-    var products = Products.sharedInstance
     let translate = TranslateMessage.sharedInstance
     var lat:CLLocationDegrees!
     var lon:CLLocationDegrees!
@@ -77,7 +74,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         userId = config.user_id
         
         users = fetchAllUser()
-        
         
         refreshData()
         
@@ -326,34 +322,36 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             
         })
         
-        
         MDBProduct.sharedInstance.getAllProducts(config.user_id) { (success, productArray, errorString) in
             
             if success {
                 
-                self.products.productsArray = productArray
+                Products.sharedInstance.productsArray = productArray
                 
                 var annotations = [MKPointAnnotation]()
                 
-                for dictionary in self.products.productsArray! {
+                for dictionary in Products.sharedInstance.productsArray {
                     
                     let product = Product(dico: dictionary)
-                    // Notice that the float values are being used to create CLLocationDegree values.
-                    // This is a version of the Double type.
-                    let lat = CLLocationDegrees(product.prod_latitude)
-                    let long = CLLocationDegrees(product.prod_longitude)
-                    
-                    // The lat and long are used to create a CLLocationCoordinates2D instance.
-                    let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-                    
-                    // Here we create the annotation and set its coordiate, title, and subtitle properties
-                    let annotation = MKPointAnnotation()
-                    annotation.coordinate = coordinate
-                    annotation.title = "\(product.prod_nom) (user:\(product.prod_by_user))"
-                    annotation.subtitle = "\(product.prod_mapString) / \(product.prod_comment)"
-                    
-                    // Finally we place the annotation in an array of annotations.
-                    annotations.append(annotation)
+                    if product.prod_hidden == false {
+                        // Notice that the float values are being used to create CLLocationDegree values.
+                        // This is a version of the Double type.
+                        let lat = CLLocationDegrees(product.prod_latitude)
+                        let long = CLLocationDegrees(product.prod_longitude)
+                        
+                        // The lat and long are used to create a CLLocationCoordinates2D instance.
+                        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                        
+                        // Here we create the annotation and set its coordiate, title, and subtitle properties
+                        let annotation = MKPointAnnotation()
+                        annotation.coordinate = coordinate
+                        annotation.title = "\(product.prod_nom) (user:\(product.prod_by_user))"
+                        annotation.subtitle = "\(product.prod_mapString) / \(product.prod_comment)"
+                        
+                        // Finally we place the annotation in an array of annotations.
+                        annotations.append(annotation)
+                    }
+     
                 }
                 
                 var coordinateRegion=MKCoordinateRegion()
@@ -404,6 +402,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
             }
         }
+        
+        
         
     }
     
@@ -503,11 +503,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             lon = coord.longitude
             
         }
-        
-    }
-    
-    
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         
     }
     

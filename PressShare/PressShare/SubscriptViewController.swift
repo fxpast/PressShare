@@ -8,6 +8,8 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+//Todo: add on the operation line detail product
+
 
 import CoreData
 import Foundation
@@ -33,7 +35,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     var keybordY:CGFloat! = 0
     var config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
-    
+    var flgOpen=false
     var operations = [Operation]()
     
     var customOpeation = BlockOperation()
@@ -70,7 +72,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
-      
+        
         users = fetchAllUser()
         
         IBBalance.text = BlackBox.sharedInstance.formatedAmount(config.balance!)
@@ -78,40 +80,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         IBBalance.isEnabled = false
         
         
-        IBActivity.isHidden = false
-        IBActivity.startAnimating()
-        IBTableView.isHidden = true
-        if let _ = Operations.sharedInstance.operationArray {
-            
-            myQueue.addOperation {
-                
-                self.customOpeation = BlockOperation()
-                self.customOpeation.addExecutionBlock {
-                    if !self.customOpeation.isCancelled
-                    {
-                        
-                        self.chargeData()
-                        
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            
-                            self.IBTableView.reloadData()
-                            self.IBActivity.stopAnimating()
-                            self.IBActivity.isHidden = true
-                            self.IBTableView.isHidden = false
-                            
-                        }
-                        
-                    }
-                }
-                
-                self.customOpeation.start()
-                
-            }
-            
-        }
-        else {
-            refreshData()
-        }
         
     }
     
@@ -137,6 +105,46 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         }
         
         subscibeToKeyboardNotifications()
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if flgOpen == false {
+            flgOpen = true
+            IBActivity.isHidden = false
+            IBActivity.startAnimating()
+            if let _ = Operations.sharedInstance.operationArray {
+                
+                myQueue.addOperation {
+                    
+                    self.customOpeation = BlockOperation()
+                    self.customOpeation.addExecutionBlock {
+                        if !self.customOpeation.isCancelled
+                        {
+                            
+                            self.chargeData()
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                
+                                self.IBActivity.stopAnimating()
+                                self.IBActivity.isHidden = true
+                                
+                            }
+                            
+                        }
+                    }
+                    
+                    self.customOpeation.start()
+                    
+                }
+                
+            }
+            else {
+                refreshData()
+            }
+        }
         
     }
     
@@ -486,7 +494,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
             
             if self.config.level <= 0 && self.config.balance == 0 {
-            
+                
                 self.addDeposit(self.subscriptAmount)
             }
             
@@ -577,16 +585,46 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     private func refreshData()  {
         
+        myQueue.cancelAllOperations()
+        guard myQueue.operationCount == 0 else {
+            
+            return
+        }
         
         IBActivity.isHidden = false
         IBActivity.startAnimating()
-        IBTableView.isHidden = true
         
         operations.removeAll()
         IBTableView.reloadData()
         
-        MDBOperation.sharedInstance.getAllOperations(config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+        MDBCapital.sharedInstance.getCapital(config.user_id, completionHandlerCapital: {(success, capitalArray, errorString) in
             
+            if success {
+                
+                Capitals.sharedInstance.capitalsArray = capitalArray
+                for dictionary in Capitals.sharedInstance.capitalsArray {
+                    let capital = Capital(dico: dictionary)
+                    self.config.balance = capital.balance
+                    self.config.failure_count = capital.failure_count
+                }
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
+                    
+                }
+            }
+            else {
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.displayAlert(self.translate.error, mess: errorString!)
+                }
+            }
+            
+            
+        })
+        
+        
+        MDBOperation.sharedInstance.getAllOperations(config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
             
             if success {
                 
@@ -596,8 +634,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
-                    self.IBTableView.isHidden = false
-                    self.IBTableView.reloadData()
                 }
             }
             else {
@@ -605,14 +641,11 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
-                    self.IBTableView.isHidden = false
                     self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
         })
-        
-        
         
     }
     
@@ -628,6 +661,12 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
             let opera = Operation(dico: ope)
             operations.append(opera)
+            
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                self.IBTableView.reloadData()
+                
+            }
             
         }
         
@@ -733,8 +772,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
     }
     
-    
-    
     //MARK: Table View Controller data source
     
     
@@ -756,7 +793,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         let CellReuseId = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
         let operation =  operations[(indexPath as NSIndexPath).row]
-        
         
         let adate = cell?.contentView.viewWithTag(10) as! UILabel
         
@@ -786,10 +822,8 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         let aAmount = cell?.contentView.viewWithTag(30) as! UILabel
         aAmount.text = BlackBox.sharedInstance.formatedAmount(operation.op_amount)
         
-        
         let aLabel = cell?.contentView.viewWithTag(40) as! UILabel
         aLabel.text = operation.op_wording
-        
         
         return cell!
     }

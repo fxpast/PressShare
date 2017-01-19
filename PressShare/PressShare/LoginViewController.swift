@@ -91,8 +91,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         Transactions.sharedInstance.transactionArray = nil
         Capitals.sharedInstance.capitalsArray = nil
         Products.sharedInstance.productsArray = nil
-        
-        
+                
         IBPressConnect.text = translate.connectToPress
         IBUser.placeholder = translate.pseudo
         IBPassword.placeholder = translate.password
@@ -223,6 +222,15 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             IBActivity.isHidden = false
             self.IBActivity.startAnimating()
             
+            let controller = segue.destination as! UITabBarController
+            let item0 = controller.tabBar.items![0]
+            item0.title = self.translate.map
+            let item1 = controller.tabBar.items![1]
+            item1.title = self.translate.list
+            let item2 = controller.tabBar.items![2]
+            item2.title = self.translate.settings
+            
+            
             MDBMessage.sharedInstance.getAllMessages(config.user_id) {(success, messageArray, errorString) in
                 
                 if success {
@@ -231,27 +239,20 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                     
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
-                        let controller = segue.destination as! UITabBarController
-                        let item1 = controller.tabBar.items![0]
-                        item1.title = self.translate.map
-                        let item2 = controller.tabBar.items![1]
-                        item2.title = self.translate.list
-                        let item3 = controller.tabBar.items![2]
-                        item3.title = self.translate.settings
-                        
                         var i = 0
+                        
                         for mess in Messages.sharedInstance.MessagesArray {
                             
-                            let mess1 = Message(dico: mess)
+                            let message = Message(dico: mess)
                             
-                            if mess1.destinataire == self.config.user_id && mess1.deja_lu_dest == false {
+                            if message.destinataire == self.config.user_id && message.deja_lu_dest == false {
                                 i+=1
                             }
                             
                         }
                         if i > 0 {
                             self.config.mess_badge = i
-                            item3.badgeValue = "\(i)"
+                            item1.badgeValue = "\(i)"
                         }
                         
                         self.IBActivity.stopAnimating()
@@ -287,7 +288,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                         }
                         if i > 0 {
                             self.config.trans_badge = i
-                            
+                            item2.badgeValue = "\(i)"
                         }
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -295,8 +296,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                             self.IBActivity.stopAnimating()
                             self.IBActivity.isHidden = true
                         }
-                        
-                      
                         
                     }
                 }
@@ -309,8 +308,6 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                 }
                 
             }
-            
-            
             
         }
         

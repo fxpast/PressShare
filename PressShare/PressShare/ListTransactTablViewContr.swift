@@ -6,7 +6,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
 import Foundation
 import UIKit
 
@@ -18,51 +17,17 @@ class ListTransactTablViewContr: UITableViewController {
     
     var transactions = [Transaction]()
     var aindex:Int!
-    
+    var flgOpen=false
     var config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
     var customOpeation = BlockOperation()
-    let myqueue = OperationQueue()
+    let myQueue = OperationQueue()
     
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        IBActivity.isHidden = false
-        IBActivity.startAnimating()
-        
-        if let _ = Transactions.sharedInstance.transactionArray {
-            
-            myqueue.addOperation {
-                
-                self.customOpeation = BlockOperation()
-                self.customOpeation.addExecutionBlock {
-                    if !self.customOpeation.isCancelled
-                    {
-                        
-                        self.chargeData()
-                        
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            
-                            self.tableView.reloadData()
-                            self.IBActivity.stopAnimating()
-                            self.IBActivity.isHidden = true
-                            
-                        }
-                        
-                    }
-                }
-                
-                self.customOpeation.start()
-                
-            }
-            
-        }
-        else {
-            refreshData()
-        }
         
     }
     
@@ -70,10 +35,54 @@ class ListTransactTablViewContr: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
+        self.navigationItem.title = translate.runTransac
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         if config.transaction_maj == true {
             config.transaction_maj = false
             refreshData()
+        }
+        
+        if flgOpen == false {
+            
+            flgOpen = true
+            IBActivity.isHidden = false
+            IBActivity.startAnimating()
+            
+            if let _ = Transactions.sharedInstance.transactionArray {
+                
+                myQueue.addOperation {
+                    
+                    self.customOpeation = BlockOperation()
+                    self.customOpeation.addExecutionBlock {
+                        if !self.customOpeation.isCancelled
+                        {
+                            
+                            self.chargeData()
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                
+                                self.IBActivity.stopAnimating()
+                                self.IBActivity.isHidden = true
+                                
+                            }
+                            
+                        }
+                    }
+                    
+                    self.customOpeation.start()
+                    
+                }
+                
+            }
+            else {
+                refreshData()
+            }
+            
         }
         
     }
@@ -108,6 +117,12 @@ class ListTransactTablViewContr: UITableViewController {
     private func refreshData()  {
         
         
+        myQueue.cancelAllOperations()
+        guard myQueue.operationCount == 0 else {
+            
+            return
+        }
+        
         IBActivity.isHidden = false
         IBActivity.startAnimating()
         
@@ -126,7 +141,6 @@ class ListTransactTablViewContr: UITableViewController {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
-                    self.tableView.reloadData()
                 }
             }
             else {
@@ -153,7 +167,13 @@ class ListTransactTablViewContr: UITableViewController {
             }
             
             let tran = Transaction(dico: trans)
+            
             transactions.append(tran)
+            
+            
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                self.tableView.reloadData()
+            }
             
         }
         

@@ -28,6 +28,7 @@ struct Product {
     var prod_date:Date
     var prod_prix:Double
     var prod_by_user:Int
+    var prod_oth_user:Int
     var prod_by_cat:Int
     var prod_latitude:Double
     var prod_longitude:Double
@@ -36,6 +37,8 @@ struct Product {
     var prod_tempsDispo:String
     var prod_etat:Int //number of star
     var prod_hidden:Bool
+    var prodImageOld:String
+    
     
     //MARK: Initialisation
     
@@ -44,23 +47,14 @@ struct Product {
         if dico.count > 1 {
             
             prod_id = Int(dico["prod_id"] as! String)!
-            
             prod_image = dico["prod_image"] as! String
-            let imageURL = URL(string: "http://pressshare.fxpast.com/images/\(prod_image).jpg")
-            do {
-                prod_imageData = try Data(contentsOf: imageURL!)
-            }
-            catch {
-                prod_imageData = Data()
-            }
-            
+            prod_imageData = Data()
             prod_nom = dico["prod_nom"] as! String
             
             prod_date = Date().dateFromString(dico["prod_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             prod_prix = Double(dico["prod_prix"] as! String)!
-            
-            
             prod_by_user = Int(dico["prod_by_user"] as! String)!
+            prod_oth_user = Int(dico["prod_oth_user"] as! String)!
             prod_by_cat = Int(dico["prod_by_cat"] as! String)!
             prod_latitude = Double(dico["prod_latitude"] as! String)!
             prod_longitude = Double(dico["prod_longitude"] as! String)!
@@ -69,17 +63,18 @@ struct Product {
             prod_tempsDispo = dico["prod_tempsDispo"] as! String
             prod_etat = Int(dico["prod_etat"] as! String)!            
             prod_hidden = (Int(dico["prod_hidden"] as! String)! == 0) ? false : true
+            prodImageOld = ""
             
         }
         else {
             prod_id = 0
-            prod_imageData = Data()
             prod_image = ""
             prod_nom = ""
-            
+            prod_imageData = Data()
             prod_date = Date()
             prod_prix = 0
             prod_by_user = 0
+            prod_oth_user = 0
             prod_by_cat = 0
             prod_latitude = 0
             prod_longitude = 0
@@ -88,6 +83,7 @@ struct Product {
             prod_tempsDispo = ""
             prod_etat = 0
             prod_hidden=false
+            prodImageOld = ""
             
         }
         
@@ -108,6 +104,49 @@ class Products {
 class MDBProduct {
     
     let translate = TranslateMessage.sharedInstance
+    
+    func getProduct(_ prod_id:Int, completionHandlerProduct: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
+        
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getProduct.php")!)
+        let body: String = "prod_id=\(prod_id)&lang=\(translate.lang!)"
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let resultArray = resultDico["aproduct"] as! [[String:AnyObject]]
+                    
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completionHandlerProduct(true, resultArray, nil)
+                    }
+                    else {
+                        completionHandlerProduct(false, nil, resultDico["error"] as? String)
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerProduct(false, nil, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
     
     func getAllProducts(_ userId:Int, completionHandlerProducts: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
@@ -150,16 +189,56 @@ class MDBProduct {
         
     }
     
-    
-    
-    func setUpdateProduct(_ product: Product, completionHandlerUpdProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+    func setUpdateProduct(_ typeUpdate:String, _ product: Product, completionHandlerUpdProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+        
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_update\(typeUpdate).php")!)
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "prod_id=\(product.prod_id)&prod_hidden=\(product.prod_hidden)&lang=\(translate.lang!)"
-        // Create Data from request
-        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_updateProduct.php")!)
+        var body: String = ""
+        if typeUpdate == "ProductTrans" {
+            
+            body = "prod_id=\(product.prod_id)&prod_oth_user=\(product.prod_oth_user)&prod_hidden=\(product.prod_hidden)&lang=\(translate.lang!)"
+            request = CommunRequest.sharedInstance.buildRequest(body, request)
+            
+        }
+        else if typeUpdate == "Product" {
+            
+            if product.prodImageOld == "" {
+                
+                body = "prod_id=\(product.prod_id)&prod_nom=\(product.prod_nom)&prod_date=\(product.prod_date)&prod_prix=\(product.prod_prix)&prod_by_user=\(product.prod_by_user)&prod_by_cat=\(product.prod_by_cat)&prod_latitude=\(product.prod_latitude)&prod_longitude=\(product.prod_longitude)&prod_mapString=\(product.prod_mapString)&prod_comment=\(product.prod_comment)&prod_tempsDispo=\(product.prod_tempsDispo)&prod_etat=\(product.prod_etat)&prod_hidden=\(product.prod_hidden)&prod_image=\(product.prod_image)&prodImageOld=\(product.prodImageOld)&lang=\(translate.lang!)"
+                request = CommunRequest.sharedInstance.buildRequest(body, request)
+            }
+            else {
+                //add parameters
+                
+                let param = [
+                    "prod_by_user" : product.prod_by_user,
+                    "prod_date" : product.prod_date,
+                    "prod_nom" : product.prod_nom,
+                    "prod_prix" : product.prod_prix,
+                    "prod_by_cat" : product.prod_by_cat,
+                    "prod_latitude" : product.prod_latitude,
+                    "prod_longitude" : product.prod_longitude,
+                    "prod_mapString" : product.prod_mapString,
+                    "prod_comment" : product.prod_comment,
+                    "prod_tempsDispo" : product.prod_tempsDispo,
+                    "prod_etat" : product.prod_etat,
+                    "prod_image" : product.prod_image,
+                    "prodImageOld" : product.prodImageOld,
+                    "prod_hidden" : product.prod_hidden,
+                    "prod_id" : product.prod_id,
+                    "lang" : translate.lang
+                    ] as [String : Any]
+                
+                let bodyData = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: product.prod_imageData, boundary: product.prod_image)
+                request = CommunRequest.sharedInstance.buildRequest(bodyData, product, request)
+                
+                
+            }
+            
+        }
         
-        request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
             

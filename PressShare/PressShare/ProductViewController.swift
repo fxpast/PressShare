@@ -8,7 +8,7 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo :Add un button to call listalertviewcontroller  class
+//Todo : check error on update presentation landscape
 
 
 import Foundation
@@ -17,7 +17,7 @@ import UIKit
 import MobileCoreServices
 
 
-class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
@@ -37,24 +37,21 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     @IBOutlet weak var IBTemps: UITextField!
     @IBOutlet weak var IBEtat: UILabel!
     @IBOutlet weak var IBAddImage: UIImageView!
+    @IBOutlet weak var IBAlert: UIBarButtonItem!
+    @IBOutlet weak var IBTransact: UIBarButtonItem!
     
     
     var fieldName = ""
     var keybordY:CGFloat! = 0
     var star=0
     var client=false
+    var flgBeganPin = false
+    var flgMajImage = false
     
     var aProduct:Product?
-    
+    var aTransaction:Transaction?
     var config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
-    
-    var filePath : String {
-        let manager = FileManager.default
-        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as URL
-        return url.appendingPathComponent("mapRegionArchive").path
-    }
-    
     
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
@@ -128,6 +125,8 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                 
                 if config.level <= 0 {
                     IBSave.isEnabled = false
+                    IBAlert.isEnabled = false
+                    IBTransact.isEnabled = false
                     client=false
                 }
                 else {
@@ -146,9 +145,6 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         
         IBActivity.stopAnimating()
-        
-        
-        
         
         
     }
@@ -175,6 +171,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         IBComment.placeholder = translate.comment
         IBTemps.placeholder = translate.availableTime
         IBEtat.text = translate.state
+        IBTransact.title = translate.devise
         
         if config.vendeur_maj == true {
             config.vendeur_maj = false
@@ -191,6 +188,40 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
     }
     
+    @IBAction func actionTransact(_ sender: Any) {
+        
+        for trans in Transactions.sharedInstance.transactionArray {
+            
+            let tran = Transaction(dico: trans)
+            
+            if tran.prod_id == aProduct?.prod_id {
+                
+                aTransaction = tran
+                performSegue(withIdentifier: "detailtransaction", sender: sender)
+                break
+                
+            }
+        }
+        
+        
+        
+    }
+    
+    @IBAction func actionAlert(_ sender: Any) {
+        
+        
+        for mess in Messages.sharedInstance.MessagesArray {
+            
+            let message = Message(dico: mess)
+            
+            if message.product_id == aProduct?.prod_id {
+                performSegue(withIdentifier: "messagerie", sender: sender)
+                break
+            }
+            
+        }
+        
+    }
     
     @IBAction func actionCancel(_ sender: AnyObject) {
         
@@ -258,6 +289,23 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             let controller = nav.topViewController as! CreateTransViewController
             controller.aProduct = aProduct
         }
+        else if segue.identifier == "messagerie" {
+                
+                let nav = segue.destination as! UINavigationController
+                let controller = nav.topViewController as! DetailMessageViewContr
+                controller.aProduct = aProduct
+
+            
+        }
+        else if segue.identifier == "detailtransaction" {
+            
+            let nav = segue.destination as! UINavigationController
+            let controller = nav.topViewController as! DetailTransViewController
+            controller.aTransaction = aTransaction
+            
+            
+        }
+    
         
     }
     
@@ -297,7 +345,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         
         self.present(alertController, animated: true) {
-      
+            
         }
         
         
@@ -319,60 +367,102 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         }
         
         present(imagePicker, animated: true, completion: nil)
+        
+        
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        let point = (event?.allTouches?.first?.location(in: IBMap))
+        let xD = (point?.x)! - 5
+        let xF = (point?.x)! + 5
+        let yD = (point?.y)! - 5
+        let yF = (point?.y)! + 30
+        
+        let pointPin = IBMap.convert(CLLocationCoordinate2D.init(latitude: config.latitude, longitude: config.longitude), toPointTo: IBMap)
+        
+        if pointPin.x >= xD && pointPin.x <= xF && pointPin.y >= yD && pointPin.y <= yF {
+            flgBeganPin = true
+        }
+        
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        if flgBeganPin == true && IBMap.isHidden == false {
+            
+            var annotations = IBMap.annotations as! [MKPointAnnotation]
+            let point = (event?.allTouches?.first?.location(in: IBMap))
+            
+            let coordinate = IBMap.convert(point!, toCoordinateFrom: IBMap) as CLLocationCoordinate2D
+            
+            let annotation = annotations[0]
+            if annotation.coordinate.latitude   == config.latitude  && annotation.coordinate.longitude  == config.longitude {
+                annotation.coordinate = coordinate
+                IBMap.addAnnotations(annotations)
+                config.latitude = coordinate.latitude
+                config.longitude = coordinate.longitude
+                
+            }
+            
+        }
+        
+    }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        if let thisproduct = aProduct {
+        flgBeganPin = false
+        if IBMap.isHidden == true {
             
-            if config.user_id != thisproduct.prod_by_user {
+            if let thisproduct = aProduct {
                 
+                if config.user_id != thisproduct.prod_by_user {
+                    
+                    return
+                }
+            }
+            
+            let location = (event?.allTouches?.first?.location(in: self.view))
+            
+            if (location?.x)! > IBAddImage.frame.origin.x && (location?.x)! < IBAddImage.frame.size.width && (location?.y)! > IBAddImage.frame.origin.y  && (location?.y)! < (IBStar1.frame.origin.y+IBNom.frame.origin.y)/2{
+                
+                addImage()
+            }
+            
+            guard fieldName != "" && keybordY > 0 else {
                 return
             }
-        }
-        
-        let location = (event?.allTouches?.first?.location(in: self.view))
-        
-        if (location?.x)! > IBAddImage.frame.origin.x && (location?.x)! < IBAddImage.frame.size.width && (location?.y)! > IBAddImage.frame.origin.y  && (location?.y)! < (IBStar1.frame.origin.y+IBNom.frame.origin.y)/2{
             
-            addImage()
-        }
-        
-        
-        guard fieldName != "" && keybordY > 0 else {
-            return
-        }
-        
-        
-        if Double((location?.y)!) < Double(keybordY) {
-            
-            var textField = UITextField()
-            
-            if fieldName == "IBNom" {
-                textField = IBNom
-            }
-            else if fieldName == "IBPrix" {
-                textField = IBPrix
+            if Double((location?.y)!) < Double(keybordY) {
                 
-                textField.text = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
-                textField.text = textField.text!.replacingOccurrences(of: " ", with: "")
-                if textField.text == "0.0" || textField.text == "0"  {
-                    textField.text = ""
+                var textField = UITextField()
+                
+                if fieldName == "IBNom" {
+                    textField = IBNom
+                }
+                else if fieldName == "IBPrix" {
+                    textField = IBPrix
+                    
+                    textField.text = textField.text!.replacingOccurrences(of: translate.devise!, with: "")
+                    textField.text = textField.text!.replacingOccurrences(of: " ", with: "")
+                    if textField.text == "0.0" || textField.text == "0"  {
+                        textField.text = ""
+                    }
+                    
+                }
+                else if fieldName == "IBComment" {
+                    textField = IBComment
+                }
+                else if fieldName == "IBTemps" {
+                    textField = IBTemps
+                }
+                else if fieldName == "IBInfoLocation" {
+                    textField = IBInfoLocation
                 }
                 
+                textField.endEditing(true)
+                
             }
-            else if fieldName == "IBComment" {
-                textField = IBComment
-            }
-            else if fieldName == "IBTemps" {
-                textField = IBTemps
-            }
-            else if fieldName == "IBInfoLocation" {
-                textField = IBInfoLocation
-            }
-            
-            textField.endEditing(true)
             
         }
         
@@ -452,7 +542,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     //MARK: Image Picker Delegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        
+        flgMajImage = true
         IBAddImage.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         IBAddImage.contentMode = UIViewContentMode.scaleAspectFit
         
@@ -465,6 +555,11 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.endEditing(true)
+        
+        if textField == IBInfoLocation && IBInfoLocation.text != "" {
+            actionFindMap(self)
+        }
+        
         return true
         
     }
@@ -488,7 +583,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                 textField.text = ""
             }
             else {
-               textField.text = BlackBox.sharedInstance.formatedAmount(prix)
+                textField.text = BlackBox.sharedInstance.formatedAmount(prix)
             }
             
             
@@ -671,6 +766,10 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             
             BlackBox.sharedInstance.performUIUpdatesOnMain {
                 
+                let annotations = self.IBMap.annotations as! [MKPointAnnotation]
+                for annota in annotations {
+                    self.IBMap.removeAnnotation(annota)
+                }
                 
                 // Notice that the float values are being used to create CLLocationDegree values.
                 // This is a version of the Double type.
@@ -685,6 +784,7 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                 annotation.coordinate = coordinate
                 annotation.title = "\(self.config.user_nom!) \(self.config.user_prenom!)"
                 annotation.subtitle = self.config.mapString!
+                
                 
                 self.IBMap.addAnnotation(annotation)
                 
@@ -729,25 +829,29 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             
             
             config.product_maj = false
+            config.product_add = false
             IBActivity.startAnimating()
             
             IBSave.isEnabled = false
             IBFind.isEnabled = false
             
-            saveMapRegion()
-            
-            
             
             var product = Product(dico: [String : AnyObject]())
             
-            product.prod_nom = IBNom.text!
+            if aProduct != nil {
+                product.prod_image = (aProduct?.prod_image)! == "" ? "xxxxxxx" : (aProduct?.prod_image)!
+            }
+            
             if (IBAddImage.image?.isEqual(#imageLiteral(resourceName: "noimage")))! {
                 product.prod_image = ""
             }
             else {
+                if flgMajImage == true {
+                    product.prodImageOld = product.prod_image
+                    product.prod_image = "photo-\(config.user_id!)\(NSUUID().uuidString)"
+                    product.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
+                }
                 
-                product.prod_image = "photo-\(config.user_id!)\(NSUUID().uuidString)"
-                product.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
             }
             
             var finalValue = IBPrix.text!.replacingOccurrences(of: translate.devise!, with: "")
@@ -755,7 +859,12 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             if finalValue == "0.0" || finalValue == "0"  {
                 finalValue = ""
             }
+            
+            if aProduct != nil {
+                product.prod_id = (aProduct?.prod_id)!                
+            }
             product.prod_prix = BlackBox.sharedInstance.formatedAmount(finalValue)!
+            product.prod_nom = IBNom.text!
             product.prod_by_user = config.user_id
             product.prod_longitude = config.longitude
             product.prod_latitude = config.latitude
@@ -763,49 +872,37 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
             product.prod_comment = IBComment.text!
             product.prod_tempsDispo = IBTemps.text!
             product.prod_etat = star
+            product.prod_hidden = false
             
-            
-            if let thisproduct = aProduct {
+            if aProduct != nil {
                 
-                //delete product
-                MDBProduct.sharedInstance.setDeleteProduct(thisproduct) { (success, errorString) in
+                //update product
+                MDBProduct.sharedInstance.setUpdateProduct("Product", product) { (success, errorString) in
                     
                     if success {
                         
-                        //add product
-                        MDBProduct.sharedInstance.setAddProduct(product) { (success, errorString) in
-                            
-                            if success {
-                                self.config.product_maj = true
-                                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                    self.IBSave.isEnabled = true
-                                    self.IBFind.isEnabled = true
-                                    self.IBActivity.stopAnimating()
-                                    self.dismiss(animated: true, completion: nil)
-                                }
-                            }
-                            else {
-                                
-                                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                    self.IBSave.isEnabled = true
-                                    self.IBFind.isEnabled = true
-                                    self.IBActivity.stopAnimating()
-                                    self.displayAlert(self.translate.error, mess: errorString!)
-                                }
-                            }
-                            
+                        self.config.product_maj = true
+                        self.config.product_add = false
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            self.IBSave.isEnabled = true
+                            self.IBFind.isEnabled = true
+                            self.IBActivity.stopAnimating()
+                            self.dismiss(animated: true, completion: nil)
                         }
+                        
                         
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.IBSave.isEnabled = true
-                            self.IBFind.isEnabled = true
-                            self.displayAlert(self.translate.error, mess: errorString!)
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.IBSave.isEnabled = true
+                                self.IBFind.isEnabled = true
+                                self.IBActivity.stopAnimating()
+                                self.displayAlert(self.translate.error, mess: errorString!)
+                            }
                         }
                     }
-                    
-                    
                     
                 }
                 
@@ -816,7 +913,8 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
                 MDBProduct.sharedInstance.setAddProduct(product) { (success, errorString) in
                     
                     if success {
-                        self.config.product_maj = true
+                        self.config.product_add = true
+                        self.config.product_maj = false
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             self.IBSave.isEnabled = true
                             self.IBFind.isEnabled = true
@@ -853,26 +951,6 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
     }
     
     
-    //MARK: Map function
-    
-    private func saveMapRegion() {
-        
-        // Place the "center" and "span" of the map into a dictionary
-        // The "span" is the width and height of the map in degrees.
-        // It represents the zoom level of the map.
-        
-        let dictionary = [
-            "latitude" : IBMap.region.center.latitude,
-            "longitude" : IBMap.region.center.longitude,
-            "latitudeDelta" : IBMap.region.span.latitudeDelta,
-            "longitudeDelta" : IBMap.region.span.longitudeDelta
-        ]
-        
-        // Archive the dictionary into the filePath
-        NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
-    }
-    
-    
     
     //MARK: Map View Delegate
     
@@ -893,7 +971,6 @@ class ProductViewController : UIViewController , MKMapViewDelegate, UIImagePicke
         
         return pinView
     }
-    
     
     
     

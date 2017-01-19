@@ -8,6 +8,7 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
 import CoreData
 import UIKit
 
@@ -322,6 +323,14 @@ class UpdatePasswordViewContr : UIViewController, UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(true)
+        
+        if IBEmail.text != ""  &&  textField == IBEmail && config.previousView == "LoginViewController"  {
+            
+            actionDone(self)
+            
+        }
+        
+        
         return true
         
     }

@@ -8,6 +8,8 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+//Todo: Demander à Arnaud de faire des liens dans son fichier ou lui demander de le faire dans un format word avec lien.
+
 
 import Foundation
 

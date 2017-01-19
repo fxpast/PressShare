@@ -154,7 +154,7 @@ class CreateTransViewController: UIViewController {
                 typetransaction = self.translate.exchange
             }
             
-            message.contenu = "\(self.translate.emailSender!) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.theProduct!) \(self.IBInfoProduct.text!) \(self.translate.hastobechosen!) \(typetransaction). \(self.translate.customerFor!) \n \n \n \n \n \n \n \n \n"
+            message.contenu = "\(self.translate.emailSender!) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.theProduct!) \(self.IBInfoProduct.text!) \(self.translate.hastobechosen!) \(typetransaction). \(self.translate.customerFor!)"
             
             
             MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
@@ -181,11 +181,31 @@ class CreateTransViewController: UIViewController {
                         
                         if success {
                             
-                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            var product = Product(dico: [String : AnyObject]())
+                            product.prod_id = atransaction.prod_id
+                            product.prod_hidden = true
+                            product.prod_oth_user = self.config.user_id
+                            
+                            MDBProduct.sharedInstance.setUpdateProduct("ProductTrans", product) { (success, errorString) in
                                 
-                                self.dismiss(animated: true, completion: nil)
+                                if success {
+                                    
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                       
+                                        self.dismiss(animated: true, completion: nil)
+                                    }
+                                    
+                                }
+                                else {
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        
+                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                    }
+                                }
                                 
                             }
+                
                         }
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {

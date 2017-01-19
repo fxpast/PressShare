@@ -87,6 +87,49 @@ class MDBMessage {
     
     let translate = TranslateMessage.sharedInstance
     
+    
+    func getMessagesProd(_ message:Message, completionHandlerMessages: @escaping (_ success: Bool, _ messageArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
+        
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getMessagesProd.php")!)
+        let body: String = "product_id=\(message.product_id)&product_id=\(message.proprietaire)&lang=\(translate.lang!)"
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let resultArray = resultDico["allmessages"] as! [[String:AnyObject]]
+                    
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completionHandlerMessages(true, resultArray, nil)
+                    }
+                    else {
+                        completionHandlerMessages(false, nil, resultDico["error"] as? String)
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerMessages(false, nil, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
     func getAllMessages(_ userId:Int, completionHandlerMessages: @escaping (_ success: Bool, _ messageArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         // Create Data from request

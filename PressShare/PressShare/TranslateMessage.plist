@@ -216,8 +216,8 @@
         </array>
         <key>list</key>
         <array>
-            <string>Liste</string>
-            <string>List</string>
+            <string>maListe</string>
+            <string>myList</string>
         </array>
         <key>settings</key>
         <array>

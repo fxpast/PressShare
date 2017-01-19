@@ -9,6 +9,7 @@
 //
 
 
+
 import Foundation
 
 
@@ -24,11 +25,12 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var messages = [Message]()
     var customOpeation = BlockOperation()
-    let myqueue = OperationQueue()
+    let myQueue = OperationQueue()
     var config = Config.sharedInstance
     var aindex:Int!
     var aWindow = 1
     let translate = TranslateMessage.sharedInstance
+    var flgOpen=false
     
     //MARK: View Controller Delegate
     
@@ -38,40 +40,6 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         IBInbox.title = translate.inBox
         IBSend.title = translate.sendBox
         
-        IBActivity.startAnimating()
-        setUIEnabled(false)
-        IBTableView.isHidden = true
-        if let _ = Messages.sharedInstance.MessagesArray {
-            IBNav.title = translate.inBox
-            myqueue.addOperation {
-                
-                self.customOpeation = BlockOperation()
-                self.customOpeation.addExecutionBlock {
-                    if !self.customOpeation.isCancelled
-                    {
-                        
-                        self.chargeDataInbox()
-                        
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            
-                            self.IBTableView.reloadData()
-                            self.IBActivity.stopAnimating()
-                            self.IBTableView.isHidden = false
-                            self.setUIEnabled(true)
-                            
-                        }
-                        
-                    }
-                }
-                
-                self.customOpeation.start()
-                
-            }
-            
-        }
-        else {
-            refreshData()
-        }
         
         
         
@@ -81,13 +49,20 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         
         super.viewWillAppear(animated)
         
+
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         if config.message_maj == true {
             config.mess_badge = config.mess_badge - 1
             config.message_maj = false
             
             setUIEnabled(false)
             IBActivity.startAnimating()
-            IBTableView.isHidden = true
             
             messages.removeAll()
             IBTableView.reloadData()
@@ -111,8 +86,6 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                             self.chargeDataSend()
                         }
                         self.IBActivity.stopAnimating()
-                        self.IBTableView.isHidden = false
-                        self.IBTableView.reloadData()
                         self.setUIEnabled(true)
                     }
                 }
@@ -120,20 +93,50 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                     
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.IBActivity.stopAnimating()
-                        self.IBTableView.isHidden = false
                         self.displayAlert(self.translate.error, mess: errorString!)
                     }
                 }
                 
             })
             
-            
-            
         }
         
+        if flgOpen == false {
+            flgOpen = true
+            IBActivity.startAnimating()
+            setUIEnabled(false)
+            if let _ = Messages.sharedInstance.MessagesArray {
+                IBNav.title = translate.inBox
+                myQueue.addOperation {
+                    
+                    self.customOpeation = BlockOperation()
+                    self.customOpeation.addExecutionBlock {
+                        if !self.customOpeation.isCancelled
+                        {
+                            
+                            self.chargeDataInbox()
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                
+                                self.IBActivity.stopAnimating()
+                                self.setUIEnabled(true)
+                                
+                            }
+                            
+                        }
+                    }
+                    
+                    self.customOpeation.start()
+                    
+                }
+                
+            }
+            else {
+                refreshData()
+            }
+        }
         
     }
-    
     private func setUIEnabled(_ enabled: Bool) {
         
         IBEdit.isEnabled = enabled
@@ -147,14 +150,13 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         aWindow = 2
         IBActivity.startAnimating()
         setUIEnabled(false)
-        IBTableView.isHidden = true
         IBNav.title = translate.sendBox
         
         messages.removeAll()
         IBTableView.reloadData()
-        myqueue.cancelAllOperations()
+        myQueue.cancelAllOperations()
         
-        myqueue.addOperation {
+        myQueue.addOperation {
             
             self.customOpeation = BlockOperation()
             self.customOpeation.addExecutionBlock {
@@ -165,9 +167,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                     }
                     
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.IBTableView.reloadData()
                         self.IBActivity.stopAnimating()
-                        self.IBTableView.isHidden = false
                         self.setUIEnabled(true)
                     }
                     
@@ -206,13 +206,7 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
         
         if segue.identifier == "fromalerte" {
             
-            
-            let nav = segue.destination as! UINavigationController
-            let controller = nav.topViewController as! DetailAlertViewController
-            
-            controller.aMessage = messages[aindex]
-            controller.aWindow = aWindow
-            
+           
         }
         
     }
@@ -237,6 +231,10 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             
         }
         
+        BlackBox.sharedInstance.performUIUpdatesOnMain {
+            self.IBTableView.reloadData()
+            
+        }
         
     }
     
@@ -257,6 +255,11 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
             
         }
         
+        BlackBox.sharedInstance.performUIUpdatesOnMain {
+            self.IBTableView.reloadData()
+            
+        }
+        
         
     }
     
@@ -265,9 +268,15 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
     private func refreshData()  {
         
         
+        
+        myQueue.cancelAllOperations()
+        guard myQueue.operationCount == 0 else {
+            
+            return
+        }
+        
         IBActivity.startAnimating()
         setUIEnabled(false)
-        IBTableView.isHidden = true
         IBNav.title = translate.inBox
         
         messages.removeAll()
@@ -300,8 +309,6 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
-                    self.IBTableView.isHidden = false
-                    self.IBTableView.reloadData()
                     self.setUIEnabled(true)
                 }
             }
@@ -309,7 +316,6 @@ class ListAlerteViewController: UIViewController, UITableViewDelegate, UITableVi
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
-                    self.IBTableView.isHidden = false
                     self.setUIEnabled(true)
                     self.displayAlert(self.translate.error, mess: errorString!)
                 }
