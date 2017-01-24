@@ -1,27 +1,19 @@
 //
 //  TraductionMessage.swift
 //  PressShare
+//  
+//  Description : This class has the necessary properties for translation 
 //
 //  Created by MacbookPRV on 07/12/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo : Traduction des messages d'alertes anglais / français
-
-//Todo :Les commentaires doivent être en anglais
-//Todo :Les classes doivent avoir en entete l'auteur , la date de création, de modification, la definitions, leurs paramètres
-//Todo :Les methodes doivent avoir en entete leur definition, leurs paramètre et leur @return
-
-
 import Foundation
 
 class TranslateMessage {
     
-    
     private var dico:[String:AnyObject]
     private var langue:Int
-    
-    
     
     init () {
         
@@ -1119,21 +1111,21 @@ class TranslateMessage {
         
     }
     
-    var confirm:String!
+    var errorMinimumBal:String!
         {
         
         get {
-            let resultat = dico["confirm"] as! [AnyObject]
+            let resultat = dico["errorMinimumBal"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         
     }
     
-    var trade:String!
+    var confirm:String!
         {
         
         get {
-            let resultat = dico["trade"] as! [AnyObject]
+            let resultat = dico["confirm"] as! [AnyObject]
             return resultat[langue-1] as! String
         }
         

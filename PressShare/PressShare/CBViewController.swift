@@ -14,7 +14,7 @@
 //Todo :Ajouter un bouton paybox
 //Todo :Ajouter un bouton ajouter une carte de credit
 //Todo :Supprimer le bouton de droite "OK"
-
+//Todo :Mettre une interface date
 
 import Foundation
 import UIKit

@@ -10,15 +10,12 @@
 
 //Todo : check error on update presentation landscape
 
-
 import Foundation
 import MapKit
 import UIKit
 import MobileCoreServices
 
-
 class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
-    
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBSave: UIBarButtonItem!
@@ -39,7 +36,6 @@ class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePick
     @IBOutlet weak var IBAddImage: UIImageView!
     @IBOutlet weak var IBAlert: UIBarButtonItem!
     @IBOutlet weak var IBTransact: UIBarButtonItem!
-    
     
     var fieldName = ""
     var keybordY:CGFloat! = 0
@@ -149,6 +145,8 @@ class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePick
         
     }
     
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -157,6 +155,19 @@ class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePick
         if client {
             
             IBSave.title = translate.exchangeBuy
+            
+            for trans in Transactions.sharedInstance.transactionArray {
+                
+                let tran = Transaction(dico: trans)
+                
+                if tran.prod_id == aProduct?.prod_id {
+                    
+                    aTransaction = tran
+                    IBSave.isEnabled = false
+                    break
+                    
+                }
+            }
             
         }
         else {
@@ -190,19 +201,9 @@ class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePick
     
     @IBAction func actionTransact(_ sender: Any) {
         
-        for trans in Transactions.sharedInstance.transactionArray {
-            
-            let tran = Transaction(dico: trans)
-            
-            if tran.prod_id == aProduct?.prod_id {
-                
-                aTransaction = tran
-                performSegue(withIdentifier: "detailtransaction", sender: sender)
-                break
-                
-            }
+        if aTransaction != nil {
+            performSegue(withIdentifier: "detailtransaction", sender: sender)
         }
-        
         
         
     }
@@ -881,14 +882,29 @@ class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePick
                     
                     if success {
                         
-                        self.config.product_maj = true
-                        self.config.product_add = false
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.IBSave.isEnabled = true
-                            self.IBFind.isEnabled = true
-                            self.IBActivity.stopAnimating()
-                            self.dismiss(animated: true, completion: nil)
+                        MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                            
+                            if success {
+                                
+                                Products.sharedInstance.productsArray = productArray
+                                
+                                self.config.product_maj = true
+                                self.config.product_add = false
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.IBSave.isEnabled = true
+                                    self.IBFind.isEnabled = true
+                                    self.IBActivity.stopAnimating()
+                                    self.dismiss(animated: true, completion: nil)
+                                }
+                                
+                            }
+                            else {
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.displayAlert(self.translate.error, mess: errorString!)
+                                }
+                            }
                         }
+                        
                         
                         
                     }
@@ -913,14 +929,30 @@ class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePick
                 MDBProduct.sharedInstance.setAddProduct(product) { (success, errorString) in
                     
                     if success {
-                        self.config.product_add = true
-                        self.config.product_maj = false
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.IBSave.isEnabled = true
-                            self.IBFind.isEnabled = true
-                            self.IBActivity.stopAnimating()
-                            self.dismiss(animated: true, completion: nil)
+                        
+                        MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                            
+                            if success {
+                                
+                                Products.sharedInstance.productsArray = productArray
+                                
+                                self.config.product_add = true
+                                self.config.product_maj = false
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.IBSave.isEnabled = true
+                                    self.IBFind.isEnabled = true
+                                    self.IBActivity.stopAnimating()
+                                    self.dismiss(animated: true, completion: nil)
+                                }
+                                
+                            }
+                            else {
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.displayAlert(self.translate.error, mess: errorString!)
+                                }
+                            }
                         }
+                        
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {

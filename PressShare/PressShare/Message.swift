@@ -2,23 +2,18 @@
 //  Data.swift
 //  PressShare
 //
+//  Description : This class contains all properties for messaging between users
+//
 //  Created by MacbookPRV on 11/05/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
 
-//Todo :Les commentaires doivent être en anglais
-//Todo :Les classes doivent avoir en entete l'auteur , la date de création, de modification, la definitions, leurs paramètres
-//Todo :Les methodes doivent avoir en entete leur definition, leurs paramètre et leur @return
-
-
 import Foundation
-
 
 struct Message {
     
     //MARK: Properties
-    
     
     var message_id:Int
     var expediteur:Int
@@ -31,7 +26,6 @@ struct Message {
     var contenu:String
     var deja_lu_exp:Bool
     var deja_lu_dest:Bool
-    
     
     //MARK: Initialisation
     

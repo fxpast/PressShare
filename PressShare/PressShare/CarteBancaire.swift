@@ -2,11 +2,11 @@
 //  CarteBancaire.swift
 //  PressShare
 //
+//  Description : This class contains all properties of financial data user
+//
 //  Created by MacbookPRV on 21/09/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
-
-//Todo :Add date view
 
 
 import Foundation

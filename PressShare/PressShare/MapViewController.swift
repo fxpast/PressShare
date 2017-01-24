@@ -9,7 +9,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
 //Todo :Par defaut afficher les products selon la zone géolocalisée du l'utilisateur
 //Todo :Zoomer/Dezoomer sur la carte permet de reduire/augmenter le nombre de products sur la carte.
 
@@ -22,16 +21,18 @@ import UIKit
 
 class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UITextFieldDelegate {
     
-    @IBOutlet weak var IBMap: MKMapView!
+    
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     @IBOutlet weak var IBtextfieldSearch: UITextField!
     @IBOutlet weak var IBAddProduct: UIBarButtonItem!
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
+    weak var IBMap: MKMapView!
     var fieldName = ""
     var keybordY:CGFloat! = 0
     
     var users = [User]()
+    var aProduct:Product!
     
     var userPseudo:String!
     var userId:Int!
@@ -39,13 +40,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     let translate = TranslateMessage.sharedInstance
     var lat:CLLocationDegrees!
     var lon:CLLocationDegrees!
-    var userLat:CLLocationDegrees!
-    var userLon:CLLocationDegrees!
-    var flgUser=false
-    var flgRegion=false
-    var flgFirst=false
+    var latUser:CLLocationDegrees!
+    var lonUser:CLLocationDegrees!
+    var flgUser = false
+    var flgSelect = false
     
-    let locationManager = CLLocationManager()
+    var locationManager:CLLocationManager!
     
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -65,33 +65,33 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             IBAddProduct.isEnabled = false
         }
         
-        flgRegion = false
-        
         IBtextfieldSearch.delegate = self
-        locationManager.delegate = self
         
         userPseudo  = config.user_pseudo
         userId = config.user_id
         
         users = fetchAllUser()
         
-        refreshData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         
+        super.viewWillAppear(animated)
+        
+        IBMap = MKMapView()
+        IBMap.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height)
+        view.addSubview(IBMap)
+        IBMap.delegate = self
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         
         if locationManager.responds(to: #selector(CLLocationManager.requestWhenInUseAuthorization)) {
             locationManager.requestWhenInUseAuthorization()
             
         }
-        
         locationManager.startUpdatingLocation()
         
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        
-        super.viewWillAppear(animated)
         
         subscibeToKeyboardNotifications()
         
@@ -107,19 +107,27 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             refreshData()
         }
         
-        
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        unsubscribeFromKeyboardNotifications()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        unsubscribeFromKeyboardNotifications()
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        IBMap.delegate = nil
+        IBMap.removeFromSuperview()
+        IBMap = nil
+    }
+    
     
     //MARK: coreData function
     
@@ -155,6 +163,16 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             }
             
         }
+        else if segue.identifier == "fromMap" {
+            
+            let nav = segue.destination as! UINavigationController
+            let controller = nav.topViewController as! ProductViewController
+            
+            controller.aProduct = aProduct
+            controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(restoreImageArchive(prod_image: (controller.aProduct!.prod_image)), 1)!
+            
+        }
+        
         
     }
     
@@ -293,13 +311,115 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     //MARK: Data Networking
     @IBAction func actionRefresh(_ sender: AnyObject) {
         
-        refreshData()
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.stopUpdatingLocation()
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        
+        if locationManager.responds(to: #selector(CLLocationManager.requestWhenInUseAuthorization)) {
+            locationManager.requestWhenInUseAuthorization()
+            
+        }
+        
+        locationManager.startUpdatingLocation()
+        
+        
+        Products.sharedInstance.productsArray = nil
+        
+    }
+    
+    private func loadPins() {
+        
+        let annoArray = IBMap.annotations as [AnyObject]
+        for item in annoArray {
+            IBMap.removeAnnotation(item as! MKAnnotation)
+        }
+        
+        var annotations = [MKPointAnnotation]()
+        var prod = Product(dico: [String : AnyObject]())
+        
+        for dictionary in Products.sharedInstance.productsArray {
+            
+            let product = Product(dico: dictionary)
+            if product.prod_hidden == false {
+                // Notice that the float values are being used to create CLLocationDegree values.
+                // This is a version of the Double type.
+                let lati = CLLocationDegrees(product.prod_latitude)
+                let long = CLLocationDegrees(product.prod_longitude)
+                
+                // The lat and long are used to create a CLLocationCoordinates2D instance.
+                let coordinate = CLLocationCoordinate2D(latitude: lati, longitude: long)
+                
+                // Here we create the annotation and set its coordiate, title, and subtitle properties
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = coordinate
+                annotation.title = "\(product.prod_nom) (user:\(product.prod_by_user))"
+                annotation.subtitle = "\(product.prod_mapString) / \(product.prod_comment)"
+                
+                // Finally we place the annotation in an array of annotations.
+                annotations.append(annotation)
+                
+                if long == lon && lati == lat && lat != 0 && lon != 0 {
+                    prod = product
+                }
+                
+            }
+            
+        }
+        
+        
+        var coordinateRegion=MKCoordinateRegion()
+        
+        //Setting Visible Area
+        let regionRadius: CLLocationDistance = 1000
+        
+
+        if let _ = latUser , let _ = lonUser {
+            
+            let annotation = MKPointAnnotation()
+            let coordinate = CLLocationCoordinate2D(latitude: latUser, longitude: lonUser)
+            annotation.coordinate = coordinate
+            annotation.title = "user:"
+            annotation.subtitle = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_id!))"
+            
+            // Finally we place the annotation in an array of annotations.
+            annotations.append(annotation)
+            IBMap.addAnnotations(annotations)
+            coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate,regionRadius * 2.0, regionRadius * 2.0)
+            
+        }
+        else {
+            IBMap.addAnnotations(annotations)
+        }
+        
+        if flgSelect == true {
+            flgSelect = false
+            lat = prod.prod_latitude
+            lon = prod.prod_longitude
+            let annotation = MKPointAnnotation()
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+            annotation.coordinate = coordinate
+            annotation.title = "\(prod.prod_nom) (user:\(prod.prod_by_user))"
+            annotation.subtitle = "\(prod.prod_mapString) / \(prod.prod_comment)"
+            
+            coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate,regionRadius * 2.0, regionRadius * 2.0)
+            
+            IBMap.setRegion(coordinateRegion, animated: true)
+        }
+        else {
+            if let _ = latUser , let _ = lonUser {
+                IBMap.setRegion(coordinateRegion, animated: true)
+            }
+        }
+        
+        IBActivity.stopAnimating()
+        
     }
     
     private func refreshData()  {
         
         IBActivity.startAnimating()
-        
+
         MDBCapital.sharedInstance.getCapital(config.user_id, completionHandlerCapital: {(success, capitalArray, errorString) in
             
             if success {
@@ -319,7 +439,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
             }
             
-            
         })
         
         MDBProduct.sharedInstance.getAllProducts(config.user_id) { (success, productArray, errorString) in
@@ -327,71 +446,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             if success {
                 
                 Products.sharedInstance.productsArray = productArray
-                
-                var annotations = [MKPointAnnotation]()
-                
-                for dictionary in Products.sharedInstance.productsArray {
-                    
-                    let product = Product(dico: dictionary)
-                    if product.prod_hidden == false {
-                        // Notice that the float values are being used to create CLLocationDegree values.
-                        // This is a version of the Double type.
-                        let lat = CLLocationDegrees(product.prod_latitude)
-                        let long = CLLocationDegrees(product.prod_longitude)
-                        
-                        // The lat and long are used to create a CLLocationCoordinates2D instance.
-                        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-                        
-                        // Here we create the annotation and set its coordiate, title, and subtitle properties
-                        let annotation = MKPointAnnotation()
-                        annotation.coordinate = coordinate
-                        annotation.title = "\(product.prod_nom) (user:\(product.prod_by_user))"
-                        annotation.subtitle = "\(product.prod_mapString) / \(product.prod_comment)"
-                        
-                        // Finally we place the annotation in an array of annotations.
-                        annotations.append(annotation)
-                    }
-     
-                }
-                
-                var coordinateRegion=MKCoordinateRegion()
-                if let _ = self.userLon, let _ = self.userLat {
-                    
-                    // The lat and long are used to create a CLLocationCoordinates2D instance.
-                    let coordinate = CLLocationCoordinate2D(latitude: self.userLat, longitude: self.userLon)
-                    
-                    // Here we create the annotation and set its coordiate, title, and subtitle properties
-                    let annotation = MKPointAnnotation()
-                    annotation.coordinate = coordinate
-                    annotation.title = "user:"
-                    annotation.subtitle = "\(self.config.user_nom!) \(self.config.user_prenom!) (\(self.config.user_id!))"
-                    
-                    // Finally we place the annotation in an array of annotations.
-                    annotations.append(annotation)
-                    
-                    //Setting Visible Area
-                    let regionRadius: CLLocationDistance = 1000
-                    coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate,regionRadius * 2.0, regionRadius * 2.0)
-                    
-                }
-                
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    let annoArray = self.IBMap.annotations as [AnyObject]
-                    for item in annoArray {
-                        self.IBMap.removeAnnotation(item as! MKAnnotation)
-                    }
-                    
-                    self.IBMap.addAnnotations(annotations)
-                    if let _ = self.userLon, let _ = self.userLat {
-                        if !self.flgRegion {
-                            self.IBMap.setRegion(coordinateRegion, animated: true)
-                            self.flgRegion = true
-                        }
-                        
-                    }
-                    self.IBActivity.stopAnimating()
-                    
+                    self.loadPins()
                 }
                 
             }
@@ -402,7 +459,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
             }
         }
-        
         
         
     }
@@ -432,22 +488,74 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     
-    //MARK: Location Delegate
+    private func countProduct() -> Int {
+        
+        //Constants
+        let SearchBBoxHalfWidth = 1.0
+        let SearchBBoxHalfHeight = 1.0
+        let SearchLatRange = (-90.0, 90.0)
+        let SearchLonRange = (-180.0, 180.0)
+        
+        let minimumLon = max(Double(lon!) - SearchBBoxHalfWidth, SearchLonRange.0)
+        let minimumLat = max(Double(lat!) - SearchBBoxHalfHeight, SearchLatRange.0)
+        let maximumLon = min(Double(lon!) + SearchBBoxHalfWidth, SearchLonRange.1)
+        let maximumLat = min(Double(lat!) + SearchBBoxHalfHeight, SearchLatRange.1)
+        
+        var i = 0
+        
+        for prod in Products.sharedInstance.productsArray {
+            
+            let produ = Product(dico: prod)
+            if (produ.prod_latitude >= minimumLat && produ.prod_latitude  <= maximumLat && produ.prod_longitude  >= minimumLon && produ.prod_longitude  <= maximumLon && produ.prod_hidden == false) {
+                aProduct = produ
+                i += 1
+            }
+        }
+        
+        return i
+        
+    }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    
+    private func restoreImageArchive(prod_image:String) -> UIImage {
         
-        userLat = manager.location?.coordinate.latitude
-        userLon = manager.location?.coordinate.longitude
+        let manager = FileManager.default
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
+        let filePath  = url.appendingPathComponent(prod_image)!.path
         
-        if flgFirst==false {
-            flgFirst=true
-            refreshData()
+        if let imagData = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as? Data {
+            return UIImage(data:imagData)!
+        }
+        else {
+            return #imageLiteral(resourceName: "noimage")
         }
         
     }
     
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    
+    //MARK: Location Delegate
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
+        latUser = manager.location?.coordinate.latitude
+        lonUser = manager.location?.coordinate.longitude
+        
+        if let _ = Products.sharedInstance.productsArray {
+            loadPins()
+        }
+        else {
+            refreshData()
+        }
+        
+        locationManager.stopUpdatingLocation()
+        locationManager.delegate = nil
+        locationManager = nil
+        
+        
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        refreshData()
         print("Error while updating location \(error.localizedDescription)")
         
     }
@@ -484,11 +592,19 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         
         if control == view.rightCalloutAccessoryView {
+            
             if (view.annotation?.title)! == "user:" {
                 flgUser = true
+                performSegue(withIdentifier: "mapproduct", sender: self)
+            }
+            else if countProduct() > 1 {
+                
+                performSegue(withIdentifier: "mapproduct", sender: self)
+            }
+            else if countProduct() == 1 {
+                performSegue(withIdentifier: "fromMap", sender: self)
             }
             
-            performSegue(withIdentifier: "mapproduct", sender: self)
             
         }
         
@@ -501,6 +617,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             
             lat = coord.latitude
             lon = coord.longitude
+            flgSelect = true
             
         }
         
@@ -508,4 +625,3 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     
 }
-

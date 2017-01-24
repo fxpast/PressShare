@@ -3,16 +3,14 @@
 //  Transaction.swift
 //  PressShare
 //
+//  Description : This class contains all the properties for buy / exchange product
+//
 //  Created by MacbookPRV on 21/09/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
 
-//Todo :les valeurs possibles et leurs significations des propriétés :trans_type, trans_valide et trans_avis
 
-//Todo :Les commentaires doivent être en anglais
-//Todo :Les classes doivent avoir en entete l'auteur , la date de création, de modification, la definitions, leurs paramètres
-//Todo :Les methodes doivent avoir en entete leur definition, leurs paramètre et leur @return
 
 
 import Foundation
@@ -35,7 +33,7 @@ struct Transaction {
     var vendeur_id:Int
     var proprietaire:Int
     var trans_valide:Int  //1 : La transaction a été annulée. 2 : La transaction est confirmée.
-    var trans_avis:String
+    var trans_avis:String  //interlocuteur, conformite, absence, "tap text"
     var trans_arbitrage:Bool
     
     

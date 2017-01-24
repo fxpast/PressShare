@@ -2,6 +2,8 @@
 //  CommunRequest.swift
 //  PressShare
 //
+//  Description : This class contains the main JSON request for others class 
+//
 //  Created by MacbookPRV on 18/12/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //

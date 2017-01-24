@@ -520,7 +520,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
                 
                 if aUser.user_pseudo == IBUser.text!  {
                     
-                    if aUser.user_pass == config.user_pass {
+                    if aUser.user_pass == config.user_pass && config.user_pass != "" {
                         self.assignUser(aUser)
                         flgOK = true
                         return
@@ -556,7 +556,7 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             }
         }
         
-        
+        config.user_pass = IBPassword.text
         MDBUser.sharedInstance.Authentification(config) { (success, userArray, errorString) in
             
             if success {
@@ -734,6 +734,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
             
             
             if (config.user_newpassword == true) {
+                
+                config.previousView = "SettingsTableViewContr"
                 performSegue(withIdentifier: "chgpass", sender: self)
             }
             else {

@@ -2,6 +2,8 @@
 //  Config.swift
 //  PressShare
 //
+//  Description : This class is a singletion with global variables
+//
 //  Created by MacbookPRV on 14/01/2017.
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //

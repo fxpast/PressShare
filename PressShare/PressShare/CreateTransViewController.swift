@@ -8,7 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
 import Foundation
 import UIKit
 
@@ -53,7 +52,7 @@ class CreateTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBLabelTrade.text = translate.trade
+        IBLabelTrade.text = translate.buy
         IBLabelExchange.text = translate.exchange        
         IBValidate.title = translate.done
         
@@ -94,12 +93,14 @@ class CreateTransViewController: UIViewController {
     
     @IBAction func actionExchange(_ sender: Any) {
         
+        IBExchange.isOn = true
         IBTrade.isOn = (IBExchange.isOn) ? false : true
         
     }
     
     @IBAction func actionTrade(_ sender: Any) {
         
+        IBTrade.isOn = true
         IBExchange.isOn = (IBTrade.isOn) ? false : true
         
     }
@@ -161,6 +162,22 @@ class CreateTransViewController: UIViewController {
                 
                 if success {
                     
+                    
+                    MDBMessage.sharedInstance.getAllMessages(self.config.user_id) { (success, messageArray, errorString) in
+                        
+                        if success {
+                            
+                            Messages.sharedInstance.MessagesArray = messageArray
+                        }
+                        else {
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.error, mess: errorString!)
+                            }
+                        }
+                        
+                    }
+                    
                     var atransaction = Transaction(dico: [String : AnyObject]())
                     atransaction.client_id = message.client_id
                     atransaction.vendeur_id = message.vendeur_id
@@ -181,6 +198,20 @@ class CreateTransViewController: UIViewController {
                         
                         if success {
                             
+                            MDBTransact.sharedInstance.getAllTransactions(self.config.user_id, completionHandlerTransactions: {(success, transactionArray, errorString) in
+                                
+                                
+                                if success {
+                                    Transactions.sharedInstance.transactionArray = transactionArray
+                                }
+                                else {
+                                    
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                    }
+                                }
+                                
+                            })
                             
                             var product = Product(dico: [String : AnyObject]())
                             product.prod_id = atransaction.prod_id
@@ -191,9 +222,23 @@ class CreateTransViewController: UIViewController {
                                 
                                 if success {
                                     
-                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                       
-                                        self.dismiss(animated: true, completion: nil)
+                                    
+                                    MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                                        
+                                        if success {
+                                            
+                                            Products.sharedInstance.productsArray = productArray
+                                            
+                                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                
+                                                self.dismiss(animated: true, completion: nil)
+                                            }
+                                        }
+                                        else {
+                                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                self.displayAlert(self.translate.error, mess: errorString!)
+                                            }
+                                        }
                                     }
                                     
                                 }

@@ -8,13 +8,13 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+//Todo: La propriété failure_count de capital n'est pas mise à jour correctement
 
-// Todo: Faire un scripte php de traitement de fin de journée pour verifier et confirmer/infirmer les transaction en mode arbitrage humain
+//Todo: Faire un scripte php de traitement de fin de journée pour verifier et confirmer/infirmer les transaction en mode arbitrage humain
 
 //Todo: Faire un scripte php de traitment de fin de journée pour : à partir de MAX JOUR le compteur de rejet est incrémenté pour celui qui n'a rien décidé sur sa transaction alors que l'autre l'a annulé.
 
 //Todo: Faire un scripte php de traitment de fin de journée pour : à partir de MAX JOUR une commission de 5% est débité pour celui qui n'a rien décidé sur sa transaction alors que l'autre l'a confirmé.
-
 
 
 import Foundation
@@ -127,7 +127,7 @@ class DetailTransViewController: UIViewController {
         
   
         if aTransaction?.trans_type == 1 {
-            IBLabelType.text = "\(IBLabelType.text!) \(translate.trade!)"
+            IBLabelType.text = "\(IBLabelType.text!) \(translate.buy!)"
         }
         else if aTransaction?.trans_type == 2 {
             IBLabelType.text = "\(IBLabelType.text!) \(translate.exchange!)"
@@ -383,8 +383,20 @@ class DetailTransViewController: UIViewController {
                         
                         if success {
                             
-                            Operations.sharedInstance.operationArray = nil
-                            
+                            MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                                
+                                if success {
+                                    
+                                    Operations.sharedInstance.operationArray = operationArray
+                                }
+                                else {
+                                    
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                    }
+                                }
+                                
+                            })
                             
                             //Le compte du vendeur est consulté
                             MDBCapital.sharedInstance.getCapital(self.aTransaction!.vendeur_id, completionHandlerCapital: {(success, capitalArray, errorString) in
@@ -439,6 +451,21 @@ class DetailTransViewController: UIViewController {
                                                 
                                                 if success {
                                                     
+                                                    MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                                                        
+                                                        if success {
+                                                            
+                                                            Operations.sharedInstance.operationArray = operationArray
+                                                        }
+                                                        else {
+                                                            
+                                                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                                self.displayAlert(self.translate.error, mess: errorString!)
+                                                            }
+                                                        }
+                                                        
+                                                    })
+                        
                                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                                         self.IBActivity.stopAnimating()
                                                         self.dismiss(animated: true, completion: nil)
@@ -533,9 +560,23 @@ class DetailTransViewController: UIViewController {
                         
                         if success {
                             
-                            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                self.IBActivity.stopAnimating()
-                                self.dismiss(animated: true, completion: nil)
+                            MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                                
+                                if success {
+                                    
+                                    Products.sharedInstance.productsArray = productArray
+                            
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.stopAnimating()
+                                        self.dismiss(animated: true, completion: nil)
+                                    }
+                                    
+                                }
+                                else {
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                    }
+                                }
                             }
                             
                         }
@@ -619,10 +660,24 @@ class DetailTransViewController: UIViewController {
                         
                         if success {
                             
-                            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                self.IBActivity.stopAnimating()
-                                self.dismiss(animated: true, completion: nil)
+                            MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                                
+                                if success {
+                                    
+                                    Products.sharedInstance.productsArray = productArray
+                                    
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.stopAnimating()
+                                        self.dismiss(animated: true, completion: nil)
+                                    }
+                                }
+                                else {
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                    }
+                                }
                             }
+                            
                             
                         }
                         else {
@@ -699,6 +754,23 @@ class DetailTransViewController: UIViewController {
                 
                 if success {
                     
+                    
+                    MDBTransact.sharedInstance.getAllTransactions(self.config.user_id, completionHandlerTransactions: {(success, transactionArray, errorString) in
+                        
+                        
+                        if success {
+                            Transactions.sharedInstance.transactionArray = transactionArray
+                        }
+                        else {
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.error, mess: errorString!)
+                            }
+                        }
+                        
+                    })
+                    
+                    
                     self.config.trans_badge = self.config.trans_badge - 1
                     self.config.transaction_maj = true
             
@@ -763,12 +835,14 @@ class DetailTransViewController: UIViewController {
     
     @IBAction func actionConfirm(_ sender: Any) {
         //confirmer la transaction
+        IBConfirm.isOn = true
         IBCancel.isOn = (IBConfirm.isOn == true) ? false : true
         setUIHidden(!IBCancel.isOn)
     }
     
     @IBAction func actionCancel(_ sender: Any) {
         //annuler la transaction
+        IBCancel.isOn = true
         IBConfirm.isOn = (IBCancel.isOn == true) ? false : true
         setUIHidden(!IBCancel.isOn)
         
@@ -776,6 +850,7 @@ class DetailTransViewController: UIViewController {
     
     @IBAction func actionOther(_ sender: Any) {
         //Autre cause d'annulation de la transaction
+        IBOther.isOn = true
         IBInterlo.isOn = (IBOther.isOn == true) ? false : true
         IBMyAbsent.isOn = (IBOther.isOn == true) ? false : true
         IBCompliant.isOn = (IBOther.isOn == true) ? false : true
@@ -786,6 +861,7 @@ class DetailTransViewController: UIViewController {
     
     @IBAction func actionCompliant(_ sender: Any) {
         //Cause d'annulation : produit non conforme
+        IBCompliant.isOn = true
         IBInterlo.isOn = (IBCompliant.isOn == true) ? false : true
         IBMyAbsent.isOn = (IBCompliant.isOn == true) ? false : true
         IBOther.isOn = (IBCompliant.isOn == true) ? false : true
@@ -796,6 +872,7 @@ class DetailTransViewController: UIViewController {
     
     @IBAction func actionMyAbsent(_ sender: Any) {
         //Cause d'annulation : je suis absent
+        IBMyAbsent.isOn = true
         IBInterlo.isOn = (IBMyAbsent.isOn == true) ? false : true
         IBCompliant.isOn = (IBMyAbsent.isOn == true) ? false : true
         IBOther.isOn = (IBMyAbsent.isOn == true) ? false : true
@@ -806,6 +883,7 @@ class DetailTransViewController: UIViewController {
     
     @IBAction func actionInterlo(_ sender: Any) {
         //Cause d'annulation : mon interlocuteur est absent
+        IBInterlo.isOn = true
         IBMyAbsent.isOn = (IBInterlo.isOn == true) ? false : true
         IBCompliant.isOn = (IBInterlo.isOn == true) ? false : true
         IBOther.isOn = (IBInterlo.isOn == true) ? false : true

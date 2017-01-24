@@ -212,7 +212,7 @@ class ListTransactTablViewContr: UITableViewController {
         
         let atype =  cell?.contentView.viewWithTag(20) as! UILabel
         if transaction.trans_type == 1 {
-            atype.text =  translate.trade
+            atype.text =  translate.buy
         }
         else if transaction.trans_type == 2 {
             atype.text =  translate.exchange

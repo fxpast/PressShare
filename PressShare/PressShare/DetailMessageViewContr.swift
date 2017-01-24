@@ -6,9 +6,6 @@
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //
 
-//Todo : ajout flèche à droite pour message bleu
-//Todo : ajout flèche à gauche pour message gris
-
 
 import Foundation
 
@@ -30,7 +27,8 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     let translate = TranslateMessage.sharedInstance
     var dateStrBefore = ""
     var dateStrAfter = ""
-    
+    let distance:CGFloat = 10.0
+    var initFrame = CGRect()
     
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
@@ -71,6 +69,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        initFrame = IBScrollView.frame
         IBActivity.isHidden = false
         IBActivity.startAnimating()
         IBScrollView.isHidden = true
@@ -155,6 +154,23 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
             
             if success {
                 
+                
+                MDBMessage.sharedInstance.getAllMessages(self.config.user_id) { (success, messageArray, errorString) in
+                    
+                    if success {
+                        
+                        Messages.sharedInstance.MessagesArray = messageArray
+                    }
+                    else {
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            self.displayAlert(self.translate.error, mess: errorString!)
+                        }
+                    }
+                    
+                }
+                
+                
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     self.createLabelTime(message.date_ajout, frame: frame)
@@ -182,6 +198,21 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     
     @IBAction func actionRefresh(_ sender: Any) {
         
+        for view in IBScrollView.subviews {
+            view.removeFromSuperview()
+        }
+        
+        for layer in IBScrollView.layer.sublayers! {
+            layer.removeFromSuperlayer()
+        }
+        
+        IBScrollView.frame = initFrame
+        IBScrollView.contentOffset = initFrame.origin
+        IBScrollView.contentSize = initFrame.size
+    
+        dateStrAfter = ""
+        dateStrBefore = ""
+        
         refreshData()
     }
     @IBAction func actionCancel(_ sender: Any) {
@@ -199,12 +230,34 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
             var message = Message(dico: Messages.sharedInstance.MessagesArray[index])
         
             if message.product_id == aProduct?.prod_id && (message.deja_lu_exp == false || message.deja_lu_dest == false) {
+                
+                if message.deja_lu_dest == false {
+                    config.mess_badge = config.mess_badge - 1
+                }
+                
                 message.deja_lu_dest = true
                 message.deja_lu_exp = true
                 flgMAJ = true
                 MDBMessage.sharedInstance.setUpdateMessage(message, completionHandlerUpdate: { (success, errorString) in
                     
                     if success {
+                        
+                        
+                        MDBMessage.sharedInstance.getAllMessages(self.config.user_id) { (success, messageArray, errorString) in
+                            
+                            if success {
+                                
+                                Messages.sharedInstance.MessagesArray = messageArray
+                            }
+                            else {
+                                
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.displayAlert(self.translate.error, mess: errorString!)
+                                }
+                            }
+                            
+                        }
+                    
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             self.IBActivity.stopAnimating()
@@ -325,6 +378,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         
         labelMessage.sizeToFit()
         
+    
         labelMessage.addGestureRecognizer(setUpTapGesture())
         if messa.expediteur == config.user_id {
             var frame = labelMessage.frame
@@ -333,10 +387,13 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
             
             labelMessage.textColor = UIColor.white
             labelMessage.backgroundColor = UIColor.blue
+            createArrow(labelMessage.frame, sens: "E")
+            
         }
         if messa.destinataire == config.user_id {
             labelMessage.textColor = UIColor.black
             labelMessage.backgroundColor = UIColor.lightGray
+            createArrow(labelMessage.frame, sens: "D")
         }
         
         labelMessage.isEditable = false
@@ -351,6 +408,42 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         
     }
     
+    private func createArrow(_ frame:CGRect, sens:String) {
+    
+        var x1 = CGFloat()
+        var y1 = CGFloat()
+        var x2 = CGFloat()
+        var y2 = CGFloat()
+        
+        let bezierObjet = UIBezierPath()
+        let shapeLayer1 = CAShapeLayer()
+        
+        y1 = frame.origin.y + frame.size.height
+        if sens == "E" {
+            x1 = frame.origin.x + frame.size.width - distance
+            bezierObjet.move(to: CGPoint.init(x: x1, y: y1))
+            x1 = x1 + distance
+            shapeLayer1.strokeColor = UIColor.blue.cgColor
+            shapeLayer1.fillColor = UIColor.blue.cgColor
+        }
+        else if sens == "D" {
+            x1 = frame.origin.x + distance
+            bezierObjet.move(to: CGPoint.init(x: x1, y: y1))
+            x1 = x1 - distance
+            shapeLayer1.strokeColor = UIColor.lightGray.cgColor
+            shapeLayer1.fillColor = UIColor.lightGray.cgColor
+        }
+        
+        x2 = x1
+        y2 = y1 + distance * 3/2
+       
+        bezierObjet.addCurve(to: CGPoint.init(x: x1, y: y1), controlPoint1: CGPoint.init(x: x2, y: y2), controlPoint2: CGPoint.init(x: x2, y: y2))
+        shapeLayer1.path = bezierObjet.cgPath
+        shapeLayer1.lineWidth = 1.0
+        IBScrollView.layer.addSublayer(shapeLayer1)
+        
+    }
+    
     private func createLabelTime(_ date:Date, frame:CGRect) {
         
         var offSet = IBScrollView.contentSize.height
@@ -362,6 +455,9 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         labelTime.font = UIFont.systemFont(ofSize: 8.0)
         labelTime.addGestureRecognizer(setUpTapGesture())
         labelTime.sizeToFit()
+        var frame = labelTime.frame
+        frame.origin.x = frame.origin.x + distance
+        labelTime.frame = frame
         
         offSet = offSet + labelTime.frame.size.height + 10.0
         
@@ -420,6 +516,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
             
             return
         }
+        
         
         IBRefresh.isEnabled = false
         IBActivity.isHidden = false

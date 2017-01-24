@@ -2,6 +2,8 @@
 //  Data.swift
 //  PressShare
 //
+//  Description : This class contains all properties for PressShare income
+//
 //  Created by MacbookPRV on 11/05/2016.
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
@@ -13,9 +15,7 @@ import Foundation
 struct Commission {
     
     //MARK: Properties
-    
-    //`com_id`, `user_id`, `product_id`, `com_date`, `com_amount`
-    
+  
     var com_id:Int
     var user_id:Int
     var product_id:Int

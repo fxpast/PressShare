@@ -8,7 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
 import CoreData
 import UIKit
 

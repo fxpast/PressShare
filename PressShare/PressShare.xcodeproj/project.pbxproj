@@ -18,9 +18,7 @@
 		DB314A7A1D92AF890072D7D3 /* Commercant.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A791D92AF890072D7D3 /* Commercant.swift */; };
 		DB314A7C1D92D6EB0072D7D3 /* CBViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */; };
 		DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB385C8A1DE5D99D00AD95FF /* Message.swift */; };
-		DB385C8D1DE603B500AD95FF /* ListAlerteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB385C8C1DE603B500AD95FF /* ListAlerteViewController.swift */; };
 		DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA351CE0FB870065ECEB /* BlackBox.swift */; };
-		DB5FFA061DEC9F93003BCA55 /* TutoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5FFA051DEC9F93003BCA55 /* TutoViewController.swift */; };
 		DB5FFA0A1DECA0B6003BCA55 /* SubscriptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */; };
 		DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64B97E1E06880C00013628 /* CommunRequest.swift */; };
 		DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */; };
@@ -35,6 +33,7 @@
 		DBB4221D1DF8A76600CB3F5E /* TranslateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */; };
 		DBBBDAE41DE8C2D9000B5E9E /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */; };
 		DBC585F01E29B9830032A33B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC585EF1E29B9830032A33B /* Config.swift */; };
+		DBCFFAEF1E32E6DD00CF73D8 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */; };
 		DBEDBDB31DC2A0C600EECF0F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDAF1DC2A0C600EECF0F /* Bolts.framework */; };
 		DBEDBDB41DC2A0C600EECF0F /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB01DC2A0C600EECF0F /* FBSDKCoreKit.framework */; };
 		DBEDBDB51DC2A0C600EECF0F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB11DC2A0C600EECF0F /* FBSDKLoginKit.framework */; };
@@ -75,9 +74,7 @@
 		DB314A791D92AF890072D7D3 /* Commercant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Commercant.swift; sourceTree = "<group>"; };
 		DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBViewController.swift; sourceTree = "<group>"; };
 		DB385C8A1DE5D99D00AD95FF /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		DB385C8C1DE603B500AD95FF /* ListAlerteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListAlerteViewController.swift; sourceTree = "<group>"; };
 		DB5EFA351CE0FB870065ECEB /* BlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackBox.swift; sourceTree = "<group>"; };
-		DB5FFA051DEC9F93003BCA55 /* TutoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutoViewController.swift; sourceTree = "<group>"; };
 		DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptViewController.swift; sourceTree = "<group>"; };
 		DB64B97E1E06880C00013628 /* CommunRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunRequest.swift; sourceTree = "<group>"; };
 		DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewContr.swift; sourceTree = "<group>"; };
@@ -93,6 +90,7 @@
 		DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslateMessage.swift; sourceTree = "<group>"; };
 		DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BadgeLabel.swift; sourceTree = "<group>"; };
 		DBC585EF1E29B9830032A33B /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		DBEDBD9E1DC284FF00EECF0F /* PressShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PressShare.entitlements; sourceTree = "<group>"; };
 		DBEDBDAF1DC2A0C600EECF0F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = PressShare/Bolts.framework; sourceTree = "<group>"; };
 		DBEDBDB01DC2A0C600EECF0F /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = PressShare/FBSDKCoreKit.framework; sourceTree = "<group>"; };
@@ -162,6 +160,7 @@
 				DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */,
 				DB17C6521E2C7303001B451B /* DetailMessageViewContr.swift */,
 				DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */,
+				DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */,
 				DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */,
 				DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */,
 				DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */,
@@ -173,8 +172,6 @@
 				DBF7CE131DF5EBB300966F29 /* NewUserViewContr.swift */,
 				DBF8D8221CB9A0B700BF706E /* UpdateUserTableViewContr.swift */,
 				DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */,
-				DB385C8C1DE603B500AD95FF /* ListAlerteViewController.swift */,
-				DB5FFA051DEC9F93003BCA55 /* TutoViewController.swift */,
 				DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */,
 			);
 			name = Controller;
@@ -325,18 +322,17 @@
 				DB5FFA0A1DECA0B6003BCA55 /* SubscriptViewController.swift in Sources */,
 				DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */,
 				DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */,
+				DBCFFAEF1E32E6DD00CF73D8 /* CustomCell.swift in Sources */,
 				DB314A741D929A0B0072D7D3 /* PayboxDirect.swift in Sources */,
 				DB17C6531E2C7303001B451B /* DetailMessageViewContr.swift in Sources */,
 				DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */,
 				DB0B485D1DEF522D00B76652 /* Operation.swift in Sources */,
 				DB2515981D83226800B286F7 /* User.swift in Sources */,
 				DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */,
-				DB5FFA061DEC9F93003BCA55 /* TutoViewController.swift in Sources */,
 				DBA03CD81CECB31800B76896 /* Product.swift in Sources */,
 				DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */,
 				DBC585F01E29B9830032A33B /* Config.swift in Sources */,
 				DBB4221D1DF8A76600CB3F5E /* TranslateMessage.swift in Sources */,
-				DB385C8D1DE603B500AD95FF /* ListAlerteViewController.swift in Sources */,
 				DBA3C5321CE5141800CD826D /* ProductViewController.swift in Sources */,
 				DB6BDF2F1DE46F24007EAFA3 /* CreateTransViewController.swift in Sources */,
 				DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */,

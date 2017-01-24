@@ -9,7 +9,8 @@
 //
 
 //Todo: Le raffraichissement de la liste est fonction de la zone affichée sur la carte.
-//Todo: refresh the myList
+
+
 
 
 import CoreData
@@ -34,19 +35,16 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     var aindex:Int!
     var lat:CLLocationDegrees?
     var lon:CLLocationDegrees?
-    var flgUser=false //touche sur epingle bleu user
+    var flgUser=false //touch on blue user pin
     var flgOpen=false
+    var flgFirst=false
+    
     var customOpeation = BlockOperation()
     let myQueue = OperationQueue()
     var countProduct = 0
     var searchText = ""
     
-    
-    //Constants
-    let SearchBBoxHalfWidth = 1.0
-    let SearchBBoxHalfHeight = 1.0
-    let SearchLatRange = (-90.0, 90.0)
-    let SearchLonRange = (-180.0, 180.0)
+    var frameTableView:CGRect!
     
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -71,6 +69,22 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
+        
+        
+        if  IBTableView == nil {
+
+            IBTableView = UITableView()
+            IBTableView.frame = frameTableView
+            IBTableView.dataSource = self
+            IBTableView.delegate = self
+            IBTableView.register(CustomCell.self, forCellReuseIdentifier: "Cell")            
+            view.addSubview(IBTableView)
+            
+        }
+        else {
+            flgOpen = false
+        }
+        
         
         navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
         IBSearch.placeholder = translate.product
@@ -97,6 +111,18 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        if flgFirst == false {
+            frameTableView = IBTableView.frame
+            flgFirst = true
+        }
+        
+        if config.mess_badge > 0 {
+            tabBarController?.tabBar.items![1].badgeValue = "\(config.mess_badge!)"
+        }
+        else {
+            tabBarController?.tabBar.items![1].badgeValue = nil
+        }
         
         if config.product_maj == true || config.product_add == true {
             refreshData()
@@ -130,6 +156,18 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+  
+        IBTableView.dataSource = nil
+        IBTableView.delegate = nil
+        IBTableView.removeFromSuperview()
+        IBTableView = nil
+        
+        
+    }
+    
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         
@@ -146,6 +184,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             }
             
         }
+        
         
     }
     
@@ -368,11 +407,16 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         var maximumLat = Double()
         
         if let _ = lat, let _ = lon {
+            //Constants
+            let SearchBBoxHalfWidth = 1.0
+            let SearchBBoxHalfHeight = 1.0
+            let SearchLatRange = (-90.0, 90.0)
+            let SearchLonRange = (-180.0, 180.0)
             
-            minimumLon = max(Double(lon!) - SearchBBoxHalfWidth, SearchLonRange.0)
-            minimumLat = max(Double(lat!) - SearchBBoxHalfHeight, SearchLatRange.0)
-            maximumLon = min(Double(lon!) + SearchBBoxHalfWidth, SearchLonRange.1)
-            maximumLat = min(Double(lat!) + SearchBBoxHalfHeight, SearchLatRange.1)
+             minimumLon = max(Double(lon!) - SearchBBoxHalfWidth, SearchLonRange.0)
+             minimumLat = max(Double(lat!) - SearchBBoxHalfHeight, SearchLatRange.0)
+             maximumLon = min(Double(lon!) + SearchBBoxHalfWidth, SearchLonRange.1)
+             maximumLat = min(Double(lat!) + SearchBBoxHalfHeight, SearchLatRange.1)
             
         }
         

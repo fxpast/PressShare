@@ -249,7 +249,8 @@ class SettingsTableViewContr : UITableViewController {
             
         case 5:
             
-            performSegue(withIdentifier: "tutoriel", sender: self)
+            let app = UIApplication.shared
+            app.openURL(URL(string: "http://pressshare.fxpast.com/Tuto_PressShare/")!)
             
         default:
             break

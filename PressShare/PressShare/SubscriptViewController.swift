@@ -8,8 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo: add on the operation line detail product
-
 
 import CoreData
 import Foundation
@@ -42,6 +40,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     let myQueue = OperationQueue()
     
     let subscriptAmount = 10.0
+    let minimumAmount = 10.0
     
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
@@ -218,6 +217,80 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     //MARK: Data operation , capital
     
+    private func withdrawal(_ amount: Double) {
+        
+        
+        
+        self.config.balance = config.balance - amount
+        var capital = Capital(dico: [String : AnyObject]())
+        capital.balance = self.config.balance
+        capital.user_id = self.config.user_id
+        capital.failure_count = self.config.failure_count
+        
+        var operation = Operation(dico: [String : AnyObject]())
+        operation.user_id = self.config.user_id
+        operation.op_type = 2
+        operation.op_amount = -1 * amount
+        operation.op_wording = self.translate.OneTimeWithd
+        
+        MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
+            
+            if success {
+                
+                MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                    
+                    if success {
+                        
+                        MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                            
+                            if success {
+                                
+                                Operations.sharedInstance.operationArray = operationArray
+                            }
+                            else {
+                                
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.displayAlert(self.translate.error, mess: errorString!)
+                                }
+                            }
+                            
+                        })
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
+                            
+                            self.IBWithdrawal.text = ""
+                            self.IBWithdrawal.endEditing(true)
+                            self.refreshData()
+                            self.displayAlert("info", mess: self.translate.withdrawalMade)
+                        }
+                        
+                    }
+                    else {
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            self.displayAlert(self.translate.error, mess: errorString!)
+                        }
+                    }
+                    
+                    
+                })
+                
+                
+                
+            }
+            else {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
+                    self.displayAlert(self.translate.error, mess: errorString!)
+                }
+            }
+            
+            
+        })
+        
+    }
     
     @IBAction func actionWithdrawal(_ sender: Any) {
         
@@ -256,11 +329,10 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 return
             }
             
-            
-            guard balance >= amount else {
+            guard balance >= (amount + self.minimumAmount) else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.error, mess: self.translate.errorBalanceTrans)
+                    self.displayAlert(self.translate.error, mess: "\(self.translate.errorBalanceTrans!) \n \(self.translate.errorMinimumBal!) \(self.minimumAmount)")
                     
                 }
                 
@@ -268,70 +340,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             }
             
             
-            self.config.balance = balance - amount
-            var capital = Capital(dico: [String : AnyObject]())
-            capital.balance = self.config.balance
-            capital.user_id = self.config.user_id
-            capital.failure_count = self.config.failure_count
-            
-            var operation = Operation(dico: [String : AnyObject]())
-            operation.user_id = self.config.user_id
-            operation.op_type = 2
-            operation.op_amount = -1 * amount
-            operation.op_wording = self.translate.OneTimeWithd
-            
-            MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
-                
-                if success {
-                    
-                    MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
-                        
-                        if success {
-                            
-                            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                
-                                
-                                if self.translate.lang == "fr" {
-                                    
-                                    self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
-                                }
-                                else if self.translate.lang == "us" {
-                                    
-                                    self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
-                                    
-                                    
-                                }
-                                
-                                
-                                self.IBWithdrawal.text = ""
-                                self.IBWithdrawal.endEditing(true)
-                                self.refreshData()
-                                self.displayAlert("info", mess: self.translate.withdrawalMade)
-                            }
-                            
-                        }
-                        else {
-                            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                
-                                self.displayAlert(self.translate.error, mess: errorString!)
-                            }
-                        }
-                        
-                        
-                    })
-                    
-                    
-                    
-                }
-                else {
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        
-                        self.displayAlert(self.translate.error, mess: errorString!)
-                    }
-                }
-                
-                
-            })
+            self.withdrawal(amount)
             
             
         })
@@ -380,7 +389,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 return
             }
             
-            self.addDeposit(amount)
+            self.deposit(amount)
             
         })
         
@@ -401,7 +410,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     }
     
     
-    private func addDeposit(_ amount: Double) {
+    private func deposit(_ amount: Double) {
         
         config.balance = config.balance + amount
         var capital = Capital(dico: [String : AnyObject]())
@@ -423,21 +432,24 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                     
                     if success {
                         
+                        MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                            
+                            if success {
+                                
+                                Operations.sharedInstance.operationArray = operationArray
+                            }
+                            else {
+                                
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.displayAlert(self.translate.error, mess: errorString!)
+                                }
+                            }
+                            
+                        })
+                        
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             
-                            
-                            if self.translate.lang == "fr" {
-                                
-                                self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
-                                
-                            }
-                            else if self.translate.lang == "us" {
-                                
-                                self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
-                                
-                                
-                            }
-                            
+                            self.IBBalance.text = BlackBox.sharedInstance.formatedAmount(self.config.balance!)
                             
                             self.IBDeposit.text = ""
                             self.IBDeposit.endEditing(true)
@@ -495,7 +507,11 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
             if self.config.level <= 0 && self.config.balance == 0 {
                 
-                self.addDeposit(self.subscriptAmount)
+                self.deposit(self.subscriptAmount)
+            }
+            else if self.config.level > 0 {
+                
+                self.withdrawal(self.config.balance)
             }
             
             

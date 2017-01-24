@@ -45,7 +45,8 @@ class User: NSManagedObject {
             user_codepostal = dico["user_codepostal"] as? String
             user_ville = dico["user_ville"] as? String
             user_pays = dico["user_pays"] as? String
-            user_newpassword = Bool(dico["user_newpassword"] as! String) as NSNumber?
+            user_newpassword = (Int(dico["user_newpassword"] as! String)! == 0) ? false : true
+            
             
         }
         else {
