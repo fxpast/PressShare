@@ -31,7 +31,7 @@ struct Capital {
             user_id = Int(dico["user_id"] as! String)!
             date_maj = Date().dateFromString(dico["date_maj"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             balance = Double(dico["balance"] as! String)!
-            failure_count = Int(dico["user_id"] as! String)!
+            failure_count = Int(dico["failure_count"] as! String)!
         }
         else {
             user_id = 0

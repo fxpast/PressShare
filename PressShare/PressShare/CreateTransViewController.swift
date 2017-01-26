@@ -223,11 +223,12 @@ class CreateTransViewController: UIViewController {
                                 if success {
                                     
                                     
-                                    MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                                    MDBProduct.sharedInstance.getAllProducts(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
+                                        
                                         
                                         if success {
                                             
-                                            Products.sharedInstance.productsArray = productArray
+                                            Products.sharedInstance.productsUserArray = productArray
                                             
                                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                                 

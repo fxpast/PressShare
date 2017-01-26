@@ -8,6 +8,17 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+//Todo: l'appli se plante quand il n'y a pas de connexion
+//Todo: faire module d'inscription au système d'alerte de l'iPhone 
+
+//Todo: mettre un badge sur l’icône de l’app pour le nombre de message reçu : applicationIconBadgeNumber
+
+//Todo: ajouter une icône d’alerte quand PressShare utilise la connexion internet
+ /*   UIApplication *app = [UIApplication sharedApplication];
+     app.networkActivityIndicatorVisible =
+         !app.networkActivityIndicatorVisible;
+ */
+
 
 import CoreData
 import Foundation
@@ -91,6 +102,8 @@ class LoginViewController : UIViewController, FBSDKLoginButtonDelegate, UITextFi
         Transactions.sharedInstance.transactionArray = nil
         Capitals.sharedInstance.capitalsArray = nil
         Products.sharedInstance.productsArray = nil
+        Products.sharedInstance.productsUserArray = nil
+        
                 
         IBPressConnect.text = translate.connectToPress
         IBUser.placeholder = translate.pseudo

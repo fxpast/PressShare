@@ -9,7 +9,7 @@
 //
 
 import Foundation
-
+import MapKit
 
 class Config {
     
@@ -41,6 +41,15 @@ class Config {
     var failure_count:Int!
     var level:Int!
     var message_maj:Bool!
+    var distanceProduct:CLLocationDistance! //product are grouped and display according to this distance in meters
+    var regionGeoLocat:CLLocationDistance! //region of user geolocalization and displayed in meters
+    var regionProduct:CLLocationDistance! //region of product dowload on the map in meters
+    var commissionPrice:Double! //product price
+    var minLongitude:Double!
+    var maxLongitude:Double!
+    var minLatitude:Double!
+    var maxLatitude:Double!
+    
     
     
     
@@ -74,6 +83,14 @@ class Config {
         failure_count = 0
         level = 0
         message_maj = false
+        distanceProduct = 1000
+        regionGeoLocat = 2000
+        regionProduct = 50000
+        commissionPrice = 0.05 // 5%
+        minLongitude = 0
+        maxLongitude = 0
+        minLatitude = 0
+        maxLatitude = 0
     }
     
     static let sharedInstance = Config()

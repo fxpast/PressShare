@@ -8,10 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo: Le raffraichissement de la liste est fonction de la zone affichée sur la carte.
-
-
-
 
 import CoreData
 import Foundation
@@ -24,8 +20,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var IBSearch: UISearchBar!
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     @IBOutlet weak var IBAddProduct: UIBarButtonItem!
-    @IBOutlet weak var buttonEdit: UIBarButtonItem!
+    @IBOutlet weak var IBDelete: UIBarButtonItem!
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
+    @IBOutlet weak var IBRefresh: UIBarButtonItem!
     
     var users = [User]()
     var products = [Product]()
@@ -36,7 +33,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     var lat:CLLocationDegrees?
     var lon:CLLocationDegrees?
     var flgUser=false //touch on blue user pin
-    var flgOpen=false
     var flgFirst=false
     
     var customOpeation = BlockOperation()
@@ -58,11 +54,10 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         if config.level <= 0 {
             IBAddProduct.isEnabled = false
-            buttonEdit.isEnabled = false
+            IBDelete.isEnabled = false
         }
         
         users = fetchAllUser()
-        
         
     }
     
@@ -70,21 +65,16 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         super.viewWillAppear(animated)
         
-        
         if  IBTableView == nil {
-
+            
             IBTableView = UITableView()
             IBTableView.frame = frameTableView
             IBTableView.dataSource = self
             IBTableView.delegate = self
-            IBTableView.register(CustomCell.self, forCellReuseIdentifier: "Cell")            
+            IBTableView.register(CustomCell.self, forCellReuseIdentifier: "Cell")
             view.addSubview(IBTableView)
             
         }
-        else {
-            flgOpen = false
-        }
-        
         
         navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
         IBSearch.placeholder = translate.product
@@ -93,16 +83,24 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         if let _ = lat, let _ = lon {
             IBLogout.title = translate.cancel
             IBLogout.image = nil
-            
+            IBRefresh.isEnabled = false
+            IBDelete.isEnabled = false
+            IBAddProduct.isEnabled = false
+            Products.sharedInstance.productsUserArray = Products.sharedInstance.productsArray
         }
         else if flgUser == false {
             IBLogout.image = #imageLiteral(resourceName: "eteindre")
             IBLogout.title = ""
+            IBRefresh.isEnabled = true
             
         }
         else {
             IBLogout.title = translate.cancel
             IBLogout.image = nil
+            IBRefresh.isEnabled = false
+            IBDelete.isEnabled = false
+            IBAddProduct.isEnabled = false
+            
         }
         
         
@@ -112,10 +110,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if flgFirst == false {
-            frameTableView = IBTableView.frame
-            flgFirst = true
-        }
+        
         
         if config.mess_badge > 0 {
             tabBarController?.tabBar.items![1].badgeValue = "\(config.mess_badge!)"
@@ -124,14 +119,15 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             tabBarController?.tabBar.items![1].badgeValue = nil
         }
         
-        if config.product_maj == true || config.product_add == true {
+        if config.product_maj == true || config.product_add == true || Products.sharedInstance.productsUserArray == nil {
             refreshData()
             config.product_maj = false
             config.product_add = false
         }
         
-        if flgOpen == false {
-            flgOpen = true
+        if flgFirst == false {
+            frameTableView = IBTableView.frame
+            flgFirst = true
             IBActivity.startAnimating()
             myQueue.addOperation {
                 
@@ -158,7 +154,11 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-  
+        
+        if let _ = lat, let _ = lon {
+            Products.sharedInstance.productsUserArray = nil
+        }
+        
         IBTableView.dataSource = nil
         IBTableView.delegate = nil
         IBTableView.removeFromSuperview()
@@ -184,7 +184,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             }
             
         }
-        
         
     }
     
@@ -228,7 +227,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    @IBAction func actionEdit(_ sender: AnyObject)  {
+    @IBAction func actionDelete(_ sender: AnyObject)  {
         
         IBTableView.isEditing = !IBTableView.isEditing
         
@@ -397,9 +396,11 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     private func chargeData() {
         
-        guard let theProducts = Products.sharedInstance.productsArray else {
+        
+        guard let theProducts = Products.sharedInstance.productsUserArray else {
             return
         }
+        
         
         var minimumLon = Double()
         var maximumLon = Double()
@@ -407,18 +408,22 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         var maximumLat = Double()
         
         if let _ = lat, let _ = lon {
-            //Constants
-            let SearchBBoxHalfWidth = 1.0
-            let SearchBBoxHalfHeight = 1.0
-            let SearchLatRange = (-90.0, 90.0)
-            let SearchLonRange = (-180.0, 180.0)
             
-             minimumLon = max(Double(lon!) - SearchBBoxHalfWidth, SearchLonRange.0)
-             minimumLat = max(Double(lat!) - SearchBBoxHalfHeight, SearchLatRange.0)
-             maximumLon = min(Double(lon!) + SearchBBoxHalfWidth, SearchLonRange.1)
-             maximumLat = min(Double(lat!) + SearchBBoxHalfHeight, SearchLatRange.1)
+            //Setting search Area
+            // The lat and long are used to create a CLLocationCoordinates2D instance.
+            let coordinate = CLLocationCoordinate2D(latitude: lat!, longitude: lon!)
+            let coordinateRegion = MKCoordinateRegionMakeWithDistance(coordinate, config.distanceProduct, config.distanceProduct)
+            
+            minimumLon = coordinateRegion.center.longitude - coordinateRegion.span.longitudeDelta
+            maximumLon = coordinateRegion.center.longitude + coordinateRegion.span.longitudeDelta
+            minimumLat = coordinateRegion.center.latitude - coordinateRegion.span.latitudeDelta
+            maximumLat = coordinateRegion.center.latitude + coordinateRegion.span.latitudeDelta
             
         }
+        else {
+            
+        }
+        
         
         for prod in theProducts {
             
@@ -436,11 +441,8 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             }
             else {
                 
-                if produ.prod_by_user == config.user_id || produ.prod_oth_user == config.user_id   {
-                    produ.prod_image = saveImageArchive(prod_image: produ.prod_image)
-                    products.append(produ)
-                    
-                }
+                produ.prod_image = saveImageArchive(prod_image: produ.prod_image)
+                products.append(produ)
                 
             }
             
@@ -564,7 +566,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 if success {
                     
-                    Products.sharedInstance.productsArray = productArray
+                    Products.sharedInstance.productsUserArray = productArray
                     self.chargeData()
                     
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -651,13 +653,13 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 let prod1 =  self.products[indexPath.row]
                 var i = 0
                 
-                for produ in Products.sharedInstance.productsArray {
+                for produ in Products.sharedInstance.productsUserArray {
                     i+=1
                     let prod2 = Product(dico: produ)
                     if (prod2.prod_id == prod1.prod_id) {
                         self.products.remove(at: indexPath.row)
                         
-                        Products.sharedInstance.productsArray.remove(at: i-1)
+                        Products.sharedInstance.productsUserArray.remove(at: i-1)
                         break
                     }
                 }
@@ -665,7 +667,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 self.countProduct = self.products.count
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     if self.products.count == 0 {
-                        self.buttonEdit.isEnabled=false
+                        self.IBDelete.isEnabled=false
                         self.IBTableView.isEditing = false
                     }
                     tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)

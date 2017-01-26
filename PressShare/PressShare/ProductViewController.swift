@@ -8,8 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo : check error on update presentation landscape
-
 import Foundation
 import MapKit
 import UIKit
@@ -882,11 +880,11 @@ class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePick
                     
                     if success {
                         
-                        MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                        MDBProduct.sharedInstance.getAllProducts(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                             
                             if success {
                                 
-                                Products.sharedInstance.productsArray = productArray
+                                Products.sharedInstance.productsUserArray = productArray
                                 
                                 self.config.product_maj = true
                                 self.config.product_add = false
@@ -930,11 +928,11 @@ class ProductViewController : UIViewController , MKMapViewDelegate , UIImagePick
                     
                     if success {
                         
-                        MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                        MDBProduct.sharedInstance.getAllProducts(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                             
                             if success {
                                 
-                                Products.sharedInstance.productsArray = productArray
+                                Products.sharedInstance.productsUserArray = productArray
                                 
                                 self.config.product_add = true
                                 self.config.product_maj = false

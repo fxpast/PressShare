@@ -7,6 +7,18 @@
 //
 
 
+//notification réseau des messages :
+/* utiliser : push notifications, notification center, local notification
+ UIApplicationLaunchOptionsLocalNotificationKey
+ 
+ https://www.youtube.com/watch?v=_3YlqWWnI6s
+ https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/APNSOverview.html#//apple_ref/doc/uid/TP40008194-CH8-SW1
+ https://www.raywenderlich.com/123862/push-notifications-tutorial
+ https://www.appcoda.com/push-notification-ios/
+ https://pusher.com/tutorials/push-notifications-ios
+ http://lessons.livecode.com/m/4069/l/53405-how-do-i-use-push-notifications-with-ios
+ */
+
 import Foundation
 
 class DetailMessageViewContr: UIViewController, UITextViewDelegate  {

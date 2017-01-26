@@ -8,7 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo: La propriété failure_count de capital n'est pas mise à jour correctement
 
 //Todo: Faire un scripte php de traitement de fin de journée pour verifier et confirmer/infirmer les transaction en mode arbitrage humain
 
@@ -56,7 +55,7 @@ class DetailTransViewController: UIViewController {
     var aTransaction:Transaction?
     var fieldName = ""
     var keybordY:CGFloat! = 0
-    let commissionPrice = 0.05  //5% of product price
+   
     
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
@@ -335,7 +334,7 @@ class DetailTransViewController: UIViewController {
         func tradeConfirmTransact() {
             
             config.balance = config.balance - Double(aTransaction!.trans_amount)
-            config.balance = config.balance - commissionPrice * Double(aTransaction!.trans_amount)
+            config.balance = config.balance - config.commissionPrice * Double(aTransaction!.trans_amount)
             var capital = Capital(dico: [String : AnyObject]())
             var operation = Operation(dico: [String : AnyObject]())
             
@@ -353,7 +352,7 @@ class DetailTransViewController: UIViewController {
                     
                     commission.user_id = self.aTransaction!.proprietaire
                     commission.product_id = self.aTransaction!.prod_id
-                    commission.com_amount = self.commissionPrice * Double(self.aTransaction!.trans_amount)
+                    commission.com_amount = self.config.commissionPrice * Double(self.aTransaction!.trans_amount)
                     
                     //Création d'une commission d'achat pour le client
                     MDBCommission.sharedInstance.setAddCommission(commission, self.config.balance, completionHandlerCommission: { (success, errorString) in
@@ -407,7 +406,7 @@ class DetailTransViewController: UIViewController {
                                     for dictionary in capitalArray!{
                                         let cap = Capital(dico: dictionary)
                                         capital.balance = cap.balance + Double(self.aTransaction!.trans_amount)
-                                        capital.balance = capital.balance - self.commissionPrice * Double(self.aTransaction!.trans_amount)
+                                        capital.balance = capital.balance - self.config.commissionPrice * Double(self.aTransaction!.trans_amount)
                                         capital.user_id = cap.user_id
                                         capital.failure_count = cap.failure_count
                                     }
@@ -421,7 +420,7 @@ class DetailTransViewController: UIViewController {
                                             
                                             commission.user_id = self.aTransaction!.vendeur_id
                                             commission.product_id = self.aTransaction!.prod_id
-                                            commission.com_amount = self.commissionPrice * Double(self.aTransaction!.trans_amount)
+                                            commission.com_amount = self.config.commissionPrice * Double(self.aTransaction!.trans_amount)
                                             
                                             //Création d'une commission d'achat pour le client
                                             MDBCommission.sharedInstance.setAddCommission(commission, capital.balance,  completionHandlerCommission: { (success, errorString) in
@@ -560,11 +559,11 @@ class DetailTransViewController: UIViewController {
                         
                         if success {
                             
-                            MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                            MDBProduct.sharedInstance.getAllProducts(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                 
                                 if success {
                                     
-                                    Products.sharedInstance.productsArray = productArray
+                                    Products.sharedInstance.productsUserArray = productArray
                             
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBActivity.stopAnimating()
@@ -606,12 +605,12 @@ class DetailTransViewController: UIViewController {
             
             var commission = Commission(dico: [String : AnyObject]())
             //l'utilisateur confirme l'echange
-            config.balance = config.balance - commissionPrice
+            config.balance = config.balance - config.commissionPrice
             
             
             commission.user_id = aTransaction!.proprietaire
             commission.product_id = aTransaction!.prod_id
-            commission.com_amount = commissionPrice * Double(aTransaction!.trans_amount)
+            commission.com_amount = config.commissionPrice * Double(aTransaction!.trans_amount)
             
             //Création d'une commission d'achat pour le client
             MDBCommission.sharedInstance.setAddCommission(commission, config.balance, completionHandlerCommission: { (success, errorString) in
@@ -660,11 +659,11 @@ class DetailTransViewController: UIViewController {
                         
                         if success {
                             
-                            MDBProduct.sharedInstance.getAllProducts(self.config.user_id) { (success, productArray, errorString) in
+                            MDBProduct.sharedInstance.getAllProducts(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                 
                                 if success {
                                     
-                                    Products.sharedInstance.productsArray = productArray
+                                    Products.sharedInstance.productsUserArray = productArray
                                     
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBActivity.stopAnimating()

@@ -1858,7 +1858,7 @@
                             </barButtonItem>
                             <barButtonItem systemItem="trash" id="lF6-an-UhO">
                                 <connections>
-                                    <action selector="actionEdit:" destination="ouz-9n-xZz" id="Tpi-Sz-toA"/>
+                                    <action selector="actionDelete:" destination="ouz-9n-xZz" id="jzi-c9-w7l"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem systemItem="add" id="uxs-gB-Oxj">
@@ -1871,10 +1871,11 @@
                     <connections>
                         <outlet property="IBActivity" destination="M1U-Pn-aAI" id="qBb-Rg-pm8"/>
                         <outlet property="IBAddProduct" destination="uxs-gB-Oxj" id="3RD-ah-dJe"/>
+                        <outlet property="IBDelete" destination="lF6-an-UhO" id="xni-6l-76A"/>
                         <outlet property="IBLogout" destination="iMZ-lJ-BHh" id="zox-Ar-zON"/>
+                        <outlet property="IBRefresh" destination="a71-x0-kbJ" id="mVK-qU-5UB"/>
                         <outlet property="IBSearch" destination="fD9-ON-kx3" id="no0-47-UB9"/>
                         <outlet property="IBTableView" destination="bcx-0w-EHR" id="jgz-Y2-PcL"/>
-                        <outlet property="buttonEdit" destination="lF6-an-UhO" id="b27-Mg-HHL"/>
                         <segue destination="29X-R3-2TP" kind="modal" identifier="fromtable" id="8j9-lg-kLp"/>
                     </connections>
                 </viewController>

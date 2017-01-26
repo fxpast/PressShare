@@ -91,6 +91,7 @@ struct Product {
 class Products {
     
     var productsArray :[[String:AnyObject]]!
+    var productsUserArray :[[String:AnyObject]]!
     static let sharedInstance = Products()
     
 }
@@ -142,11 +143,10 @@ class MDBProduct {
     }
     
     
-    
     func getAllProducts(_ userId:Int, completionHandlerProducts: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         // Create Data from request
-        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getAllProducts.php")!)
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getProductsByUser.php")!)
         let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
@@ -183,6 +183,49 @@ class MDBProduct {
         task.resume()
         
     }
+    
+    
+    func getAllProducts(_ userId:Int,  minLon:Double, maxLon:Double, minLat:Double, maxLat:Double, completionHandlerProducts: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
+        
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "http://pressshare.fxpast.com/api_getProductsByCoord.php")!)
+        let body: String = "user_id=\(userId)&minLon=\(minLon)&maxLon=\(maxLon)&minLat=\(minLat)&maxLat=\(maxLat)&lang=\(translate.lang!)"
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let resultArray = resultDico["allproducts"] as! [[String:AnyObject]]
+                    
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completionHandlerProducts(true, resultArray, nil)
+                    }
+                    else {
+                        completionHandlerProducts(false, nil, resultDico["error"] as? String)
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerProducts(false, nil, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
     
     func setUpdateProduct(_ typeUpdate:String, _ product: Product, completionHandlerUpdProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
@@ -309,7 +352,6 @@ class MDBProduct {
     }
     
     
-    
     func setAddProduct(_ product: Product, completionHandlerProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         
@@ -372,7 +414,7 @@ class MDBProduct {
     }
     
     
-    func createBodyWithParameters(parameters: [String: Any]?, filePathKey: String?, imageDataKey: Data, boundary: String) -> Data {
+    private func createBodyWithParameters(parameters: [String: Any]?, filePathKey: String?, imageDataKey: Data, boundary: String) -> Data {
         var body = Data()
         
         var chaine:String

@@ -9,10 +9,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo :Par defaut afficher les products selon la zone géolocalisée du l'utilisateur
-//Todo :Zoomer/Dezoomer sur la carte permet de reduire/augmenter le nombre de products sur la carte.
-
-
 import CoreLocation
 import CoreData
 import Foundation
@@ -50,6 +46,25 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.managedObjectContext
+    }
+    
+    //MARK: Locked portrait
+    open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        get {
+            return .portrait
+        }
+    }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return false
+        }
     }
     
     
@@ -173,7 +188,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             
         }
         
-        
     }
     
     
@@ -203,11 +217,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 let placemark = marks![0] as CLPlacemark
                 
                 //Setting Visible Area
-                let regionRadius: CLLocationDistance = 1000
-                let coordinateRegion = MKCoordinateRegionMakeWithDistance((placemark.location?.coordinate)!,regionRadius * 2.0, regionRadius * 2.0)
+                let coordinateRegion = MKCoordinateRegionMakeWithDistance((placemark.location?.coordinate)!,self.config.regionGeoLocat, self.config.regionGeoLocat)
                 self.IBMap.setRegion(coordinateRegion, animated: true)
-                
+                self.latUser = placemark.location?.coordinate.latitude
+                self.lonUser = placemark.location?.coordinate.longitude
+                self.refreshData()
+                textField.text = ""
             }
+            
             
         })
         
@@ -370,12 +387,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         var coordinateRegion=MKCoordinateRegion()
         
-        //Setting Visible Area
-        let regionRadius: CLLocationDistance = 1000
         
-
         if let _ = latUser , let _ = lonUser {
             
+            //Setting Visible Area
             let annotation = MKPointAnnotation()
             let coordinate = CLLocationCoordinate2D(latitude: latUser, longitude: lonUser)
             annotation.coordinate = coordinate
@@ -385,7 +400,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             // Finally we place the annotation in an array of annotations.
             annotations.append(annotation)
             IBMap.addAnnotations(annotations)
-            coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate,regionRadius * 2.0, regionRadius * 2.0)
+            coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate, config.regionGeoLocat, config.regionGeoLocat)
             
         }
         else {
@@ -402,7 +417,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             annotation.title = "\(prod.prod_nom) (user:\(prod.prod_by_user))"
             annotation.subtitle = "\(prod.prod_mapString) / \(prod.prod_comment)"
             
-            coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate,regionRadius * 2.0, regionRadius * 2.0)
+            coordinateRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate, config.regionGeoLocat, config.regionGeoLocat)
             
             IBMap.setRegion(coordinateRegion, animated: true)
         }
@@ -419,7 +434,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     private func refreshData()  {
         
         IBActivity.startAnimating()
-
+      
         MDBCapital.sharedInstance.getCapital(config.user_id, completionHandlerCapital: {(success, capitalArray, errorString) in
             
             if success {
@@ -441,7 +456,22 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             
         })
         
-        MDBProduct.sharedInstance.getAllProducts(config.user_id) { (success, productArray, errorString) in
+        
+        if let _ = latUser , let _ = lonUser {
+            //Setting search Area
+            // The lat and long are used to create a CLLocationCoordinates2D instance.
+            
+            let coordinate = CLLocationCoordinate2D(latitude: latUser, longitude: lonUser)
+            let coordinateRegion = MKCoordinateRegionMakeWithDistance(coordinate,config.regionProduct, config.regionProduct)
+            
+            config.minLongitude = coordinateRegion.center.longitude - coordinateRegion.span.longitudeDelta
+            config.maxLongitude = coordinateRegion.center.longitude + coordinateRegion.span.longitudeDelta
+            config.minLatitude = coordinateRegion.center.latitude - coordinateRegion.span.latitudeDelta
+            config.maxLatitude = coordinateRegion.center.latitude + coordinateRegion.span.latitudeDelta
+            
+        }
+        
+        MDBProduct.sharedInstance.getAllProducts(config.user_id, minLon: config.minLongitude, maxLon: config.maxLongitude , minLat: config.minLatitude, maxLat: config.maxLatitude) { (success, productArray, errorString) in
             
             if success {
                 
@@ -459,7 +489,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
             }
         }
-        
         
     }
     
@@ -490,22 +519,23 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     private func countProduct() -> Int {
         
-        //Constants
-        let SearchBBoxHalfWidth = 1.0
-        let SearchBBoxHalfHeight = 1.0
-        let SearchLatRange = (-90.0, 90.0)
-        let SearchLonRange = (-180.0, 180.0)
+         //Setting search Area
         
-        let minimumLon = max(Double(lon!) - SearchBBoxHalfWidth, SearchLonRange.0)
-        let minimumLat = max(Double(lat!) - SearchBBoxHalfHeight, SearchLatRange.0)
-        let maximumLon = min(Double(lon!) + SearchBBoxHalfWidth, SearchLonRange.1)
-        let maximumLat = min(Double(lat!) + SearchBBoxHalfHeight, SearchLatRange.1)
+        // The lat and long are used to create a CLLocationCoordinates2D instance.
+        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(coordinate,config.distanceProduct, config.distanceProduct)
+        
+        let minimumLon = coordinateRegion.center.longitude - coordinateRegion.span.longitudeDelta
+        let maximumLon = coordinateRegion.center.longitude + coordinateRegion.span.longitudeDelta
+        let minimumLat = coordinateRegion.center.latitude - coordinateRegion.span.latitudeDelta
+        let maximumLat = coordinateRegion.center.latitude + coordinateRegion.span.latitudeDelta
         
         var i = 0
         
         for prod in Products.sharedInstance.productsArray {
             
             let produ = Product(dico: prod)
+            
             if (produ.prod_latitude >= minimumLat && produ.prod_latitude  <= maximumLat && produ.prod_longitude  >= minimumLon && produ.prod_longitude  <= maximumLon && produ.prod_hidden == false) {
                 aProduct = produ
                 i += 1
