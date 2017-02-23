@@ -43,10 +43,10 @@ if ($flgOK == 0) {
 
 $sql = "SELECT p.*  
         FROM Product p, User u 
-        WHERE p.prod_by_user = u.user_id and u.user_level > 0 and p.prod_latitude >= '" . mysqli_real_escape_string($con, $_POST['minLat']) . 
+        WHERE p.prod_by_user = u.user_id and u.user_level > 0 and p.prod_hidden = 0 and p.prod_latitude >= '" . mysqli_real_escape_string($con, $_POST['minLat']) . 
             "' and p.prod_latitude <= '" . mysqli_real_escape_string($con, $_POST['maxLat']) . "' and p.prod_longitude >= '" . 
             mysqli_real_escape_string($con, $_POST['minLon']) . "' and p.prod_longitude <= '" . mysqli_real_escape_string($con, $_POST['maxLon']) . "'
-             ORDER BY prod_by_user";
+             ORDER BY p.prod_by_user";
  
 $flgOK = 0; 
 // Check if there are results

@@ -58,12 +58,12 @@ class MDBCapital {
     func setUpdateCapital(_ capital: Capital, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerUpdate(false, translate.errorConnection)
+            completionHandlerUpdate(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_id=\(capital.user_id)&balance=\(capital.balance)&failure_count=\(capital.failure_count)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(capital.user_id)&balance=\(capital.balance)&failure_count=\(capital.failure_count)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateCapital.php")!)
         
@@ -106,13 +106,13 @@ class MDBCapital {
     func getCapital(_ userId:Int, completionHandlerCapital: @escaping (_ success: Bool, _ capitalArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerCapital(false, nil, translate.errorConnection)
+            completionHandlerCapital(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getCapital.php")!)
-        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(userId)&lang=\(translate.message("lang"))"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         

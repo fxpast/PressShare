@@ -62,14 +62,14 @@ class MDBParamTable {
     func getAllParamTables(completionHandlerParamTables: @escaping (_ success: Bool, _ paramTablesArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerParamTables(false, nil, translate.errorConnection)
+            completionHandlerParamTables(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getAllParamTables.php")!)
         // Set Request Body
-        let body: String = "lang=\(translate.lang!)"
+        let body: String = "lang=\(translate.message("lang"))"
         
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         

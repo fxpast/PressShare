@@ -32,6 +32,7 @@ struct Product {
     var prod_tempsDispo:String
     var prod_etat:Int //number of star
     var prod_hidden:Bool
+    var prod_echange:Bool
     var prodImageOld:String
     
     
@@ -58,6 +59,7 @@ struct Product {
             prod_tempsDispo = dico["prod_tempsDispo"] as! String
             prod_etat = Int(dico["prod_etat"] as! String)!            
             prod_hidden = (Int(dico["prod_hidden"] as! String)! == 0) ? false : true
+            prod_echange = (Int(dico["prod_echange"] as! String)! == 0) ? false : true
             prodImageOld = ""
             
         }
@@ -78,6 +80,7 @@ struct Product {
             prod_tempsDispo = ""
             prod_etat = 0
             prod_hidden=false
+            prod_echange=false
             prodImageOld = ""
             
         }
@@ -90,8 +93,9 @@ struct Product {
 //MARK: Products Array
 class Products {
     
-    var productsArray :[[String:AnyObject]]!
-    var productsUserArray :[[String:AnyObject]]!
+    var productsArray :[[String:AnyObject]]! //list of products from map
+    var productsUserArray :[[String:AnyObject]]! //list of new products from user
+    var productsTraderArray :[[String:AnyObject]]! //list of products from traders
     static let sharedInstance = Products()
     
 }
@@ -104,13 +108,13 @@ class MDBProduct {
     func getProduct(_ prod_id:Int, completionHandlerProduct: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerProduct(false, nil, translate.errorConnection)
+            completionHandlerProduct(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getProduct.php")!)
-        let body: String = "prod_id=\(prod_id)&lang=\(translate.lang!)"
+        let body: String = "prod_id=\(prod_id)&lang=\(translate.message("lang"))"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         
@@ -148,16 +152,16 @@ class MDBProduct {
     }
     
     
-    func getAllProducts(_ userId:Int, completionHandlerProducts: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
+    func getProductsByTrader(_ userId:Int, completHandleProdByTrader: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerProducts(false, nil, translate.errorConnection)
+            completHandleProdByTrader(false, nil, translate.message("errorConnection"))
             return
         }
-
+        
         // Create Data from request
-        var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getProductsByUser.php")!)
-        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
+        var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getProductsByTrader.php")!)
+        let body: String = "user_id=\(userId)&lang=\(translate.message("lang"))"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         
@@ -172,16 +176,16 @@ class MDBProduct {
                     
                     
                     if resultDico["success"] as! String == "1" {
-                        completionHandlerProducts(true, resultArray, nil)
+                        completHandleProdByTrader(true, resultArray, nil)
                     }
                     else {
-                        completionHandlerProducts(false, nil, resultDico["error"] as? String)
+                        completHandleProdByTrader(false, nil, resultDico["error"] as? String)
                         
                     }
                     
                 }
                 else {
-                    completionHandlerProducts(false, nil, errorStr)
+                    completHandleProdByTrader(false, nil, errorStr)
                 }
                 
             })
@@ -195,16 +199,63 @@ class MDBProduct {
     }
     
     
-    func getAllProducts(_ userId:Int,  minLon:Double, maxLon:Double, minLat:Double, maxLat:Double, completionHandlerProducts: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
+    func getProductsByUser(_ userId:Int, completHandleProdByUser: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerProducts(false, nil, translate.errorConnection)
+            completHandleProdByUser(false, nil, translate.message("errorConnection"))
+            return
+        }
+
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getProductsByUser.php")!)
+        let body: String = "user_id=\(userId)&lang=\(translate.message("lang"))"
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let resultArray = resultDico["allproducts"] as! [[String:AnyObject]]
+                    
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completHandleProdByUser(true, resultArray, nil)
+                    }
+                    else {
+                        completHandleProdByUser(false, nil, resultDico["error"] as? String)
+                        
+                    }
+                    
+                }
+                else {
+                    completHandleProdByUser(false, nil, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
+    func getProductsByCoord(_ userId:Int,  minLon:Double, maxLon:Double, minLat:Double, maxLat:Double, completionHandlerProducts: @escaping (_ success: Bool, _ productArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
+        
+        guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
+            completionHandlerProducts(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getProductsByCoord.php")!)
-        let body: String = "user_id=\(userId)&minLon=\(minLon)&maxLon=\(maxLon)&minLat=\(minLat)&maxLat=\(maxLat)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(userId)&minLon=\(minLon)&maxLon=\(maxLon)&minLat=\(minLat)&maxLat=\(maxLat)&lang=\(translate.message("lang"))"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         
@@ -245,7 +296,7 @@ class MDBProduct {
     func setUpdateProduct(_ typeUpdate:String, _ product: Product, completionHandlerUpdProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerUpdProduct(false, translate.errorConnection)
+            completionHandlerUpdProduct(false, translate.message("errorConnection"))
             return
         }
 
@@ -256,7 +307,7 @@ class MDBProduct {
         var body: String = ""
         if typeUpdate == "ProductTrans" {
             
-            body = "prod_id=\(product.prod_id)&prod_oth_user=\(product.prod_oth_user)&prod_hidden=\(product.prod_hidden)&lang=\(translate.lang!)"
+            body = "prod_id=\(product.prod_id)&prod_oth_user=\(product.prod_oth_user)&prod_hidden=\(product.prod_hidden)&lang=\(translate.message("lang"))"
             request = CommunRequest.sharedInstance.buildRequest(body, request)
             
         }
@@ -264,7 +315,7 @@ class MDBProduct {
             
             if product.prodImageOld == "" {
                 
-                body = "prod_id=\(product.prod_id)&prod_nom=\(product.prod_nom)&prod_date=\(product.prod_date)&prod_prix=\(product.prod_prix)&prod_by_user=\(product.prod_by_user)&prod_by_cat=\(product.prod_by_cat)&prod_latitude=\(product.prod_latitude)&prod_longitude=\(product.prod_longitude)&prod_mapString=\(product.prod_mapString)&prod_comment=\(product.prod_comment)&prod_tempsDispo=\(product.prod_tempsDispo)&prod_etat=\(product.prod_etat)&prod_hidden=\(product.prod_hidden)&prod_imageUrl=\(product.prod_imageUrl)&prodImageOld=\(product.prodImageOld)&lang=\(translate.lang!)"
+                body = "prod_id=\(product.prod_id)&prod_nom=\(product.prod_nom)&prod_date=\(product.prod_date)&prod_prix=\(product.prod_prix)&prod_by_user=\(product.prod_by_user)&prod_by_cat=\(product.prod_by_cat)&prod_latitude=\(product.prod_latitude)&prod_longitude=\(product.prod_longitude)&prod_mapString=\(product.prod_mapString)&prod_comment=\(product.prod_comment)&prod_tempsDispo=\(product.prod_tempsDispo)&prod_etat=\(product.prod_etat)&prod_hidden=\(product.prod_hidden)&prod_echange=\(product.prod_echange)&prod_imageUrl=\(product.prod_imageUrl)&prodImageOld=\(product.prodImageOld)&lang=\(translate.message("lang"))"
                 request = CommunRequest.sharedInstance.buildRequest(body, request)
             }
             else {
@@ -285,8 +336,9 @@ class MDBProduct {
                     "prod_imageUrl" : product.prod_imageUrl,
                     "prodImageOld" : product.prodImageOld,
                     "prod_hidden" : product.prod_hidden,
+                    "prod_echange" : product.prod_echange,
                     "prod_id" : product.prod_id,
-                    "lang" : translate.lang
+                    "lang" : translate.message("lang")
                     ] as [String : Any]
                 
                 let bodyData = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: product.prod_imageData, boundary: product.prod_imageUrl)
@@ -310,7 +362,7 @@ class MDBProduct {
                         completionHandlerUpdProduct(true, nil)
                     }
                     else {
-                        completionHandlerUpdProduct(false, self.translate.impossibleUpdPr!)
+                        completionHandlerUpdProduct(false, self.translate.message("impossibleUpdPr"))
                         
                     }
                     
@@ -333,12 +385,12 @@ class MDBProduct {
     func setDeleteProduct(_ product: Product, completionHandlerDelProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerDelProduct(false, translate.errorConnection)
+            completionHandlerDelProduct(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "prod_id=\(product.prod_id)&prod_imageUrl=\(product.prod_imageUrl)&lang=\(translate.lang!)"
+        let body: String = "prod_id=\(product.prod_id)&prod_imageUrl=\(product.prod_imageUrl)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_delProduct.php")!)
         
@@ -358,7 +410,7 @@ class MDBProduct {
                         completionHandlerDelProduct(true, nil)
                     }
                     else {
-                        completionHandlerDelProduct(false, self.translate.impossibleDeldPr!)
+                        completionHandlerDelProduct(false, self.translate.message("impossibleDeldPr"))
                         
                     }
                     
@@ -380,7 +432,7 @@ class MDBProduct {
     func setAddProduct(_ product: Product, completionHandlerProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerProduct(false, translate.errorConnection)
+            completionHandlerProduct(false, translate.message("errorConnection"))
             return
         }
 
@@ -398,8 +450,9 @@ class MDBProduct {
             "prod_comment" : product.prod_comment,
             "prod_tempsDispo" : product.prod_tempsDispo,
             "prod_etat" : product.prod_etat,
+            "prod_echange" : product.prod_echange,
             "prod_imageUrl" : product.prod_imageUrl,
-            "lang" : translate.lang
+            "lang" : translate.message("lang")
             ] as [String : Any]
         
    

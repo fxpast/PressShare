@@ -13,7 +13,6 @@ import UIKit
 class ListTransactTablViewContr: UITableViewController {
     
     
-    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     
     var transactions = [Transaction]()
@@ -24,10 +23,16 @@ class ListTransactTablViewContr: UITableViewController {
     var customOpeation = BlockOperation()
     let myQueue = OperationQueue()
     
+    let refreshControl1 = UIRefreshControl()
+    
+    
     //MARK: View Controller Delegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        refreshControl1.addTarget(self, action: #selector(actionRefresh(_:)), for: .valueChanged)
+        tableView.addSubview(refreshControl1)
         
     }
     
@@ -35,7 +40,10 @@ class ListTransactTablViewContr: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
-        self.navigationItem.title = translate.runTransac
+        self.navigationItem.title = translate.message("runTransac")
+        
+      
+        
         
     }
     
@@ -50,8 +58,8 @@ class ListTransactTablViewContr: UITableViewController {
         if flgOpen == false {
             
             flgOpen = true
-            IBActivity.isHidden = false
-            IBActivity.startAnimating()
+            refreshControl1.beginRefreshing()
+            
             
             if let _ = Transactions.sharedInstance.transactionArray {
                 
@@ -64,11 +72,8 @@ class ListTransactTablViewContr: UITableViewController {
                             
                             self.chargeData()
                             
-                            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                
-                                self.IBActivity.stopAnimating()
-                                self.IBActivity.isHidden = true
-                                
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {                                
+                                self.refreshControl1.endRefreshing()
                             }
                             
                         }
@@ -117,14 +122,14 @@ class ListTransactTablViewContr: UITableViewController {
     private func refreshData()  {
         
         
+       
         myQueue.cancelAllOperations()
         guard myQueue.operationCount == 0 else {
             
             return
         }
         
-        IBActivity.isHidden = false
-        IBActivity.startAnimating()
+        refreshControl1.beginRefreshing()
         
         transactions.removeAll()
         tableView.reloadData()
@@ -139,16 +144,14 @@ class ListTransactTablViewContr: UITableViewController {
                 self.chargeData()
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
-                    self.IBActivity.isHidden = true
+                   self.refreshControl1.endRefreshing()
                 }
             }
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
-                    self.IBActivity.isHidden = true
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.refreshControl1.endRefreshing()
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
@@ -188,7 +191,7 @@ class ListTransactTablViewContr: UITableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        return "\(translate.date!)        \(translate.type!)    \(translate.amount!)  \(translate.wording!)"
+        return "\(translate.message("date"))        \(translate.message("type"))    \(translate.message("amount"))  \(translate.message("wording"))"
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -207,10 +210,10 @@ class ListTransactTablViewContr: UITableViewController {
         
         let atype =  cell?.contentView.viewWithTag(20) as! UILabel
         if transaction.trans_type == 1 {
-            atype.text =  translate.buy
+            atype.text =  translate.message("buy")
         }
         else if transaction.trans_type == 2 {
-            atype.text =  translate.exchange
+            atype.text =  translate.message("exchange")
         }
         else {
             atype.text =  ""

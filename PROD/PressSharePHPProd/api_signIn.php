@@ -4,9 +4,6 @@
 session_start();
 include 'connect.php';
 
-  
-// This SQL statement selects ALL from the table 'Locations'
-
 	 
 $sql = "SELECT *
     FROM

@@ -37,13 +37,22 @@ if ($_POST['prodImageOld'] != "")
 
 // This SQL statement selects ALL from the table 'Locations'
 
-if ($_POST['prod_hidden'] == FALSE) {
+if ($_POST['prod_hidden'] == "false") {
  
     $prod_hidden = 0;
 }
 else {
     $prod_hidden = 1;
 }  
+
+if ($_POST['prod_echange'] == "false") {
+ 
+    $prod_echange = 0;
+}
+else {
+    $prod_echange = 1;
+}  
+
 
 
 $sql = "UPDATE Product			
@@ -56,6 +65,7 @@ $sql = "UPDATE Product
          prod_tempsDispo = '" . mysqli_real_escape_string($con, $_POST['prod_tempsDispo']) . "',
          prod_etat = '" . mysqli_real_escape_string($con, $_POST['prod_etat']) . "',
          prod_hidden = '" . mysqli_real_escape_string($con, $prod_hidden) . "',
+         prod_echange = '" . mysqli_real_escape_string($con, $prod_echange) . "',
          prod_imageUrl = '" . mysqli_real_escape_string($con, $_POST['prod_imageUrl']) . "'        
         WHERE
         prod_id = '" . mysqli_real_escape_string($con, $_POST['prod_id']) . "'";

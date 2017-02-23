@@ -8,10 +8,11 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
 import CoreData
 import Foundation
 
-class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate  {
+class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource  {
     
     @IBOutlet weak var IBBarCancel: UIBarButtonItem!
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
@@ -85,19 +86,19 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        IBLabelBalance.text = translate.balance
-        IBLabelWithdraw.text = translate.withdrawal
-        IBLabelDeposit.text = translate.deposit
-        IBButtonWithdr.setTitle(translate.done, for: UIControlState.normal)
-        IBButtonDeposit.setTitle(translate.done, for: UIControlState.normal)
+        IBLabelBalance.text = translate.message("balance")
+        IBLabelWithdraw.text = translate.message("withdrawal")
+        IBLabelDeposit.text = translate.message("deposit")
+        IBButtonWithdr.setTitle(translate.message("done"), for: UIControlState.normal)
+        IBButtonDeposit.setTitle(translate.message("done"), for: UIControlState.normal)
         
         if config.level <= 0 {
-            IBButtonSubUnsub.setTitle(translate.subscribe, for: UIControlState.normal)
+            IBButtonSubUnsub.setTitle(translate.message("subscribe"), for: UIControlState.normal)
             IBButtonDeposit.isEnabled = false
             IBButtonWithdr.isEnabled = false
         }
         else  if config.level > 0 {
-            IBButtonSubUnsub.setTitle(translate.unsubscribe, for: UIControlState.normal)
+            IBButtonSubUnsub.setTitle(translate.message("unsubscribe"), for: UIControlState.normal)
             IBButtonDeposit.isEnabled = true
             IBButtonWithdr.isEnabled = true
         }
@@ -187,7 +188,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
             guard let _ = NumberFormatter().number(from: IBWithdrawal.text!) else {
                 
-                displayAlert(translate.error, mess: translate.ErrorPrice)
+                displayAlert(translate.message("error"), mess: translate.message("ErrorPrice"))
                 return false
                 
             }
@@ -230,7 +231,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         operation.user_id = self.config.user_id
         operation.op_type = 2
         operation.op_amount = -1 * amount
-        operation.op_wording = self.translate.OneTimeWithd
+        operation.op_wording = self.translate.message("OneTimeWithd")
         
         MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
             
@@ -249,7 +250,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                             else {
                                 
                                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                    self.displayAlert(self.translate.error, mess: errorString!)
+                                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                                 }
                             }
                             
@@ -262,14 +263,14 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                             self.IBWithdrawal.text = ""
                             self.IBWithdrawal.endEditing(true)
                             self.refreshData()
-                            self.displayAlert("info", mess: self.translate.withdrawalMade)
+                            self.displayAlert("info", mess: self.translate.message("withdrawalMade"))
                         }
                         
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             
-                            self.displayAlert(self.translate.error, mess: errorString!)
+                            self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
                     
@@ -282,7 +283,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
@@ -293,15 +294,15 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     @IBAction func actionWithdrawal(_ sender: Any) {
         
-        let alertController = UIAlertController(title: translate.withdrawal, message: translate.confirmWithdrawal, preferredStyle: .alert)
+        let alertController = UIAlertController(title: translate.message("withdrawal"), message: translate.message("confirmWithdrawal"), preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
             
             guard self.IBWithdrawal.text != "" else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    self.displayAlert(self.translate.error, mess: "\(self.translate.withdrawal!) : \(self.translate.ErrorPrice!)")
+                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("withdrawal")) : \(self.translate.message("ErrorPrice"))")
                 }
                 
                 return
@@ -310,19 +311,19 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             guard let amount = BlackBox.sharedInstance.formatedAmount(self.IBWithdrawal.text!) else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.error, mess: "\(self.translate.withdrawal!) : \(self.translate.ErrorPrice!)")
+                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("withdrawal")) : \(self.translate.message("ErrorPrice"))")
                 }
                 
                 return
             }
             
             var finalValue = self.IBBalance.text! as String
-            finalValue = finalValue.replacingOccurrences(of: self.translate.devise!, with: "")
+            finalValue = finalValue.replacingOccurrences(of: self.translate.message("devise"), with: "")
             finalValue = finalValue.replacingOccurrences(of: " ", with: "")
             
             guard let balance = BlackBox.sharedInstance.formatedAmount(finalValue) else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.error, mess: "\(self.translate.balance!) : \(self.translate.ErrorPrice!)")
+                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("balance")) : \(self.translate.message("ErrorPrice"))")
                     
                 }
                 return
@@ -331,7 +332,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             guard balance >= (amount + self.minimumAmount) else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.error, mess: "\(self.translate.errorBalanceTrans!) \n \(self.translate.errorMinimumBal!) \(self.minimumAmount)")
+                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("errorBalanceTrans")) \n \(self.translate.message("errorMinimumBal")) \(self.minimumAmount)")
                     
                 }
                 
@@ -344,7 +345,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
         })
         
-        let actionCancel = UIAlertAction(title: translate.cancel, style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
             
             
             
@@ -364,15 +365,15 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     @IBAction func actionDeposit(_ sender: Any) {
         
         
-        let alertController = UIAlertController(title: translate.deposit, message: translate.confirmPayment, preferredStyle: .alert)
+        let alertController = UIAlertController(title: translate.message("deposit"), message: translate.message("confirmPayment"), preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
             
             guard self.IBDeposit.text != "" else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    self.displayAlert(self.translate.error, mess: "\(self.translate.deposit!) : \(self.translate.ErrorPrice!)")
+                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("deposit")) : \(self.translate.message("ErrorPrice"))")
                 }
                 
                 return
@@ -382,7 +383,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    self.displayAlert(self.translate.error, mess: "\(self.translate.deposit!) : \(self.translate.ErrorPrice!)")
+                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("deposit")) : \(self.translate.message("ErrorPrice"))")
                 }
                 
                 return
@@ -392,7 +393,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
         })
         
-        let actionCancel = UIAlertAction(title: translate.cancel, style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
             
             
         })
@@ -421,7 +422,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         operation.user_id = config.user_id
         operation.op_type = 1
         operation.op_amount = amount
-        operation.op_wording = translate.OneTimeDepo
+        operation.op_wording = translate.message("OneTimeDepo")
         
         MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
             
@@ -440,7 +441,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                             else {
                                 
                                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                    self.displayAlert(self.translate.error, mess: errorString!)
+                                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                                 }
                             }
                             
@@ -453,14 +454,14 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                             self.IBDeposit.text = ""
                             self.IBDeposit.endEditing(true)
                             self.refreshData()
-                            self.displayAlert("info", mess: self.translate.paymentMade)
+                            self.displayAlert("info", mess: self.translate.message("paymentMade"))
                         }
                         
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             
-                            self.displayAlert(self.translate.error, mess: errorString!)
+                            self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
                     
@@ -473,7 +474,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
@@ -488,21 +489,21 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         var mess = ""
         if self.config.level <= 0 && self.config.balance == 0 {
             
-            mess = translate.confirmSubsWithDepot
+            mess = translate.message("confirmSubsWithDepot")
         }
         else if self.config.level <= 0 && self.config.balance > 0 {
             
-            mess = translate.confirmSubs
+            mess = translate.message("confirmSubs")
         }
         else if self.config.level > 0 {
             
-            mess = translate.confirmTermin
+            mess = translate.message("confirmTermin")
         }
         
         
-        let alertController = UIAlertController(title: (self.config.level <= 0) ? translate.subscribeSubs : translate.cancelSubs, message: mess, preferredStyle: .alert)
+        let alertController = UIAlertController(title: (self.config.level <= 0) ? translate.message("subscribeSubs") : translate.message("cancelSubs"), message: mess, preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
             
             if self.config.level <= 0 && self.config.balance == 0 {
                 
@@ -526,23 +527,23 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                         }
                         
                         if self.config.level <= 0 {
-                            self.IBButtonSubUnsub.setTitle(self.translate.subscribe, for: UIControlState.normal)
+                            self.IBButtonSubUnsub.setTitle(self.translate.message("subscribe"), for: UIControlState.normal)
                             self.IBButtonDeposit.isEnabled = false
                             self.IBButtonWithdr.isEnabled = false
                         }
                         else  if self.config.level > 0 {
-                            self.IBButtonSubUnsub.setTitle(self.translate.unsubscribe, for: UIControlState.normal)
+                            self.IBButtonSubUnsub.setTitle(self.translate.message("unsubscribe"), for: UIControlState.normal)
                             self.IBButtonDeposit.isEnabled = true
                             self.IBButtonWithdr.isEnabled = true
                         }
                         
-                        self.displayAlert("info", mess: "\(self.translate.subscriptionHas!) \((self.config.level <= 0) ?  self.translate.canceled!: self.translate.confirmed!)")
+                        self.displayAlert("info", mess: "\(self.translate.message("subscriptionHas")) \((self.config.level <= 0) ?  self.translate.message("canceled"): self.translate.message("confirmed"))")
                         
                     }
                 }
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.displayAlert(self.translate.error, mess: errorString!)
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                         
                     }
                 }
@@ -554,7 +555,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
         })
         
-        let actionCancel = UIAlertAction(title: translate.cancel, style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
             
             
             
@@ -631,7 +632,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
@@ -656,7 +657,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
@@ -799,7 +800,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        return  "\(translate.date!)        \(translate.type!)    \(translate.amount!)  \(translate.wording!)"
+        return  "\(translate.message("date"))        \(translate.message("type"))    \(translate.message("amount"))  \(translate.message("wording"))"
         
     }
     
@@ -819,19 +820,19 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
         let atype =  cell?.contentView.viewWithTag(20) as! UILabel
         if operation.op_type == 1 {
-            atype.text =  translate.deposit
+            atype.text =  translate.message("deposit")
         }
         else if operation.op_type == 2 {
-            atype.text =  translate.withdrawal
+            atype.text =  translate.message("withdrawal")
         }
         else if operation.op_type == 3 {
-            atype.text =  translate.buy
+            atype.text =  translate.message("buy")
         }
         else if operation.op_type == 4 {
-            atype.text =  translate.sell
+            atype.text =  translate.message("sell")
         }
         else if operation.op_type == 5 {
-            atype.text =  translate.commission
+            atype.text =  translate.message("commission")
         }
         
         let aAmount = cell?.contentView.viewWithTag(30) as! UILabel

@@ -9,22 +9,36 @@
 //
 
 
-//Todo:Utiliser le model de presentation de PayPal
 
 import CoreData
 import UIKit
 import Foundation
+import MobileCoreServices
 
-class SettingsTableViewContr : UITableViewController {
+
+class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     
     @IBOutlet weak var IBLogout: UIBarButtonItem!
-    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
+    @IBOutlet weak var IBProfilLabel: UILabel!
+    @IBOutlet weak var IBConnectionLabel: UILabel!
+    @IBOutlet weak var IBSubscripLabel: UILabel!
+    @IBOutlet weak var IBMyCBLabel: UILabel!
+    @IBOutlet weak var IBTransactLabel: UILabel!
+    @IBOutlet weak var IBTutoLabel: UILabel!
+    @IBOutlet weak var IBNomLabel: UILabel!
+    @IBOutlet weak var IBEmailLabel: UILabel!
+    @IBOutlet weak var IBPhotoUser: UIImageView!
+    @IBOutlet weak var IBInfo: UIImageView!
+    
     
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
     var users = [User]()
     var aProduct:Product!
+    
+    let refreshControl1 = UIRefreshControl()
     
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -37,46 +51,45 @@ class SettingsTableViewContr : UITableViewController {
         super.viewDidLoad()
         
         users = fetchAllUser()
-        IBActivity.isHidden = true
+        
         config.previousView = "SettingsTableViewContr"
         
         NotificationCenter.default.addObserver(self, selector: #selector(pushProduct), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+        
+        refreshControl1.addTarget(self, action: #selector(actionRefresh(_:)), for: .valueChanged)
+        tableView.addSubview(refreshControl1)
+        
+        tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
+        
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        config.flgReturnToTab = false
+        
         self.navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
         
-        navigationController?.tabBarItem.title = translate.settings
+        navigationController?.tabBarItem.title = translate.message("settings")
         IBLogout.image = #imageLiteral(resourceName: "eteindre")
         IBLogout.title = ""
         
-        var cell:UITableViewCell
-        var label:UILabel
+        IBPhotoUser.image = restoreImageArchive()
+        IBNomLabel.text = "\(config.user_nom!) \(config.user_prenom!)"
+        IBEmailLabel.text = config.user_email
         
-        cell = tableView.cellForRow(at: IndexPath(item: 0, section: 0))!
-        label = cell.contentView.subviews[0] as! UILabel
-        label.text = translate.editProfil
-        
-        cell = tableView.cellForRow(at: IndexPath(item: 1, section: 0))!
-        label = cell.contentView.subviews[0] as! UILabel
-        label.text = translate.connectInfo
-        
-        cell = tableView.cellForRow(at: IndexPath(item: 2, section: 0))!
-        label = cell.contentView.subviews[0] as! UILabel
-        label.text = translate.mySubscrit
-        
-        cell = tableView.cellForRow(at: IndexPath(item: 3, section: 0))!
-        label = cell.contentView.subviews[0] as! UILabel
-        label.text = translate.myCB
-        
-        chargeData(4, labelText: translate.runTransac, badgeValue: config.trans_badge!)
-        
-        cell = tableView.cellForRow(at: IndexPath(item: 5, section: 0))!
-        label = cell.contentView.subviews[0] as! UILabel
-        label.text = translate.ExplanTuto
+        tableView.scrollToRow(at: IndexPath(item: 1, section: 0), at: .none, animated: false)
+        IBProfilLabel.text = translate.message("editProfil")
+        tableView.scrollToRow(at: IndexPath(item: 2, section: 0), at: .none, animated: false)
+        chargeData(2, labelText: translate.message("runTransac"), badgeValue: config.trans_badge!)
+        tableView.scrollToRow(at: IndexPath(item: 3, section: 0), at: .none, animated: false)
+        IBConnectionLabel.text = translate.message("connectInfo")
+        tableView.scrollToRow(at: IndexPath(item: 4, section: 0), at: .none, animated: false)
+        IBSubscripLabel.text = translate.message("mySubscrit")
+        tableView.scrollToRow(at: IndexPath(item: 5, section: 0), at: .none, animated: false)
+        IBMyCBLabel.text = translate.message("myCB")
+        tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
         
     }
     
@@ -89,23 +102,23 @@ class SettingsTableViewContr : UITableViewController {
     
     @objc private func pushProduct() {
         
-        IBActivity.startAnimating()
+        refreshControl1.beginRefreshing()
         BlackBox.sharedInstance.pushProduct(menuBar: tabBarController) { (success, product, errorStr) in
             
             if success {
                 
                 self.aProduct = product
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
+                    self.refreshControl1.endRefreshing()
                     self.performSegue(withIdentifier: "fromsettings", sender: self)
                 }
             }
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
+                    self.refreshControl1.endRefreshing()
                     if errorStr != "" {
-                        self.displayAlert(self.translate.error, mess: errorStr!)
+                        self.displayAlert(self.translate.message("error"), mess: errorStr!)
                     }
                 }
             }
@@ -119,7 +132,7 @@ class SettingsTableViewContr : UITableViewController {
         if segue.identifier == "fromsettings" {
             
             let nav = segue.destination as! UINavigationController
-            let controller = nav.topViewController as! ProductViewController
+            let controller = nav.topViewController as! ProductTableViewContr
             
             controller.aProduct = aProduct
             controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
@@ -128,7 +141,172 @@ class SettingsTableViewContr : UITableViewController {
 
     }
     
+    
+    func handleTap(sender: UITapGestureRecognizer) {
+        
+        if sender.state == .ended {
+            
+            let location = sender.location(in: tableView)
+            let indexPath = tableView.indexPathForRow(at:location)
+            
+            let zx = location.x
+            let cell = tableView.cellForRow(at: indexPath!)
+            let zy = location.y - (cell?.frame.origin.y)!
+            
+            if indexPath?.row == 0 && indexPath?.section == 0 {
+                
+                var xw1 = IBPhotoUser.frame.origin.x + IBPhotoUser.frame.size.width
+                var yh1 = IBPhotoUser.frame.origin.y + IBPhotoUser.frame.size.height
+                if zx <= xw1 && zx >= IBPhotoUser.frame.origin.x && zy  <= yh1 && zy >= IBPhotoUser.frame.origin.y {
+                    
+                    actionPhotoProfil()
+                }
+                else {
+                    
+                    xw1 = IBInfo.frame.origin.x + IBInfo.frame.size.width
+                    yh1 = IBInfo.frame.origin.y + IBInfo.frame.size.height
+                    
+                    if zx <= xw1 && zx >= IBInfo.frame.origin.x && zy  <= yh1 && zy >= IBInfo.frame.origin.y {
+                        
+                        //action info
+                        let app = UIApplication.shared
+                        app.openURL(URL(string: "\(CommunRequest.sharedInstance.urlServer)/Tuto_PressShare/")!)
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+        sender.cancelsTouchesInView = false
+    }
+    
+    
+    private func actionPhotoProfil() {
+        
+        
+        guard UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) == true else {
+            
+            imageFromCamera(camera: false, type: nil)
+            return
+        }
+        
+        let alertController = UIAlertController(title: translate.message("takePicture"), message: translate.message("makeChoice"), preferredStyle: .alert)
+        
+        let actionBiblio = UIAlertAction(title: "Photo", style: .destructive, handler: { (action) in
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                self.imageFromCamera(camera: false, type: nil)
+                
+            }
+            
+        })
+        
+        let actionCameraFront = UIAlertAction(title: translate.message("cameraFront"), style: .destructive, handler: { (action) in
+            
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                self.imageFromCamera(camera: true, type: UIImagePickerControllerCameraDevice.front)
+                
+            }
+        })
+        
+        let actionCameraRear = UIAlertAction(title: translate.message("cameraRear"), style: .destructive, handler: { (action) in
+            
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                self.imageFromCamera(camera: true, type: UIImagePickerControllerCameraDevice.rear)
+                
+            }
+        })
+        
+        let actionAnnuler = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
+            
+            
+            //no action
+            
+        })
+        
+        alertController.addAction(actionBiblio)
+        alertController.addAction(actionCameraFront)
+        alertController.addAction(actionCameraRear)
+        alertController.addAction(actionAnnuler)
+        
+     
+        self.present(alertController, animated: true) {
+            
+        }
+        
+        
+        
+    }
+    
+    
+    private func imageFromCamera(camera:Bool, type:UIImagePickerControllerCameraDevice?) {
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.modalPresentationStyle = UIModalPresentationStyle.currentContext;
+        imagePicker.mediaTypes = [kUTTypeImage as String]
+        
+        if camera {
+            imagePicker.sourceType = UIImagePickerControllerSourceType.camera
+            imagePicker.cameraDevice = type!
+        }
+        else {
+            imagePicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
+        }
+        
+        show(imagePicker, sender: self)
+        
+        
+    }
+
+    
+    //MARK: Image Picker Delegate
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+       
+        IBPhotoUser.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+        IBPhotoUser.contentMode = .scaleAspectFit
+        
+        saveImageArchive(photo: IBPhotoUser.image!)
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
     //MARK: coreData function
+    
+    
+    private func saveImageArchive(photo:UIImage) {
+        
+        let manager = FileManager.default
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
+        let filePath  = url.appendingPathComponent("userPhoto")!.path
+        
+        NSKeyedArchiver.archiveRootObject(photo, toFile: filePath)
+        
+    }
+    
+    
+   private func restoreImageArchive() -> UIImage {
+        
+        let manager = FileManager.default
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
+        let filePath  = url.appendingPathComponent("userPhoto")!.path
+        
+        if let imageSave = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as? UIImage {
+            return imageSave
+        }
+        else {
+            return #imageLiteral(resourceName: "user")
+        }
+        
+    }
+    
     
     private func fetchAllUser() -> [User] {
         
@@ -178,9 +356,8 @@ class SettingsTableViewContr : UITableViewController {
     
     private func refreshData()  {
         
-        IBActivity.isHidden = false
-        IBActivity.startAnimating()
         
+        refreshControl1.beginRefreshing()
         
         MDBTransact.sharedInstance.getAllTransactions(config.user_id) { (success, transactionArray, errorString) in
             
@@ -206,10 +383,10 @@ class SettingsTableViewContr : UITableViewController {
                     
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
-                        self.chargeData(4, labelText: self.translate.runTransac, badgeValue: self.config.trans_badge!)
+                        self.chargeData(2, labelText: self.translate.message("runTransac"), badgeValue: self.config.trans_badge!)
                         
-                        self.IBActivity.stopAnimating()
-                        self.IBActivity.isHidden = true
+                        self.refreshControl1.endRefreshing()
+                        
                     }
                     
                     
@@ -218,8 +395,8 @@ class SettingsTableViewContr : UITableViewController {
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.refreshControl1.endRefreshing()
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
@@ -231,17 +408,15 @@ class SettingsTableViewContr : UITableViewController {
     private func chargeData(_ item:Int, labelText:String, badgeValue:Int)  {
         
         var cell:UITableViewCell
-        var label:UILabel
         
         cell = tableView.cellForRow(at: IndexPath(item: item, section: 0))!
         
-        label = cell.contentView.subviews[0] as! UILabel
-        label.text = labelText
+        IBTransactLabel.text = labelText
         
         if cell.contentView.subviews.count > 1 {
             
             cell.contentView.subviews[1].removeFromSuperview()
-            label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x - 10, y: 0) , size: label.frame.size)
+            IBTransactLabel.frame = CGRect(origin: CGPoint.init(x: IBTransactLabel.frame.origin.x - 10, y: 0) , size: IBTransactLabel.frame.size)
             tabBarController?.tabBar.items![2].badgeValue  = nil
         }
         
@@ -252,11 +427,16 @@ class SettingsTableViewContr : UITableViewController {
             badge.badgeValue = "\(badgeValue)"
             
             cell.contentView.addSubview(badge)
-            label.frame = CGRect(origin: CGPoint.init(x: label.frame.origin.x + 10.0, y: 0) , size: label.frame.size)
+            IBTransactLabel.frame = CGRect(origin: CGPoint.init(x: IBTransactLabel.frame.origin.x + 10.0, y: 0) , size: IBTransactLabel.frame.size)
             
             tabBarController?.tabBar.items![2].badgeValue = "\(badgeValue)"
             
         }
+        else {
+            tabBarController?.tabBar.items![2].badgeValue  = nil
+            
+        }
+        
         
     }
     
@@ -266,39 +446,41 @@ class SettingsTableViewContr : UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         switch (indexPath as NSIndexPath).row {
-        case 0:
+        case 1:
+            
+      
+            
             if config.level > -1 {
                 performSegue(withIdentifier: "profil", sender: self)
             }
-        case 1:
-            
-            if config.level > -1 {
-                performSegue(withIdentifier: "infoconnexion", sender: self)
-            }
-            
-            
         case 2:
-            
-            if config.level > -1 {
-                performSegue(withIdentifier: "abonner", sender: self)
-            }
-            
-        case 3:
-            
-            if config.level > -1 {
-                performSegue(withIdentifier: "carte", sender: self)
-            }
-            
-        case 4:
             
             if config.level > -1 {
                 performSegue(withIdentifier: "transaction", sender: self)
             }
             
+            
+        case 3:
+            
+            if config.level > -1 {
+                performSegue(withIdentifier: "abonner", sender: self)
+            }
+            
+        case 4:
+            
+            
+            if config.level > -1 {
+                performSegue(withIdentifier: "infoconnexion", sender: self)
+            }
+            
         case 5:
             
-            let app = UIApplication.shared
-            app.openURL(URL(string: "\(CommunRequest.sharedInstance.urlServer)/Tuto_PressShare/")!)
+            
+            
+            if config.level > -1 {
+                performSegue(withIdentifier: "carte", sender: self)
+            }
+            
             
         default:
             break

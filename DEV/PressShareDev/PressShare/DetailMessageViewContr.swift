@@ -6,6 +6,7 @@
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //
 
+//Todo: Integrer la push notification dans l'ajout de message php
 
 import Foundation
 
@@ -62,8 +63,9 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        self.navigationItem.title = translate.myNotif
+        self.navigationItem.title = translate.message("myNotif")
         subscibeToKeyboardNotifications()
+        
         
     }
     
@@ -156,7 +158,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         message.client_id = aProduct!.prod_oth_user
         message.vendeur_id = aProduct!.prod_by_user
         message.product_id = aProduct!.prod_id
-        message.contenu = "\(translate.emailSender!) \(config.user_nom!) \(config.user_prenom!) \n \(IBTextMess.text!)"
+        message.contenu = "\(translate.message("emailSender")) \(config.user_nom!) \(config.user_prenom!) \n \(IBTextMess.text!)"
         
         let frame = self.createLabelMess(message)
         
@@ -181,7 +183,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                     else {
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.displayAlert(self.translate.error, mess: errorString!)
+                            self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
                 })
@@ -196,7 +198,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                     else {
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.displayAlert(self.translate.error, mess: errorString!)
+                            self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
                     
@@ -219,7 +221,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBSend.isEnabled = true
                     self.IBActivity.stopAnimating()
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
@@ -287,7 +289,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                                 else {
                                     
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
                                 
@@ -309,7 +311,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                                 self.IBRefresh.isEnabled = true
                                 self.IBScrollView.isHidden = false
                                 self.IBActivity.stopAnimating()
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                         
@@ -580,7 +582,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBRefresh.isEnabled = true
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             

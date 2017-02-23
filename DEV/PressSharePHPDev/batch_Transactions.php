@@ -288,7 +288,7 @@ if ($result = mysqli_query($con, $sql))
             }
             
             if ($flgOK == 0) {
-                $sql = "UPDATE Product SET prod_hidden = 0 WHERE prod_id = '" . mysqli_real_escape_string($con, $prodId) . "'";
+                $sql = "UPDATE Product SET prod_hidden = 0 , prod_oth_user = 0 WHERE prod_id = '" . mysqli_real_escape_string($con, $prodId) . "'";
                 $result2 = mysqli_query($con, $sql);
             }
         } 

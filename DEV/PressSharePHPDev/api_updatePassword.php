@@ -21,7 +21,7 @@ $password = "'" . $_POST['user_pass'] . "'";
             user_email = '" . mysqli_real_escape_string($con, $_POST['user_email']) . "'";
             
             
-if ($_POST['user_newpassword'] == FALSE) {
+if ($_POST['user_newpassword'] == "false") {
  
     $sql = $sql . " and user_pass = '" . sha1($password) . "'";
 }
@@ -85,7 +85,7 @@ else {
 	    $json =  array("success" => "0", "error" => "echec connexion");    			    
 	}
 	else {
-		if ($_POST['user_newpassword'] == TRUE) {
+		if ($_POST['user_newpassword'] == "true") {
 		
                     if ($_POST['lang'] == "us") 
                     { 

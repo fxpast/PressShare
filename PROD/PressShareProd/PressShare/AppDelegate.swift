@@ -7,17 +7,16 @@
 //
 
 
+
+//Todo: Bien etudier le fonctionnement des protocoles
+
+//Todo: Recenser et reporter tous les traitement de base de données au niveau du serveur, cela accelère l'execution des tâches
+
 //Todo: Preferer un cercle qui se forme à l'objet d’activité en attente par defaut d'apple
-
-
-//Todo: Preferer les table view à la place de fenêtre rigide. C'est plus élégant et pratique pour les smartphone
 
 //Todo: Les message d’erreur peuvent s’afficher comme une étiquette rouge non bloquante
 
 //Todo: Créer des objets images pour les boutons
-//Todo: l’application fait peau neuve. Demander à Arnaud de réfléchir sur une nouvelle presentation de l’application
-
-//Todo: Pour tous les masques de saisie il faudrait que la zone suivante soit toujours visible ou donner la possibilité dans le clavier de passer à la zone suivante.
 
 //Todo: Faire un petit site web qui affiche la liste des arbitrages manuel.
 

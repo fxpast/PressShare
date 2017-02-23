@@ -66,14 +66,14 @@ class MDBOperation {
     func getAllOperations(_ userId:Int, completionHandlerOperations: @escaping (_ success: Bool, _ operationArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerOperations(false, nil, translate.errorConnection)
+            completionHandlerOperations(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getAllOperations.php")!)
         // Set Request Body
-        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(userId)&lang=\(translate.message("lang"))"
         
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
@@ -114,12 +114,12 @@ class MDBOperation {
     func setAddOperation(_ operation: Operation, completionHandlerAddOp: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerAddOp(false, translate.errorConnection)
+            completionHandlerAddOp(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "op_wording=\(operation.op_wording)&op_amount=\(operation.op_amount)&op_type=\(operation.op_type)&user_id=\(operation.user_id)&lang=\(translate.lang!)"
+        let body: String = "op_wording=\(operation.op_wording)&op_amount=\(operation.op_amount)&op_type=\(operation.op_type)&user_id=\(operation.user_id)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_addOperation.php")!)
         
@@ -140,7 +140,7 @@ class MDBOperation {
                         completionHandlerAddOp(true, nil)
                     }
                     else {
-                        completionHandlerAddOp(false, self.translate.errorAddOperat!)
+                        completionHandlerAddOp(false, self.translate.message("errorAddOperat"))
                         
                     }
                     

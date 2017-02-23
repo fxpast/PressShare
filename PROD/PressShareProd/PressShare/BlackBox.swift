@@ -17,6 +17,34 @@ class BlackBox  {
     
     let translate = TranslateMessage.sharedInstance
     
+     func createLine(frame: CGRect) -> CAShapeLayer {
+        
+        var x1 = CGFloat()
+        var y1 = CGFloat()
+        var x2 = CGFloat()
+        var y2 = CGFloat()
+        
+        let bezierObjet = UIBezierPath()
+        let shapeLayer1 = CAShapeLayer()
+        
+        x1 = frame.origin.x
+        y1 = frame.size.height
+        x2 = frame.size.width
+        y2 = frame.size.height
+        
+        
+        bezierObjet.move(to: CGPoint.init(x: x1, y: y1))
+        shapeLayer1.strokeColor = UIColor.blue.cgColor
+        shapeLayer1.fillColor = UIColor.blue.cgColor
+        
+        bezierObjet.addLine(to: CGPoint.init(x: x2, y: y2))
+        shapeLayer1.path = bezierObjet.cgPath
+        shapeLayer1.lineWidth = 1.0
+        
+        return shapeLayer1
+        
+    }
+    
     func pushProduct(menuBar:UITabBarController?, completionHdlerPushProduct: @escaping (_ success: Bool, _ product: Product?, _ errorStr: String?) -> Void) {
         
         let manager = FileManager.default
@@ -208,13 +236,13 @@ class BlackBox  {
         numberFormatter.locale = Locale.current
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
         numberFormatter.usesGroupingSeparator = true
-        if translate.lang == "fr" {
+        if translate.message("lang") == "fr" {
             
-            return "\(numberFormatter.string(from: NSNumber.init(value: amount))!) \(translate.devise!)"
+            return "\(numberFormatter.string(from: NSNumber.init(value: amount))!) \(translate.message("devise"))"
         }
-        else if translate.lang == "us" {
+        else if translate.message("lang") == "us" {
             
-            return "\(translate.devise!) \(numberFormatter.string(from: NSNumber.init(value: amount))!)"
+            return "\(translate.message("devise")) \(numberFormatter.string(from: NSNumber.init(value: amount))!)"
             
         }
         
@@ -224,13 +252,13 @@ class BlackBox  {
     //formated string to double like 99,999.99
     func formatedAmount(_ amount:String) -> Double? {
         
-        var amountClear = amount.replacingOccurrences(of: translate.devise!, with: "")
+        var amountClear = amount.replacingOccurrences(of: translate.message("devise"), with: "")
         amountClear = amountClear.replacingOccurrences(of: " ", with: "")
-        if translate.lang == "fr" {
+        if translate.message("lang") == "fr" {
             amountClear = amountClear.replacingOccurrences(of: ".", with: "")
             amountClear = amountClear.replacingOccurrences(of: ",", with: ".")
         }
-        else if translate.lang == "us" {
+        else if translate.message("lang") == "us" {
             amountClear = amountClear.replacingOccurrences(of: ",", with: "")
         }
         

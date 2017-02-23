@@ -86,12 +86,12 @@ class MDBUser {
     {
     
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerUser(false, nil, translate.errorConnection)
+            completionHandlerUser(false, nil, translate.message("errorConnection"))
             return
         }
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(userId)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getUser.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -129,12 +129,12 @@ class MDBUser {
     func AuthentiFacebook(_ config: Config, completionHandlerOAuthFacebook: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerOAuthFacebook(false, nil, translate.errorConnection)
+            completionHandlerOAuthFacebook(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_email=\(config.user_email!)&lang=\(translate.lang!)"
+        let body: String = "user_email=\(config.user_email!)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_facebook.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -178,12 +178,12 @@ class MDBUser {
     func Authentification(_ config: Config, completionHandlerOAuth: @escaping (_ success: Bool, _ userArray: [[String : AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerOAuth(false, nil, translate.errorConnection)
+            completionHandlerOAuth(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)&lang=\(translate.lang!)"
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_signIn.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -227,13 +227,13 @@ class MDBUser {
         
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerOAuth(false, translate.errorConnection)
+            completionHandlerOAuth(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
         let newpassword = (config.user_newpassword==true) ? 1 : 0
-        let body: String = "user_email=\(config.user_email!)&user_pass=\(config.user_pass!)&user_lastpass=\(config.user_lastpass!)&user_newpassword=\(newpassword)&lang=\(translate.lang!)"
+        let body: String = "user_email=\(config.user_email!)&user_pass=\(config.user_pass!)&user_lastpass=\(config.user_lastpass!)&user_newpassword=\(newpassword)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updatePassword.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -274,12 +274,12 @@ class MDBUser {
     func setUpdateUser(_ config: Config, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerUpdate(false, translate.errorConnection)
+            completionHandlerUpdate(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_pseudo=\(config.user_pseudo!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_ville=\(config.user_ville!)&user_id=\(config.user_id!)&user_tokenPush=\(config.tokenString!)&user_level=\(config.level!)&lang=\(translate.lang!)"
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_ville=\(config.user_ville!)&user_id=\(config.user_id!)&user_tokenPush=\(config.tokenString!)&user_level=\(config.level!)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateUser.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -323,12 +323,12 @@ class MDBUser {
         
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerToken(false, translate.errorConnection)
+            completionHandlerToken(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_id=\(config.user_id!)&user_tokenPush=\(config.tokenString!)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(config.user_id!)&user_tokenPush=\(config.tokenString!)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateUserToken.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -368,13 +368,13 @@ class MDBUser {
         
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerOAuth(false, translate.errorConnection)
+            completionHandlerOAuth(false, translate.message("errorConnection"))
             return
         }
 
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_latitude=\(config.latitude!)&user_longitude=\(config.longitude!)&user_mapString=\(config.mapString!)&user_tokenPush=\(config.tokenString!)&user_newpassword=\(config.user_newpassword!)&lang=\(translate.lang!)"
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_pass=\(config.user_pass!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_latitude=\(config.latitude!)&user_longitude=\(config.longitude!)&user_mapString=\(config.mapString!)&user_tokenPush=\(config.tokenString!)&user_newpassword=\(config.user_newpassword!)&lang=\(translate.message("lang"))"
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_signUp.php")!)

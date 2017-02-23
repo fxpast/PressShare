@@ -8,7 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo: Cas d'un echange la transaction est à 0 €
 
 import Foundation
 import UIKit
@@ -31,7 +30,7 @@ class CreateTransViewController: UIViewController {
     let translate = TranslateMessage.sharedInstance
     
     
-   //MARK: Locked portrait
+    //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
             return .portrait
@@ -54,12 +53,20 @@ class CreateTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBLabelTrade.text = translate.buy
-        IBLabelExchange.text = translate.exchange        
-        IBValidate.title = translate.done
+        IBLabelTrade.text = translate.message("buy")
+        IBLabelExchange.text = translate.message("exchange")
+        IBValidate.title = translate.message("done")
         
-        IBExchange.isOn = false
-        IBTrade.isOn = false
+        if aProduct?.prod_echange == false {
+            IBExchange.isOn = false
+            IBExchange.isEnabled = false
+        }
+        else {
+            IBExchange.isOn = false
+            IBTrade.isOn = false
+            
+        }
+        
         
         IBInfoProduct.text = "\(aProduct!.prod_nom), \(BlackBox.sharedInstance.formatedAmount((aProduct?.prod_prix)!))"
         
@@ -84,12 +91,22 @@ class CreateTransViewController: UIViewController {
             }
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
             
         })
+        
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if config.flgReturnToTab == true {
+            dismiss(animated: false, completion: nil)
+        }
         
     }
     
@@ -114,29 +131,44 @@ class CreateTransViewController: UIViewController {
     }
     
     
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "messagerie" {
+            
+            let nav = segue.destination as! UINavigationController
+            let controller = nav.topViewController as! DetailMessageViewContr
+            controller.aProduct = aProduct
+            
+        }
+        
+        
+    }
+    
+    
     @IBAction func actionSave(_ sender: Any) {
         
         guard IBTrade.isOn || IBExchange.isOn else {
             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                self.displayAlert(self.translate.error, mess: self.translate.errorTypeTrans)
+                self.displayAlert(self.translate.message("error"), mess: self.translate.message("errorTypeTrans"))
             }
             return
         }
         
         
-        let alertController = UIAlertController(title: "Contact", message: translate.errorContactSeller, preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Contact", message: translate.message("errorContactSeller"), preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: self.translate.done, style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: self.translate.message("done"), style: .destructive, handler: { (action) in
             
             guard self.config.balance >= Double(self.aProduct!.prod_prix) else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.error, mess: self.translate.errorBalanceTrans)
+                    self.displayAlert(self.translate.message("error"), mess: self.translate.message("errorBalanceTrans"))
                 }
                 return
             }
             
             
-            self.config.vendeur_maj = true
+            self.config.flgReturnToTab = true
             
             var message = Message(dico: [String : AnyObject]())
             
@@ -150,14 +182,14 @@ class CreateTransViewController: UIViewController {
             var typetransaction = ""
             if self.IBTrade.isOn {
                 
-                typetransaction = self.translate.buy
+                typetransaction = self.translate.message("buy")
+                message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.IBInfoProduct.text!) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor"))"
             }
             else if self.IBExchange.isOn {
                 
-                typetransaction = self.translate.exchange
+                typetransaction = self.translate.message("exchange")
+                message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.aProduct!.prod_nom) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor"))"
             }
-            
-            message.contenu = "\(self.translate.emailSender!) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.theProduct!) \(self.IBInfoProduct.text!) \(self.translate.hastobechosen!) \(typetransaction). \(self.translate.customerFor!)"
             
             
             MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
@@ -173,7 +205,7 @@ class CreateTransViewController: UIViewController {
                         else {
                             
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                     })
@@ -187,7 +219,7 @@ class CreateTransViewController: UIViewController {
                         else {
                             
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                         
@@ -199,13 +231,16 @@ class CreateTransViewController: UIViewController {
                     atransaction.prod_id = message.product_id
                     atransaction.proprietaire = message.proprietaire
                     atransaction.trans_wording = "transaction : \(self.aProduct!.prod_nom)"
-                    atransaction.trans_amount = Double(self.aProduct!.prod_prix)
                     
                     if self.IBTrade.isOn {
                         atransaction.trans_type = 1
+                        atransaction.trans_amount = Double(self.aProduct!.prod_prix)
+                        
                     }
                     else if self.IBExchange.isOn {
                         atransaction.trans_type = 2
+                        atransaction.trans_amount = 0
+                        
                     }
                     
                     
@@ -218,11 +253,12 @@ class CreateTransViewController: UIViewController {
                                 
                                 if success {
                                     Transactions.sharedInstance.transactionArray = transactionArray
+                                  
                                 }
                                 else {
                                     
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
                                 
@@ -238,21 +274,21 @@ class CreateTransViewController: UIViewController {
                                 if success {
                                     
                                     
-                                    MDBProduct.sharedInstance.getAllProducts(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
+                                    MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                         
                                         
                                         if success {
                                             
                                             Products.sharedInstance.productsUserArray = productArray
                                             
-                                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                            BlackBox.sharedInstance.performUIUpdatesOnMain {                                               
+                                                self.performSegue(withIdentifier: "messagerie", sender: sender)
                                                 
-                                                self.dismiss(animated: true, completion: nil)
                                             }
                                         }
                                         else {
                                             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                                self.displayAlert(self.translate.error, mess: errorString!)
+                                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                                             }
                                         }
                                     }
@@ -261,16 +297,16 @@ class CreateTransViewController: UIViewController {
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         
-                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
                                 
                             }
-                
+                            
                         }
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                         
@@ -280,7 +316,7 @@ class CreateTransViewController: UIViewController {
                 }
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.displayAlert(self.translate.error, mess: errorString!)
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
                 
@@ -291,7 +327,7 @@ class CreateTransViewController: UIViewController {
             
         })
         
-        let actionCancel = UIAlertAction(title: self.translate.cancel, style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: self.translate.message("cancel"), style: .destructive, handler: { (action) in
             
             
             

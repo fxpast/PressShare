@@ -20,21 +20,21 @@ class CommunRequest {
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHdler(false, nil, "\(translate.errorRequest!) \(error?.localizedDescription)")
+            completionHdler(false, nil, "\(translate.message("errorRequest")) \(error?.localizedDescription)")
             return
             
         }
         
         /* GUARD: Did we get a successful 2XX response? */
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
-            completionHdler(false, nil, "\(translate.errorRequestReturn!) \(BlackBox.sharedInstance.statusCode(((response as? HTTPURLResponse)?.statusCode)!))")
+            completionHdler(false, nil, "\(translate.message("errorRequestReturn")) \(BlackBox.sharedInstance.statusCode(((response as? HTTPURLResponse)?.statusCode)!))")
             return
             
         }
         
         /* GUARD: Was there any data returned? */
         guard let data = data else {
-            completionHdler(false, nil, translate.errorNoDataRequest)
+            completionHdler(false, nil, translate.message("errorNoDataRequest"))
             return
             
         }
@@ -45,7 +45,7 @@ class CommunRequest {
         do {
             parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         } catch {
-            completionHdler(false, nil, "\(translate.errorParseJSON!) '\(data)'")
+            completionHdler(false, nil, "\(translate.message("errorParseJSON")) '\(data)'")
             return
             
         }

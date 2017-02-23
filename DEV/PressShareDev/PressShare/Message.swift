@@ -85,13 +85,13 @@ class MDBMessage {
     func getMessagesProd(_ message:Message, completionHandlerMessages: @escaping (_ success: Bool, _ messageArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerMessages(false, nil, translate.errorConnection)
+            completionHandlerMessages(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getMessagesProd.php")!)
-        let body: String = "product_id=\(message.product_id)&product_id=\(message.proprietaire)&lang=\(translate.lang!)"
+        let body: String = "product_id=\(message.product_id)&product_id=\(message.proprietaire)&lang=\(translate.message("lang"))"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         
@@ -132,13 +132,13 @@ class MDBMessage {
     func getAllMessages(_ userId:Int, completionHandlerMessages: @escaping (_ success: Bool, _ messageArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerMessages(false, nil, translate.errorConnection)
+            completionHandlerMessages(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getAllMessages.php")!)
-        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(userId)&lang=\(translate.message("lang"))"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         
@@ -180,12 +180,12 @@ class MDBMessage {
     func setDeleteMessage(_ message: Message, completionHandlerDelMessage: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerDelMessage(false, translate.errorConnection)
+            completionHandlerDelMessage(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "message_id=\(message.message_id)&lang=\(translate.lang!)"
+        let body: String = "message_id=\(message.message_id)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_delMessage.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -205,7 +205,7 @@ class MDBMessage {
                         completionHandlerDelMessage(true, nil)
                     }
                     else {
-                        completionHandlerDelMessage(false, self.translate.impossibleDeldMes!)
+                        completionHandlerDelMessage(false, self.translate.message("impossibleDeldMes"))
                         
                     }
                     
@@ -229,12 +229,12 @@ class MDBMessage {
     func setUpdateMessage(_ message: Message, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerUpdate(false, translate.errorConnection)
+            completionHandlerUpdate(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "message_id=\(message.message_id)&deja_lu_exp=\(message.deja_lu_exp)&deja_lu_dest=\(message.deja_lu_dest)&lang=\(translate.lang!)"
+        let body: String = "message_id=\(message.message_id)&deja_lu_exp=\(message.deja_lu_exp)&deja_lu_dest=\(message.deja_lu_dest)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateMessage.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -274,13 +274,13 @@ class MDBMessage {
     func setAddMessage(_ message: Message, completionHandlerMessages: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerMessages(false, translate.errorConnection)
+            completionHandlerMessages(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
         
-        let body: String = "expediteur=\(message.expediteur)&destinataire=\(message.destinataire)&vendeur_id=\(message.vendeur_id)&client_id=\(message.client_id)&product_id=\(message.product_id)&contenu=\(message.contenu)&lang=\(translate.lang!)"
+        let body: String = "expediteur=\(message.expediteur)&destinataire=\(message.destinataire)&vendeur_id=\(message.vendeur_id)&client_id=\(message.client_id)&product_id=\(message.product_id)&contenu=\(message.contenu)&lang=\(translate.message("lang"))"
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_addMessage.php")!)
@@ -323,13 +323,13 @@ class MDBMessage {
     func setPushNotification(_ message: Message, completionHandlerPush: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerPush(false, translate.errorConnection)
+            completionHandlerPush(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
         
-        let body: String = "destinataire=\(message.destinataire)&product_id=\(message.product_id)&contenu=\(message.contenu)&lang=\(translate.lang!)"
+        let body: String = "destinataire=\(message.destinataire)&product_id=\(message.product_id)&contenu=\(message.contenu)&lang=\(translate.message("lang"))"
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_PushNotifications.php")!)

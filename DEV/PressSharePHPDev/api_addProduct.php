@@ -35,10 +35,18 @@ if ($_POST['prod_imageUrl'] != "")
 }
 
 
+if ($_POST['prod_echange'] == "false") {
+ 
+    $prod_echange = 0;
+}
+else {
+    $prod_echange = 1;
+}  
+
 
 $sql = "INSERT INTO
 		Product(prod_nom, prod_imageUrl, prod_date ,prod_prix, prod_by_user, prod_oth_user, prod_by_cat, 
-		prod_latitude, prod_longitude, prod_mapString, prod_comment, prod_tempsDispo, prod_etat, prod_hidden)
+		prod_latitude, prod_longitude, prod_mapString, prod_comment, prod_tempsDispo, prod_etat, prod_hidden, prod_echange)
 	VALUES('" . mysqli_real_escape_string($con, $_POST['prod_nom']) . "',
                     '" . mysqli_real_escape_string($con, $_POST['prod_imageUrl']) . "',
 			NOW(),
@@ -52,7 +60,8 @@ $sql = "INSERT INTO
                     '" . mysqli_real_escape_string($con, $_POST['prod_comment']) . "',
                     '" . mysqli_real_escape_string($con, $_POST['prod_tempsDispo']) . "',	  
 		   '" . mysqli_real_escape_string($con, $_POST['prod_etat']) . "',
-                   0)";
+                   0,
+                   " . mysqli_real_escape_string($con, $prod_echange) . ")";
                    			
 
 if ($_POST['prod_nom'] == "") {

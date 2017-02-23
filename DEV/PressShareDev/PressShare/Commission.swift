@@ -62,7 +62,7 @@ class MDBCommission {
     func setAddCommission(_ commission: Commission, _ balance: Double, completionHandlerCommission: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerCommission(false, translate.errorConnection)
+            completionHandlerCommission(false, translate.message("errorConnection"))
             return
         }
 

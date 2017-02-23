@@ -24,7 +24,17 @@ if ($result = mysqli_query($con, $sql))
 
 
 if ($flgOK == 0) {
-    $json =  array("success" => "0", "error" => "echec connexion");    			    
+    
+    if ($_POST['lang'] == "us") 
+    {
+        $json =  array("success" => "0", "error" => "Connection failure"); 
+    }
+    else if ($_POST['lang'] == "fr") 
+    {
+        $json =  array("success" => "0", "error" => "echec connexion"); 
+    } 
+    
+                               			    
 }
 else {
        

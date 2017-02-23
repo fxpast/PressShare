@@ -34,7 +34,6 @@ class Config {
     var product_maj:Bool!
     var product_add:Bool!
     var transaction_maj:Bool!
-    var vendeur_maj:Bool!
     var mess_badge:Int!
     var trans_badge:Int!
     var balance:Double!
@@ -50,6 +49,8 @@ class Config {
     var minLatitude:Double!
     var maxLatitude:Double!
     var tokenString:String!
+    var typeCard_id:Int!
+    var flgReturnToTab:Bool!
     
     
     func cleaner()  {
@@ -73,7 +74,6 @@ class Config {
         user_lastpass = ""
         product_maj = false
         product_add = false
-        vendeur_maj = false
         transaction_maj = false
         mess_badge = 0
         trans_badge = 0
@@ -86,6 +86,8 @@ class Config {
         minLatitude = 0
         maxLatitude = 0
         tokenString = ""
+        typeCard_id = 0
+        flgReturnToTab = false
         
      
         MDBParamTable.sharedInstance.getAllParamTables { (success, paramTablesArray, errorString) in

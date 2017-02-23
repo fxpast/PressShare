@@ -13,10 +13,17 @@
 		DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB2515861D831C6400B286F7 /* Model.xcdatamodeld */; };
 		DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */; };
 		DB2515981D83226800B286F7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515961D83226800B286F7 /* User.swift */; };
-		DB314A741D929A0B0072D7D3 /* PayboxDirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A731D929A0B0072D7D3 /* PayboxDirect.swift */; };
-		DB314A761D92ACB40072D7D3 /* CarteBancaire.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A751D92ACB40072D7D3 /* CarteBancaire.swift */; };
-		DB314A7A1D92AF890072D7D3 /* Commercant.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A791D92AF890072D7D3 /* Commercant.swift */; };
-		DB314A7C1D92D6EB0072D7D3 /* CBViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */; };
+		DB3003D81E5BC764002D0124 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003D61E5BC764002D0124 /* Card.swift */; };
+		DB3003D91E5BC764002D0124 /* TypeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003D71E5BC764002D0124 /* TypeCard.swift */; };
+		DB3003DB1E5BC7AA002D0124 /* CustomPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003DA1E5BC7AA002D0124 /* CustomPin.swift */; };
+		DB3003E61E5BC820002D0124 /* CardTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003DD1E5BC820002D0124 /* CardTableViewController.swift */; };
+		DB3003E71E5BC820002D0124 /* ChangePwdTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003DE1E5BC820002D0124 /* ChangePwdTableViewContr.swift */; };
+		DB3003E81E5BC820002D0124 /* ListCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003DF1E5BC820002D0124 /* ListCardViewController.swift */; };
+		DB3003E91E5BC820002D0124 /* ListTypeCBTableViewCrtl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003E01E5BC820002D0124 /* ListTypeCBTableViewCrtl.swift */; };
+		DB3003EA1E5BC820002D0124 /* LoginTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003E11E5BC820002D0124 /* LoginTableViewController.swift */; };
+		DB3003EB1E5BC820002D0124 /* MyProfilTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003E21E5BC820002D0124 /* MyProfilTableViewContr.swift */; };
+		DB3003EC1E5BC820002D0124 /* NewUserTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003E31E5BC820002D0124 /* NewUserTableViewContr.swift */; };
+		DB3003ED1E5BC820002D0124 /* ProductTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003E41E5BC820002D0124 /* ProductTableViewContr.swift */; };
 		DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB385C8A1DE5D99D00AD95FF /* Message.swift */; };
 		DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA351CE0FB870065ECEB /* BlackBox.swift */; };
 		DB5FFA0A1DECA0B6003BCA55 /* SubscriptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */; };
@@ -26,8 +33,6 @@
 		DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB879CEC1DF76BEC00B05D5F /* Transaction.swift */; };
 		DB9BADB41E44EA6200BE7D76 /* ParamTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9BADB31E44EA6200BE7D76 /* ParamTable.swift */; };
 		DBA03CD81CECB31800B76896 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA03CD71CECB31800B76896 /* Product.swift */; };
-		DBA3C5321CE5141800CD826D /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52E1CE5141800CD826D /* ProductViewController.swift */; };
-		DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52F1CE5141800CD826D /* LoginViewController.swift */; };
 		DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5301CE5141800CD826D /* MapViewController.swift */; };
 		DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* ListProductViewController.swift */; };
 		DBB4221B1DF8A70D00CB3F5E /* TranslateMessage.plist in Resources */ = {isa = PBXBuildFile; fileRef = DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */; };
@@ -40,14 +45,11 @@
 		DBEDBDB51DC2A0C600EECF0F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB11DC2A0C600EECF0F /* FBSDKLoginKit.framework */; };
 		DBEDBDB61DC2A0C600EECF0F /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB21DC2A0C600EECF0F /* FBSDKShareKit.framework */; };
 		DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7B3831E1EE71200024DA6 /* Commission.swift */; };
-		DBF7CE141DF5EBB300966F29 /* NewUserViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE131DF5EBB300966F29 /* NewUserViewContr.swift */; };
 		DBF7CE161DF6064600966F29 /* ListTransactTablViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */; };
 		DBF7CE181DF72DBD00966F29 /* DetailTransViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */; };
 		DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D80C1CB99E9D00BF706E /* AppDelegate.swift */; };
 		DBF8D8121CB99E9D00BF706E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBF8D8101CB99E9D00BF706E /* Main.storyboard */; };
 		DBF8D8141CB99E9D00BF706E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBF8D8131CB99E9D00BF706E /* Assets.xcassets */; };
-		DBF8D8251CB9A0B700BF706E /* UpdatePasswordViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8201CB9A0B700BF706E /* UpdatePasswordViewContr.swift */; };
-		DBF8D8271CB9A0B700BF706E /* UpdateUserTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8221CB9A0B700BF706E /* UpdateUserTableViewContr.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -70,10 +72,17 @@
 		DB2515871D831C6400B286F7 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DB2515961D83226800B286F7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		DB314A731D929A0B0072D7D3 /* PayboxDirect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayboxDirect.swift; sourceTree = "<group>"; };
-		DB314A751D92ACB40072D7D3 /* CarteBancaire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarteBancaire.swift; sourceTree = "<group>"; };
-		DB314A791D92AF890072D7D3 /* Commercant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Commercant.swift; sourceTree = "<group>"; };
-		DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBViewController.swift; sourceTree = "<group>"; };
+		DB3003D61E5BC764002D0124 /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		DB3003D71E5BC764002D0124 /* TypeCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeCard.swift; sourceTree = "<group>"; };
+		DB3003DA1E5BC7AA002D0124 /* CustomPin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPin.swift; sourceTree = "<group>"; };
+		DB3003DD1E5BC820002D0124 /* CardTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardTableViewController.swift; sourceTree = "<group>"; };
+		DB3003DE1E5BC820002D0124 /* ChangePwdTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePwdTableViewContr.swift; sourceTree = "<group>"; };
+		DB3003DF1E5BC820002D0124 /* ListCardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListCardViewController.swift; sourceTree = "<group>"; };
+		DB3003E01E5BC820002D0124 /* ListTypeCBTableViewCrtl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListTypeCBTableViewCrtl.swift; sourceTree = "<group>"; };
+		DB3003E11E5BC820002D0124 /* LoginTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginTableViewController.swift; sourceTree = "<group>"; };
+		DB3003E21E5BC820002D0124 /* MyProfilTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfilTableViewContr.swift; sourceTree = "<group>"; };
+		DB3003E31E5BC820002D0124 /* NewUserTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserTableViewContr.swift; sourceTree = "<group>"; };
+		DB3003E41E5BC820002D0124 /* ProductTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductTableViewContr.swift; sourceTree = "<group>"; };
 		DB385C8A1DE5D99D00AD95FF /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		DB5EFA351CE0FB870065ECEB /* BlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackBox.swift; sourceTree = "<group>"; };
 		DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptViewController.swift; sourceTree = "<group>"; };
@@ -83,8 +92,6 @@
 		DB879CEC1DF76BEC00B05D5F /* Transaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		DB9BADB31E44EA6200BE7D76 /* ParamTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParamTable.swift; sourceTree = "<group>"; };
 		DBA03CD71CECB31800B76896 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
-		DBA3C52E1CE5141800CD826D /* ProductViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
-		DBA3C52F1CE5141800CD826D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DBA3C5301CE5141800CD826D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		DBA3C5311CE5141800CD826D /* ListProductViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListProductViewController.swift; sourceTree = "<group>"; };
 		DBA3C5411CE51A1B00CD826D /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
@@ -99,7 +106,6 @@
 		DBEDBDB11DC2A0C600EECF0F /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = PressShare/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		DBEDBDB21DC2A0C600EECF0F /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = PressShare/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		DBF7B3831E1EE71200024DA6 /* Commission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Commission.swift; sourceTree = "<group>"; };
-		DBF7CE131DF5EBB300966F29 /* NewUserViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewContr.swift; sourceTree = "<group>"; };
 		DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListTransactTablViewContr.swift; sourceTree = "<group>"; };
 		DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailTransViewController.swift; sourceTree = "<group>"; };
 		DBF8D8091CB99E9C00BF706E /* PressShare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PressShare.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,8 +113,6 @@
 		DBF8D8111CB99E9D00BF706E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DBF8D8131CB99E9D00BF706E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DBF8D8181CB99E9D00BF706E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DBF8D8201CB9A0B700BF706E /* UpdatePasswordViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePasswordViewContr.swift; sourceTree = "<group>"; };
-		DBF8D8221CB9A0B700BF706E /* UpdateUserTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUserTableViewContr.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +146,8 @@
 			isa = PBXGroup;
 			children = (
 				DB9BADB31E44EA6200BE7D76 /* ParamTable.swift */,
+				DB3003D61E5BC764002D0124 /* Card.swift */,
+				DB3003D71E5BC764002D0124 /* TypeCard.swift */,
 				DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */,
 				DB64B97E1E06880C00013628 /* CommunRequest.swift */,
 				DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */,
@@ -153,9 +159,6 @@
 				DBF7B3831E1EE71200024DA6 /* Commission.swift */,
 				DB0B485A1DEF51F500B76652 /* Capital.swift */,
 				DB0B485C1DEF522D00B76652 /* Operation.swift */,
-				DB314A751D92ACB40072D7D3 /* CarteBancaire.swift */,
-				DB314A731D929A0B0072D7D3 /* PayboxDirect.swift */,
-				DB314A791D92AF890072D7D3 /* Commercant.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -164,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */,
+				DB3003DA1E5BC7AA002D0124 /* CustomPin.swift */,
 				DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */,
 			);
 			name = View;
@@ -178,14 +182,16 @@
 				DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */,
 				DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */,
 				DBA3C5311CE5141800CD826D /* ListProductViewController.swift */,
-				DBA3C52E1CE5141800CD826D /* ProductViewController.swift */,
 				DBA3C5301CE5141800CD826D /* MapViewController.swift */,
-				DBA3C52F1CE5141800CD826D /* LoginViewController.swift */,
-				DBF8D8201CB9A0B700BF706E /* UpdatePasswordViewContr.swift */,
-				DBF7CE131DF5EBB300966F29 /* NewUserViewContr.swift */,
-				DBF8D8221CB9A0B700BF706E /* UpdateUserTableViewContr.swift */,
+				DB3003DD1E5BC820002D0124 /* CardTableViewController.swift */,
+				DB3003DE1E5BC820002D0124 /* ChangePwdTableViewContr.swift */,
+				DB3003DF1E5BC820002D0124 /* ListCardViewController.swift */,
+				DB3003E01E5BC820002D0124 /* ListTypeCBTableViewCrtl.swift */,
+				DB3003E11E5BC820002D0124 /* LoginTableViewController.swift */,
+				DB3003E21E5BC820002D0124 /* MyProfilTableViewContr.swift */,
+				DB3003E31E5BC820002D0124 /* NewUserTableViewContr.swift */,
+				DB3003E41E5BC820002D0124 /* ProductTableViewContr.swift */,
 				DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */,
-				DB314A7B1D92D6EB0072D7D3 /* CBViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -324,13 +330,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBF8D8271CB9A0B700BF706E /* UpdateUserTableViewContr.swift in Sources */,
 				DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */,
-				DB314A761D92ACB40072D7D3 /* CarteBancaire.swift in Sources */,
+				DB3003EB1E5BC820002D0124 /* MyProfilTableViewContr.swift in Sources */,
 				DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */,
 				DB9BADB41E44EA6200BE7D76 /* ParamTable.swift in Sources */,
-				DBF7CE141DF5EBB300966F29 /* NewUserViewContr.swift in Sources */,
-				DBF8D8251CB9A0B700BF706E /* UpdatePasswordViewContr.swift in Sources */,
+				DB3003EC1E5BC820002D0124 /* NewUserTableViewContr.swift in Sources */,
+				DB3003D91E5BC764002D0124 /* TypeCard.swift in Sources */,
+				DB3003EA1E5BC820002D0124 /* LoginTableViewController.swift in Sources */,
 				DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */,
 				DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */,
 				DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */,
@@ -338,26 +344,28 @@
 				DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */,
 				DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */,
 				DBCFFAEF1E32E6DD00CF73D8 /* CustomCell.swift in Sources */,
-				DB314A741D929A0B0072D7D3 /* PayboxDirect.swift in Sources */,
 				DB17C6531E2C7303001B451B /* DetailMessageViewContr.swift in Sources */,
 				DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */,
 				DB0B485D1DEF522D00B76652 /* Operation.swift in Sources */,
 				DB2515981D83226800B286F7 /* User.swift in Sources */,
 				DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */,
+				DB3003E81E5BC820002D0124 /* ListCardViewController.swift in Sources */,
+				DB3003ED1E5BC820002D0124 /* ProductTableViewContr.swift in Sources */,
 				DBA03CD81CECB31800B76896 /* Product.swift in Sources */,
 				DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */,
+				DB3003E71E5BC820002D0124 /* ChangePwdTableViewContr.swift in Sources */,
 				DBC585F01E29B9830032A33B /* Config.swift in Sources */,
+				DB3003E61E5BC820002D0124 /* CardTableViewController.swift in Sources */,
 				DBB4221D1DF8A76600CB3F5E /* TranslateMessage.swift in Sources */,
-				DBA3C5321CE5141800CD826D /* ProductViewController.swift in Sources */,
 				DB6BDF2F1DE46F24007EAFA3 /* CreateTransViewController.swift in Sources */,
 				DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */,
 				DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */,
 				DBF7CE181DF72DBD00966F29 /* DetailTransViewController.swift in Sources */,
 				DBF7CE161DF6064600966F29 /* ListTransactTablViewContr.swift in Sources */,
 				DBBBDAE41DE8C2D9000B5E9E /* BadgeLabel.swift in Sources */,
-				DB314A7C1D92D6EB0072D7D3 /* CBViewController.swift in Sources */,
-				DB314A7A1D92AF890072D7D3 /* Commercant.swift in Sources */,
-				DBA3C5331CE5141800CD826D /* LoginViewController.swift in Sources */,
+				DB3003DB1E5BC7AA002D0124 /* CustomPin.swift in Sources */,
+				DB3003D81E5BC764002D0124 /* Card.swift in Sources */,
+				DB3003E91E5BC820002D0124 /* ListTypeCBTableViewCrtl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

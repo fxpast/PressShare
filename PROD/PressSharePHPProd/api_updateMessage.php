@@ -7,7 +7,7 @@ include 'connect.php';
 // This SQL statement selects ALL from the table 'Locations'
 
 
-if ($_POST['deja_lu_exp'] == FALSE) {
+if ($_POST['deja_lu_exp'] == "false") {
  
     $dejaluExp = 0;
 }
@@ -16,7 +16,7 @@ else {
 }    
 
     
-if ($_POST['deja_lu_dest'] == FALSE) {
+if ($_POST['deja_lu_dest'] == "false") {
  
     $dejaluDest = 0;
 }
@@ -40,7 +40,16 @@ if ($result = mysqli_query($con, $sql))
 
 
 if ($flgOK == 0) {
-    $json =  array("success" => "0", "error" => "echec connexion");    			    
+    
+     if ($_POST['lang'] == "us") 
+    {
+        $json =  array("success" => "0", "error" => "Connection failure"); 
+    }
+    else if ($_POST['lang'] == "fr") 
+    {
+        $json =  array("success" => "0", "error" => "echec connexion"); 
+    } 
+       			    
 }
 else {
        

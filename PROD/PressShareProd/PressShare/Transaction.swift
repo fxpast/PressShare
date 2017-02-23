@@ -136,13 +136,13 @@ class MDBTransact {
     func getAllTransactions(_ userId:Int, completionHandlerTransactions: @escaping (_ success: Bool, _ transactionArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerTransactions(false, nil, translate.errorConnection)
+            completionHandlerTransactions(false, nil, translate.message("errorConnection"))
             return
         }
 
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_getAllTransactions.php")!)
-        let body: String = "user_id=\(userId)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(userId)&lang=\(translate.message("lang"))"
         request = CommunRequest.sharedInstance.buildRequest(body, request)
         
         let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
@@ -183,12 +183,12 @@ class MDBTransact {
     func setUpdateTransaction(_ transaction: Transaction, completionHandlerUpdTrans: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerUpdTrans(false, translate.errorConnection)
+            completionHandlerUpdTrans(false, translate.message("errorConnection"))
             return
         }
    
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "trans_id=\(transaction.trans_id)&trans_avis=\(transaction.trans_avis)&trans_valid=\(transaction.trans_valid)&lang=\(translate.lang!)"
+        let body: String = "trans_id=\(transaction.trans_id)&trans_avis=\(transaction.trans_avis)&trans_valid=\(transaction.trans_valid)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateTransaction.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -207,7 +207,7 @@ class MDBTransact {
                         completionHandlerUpdTrans(true, nil)
                     }
                     else {
-                        completionHandlerUpdTrans(false, self.translate.errorUpdateTrans!)
+                        completionHandlerUpdTrans(false, self.translate.message("errorUpdateTrans"))
                         
                     }
                     
@@ -229,12 +229,12 @@ class MDBTransact {
     func setAddTransaction(_ transaction: Transaction, completionHandlerAddTrans: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
-            completionHandlerAddTrans(false, translate.errorConnection)
+            completionHandlerAddTrans(false, translate.message("errorConnection"))
             return
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "trans_type=\(transaction.trans_type)&trans_valid=\(transaction.trans_valid)&client_id=\(transaction.client_id)&prod_id=\(transaction.prod_id)&trans_wording=\(transaction.trans_wording)&trans_amount=\(transaction.trans_amount)&vendeur_id=\(transaction.vendeur_id)&proprietaire=\(transaction.proprietaire)&trans_avis=\(transaction.trans_avis)&lang=\(translate.lang!)"
+        let body: String = "trans_type=\(transaction.trans_type)&trans_valid=\(transaction.trans_valid)&client_id=\(transaction.client_id)&prod_id=\(transaction.prod_id)&trans_wording=\(transaction.trans_wording)&trans_amount=\(transaction.trans_amount)&vendeur_id=\(transaction.vendeur_id)&proprietaire=\(transaction.proprietaire)&trans_avis=\(transaction.trans_avis)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_addTransaction.php")!)
         
@@ -255,7 +255,7 @@ class MDBTransact {
                         completionHandlerAddTrans(true, nil)
                     }
                     else {
-                        completionHandlerAddTrans(false, self.translate.errorAddTrans!)
+                        completionHandlerAddTrans(false, self.translate.message("errorAddTrans"))
                         
                     }
                     

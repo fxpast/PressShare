@@ -24,19 +24,59 @@
 	</array>
 	<key>signup</key>
 	<array>
-		<string>S&apos;inscrire</string>
-		<string>Sign up</string>
+		<string>Nouveau sur PressShare? Ouvrez un compte</string>
+		<string>New on PressShare? Open an account</string>
 	</array>
 	<key>interlocutor</key>
 	<array>
 		<string>Interlocuteur absent</string>
 		<string>Interlocutor absent</string>
 	</array>
-	<key>compliant</key>
-	<array>
-		<string>Produit non conforme</string>
-		<string>Non-compliant product</string>
-	</array>
+    <key>typeOfPay</key>
+    <array>
+        <string>Type de carte de paiement :</string>
+        <string>Type of payment card :</string>
+    </array>
+    <key>cryptogram</key>
+    <array>
+        <string>Entrer votre cryptogramme visuel :</string>
+        <string>Enter your visual cryptogram :</string>
+    </array>
+    <key>expiryDate</key>
+    <array>
+        <string>Date d'expiration :</string>
+        <string>expiry date :</string>
+    </array>
+    <key>cameraRear</key>
+    <array>
+        <string>Camera arrière</string>
+        <string>Camera rear</string>
+    </array>
+    <key>cameraFront</key>
+    <array>
+        <string>Camera avant</string>
+        <string>Camera front</string>
+    </array>
+    <key>cardOwner</key>
+    <array>
+        <string>Nom complet du détenteur de la carte:</string>
+        <string>Full cardholder's name:</string>
+    </array>
+    <key>CBNumber</key>
+    <array>
+        <string>Numéro de carte de paiement :</string>
+        <string>Credit card number :</string>
+    </array>
+    <key>compliant</key>
+    <array>
+        <string>Produit non conforme</string>
+        <string>Non-compliant product</string>
+    </array>
+    <key>allowExch</key>
+    <array>
+        <string>Echange possible</string>
+        <string>Exchange possible</string>
+    </array>
 	<key>date</key>
 	<array>
 		<string>Date</string>
@@ -194,23 +234,33 @@
 	</array>
 	<key>lostPassword</key>
 	<array>
-		<string>Mot de passe perdu</string>
-		<string>Lost password</string>
+		<string>Oublié?</string>
+		<string>Forgotten?</string>
 	</array>
 	<key>anonyme</key>
 	<array>
-		<string>Anonyme</string>
-		<string>Anonymous</string>
+		<string>Invité</string>
+		<string>Guest</string>
 	</array>
 	<key>map</key>
 	<array>
 		<string>Carte</string>
 		<string>Map</string>
 	</array>
+    <key>mylist</key>
+    <array>
+        <string>maListe</string>
+        <string>myList</string>
+    </array>
+    <key>historical</key>
+    <array>
+        <string>Historique</string>
+        <string>Historical</string>
+    </array>
 	<key>list</key>
 	<array>
-		<string>maListe</string>
-		<string>myList</string>
+		<string>Liste</string>
+		<string>List</string>
 	</array>
 	<key>settings</key>
 	<array>
@@ -320,7 +370,7 @@
 	<key>pseudo</key>
 	<array>
 		<string>Pseudo</string>
-		<string>Pseudonym</string>
+		<string>Pseudo</string>
 	</array>
 	<key>mail</key>
 	<array>
@@ -432,12 +482,48 @@
 		<string>Prenez contact avec le client pour la suite de la transaction...</string>
 		<string>Contact the customer to following the transaction...</string>
 	</array>
-	<key>theProduct</key>
+	<key>productToShow</key>
 	<array>
-		<string>Le produit :</string>
-		<string>The product :</string>
+		<string>Produit à afficher</string>
+		<string>Product to show</string>
 	</array>
-	<key>makeChoice</key>
+    <key>buyCanceled</key>
+    <array>
+        <string>Le client a annulé l'achat du produit.</string>
+        <string>The customer canceled the purchase of the product</string>
+    </array>
+
+    <key>buyConfirmed</key>
+    <array>
+        <string>Le client a confirmé l'achat du produit.</string>
+        <string>The customer confirmed the purchase of the product</string>
+    </array>
+    <key>exchangeCanceled</key>
+    <array>
+        <string>Le client a annulé l'échange du produit.</string>
+        <string>The customer canceled the exchange of the product</string>
+    </array>
+    <key>exchangeConfirmed</key>
+    <array>
+        <string>Le client a confirmé l'échange du produit.</string>
+        <string>The customer confirmed the exchange of the product</string>
+    </array>
+    <key>thisProduct</key>
+    <array>
+        <string>Ce produit</string>
+        <string>This product</string>
+    </array>
+    <key>productAroud</key>
+    <array>
+        <string>Les produits autour de</string>
+        <string>The products around</string>
+    </array>
+    <key>theProduct</key>
+    <array>
+        <string>Le produit :</string>
+        <string>The product :</string>
+    </array>
+    <key>makeChoice</key>
 	<array>
 		<string>Faites votre choix :</string>
 		<string>Make your choice :</string>
@@ -539,8 +625,8 @@
 	</array>
 	<key>exchangeBuy</key>
 	<array>
-		<string>Echanger - Acheter</string>
-		<string>Exchange - Buy</string>
+		<string>Business</string>
+		<string>Business</string>
 	</array>
 	<key>errorLogin</key>
 	<array>

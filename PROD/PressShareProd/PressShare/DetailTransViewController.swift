@@ -112,16 +112,16 @@ class DetailTransViewController: UIViewController {
         
         
         
-        IBWording.text = "\(translate.wording!) \(aTransaction!.trans_wording)"
-        IBAmount.text = "\(translate.amount!) \(BlackBox.sharedInstance.formatedAmount(aTransaction!.trans_amount))"
+        IBWording.text = "\(translate.message("wording")) \(aTransaction!.trans_wording)"
+        IBAmount.text = "\(translate.message("amount")) \(BlackBox.sharedInstance.formatedAmount(aTransaction!.trans_amount))"
         
         
   
         if aTransaction?.trans_type == 1 {
-            IBLabelType.text = "\(IBLabelType.text!) \(translate.buy!)"
+            IBLabelType.text = "\(IBLabelType.text!) \(translate.message("buy"))"
         }
         else if aTransaction?.trans_type == 2 {
-            IBLabelType.text = "\(IBLabelType.text!) \(translate.exchange!)"
+            IBLabelType.text = "\(IBLabelType.text!) \(translate.message("exchange"))"
             
         }
         
@@ -155,7 +155,7 @@ class DetailTransViewController: UIViewController {
                     
                     if (usersArray?.count)! > 0 {
                         for userDico in usersArray! {
-                            self.IBClient.text = (self.aTransaction?.client_id == self.aTransaction?.proprietaire) ? self.translate.seller: self.translate.customer
+                            self.IBClient.text = (self.aTransaction?.client_id == self.aTransaction?.proprietaire) ? self.translate.message("seller"): self.translate.message("customer")
                             self.IBClient.text = "\(self.IBClient.text!) \(userDico["user_nom"]!) \(userDico["user_prenom"]!) (\(paramId!))"
                             self.IBInfoContact.text = "\(self.IBInfoContact.text!) \(userDico["user_ville"]!), \(userDico["user_pays"]!))"
                             
@@ -173,7 +173,7 @@ class DetailTransViewController: UIViewController {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
-                    self.displayAlert(self.translate.error, mess: errorString!)
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
             
@@ -189,14 +189,16 @@ class DetailTransViewController: UIViewController {
         
         subscibeToKeyboardNotifications()
         
-        IBButtonCancelr.title = translate.cancel
-        IBEnded.title = translate.done
-        IBLabelConfirm.text = translate.confirm
-        IBLabelCancel.text = translate.cancel
-        IBCompliantLabel.text = translate.compliant
-        IBLabelMyAbsent.text = translate.myAbsence
-        IBOtherText.placeholder = translate.other
-        navigationItem.title = translate.runTransac
+        IBButtonCancelr.title = translate.message("cancel")
+        IBEnded.title = translate.message("done")
+        IBLabelConfirm.text = translate.message("confirm")
+        IBLabelCancel.text = translate.message("cancel")
+        IBCompliantLabel.text = translate.message("compliant")
+        IBLabelMyAbsent.text = translate.message("myAbsence")
+        IBOtherText.placeholder = translate.message("other")
+        navigationItem.title = translate.message("runTransac")
+         
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -325,6 +327,47 @@ class DetailTransViewController: UIViewController {
         
         func tradeConfirmTransact() {
             
+            var message = Message(dico: [String : AnyObject]())
+            
+            message.expediteur = config.user_id
+            message.destinataire = aTransaction!.vendeur_id
+            message.proprietaire = config.user_id
+            message.client_id =  aTransaction!.client_id
+            message.vendeur_id = aTransaction!.vendeur_id
+            message.product_id = aTransaction!.prod_id
+            
+            message.contenu = "\(translate.message("emailSender")) \(config.user_nom!) \(config.user_prenom!) \n \(translate.message("theProduct")) \(aTransaction!.trans_wording) \(translate.message("buyConfirmed"))"
+            
+            MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
+                
+                if success {
+                    
+                    MDBMessage.sharedInstance.setPushNotification(message, completionHandlerPush: { (success, errorString) in
+                        
+                        if success {
+                            
+                            //ok
+                        }
+                        else {
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            }
+                        }
+                    })
+                    
+                    
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    }
+                }
+                
+            })
+            
+            
             config.balance = config.balance - Double(aTransaction!.trans_amount)
             config.balance = config.balance - config.commissionPrice * Double(aTransaction!.trans_amount)
             var capital = Capital(dico: [String : AnyObject]())
@@ -356,7 +399,7 @@ class DetailTransViewController: UIViewController {
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                 
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                         
@@ -367,7 +410,7 @@ class DetailTransViewController: UIViewController {
                     operation.user_id = self.aTransaction!.proprietaire
                     operation.op_type = 3 //c'est une operation d'achat de produit
                     operation.op_amount = -1 * Double(self.aTransaction!.trans_amount)
-                    operation.op_wording = "\(self.translate.buy!) \(self.translate.product!)"
+                    operation.op_wording = "\(self.translate.message("buy")) \(self.translate.message("product"))"
                     
                     //Création d'un operation d'achat pour le client
                     MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
@@ -383,7 +426,7 @@ class DetailTransViewController: UIViewController {
                                 else {
                                     
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
                                 
@@ -424,7 +467,7 @@ class DetailTransViewController: UIViewController {
                                                 else {
                                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                                         
-                                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                                     }
                                                 }
                                                 
@@ -435,7 +478,7 @@ class DetailTransViewController: UIViewController {
                                             operation.user_id = self.aTransaction!.vendeur_id
                                             operation.op_type = 4 //C'est une opération de vente de produit
                                             operation.op_amount = Double(self.aTransaction!.trans_amount)
-                                            operation.op_wording = "\(self.translate.sell!) \(self.translate.product!)"
+                                            operation.op_wording = "\(self.translate.message("sell")) \(self.translate.message("product"))"
                                             
                                             //Création d'un operation de vente pour le vendeur
                                             MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
@@ -451,7 +494,7 @@ class DetailTransViewController: UIViewController {
                                                         else {
                                                             
                                                             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                                                self.displayAlert(self.translate.error, mess: errorString!)
+                                                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                                                             }
                                                         }
                                                         
@@ -466,7 +509,7 @@ class DetailTransViewController: UIViewController {
                                                 else {
                                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                                         
-                                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                                     }
                                                 }
                                                 
@@ -479,7 +522,7 @@ class DetailTransViewController: UIViewController {
                                         else {
                                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                                 
-                                                self.displayAlert(self.translate.error, mess: errorString!)
+                                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                                             }
                                         }
                                         
@@ -493,7 +536,7 @@ class DetailTransViewController: UIViewController {
                                     
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBActivity.stopAnimating()
-                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
                                 
@@ -505,7 +548,7 @@ class DetailTransViewController: UIViewController {
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                 
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                         
@@ -518,7 +561,7 @@ class DetailTransViewController: UIViewController {
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
-                        self.displayAlert(self.translate.error, mess: errorString!)
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
                 
@@ -528,6 +571,49 @@ class DetailTransViewController: UIViewController {
         }
         
         func tradeCancelTransact() {
+            
+            
+            var message = Message(dico: [String : AnyObject]())
+            
+            message.expediteur = config.user_id
+            message.destinataire = aTransaction!.vendeur_id
+            message.proprietaire = config.user_id
+            message.client_id =  aTransaction!.client_id
+            message.vendeur_id = aTransaction!.vendeur_id
+            message.product_id = aTransaction!.prod_id
+            
+            message.contenu = "\(translate.message("emailSender")) \(config.user_nom!) \(config.user_prenom!) \n \(translate.message("theProduct")) \(aTransaction!.trans_wording) \(translate.message("buyCanceled"))"
+            
+            MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
+                
+                if success {
+                    
+                    MDBMessage.sharedInstance.setPushNotification(message, completionHandlerPush: { (success, errorString) in
+                        
+                        if success {
+                            
+                            //ok
+                        }
+                        else {
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            }
+                        }
+                    })
+                    
+                    
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    }
+                }
+                
+            })
+            
+            
             
             config.failure_count = config.failure_count + 1
             
@@ -551,7 +637,7 @@ class DetailTransViewController: UIViewController {
                         
                         if success {
                             
-                            MDBProduct.sharedInstance.getAllProducts(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
+                            MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                 
                                 if success {
                                     
@@ -565,7 +651,7 @@ class DetailTransViewController: UIViewController {
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
                             }
@@ -574,7 +660,7 @@ class DetailTransViewController: UIViewController {
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                 
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                         
@@ -584,7 +670,7 @@ class DetailTransViewController: UIViewController {
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
-                        self.displayAlert(self.translate.error, mess: errorString!)
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
                 
@@ -594,6 +680,54 @@ class DetailTransViewController: UIViewController {
         }
         
         func exchangeConfirmTransact() {
+            
+            var message = Message(dico: [String : AnyObject]())
+            
+            message.expediteur = config.user_id
+            if aTransaction?.proprietaire == aTransaction?.client_id {
+                message.destinataire = aTransaction!.vendeur_id
+                
+            }
+            else if aTransaction?.proprietaire == aTransaction?.vendeur_id {
+                message.destinataire = aTransaction!.client_id
+            }
+            
+            message.proprietaire = config.user_id
+            message.client_id = aTransaction!.client_id
+            message.vendeur_id = aTransaction!.vendeur_id
+            message.product_id = aTransaction!.prod_id
+            
+            message.contenu = "\(translate.message("emailSender")) \(config.user_nom!) \(config.user_prenom!) \n \(translate.message("theProduct")) \(aTransaction!.trans_wording) \(translate.message("exchangeConfirmed"))"
+            
+            MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
+                
+                if success {
+                    
+                    MDBMessage.sharedInstance.setPushNotification(message, completionHandlerPush: { (success, errorString) in
+                        
+                        if success {
+                            
+                            //ok
+                        }
+                        else {
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            }
+                        }
+                    })
+                    
+                    
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    }
+                }
+                
+            })
+            
             
             var commission = Commission(dico: [String : AnyObject]())
             //l'utilisateur confirme l'echange
@@ -617,7 +751,7 @@ class DetailTransViewController: UIViewController {
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
-                        self.displayAlert(self.translate.error, mess: errorString!)
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
                 
@@ -628,6 +762,54 @@ class DetailTransViewController: UIViewController {
         }
         
         func exchangeCancelTransact() {
+            
+            var message = Message(dico: [String : AnyObject]())
+            
+            message.expediteur = config.user_id
+            if aTransaction?.proprietaire == aTransaction?.client_id {
+                message.destinataire = aTransaction!.vendeur_id
+                
+            }
+            else if aTransaction?.proprietaire == aTransaction?.vendeur_id {
+                message.destinataire = aTransaction!.client_id
+            }
+            
+            message.proprietaire = config.user_id
+            message.client_id = aTransaction!.client_id
+            message.vendeur_id = aTransaction!.vendeur_id
+            message.product_id = aTransaction!.prod_id
+            
+            message.contenu = "\(translate.message("emailSender")) \(config.user_nom!) \(config.user_prenom!) \n \(translate.message("theProduct")) \(aTransaction!.trans_wording) \(translate.message("exchangeCanceled"))"
+            
+            MDBMessage.sharedInstance.setAddMessage(message, completionHandlerMessages: { (success, errorString) in
+                
+                if success {
+                    
+                    MDBMessage.sharedInstance.setPushNotification(message, completionHandlerPush: { (success, errorString) in
+                        
+                        if success {
+                            
+                            //ok
+                        }
+                        else {
+                            
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            }
+                        }
+                    })
+                    
+                    
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    }
+                }
+                
+            })
+            
             
             config.failure_count = config.failure_count + 1
             
@@ -651,7 +833,7 @@ class DetailTransViewController: UIViewController {
                         
                         if success {
                             
-                            MDBProduct.sharedInstance.getAllProducts(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
+                            MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                 
                                 if success {
                                     
@@ -664,7 +846,7 @@ class DetailTransViewController: UIViewController {
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                        self.displayAlert(self.translate.error, mess: errorString!)
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
                             }
@@ -674,7 +856,7 @@ class DetailTransViewController: UIViewController {
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                 
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                         
@@ -684,7 +866,7 @@ class DetailTransViewController: UIViewController {
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
-                        self.displayAlert(self.translate.error, mess: errorString!)
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
                 
@@ -694,14 +876,14 @@ class DetailTransViewController: UIViewController {
         
         
         guard IBConfirm.isOn || IBCancel.isOn else {
-            displayAlert(translate.error, mess: translate.errorAcceptReject)
+            displayAlert(translate.message("error"), mess: translate.message("errorAcceptReject"))
             return
         }
         
         
-        let alertController = UIAlertController(title: "Transaction", message: translate.errorEndedTrans, preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Transaction", message: translate.message("errorEndedTrans"), preferredStyle: .alert)
         
-        let actionValider = UIAlertAction(title: translate.done, style: .destructive, handler: { (action) in
+        let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
             
             if self.IBOther.isOn {
                 self.aTransaction?.trans_avis = self.IBOtherText.text!
@@ -747,7 +929,7 @@ class DetailTransViewController: UIViewController {
                         else {
                             
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                self.displayAlert(self.translate.error, mess: errorString!)
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
                         
@@ -787,7 +969,7 @@ class DetailTransViewController: UIViewController {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         
                         self.IBActivity.stopAnimating()
-                        self.displayAlert(self.translate.error, mess: errorString!)
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
                 
@@ -798,7 +980,7 @@ class DetailTransViewController: UIViewController {
             
         })
         
-        let actionCancel = UIAlertAction(title: translate.cancel, style: .destructive, handler: { (action) in
+        let actionCancel = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
             
         })
         
