@@ -6,19 +6,34 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+//-----------------------------------------
+//Todo ASAP:
+//-----------------------------------------
 
+//Todo new: envoyer un push alert à l'utilisateur pour l'informer que la transaction va bientôt expirer dans 1 jour.
 
-//Todo: Bien etudier le fonctionnement des protocoles
+//Todo new: contentieux : automatiser les scénarios de contentieux.fxpast.com
 
-//Todo: Recenser et reporter tous les traitement de base de données au niveau du serveur, cela accelère l'execution des tâches
+//Todo new: Base de données : Optimiser les redondance dans la base de données
 
-//Todo: Preferer un cercle qui se forme à l'objet d’activité en attente par defaut d'apple
+//Todo new: Recenser et reporter tous les traitement de base de données au niveau du serveur, cela accelère l'execution des tâches
 
-//Todo: Les message d’erreur peuvent s’afficher comme une étiquette rouge non bloquante
+//Todo new: Faire un petit site web qui affiche la liste des arbitrages manuel.
 
-//Todo: Créer des objets images pour les boutons
+//Todo new: donner la possibilité aux user d'apporter des suggestions d'amélioration (c'est uberman ou le travail collaboratif)
 
-//Todo: Faire un petit site web qui affiche la liste des arbitrages manuel.
+//Todo new: Ajouter de des « ? » dans chaque fenêtre comme dans l’appli « flash card deluxe ».
+
+//-----------------------------------------
+//Todo may be:
+//-----------------------------------------
+//Todo new: Bien etudier le fonctionnement des protocoles
+
+//Todo new: Preferer un cercle qui se forme à l'objet d’activité en attente par defaut d'apple
+
+//Todo new: Les message d’erreur peuvent s’afficher comme une étiquette rouge non bloquante
+
+//Todo new: Créer des objets images pour les boutons
 
 
 

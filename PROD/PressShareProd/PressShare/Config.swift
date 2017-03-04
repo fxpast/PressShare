@@ -43,7 +43,8 @@ class Config {
     var distanceProduct:CLLocationDistance! //product are grouped and display according to this distance in meters
     var regionGeoLocat:CLLocationDistance! //region of user geolocalization and displayed in meters
     var regionProduct:CLLocationDistance! //region of product dowload on the map in meters
-    var commissionPrice:Double! //product price
+    var commisPourcBuy:Double! //commission pourcentage for buy product
+    var commisFixEx:Double! //commission fix for exchange product
     var minLongitude:Double!
     var maxLongitude:Double!
     var minLatitude:Double!
@@ -51,6 +52,7 @@ class Config {
     var tokenString:String!
     var typeCard_id:Int!
     var flgReturnToTab:Bool!
+    var maxDayTrigger:Int!
     
     
     func cleaner()  {
@@ -98,14 +100,18 @@ class Config {
                 self.distanceProduct = param.distanceProduct
                 self.regionGeoLocat = param.regionGeoLocat
                 self.regionProduct = param.regionProduct
-                self.commissionPrice = param.commissionPrice
+                self.commisPourcBuy = param.commisPourcBuy
+                self.commisFixEx = param.commisFixEx
+                self.maxDayTrigger = param.maxDayTrigger
                 
             }
             else {
                 self.distanceProduct = 0
                 self.regionGeoLocat = 0
                 self.regionProduct = 0
-                self.commissionPrice = 0
+                self.commisPourcBuy = 0
+                self.commisFixEx = 0
+                self.maxDayTrigger = 0
             }
         }
         

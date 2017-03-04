@@ -10,7 +10,6 @@
 //
 
 
-
 import CoreLocation
 import CoreData
 import Foundation
@@ -18,6 +17,13 @@ import MapKit
 import UIKit
 
 class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UITextFieldDelegate {
+    
+    
+    @IBOutlet weak var IBMessageView: UIView!
+    @IBOutlet weak var IBButtonTitle: UIButton!
+    @IBOutlet weak var IBButtonAllProduct: UIButton!
+    @IBOutlet weak var IBLabelLieu: UILabel!
+    
     
     
     @IBOutlet weak var IBLogout: UIBarButtonItem!
@@ -43,6 +49,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var flgUser = false
     var flgSelect = false
     var prodIdNow = 0
+    
+    var shapeLayer1:CAShapeLayer!
     
     var locationManager:CLLocationManager!
     
@@ -87,6 +95,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         users = fetchAllUser()
         
+        
         NotificationCenter.default.addObserver(self, selector: #selector(pushProduct), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
         
         IBAddProduct = UIButton()
@@ -97,8 +106,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         view.addSubview(IBAddProduct)
         
         IBAddProduct.frame = CGRect(origin: CGPoint.init(x: view.frame.size.width - IBAddProduct.frame.size.width*2, y: view.frame.size.height - IBAddProduct.frame.height*3), size: IBAddProduct.frame.size)
-        
-        
+
         if config.level <= 0 {
             IBAddProduct.isEnabled = false
         }
@@ -111,10 +119,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         config.flgReturnToTab = false
         
+    
         IBMap = MKMapView()
         IBMap.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height)
         view.addSubview(IBMap)
         IBMap.delegate = self
+       
+        IBMap.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
         
  
         view.bringSubview(toFront: view.viewWithTag(999)!)
@@ -150,6 +161,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         pushProduct()
         
+        IBButtonAllProduct.setTitle(translate.message("seeOtherProduct"), for: UIControlState.normal)
+        
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -164,6 +178,22 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     
+    
+    func handleTap(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            
+            if shapeLayer1 != nil && flgSelect == true {
+                IBMessageView.isHidden = true
+                shapeLayer1.removeFromSuperlayer()
+                shapeLayer1 = nil
+            }
+            
+            
+        }
+        sender.cancelsTouchesInView = false
+    }
+    
+    
     @objc private func pushProduct() {
         
         
@@ -172,11 +202,44 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             
             if success {
                 
-                self.aProduct = product
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.IBActivity.stopAnimating()
-                    self.performSegue(withIdentifier: "fromMap", sender: self)
+                MDBTransact.sharedInstance.getAllTransactions(self.config.user_id) { (success, transactionArray, errorString) in
+                    
+                    if success {
+                        
+                        Transactions.sharedInstance.transactionArray = transactionArray
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            var i = 0
+                            for tran in Transactions.sharedInstance.transactionArray  {
+                                
+                                let tran1 = Transaction(dico: tran)
+                                
+                                if (tran1.trans_valid != 1 && tran1.trans_valid != 2 )  {
+                                    i+=1
+                                }
+                                
+                            }
+                            if i > 0 {
+                                self.config.trans_badge = i
+                                
+                            }
+                         
+                            self.aProduct = product
+                            self.IBActivity.stopAnimating()
+                            self.performSegue(withIdentifier: "fromMap", sender: self)
+                            
+                        }
+                    }
+                    else {
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            self.displayAlert(self.translate.message("error"), mess: errorString!)
+                        }
+                    }
+                    
                 }
+                
+            
             }
             else {
                 
@@ -199,6 +262,21 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     
+    @IBAction func actionAllProducts(_ sender: AnyObject) {
+        
+  
+        self.performSegue(withIdentifier: "mapproduct", sender: self)
+        
+        
+    }
+    
+
+    @IBAction func actionSelectProduct(_ sender: AnyObject) {
+        
+        performSegue(withIdentifier: "fromMap", sender: self)
+    }
+    
+
     
     //MARK: coreData function
     
@@ -242,7 +320,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 let controller = nav.topViewController as! ProductTableViewContr
                 
                 controller.aProduct = aProduct
-                controller.typeListe = 1 //data product list is Map:1
+                controller.typeListe = 0 //data product list is Map:0
                 controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
                 
             }
@@ -307,6 +385,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     //MARK: Data Networking
     @IBAction func actionRefresh(_ sender: AnyObject) {
         
+        latUser = nil
+        lonUser = nil
+        Products.sharedInstance.productsArray = nil
+        
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.stopUpdatingLocation()
@@ -318,9 +400,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
         
         locationManager.startUpdatingLocation()
-        
-        
-        Products.sharedInstance.productsArray = nil
         
     }
     
@@ -538,9 +617,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        latUser = manager.location?.coordinate.latitude
-        lonUser = manager.location?.coordinate.longitude
-        
+        if latUser == nil && lonUser == nil {
+            latUser = manager.location?.coordinate.latitude
+            lonUser = manager.location?.coordinate.longitude
+        }
+     
         if let _ = Products.sharedInstance.productsArray {
             loadPins()
         }
@@ -564,6 +645,16 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     //MARK: Map View Delegate
  
+    func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
+        
+        if shapeLayer1 != nil && flgSelect == true {
+            IBMessageView.isHidden = true
+            shapeLayer1.removeFromSuperlayer()
+            shapeLayer1 = nil
+        }
+        
+    }
+    
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -573,12 +664,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinView!.canShowCallout = true
             pinView?.pinTintColor = UIColor.red
             let customAnnot = annotation as! CustomPin
             pinView?.tag = customAnnot.prod_id
-            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-          
+           
         }
         else {
             pinView!.annotation = annotation
@@ -593,29 +682,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         return pinView
     }
-    
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        
-        if control == view.rightCalloutAccessoryView {
-            
-            
-            if (view.annotation?.title)! == "user:" {
-                flgUser = true
-                performSegue(withIdentifier: "mapproduct", sender: self)
-            }
-            else if countProduct() > 1 {
-                
-                menuProduct()
-            }
-            else if countProduct() == 1 {
-                performSegue(withIdentifier: "fromMap", sender: self)
-            }
-            
-            
-        }
-        
-    }
-    
+
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
@@ -626,52 +693,84 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             lon = coord.longitude
             prodIdNow = view.tag
             flgSelect = true
+          
+            if (view.annotation?.title)! == "user:" {
+                flgUser = true
+                performSegue(withIdentifier: "mapproduct", sender: self)
+            }
+            else if countProduct() > 1 {
+                
+                IBMessageView.isHidden = false
+                
+                if view.frame.origin.y < self.view.frame.size.height/2 {
+                    
+                    IBMessageView.frame = CGRect.init(origin: CGPoint.init(x: view.frame.origin.x - IBMessageView.frame.size.width/2, y: view.frame.origin.y + 30), size: IBMessageView.frame.size)
+                    
+                    self.view.bringSubview(toFront: self.view.viewWithTag(888)!)
+                    self.view.bringSubview(toFront: IBMessageView)
+                    createArrow(IBMessageView.frame, "bottom")
+                
+                }
+                else {
+                
+                    IBMessageView.frame = CGRect.init(origin: CGPoint.init(x: view.frame.origin.x - IBMessageView.frame.size.width/2, y: view.frame.origin.y - IBMessageView.frame.size.height - 30), size: IBMessageView.frame.size)
+                    
+                    self.view.bringSubview(toFront: self.view.viewWithTag(888)!)
+                    self.view.bringSubview(toFront: IBMessageView)
+                    createArrow(IBMessageView.frame, "above")
+                    
+                }
+                
+            }
+            else if countProduct() == 1 {
+                performSegue(withIdentifier: "fromMap", sender: self)
+            }
+            
             
         }
         
     }
     
-    private func menuProduct() {
+    private func createArrow(_ frame:CGRect, _ sens:String) {
         
+        var x1 = CGFloat()
+        var y1 = CGFloat()
+        var x2 = CGFloat()
+        var y2 = CGFloat()
         
-        let alertController = UIAlertController(title: translate.message("productToShow"), message: translate.message("makeChoice"), preferredStyle: .alert)
+        let distance:CGFloat = 30.0
+        let bezierObjet = UIBezierPath()
+        shapeLayer1 = CAShapeLayer()
+        x1 = frame.origin.x - distance/2 + frame.size.width/2
         
-        let actionThisProd = UIAlertAction(title: translate.message("thisProduct"), style: .destructive, handler: { (action) in
-            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                
-                self.performSegue(withIdentifier: "fromMap", sender: self)
-                
-            }
+        if sens == "above" {
             
-        })
-        
-        let actionProductAround = UIAlertAction(title: translate.message("productAroud"), style: .destructive, handler: { (action) in
+            y1 = frame.origin.y + frame.size.height
+            bezierObjet.move(to: CGPoint.init(x: x1, y: y1))
             
-            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                
-                self.performSegue(withIdentifier: "mapproduct", sender: self)
-                
-            }
-        })
-        
-        
-        let actionAnnuler = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
+            x2 = x1 + distance/2
+            x1 = x1 + distance
+            y2 = y1 + distance
+        }
+        else if sens == "bottom" {
             
+            y1 = frame.origin.y
+            bezierObjet.move(to: CGPoint.init(x: x1, y: y1))
             
-            //no action
-            
-        })
-        
-        alertController.addAction(actionThisProd)
-        alertController.addAction(actionProductAround)
-        alertController.addAction(actionAnnuler)
-        
-        
-        self.present(alertController, animated: true) {
-            
+            x2 = x1 + distance/2
+            x1 = x1 + distance
+            y2 = y1 - distance
         }
         
+        shapeLayer1.strokeColor = UIColor.white.cgColor
+        shapeLayer1.fillColor = UIColor.white.cgColor
+
+        bezierObjet.addCurve(to: CGPoint.init(x: x1, y: y1), controlPoint1: CGPoint.init(x: x2, y: y2), controlPoint2: CGPoint.init(x: x2, y: y2))
         
+        shapeLayer1.path = bezierObjet.cgPath
+        shapeLayer1.lineWidth = 1.0
+       
+        view.layer.addSublayer(shapeLayer1)
         
     }
     

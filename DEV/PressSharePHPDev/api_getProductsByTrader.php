@@ -44,7 +44,7 @@ if ($flgOK == 0) {
 $sql = "SELECT p.*  
         FROM Product p, User u 
         WHERE p.prod_by_user = u.user_id and u.user_level > 0 and p.prod_hidden = 1 and (p.prod_by_user = '" . mysqli_real_escape_string($con, $_POST['user_id']) . 
-            "' or p.prod_oth_user = '" . mysqli_real_escape_string($con, $_POST['user_id']) . "') ORDER BY p.prod_date DESC";
+            "' or p.prod_oth_user = '" . mysqli_real_escape_string($con, $_POST['user_id']) . "') ORDER BY p.prod_closed ASC";
  
 $flgOK = 0; 
 // Check if there are results

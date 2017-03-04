@@ -7,6 +7,10 @@
 //
 
 
+//Todo: Integration de Paypal : https://developer.paypal.com/docs/integration/paypal-here/ios-dev/overview/
+
+//Todo: Integration des cartes de credit des clients avec PayBox : http://www1.paybox.com/espace-integrateur-documentation/les-solutions-paybox-direct-et-paybox-direct-plus/les-operations-de-caisse-direct-plus/#autorisation-seule-abonne
+
 
 import Foundation
 

@@ -8,8 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
-
 import CoreData
 import Foundation
 import UIKit
@@ -17,15 +15,16 @@ import MapKit
 
 class ListProductViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
+    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
+    @IBOutlet weak var IBButtonSearch: UIBarButtonItem!
     @IBOutlet weak var IBCarte: UIBarButtonItem!
     @IBOutlet weak var IBHistorique: UIBarButtonItem!
     @IBOutlet weak var IBMaliste: UIBarButtonItem!
     @IBOutlet weak var IBToolBar: UIToolbar!
     @IBOutlet weak var IBTableView: UITableView!
-    @IBOutlet weak var IBSearch: UISearchBar!
     @IBOutlet weak var IBLogout: UIBarButtonItem!
-    @IBOutlet weak var IBDelete: UIBarButtonItem!
     var IBAddProduct: UIButton!
+    var IBSearch: UISearchBar!
     
     var users = [User]()
     var products = [Product]()
@@ -35,19 +34,18 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     let translate = TranslateMessage.sharedInstance
     var lat:CLLocationDegrees?
     var lon:CLLocationDegrees?
-    var flgUser=false //touch on blue user pin
-    var flgFirst=false
-    var typeListe = 0 //MyList :0, Map:1, Historical:2
+    var flgUser = false //touch on blue user pin
+    var flgFirst = false
+    var typeListe = 0 //Map :0, MyList :1, Historical:2
     
     var customOpeation = BlockOperation()
     let myQueue = OperationQueue()
     var countProduct = 0
     var searchText = ""
-    
     let refreshControl = UIRefreshControl()
     
-    var frameTableView:CGRect!
-    var rowHeightTableView:CGFloat!
+    var frameTableView: CGRect!
+    var rowHeightTableView: CGFloat!
     
     var sharedContext: NSManagedObjectContext {
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -58,7 +56,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         users = fetchAllUser()
         
@@ -74,7 +71,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         if config.level <= 0 {
             IBAddProduct.isEnabled = false
-            IBDelete.isEnabled = false
         }
         
         refreshControl.addTarget(self, action: #selector(actionRefresh(_:)), for: .valueChanged)
@@ -88,15 +84,13 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         config.flgReturnToTab = false
         
-        IBSearch.placeholder = translate.message("product")
-        
+      
         navigationController?.tabBarItem.title = translate.message("list")
         if let _ = lat, let _ = lon {
             IBLogout.title = translate.message("cancel")
             IBLogout.image = nil
-            IBDelete.isEnabled = false
             IBAddProduct.isEnabled = false
-            typeListe = 1
+            typeListe = 0
         }
         else if flgUser == false {
             IBLogout.image = #imageLiteral(resourceName: "eteindre")
@@ -106,20 +100,19 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         else {
             IBLogout.title = translate.message("cancel")
             IBLogout.image = nil
-            IBDelete.isEnabled = false
             IBAddProduct.isEnabled = false
             
         }
         
         IBHistorique.title = translate.message("historical")
         IBMaliste.title = translate.message("mylist")
-        IBCarte.title = translate.message("map")
+        IBCarte.title = translate.message("list")
         
         if typeListe == 0 {
-            navigationItem.title = "\(IBMaliste.title!) : \(config.user_pseudo!) (\(config.user_id!))"
+            navigationItem.title = "\(IBCarte.title!) : \(config.user_pseudo!) (\(config.user_id!))"
         }
         else if typeListe == 1 {
-            navigationItem.title = "\(IBCarte.title!) : \(config.user_pseudo!) (\(config.user_id!))"
+            navigationItem.title = "\(IBMaliste.title!) : \(config.user_pseudo!) (\(config.user_id!))"
         }
         else if typeListe == 2 {
             navigationItem.title = "\(IBHistorique.title!) : \(config.user_pseudo!) (\(config.user_id!))"
@@ -133,9 +126,10 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewDidAppear(animated)
         
         pushProduct()
-        
-        
+   
         if  IBTableView == nil {
+            
+            runActivity()
             
             myQueue.cancelAllOperations()
             myQueue.addOperation {
@@ -165,6 +159,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                             self.view.bringSubview(toFront: self.IBAddProduct)
                             
                             self.initData()
+                            self.stopActivity()
                             
                         }
                         
@@ -175,18 +170,15 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 
             }
             
-            
         }
         else {
-            
-            
-            IBAddProduct.frame = CGRect(origin: CGPoint.init(x: IBTableView.frame.size.width-IBAddProduct.frame.size.width*2, y: IBTableView.frame.size.height + IBAddProduct.frame.size.height), size: IBAddProduct.frame.size)
+       
+            IBAddProduct.frame = CGRect(origin: CGPoint.init(x: IBTableView.frame.size.width-IBAddProduct.frame.size.width*2, y: IBTableView.frame.size.height), size: IBAddProduct.frame.size)
             
             view.bringSubview(toFront: view.viewWithTag(999)!)
             view.bringSubview(toFront: IBAddProduct)
             
             initData()
-            
             
         }
         
@@ -213,12 +205,21 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         IBTableView.removeFromSuperview()
         IBTableView = nil
         
+        if IBSearch != nil {
+            
+            IBSearch.removeFromSuperview()
+            IBSearch.delegate = nil
+            IBSearch = nil
+            searchText = ""
+            
+        }
+        
     }
     
     
     private func initData() {
         
-         if config.product_maj == true || config.product_add == true || Products.sharedInstance.productsUserArray == nil || Products.sharedInstance.productsArray == nil || Products.sharedInstance.productsTraderArray == nil {
+        if config.product_maj == true || config.product_add == true || Products.sharedInstance.productsUserArray == nil || Products.sharedInstance.productsArray == nil || Products.sharedInstance.productsTraderArray == nil {
             refreshData()
             config.product_maj = false
             config.product_add = false
@@ -258,6 +259,26 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
+    @IBAction func actionButtonSearch(_ sender: Any) {
+        
+        if IBSearch == nil {
+            
+            IBSearch = UISearchBar.init(frame: CGRect.init(origin: IBTableView.frame.origin, size: CGSize.init(width: IBTableView.frame.size.width, height: 40)))
+            IBSearch.delegate = self
+            view.addSubview(IBSearch)
+            IBSearch.placeholder = translate.message("product")
+            
+       
+        }
+        else {
+            IBSearch.removeFromSuperview()
+            IBSearch.delegate = nil
+            IBSearch = nil
+            
+        }
+        
+        
+    }
     
     @IBAction func actionEpingle(_ sender: AnyObject) {
         
@@ -269,7 +290,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     @IBAction func actionMaliste(_ sender: AnyObject) {
         
-        typeListe = 0
+        typeListe = 1
         
         if let _ = Products.sharedInstance.productsUserArray {
             batchChargeData()
@@ -284,7 +305,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     @IBAction func actionCarte(_ sender: AnyObject) {
         
-        typeListe = 1
+        typeListe = 0
         
         batchChargeData()
     }
@@ -306,8 +327,11 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     private func batchChargeData() {
         
+        
         products.removeAll()
-        refreshControl.beginRefreshing()
+        IBTableView.reloadData()
+        runActivity()
+        
         myQueue.addOperation {
             
             self.customOpeation = BlockOperation()
@@ -315,10 +339,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 if !self.customOpeation.isCancelled
                 {
                     self.chargeData()
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.refreshControl.endRefreshing()
-                    }
-                    
                 }
             }
             
@@ -361,11 +381,23 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    @IBAction func actionDelete(_ sender: AnyObject)  {
+    private func runActivity() {
         
-        IBTableView.isEditing = !IBTableView.isEditing
-        
+        IBActivity.isHidden = false
+        IBActivity.startAnimating()
+        view.bringSubview(toFront: self.view.viewWithTag(55)!)
+        view.bringSubview(toFront: IBActivity)
+        refreshControl.beginRefreshing()
+
     }
+    
+    private func stopActivity() {
+        
+        refreshControl.endRefreshing()
+        IBActivity.stopAnimating()
+        IBActivity.isHidden = true
+    }
+    
     
     @IBAction func actionRefresh(_ sender: AnyObject) {
         
@@ -375,22 +407,55 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     @objc private func pushProduct() {
         
+        runActivity()
         
-        refreshControl.beginRefreshing()
         BlackBox.sharedInstance.pushProduct(menuBar: tabBarController) { (success, product, errorStr) in
             
             if success {
                 
-                self.aProduct = product
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.refreshControl.endRefreshing()
-                    self.performSegue(withIdentifier: "fromtable", sender: self)
+                
+                MDBTransact.sharedInstance.getAllTransactions(self.config.user_id) { (success, transactionArray, errorString) in
+                    
+                    if success {
+                        
+                        Transactions.sharedInstance.transactionArray = transactionArray
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            var i = 0
+                            for tran in Transactions.sharedInstance.transactionArray  {
+                                
+                                let tran1 = Transaction(dico: tran)
+                                
+                                if (tran1.trans_valid != 1 && tran1.trans_valid != 2 )  {
+                                    i+=1
+                                }
+                                
+                            }
+                            if i > 0 {
+                                self.config.trans_badge = i
+                                
+                            }
+                            
+                            self.aProduct = product
+                            self.stopActivity()
+                            self.performSegue(withIdentifier: "fromtable", sender: self)
+                        }
+                    }
+                    else {
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            self.displayAlert(self.translate.message("error"), mess: errorString!)
+                        }
+                    }
+                    
                 }
+                                
             }
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.refreshControl.endRefreshing()
+                    
+                    self.stopActivity()
                     if errorStr != "" {
                         self.displayAlert(self.translate.message("error"), mess: errorStr!)
                     }
@@ -414,7 +479,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         productsTmp.removeAll()
         countProduct = 0
         self.searchText = searchText
-        refreshControl.beginRefreshing()
+        runActivity()
         
         myQueue.cancelAllOperations()
         
@@ -435,7 +500,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             
                             searchBar.endEditing(true)
-                            self.refreshControl.endRefreshing()
+                            self.stopActivity()
                             self.IBTableView.reloadData()
                         }
                         
@@ -443,7 +508,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                     else {
                         self.searchData(searchText)
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.refreshControl.endRefreshing()
+                            self.stopActivity()
                         }
                     }
                     
@@ -490,12 +555,12 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         var entete = ""
         
         if typeListe == 0 {
-            theProducts = Products.sharedInstance.productsUserArray
-            entete = IBMaliste.title!
-        }
-        else if typeListe == 1 {
             theProducts = Products.sharedInstance.productsArray
             entete = IBCarte.title!
+        }
+        else if typeListe == 1 {
+            theProducts = Products.sharedInstance.productsUserArray
+            entete = IBMaliste.title!
         }
         else if typeListe == 2 {
             theProducts = Products.sharedInstance.productsTraderArray
@@ -515,7 +580,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             var produ = Product(dico: prod)
             
             
-            if typeListe == 1 {
+            if typeListe == 0 {
                 
                 if let _ = lat, let _ = lon {
                     if (produ.prod_latitude >= minimumLat && produ.prod_latitude  <= maximumLat && produ.prod_longitude  >= minimumLon && produ.prod_longitude  <= maximumLon) {
@@ -531,28 +596,20 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 }
                 
             }
-            else if typeListe == 0  ||  typeListe == 2 {
+            else if typeListe == 1  ||  typeListe == 2 {
                 produ.prod_imageUrl = BlackBox.sharedInstance.saveImageArchive(prod_imageUrl: produ.prod_imageUrl)
                 products.append(produ)
                 
             }
             
-            
-            countProduct = products.count
-            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                self.IBTableView.reloadData()
-            }
-            
-            
         }
         
-        if theProducts.count == 0 {
-            
-            countProduct = products.count
-            BlackBox.sharedInstance.performUIUpdatesOnMain {
-                self.IBTableView.reloadData()
-            }
+        countProduct = products.count
+        BlackBox.sharedInstance.performUIUpdatesOnMain {
+            self.IBTableView.reloadData()
+            self.stopActivity()
         }
+        
         
     }
     
@@ -565,7 +622,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             return
         }
         
-        refreshControl.beginRefreshing()
+        runActivity()
         
         MDBMessage.sharedInstance.getAllMessages(config.user_id) {(success, messageArray, errorString) in
             
@@ -599,14 +656,14 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                         UIApplication.shared.applicationIconBadgeNumber = 0
                     }
                     
-                    self.refreshControl.endRefreshing()
+                    self.stopActivity()
                     
                 }
             }
             else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.refreshControl.endRefreshing()
+                    self.stopActivity()
                     self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }
@@ -637,6 +694,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                         self.aProduct.prod_mapString = produ.prod_mapString
                         self.aProduct.prod_nom = produ.prod_nom
                         self.aProduct.prod_prix = produ.prod_prix
+                        self.aProduct.prod_echange = produ.prod_echange
                         self.aProduct.prod_tempsDispo = produ.prod_tempsDispo
                         self.aProduct.prodImageOld = produ.prodImageOld
                         
@@ -644,15 +702,24 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                         
                     }
                     
+                    for i in 0...self.products.count-1 {
+                        let prod = self.products[i]
+                        if prod.prod_id == self.aProduct.prod_id {
+                            self.products[i] = self.aProduct
+                            break
+                        }
+                    }
+                    
                     self.countProduct = self.products.count
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                         self.IBTableView.reloadData()
-                        self.refreshControl.endRefreshing()
+                        self.stopActivity()
+                        
                     }
                 }
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.refreshControl.endRefreshing()
+                        self.stopActivity()
                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
@@ -664,10 +731,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         else {
             
             products.removeAll()
-            
             IBTableView.reloadData()
             
-            if typeListe == 0 {
+            if typeListe == 1 {
                 
                 //Menu MaListe
                 MDBProduct.sharedInstance.getProductsByUser(config.user_id) { (success, productArray, errorString) in
@@ -678,12 +744,14 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                         self.chargeData()
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.refreshControl.endRefreshing()
+                            self.IBTableView.reloadData()
+                            self.stopActivity()
                         }
+                        
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.refreshControl.endRefreshing()
+                            self.stopActivity()
                             self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
@@ -692,8 +760,8 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 
             }
-            else if typeListe == 1 {
-                
+            else if typeListe == 0 {
+                //Menu Carte
                 batchChargeData()
                 
             }
@@ -708,12 +776,13 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                         self.chargeData()
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.refreshControl.endRefreshing()
+                            self.IBTableView.reloadData()
+                            self.stopActivity()
                         }
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.refreshControl.endRefreshing()
+                            self.stopActivity()
                             self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
@@ -784,6 +853,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             displayAlert(translate.message("error"), mess: translate.message("deletionFor"))
             return
         }
+        
         MDBProduct.sharedInstance.setDeleteProduct(product) { (success, errorString) in
             
             if success {
@@ -791,7 +861,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 let prod1 =  self.products[indexPath.row]
                 var i = 0
                 
-                if self.typeListe == 0 {
+                if self.typeListe == 1 {
                     
                     for produ in Products.sharedInstance.productsUserArray {
                         i+=1
@@ -803,21 +873,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                             break
                         }
                     }
-                    
-                }
-                else if self.typeListe == 1 {
-                    
-                    for produ in Products.sharedInstance.productsArray {
-                        i+=1
-                        let prod2 = Product(dico: produ)
-                        if (prod2.prod_id == prod1.prod_id) {
-                            self.products.remove(at: indexPath.row)
-                            
-                            Products.sharedInstance.productsArray.remove(at: i-1)
-                            break
-                        }
-                    }
-                    
                     
                 }
                 else if self.typeListe == 2 {
@@ -837,10 +892,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 self.countProduct = self.products.count
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    if self.products.count == 0 {
-                        self.IBDelete.isEnabled=false
-                        self.IBTableView.isEditing = false
-                    }
                     tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)
                     self.IBTableView.reloadData()
                 }
@@ -923,16 +974,26 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             if view.tag == 99 {
                 firstlastname = view as! UILabel
                 firstlastname.text =  "\(product.prod_nom) (user:\(product.prod_by_user))"
+             
+                if product.prod_closed == true  {
+                    firstlastname.textColor = UIColor.gray
+                }
+                else if product.prod_closed == false && product.prod_hidden == false {
+                    firstlastname.textColor = UIColor.black
+                }
+                else if product.prod_closed == false && product.prod_hidden == true {
+                    firstlastname.textColor = UIColor.blue
+                }
             }
             else if view.tag == 88 {
                 photo = view as! UIImageView
+                
                 if product.prod_imageUrl == "" {
-                    photo.image = #imageLiteral(resourceName: "noimage")
+                     photo.image = #imageLiteral(resourceName: "noimage")
                 }
                 else {
-                    photo.image = BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: product.prod_imageUrl)
+                     photo.image = BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: product.prod_imageUrl)
                 }
-                
             }
             
         }

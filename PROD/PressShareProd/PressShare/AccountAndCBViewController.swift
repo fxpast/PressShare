@@ -6,12 +6,6 @@
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //
 
-
-//Todo: Integration de Paypal : https://developer.paypal.com/docs/integration/paypal-here/ios-dev/overview/
-
-//Todo: Integration des cartes de credit des clients avec PayBox : http://www1.paybox.com/espace-integrateur-documentation/les-solutions-paybox-direct-et-paybox-direct-plus/les-operations-de-caisse-direct-plus/#autorisation-seule-abonne
-
-
 import Foundation
 
 
@@ -53,14 +47,6 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
         
         
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        
-        
-    }
-    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -179,7 +165,7 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             self.IBActivity.stopAnimating()
                             self.IBActivity.isHidden = true
-                            self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            self.displayAlert(self.translate.error, mess: errorString!)
                         }
                     }
                     
@@ -191,7 +177,7 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
                     self.IBActivity.isHidden = true
-                    self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -323,7 +309,7 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
             }
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    self.displayAlert(self.translate.error, mess: errorString!)
                 }
             }
             
@@ -345,27 +331,27 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
             else {
                 cards[index].main_card = false
             }
-            
-            MDBCard.sharedInstance.setUpdateCard(cards[index], completionHandlerUpdCard: { (success, errorString) in
-                
-                if success {
-                    
-                    Cards.sharedInstance.cardsArray = nil
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.IBTableView.reloadData()
-                    }
-                    
-                }
-                else {
-                    
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.displayAlert(self.translate.message("error"), mess: errorString!)
-                    }
-                }
-                
-            })
-            
         }
+
+        
+        MDBCard.sharedInstance.setUpdateCard(cards[indexPath.row], completionHandlerUpdCard: { (success, errorString) in
+            
+            if success {
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.IBTableView.reloadData()
+                }
+            }
+            else {
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.displayAlert(self.translate.error, mess: errorString!)
+                }
+            }
+            
+        })
+        
+        
         
     }
     

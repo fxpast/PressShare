@@ -10,7 +10,6 @@
 
 //Todo: bogue : sur premiere deconnection la fenetre se ferme et retourne sur map, sur deuxieme deconnection ça marche ça le fait avec facebook
 
-
 import CoreData
 import Foundation
 import UIKit
@@ -72,6 +71,19 @@ class LoginTableViewController : UITableViewController, FBSDKLoginButtonDelegate
         super.viewDidLoad()
         
         tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
+        
+        let manager = FileManager.default
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
+        let filePath  = url.appendingPathComponent("firstTime")!.path
+        
+        if (NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as? Bool) == nil  {
+             NSKeyedArchiver.archiveRootObject(true, toFile: filePath)
+            //action info
+            let app = UIApplication.shared
+            app.openURL(URL(string: "\(CommunRequest.sharedInstance.urlServer)/Tuto_PressShare/")!)
+        }
+        
+        
         
     }
     
@@ -162,6 +174,8 @@ class LoginTableViewController : UITableViewController, FBSDKLoginButtonDelegate
         facebookButton.delegate = self
         
         let _ = loginWithLogout()
+        
+   
         
     }
     

@@ -6,7 +6,9 @@
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //
 
-//Todo: Integrer la push notification dans l'ajout de message php
+//Todo new: Message : ajouter une routine qui s’execute tous le 5 secondes
+
+//Todo new: Integrer la push notification dans l'ajout de message php
 
 import Foundation
 

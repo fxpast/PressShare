@@ -50,17 +50,6 @@ class TranslateMessage {
     
     static let sharedInstance = TranslateMessage()
     
-    var lang:String!
-        {
-        
-        get {
-            let resultat = dico["lang"] as! [AnyObject]
-            return resultat[langue-1] as! String
-        }
-        
-    }
-    
-    
     func message(_ value:String) -> String {
         
         let resultat = dico[value] as! [AnyObject]

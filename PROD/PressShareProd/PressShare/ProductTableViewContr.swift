@@ -9,17 +9,7 @@
 //
 
 
-//Todo: réduire le temps de création du produit
-
-//Todo: Sous l'icone € il faudrait avoir la mention transaction pour que se soit compréhensible
-//Todo: Sous l'icone @ il faudrait avoir la mention message pour que se soit compréhensible
-
-//Todo:ajouter bulle temporaire à bouton transaction et message
-
-//Todo: masquer / afficher la barre de recherche
-
-//Todo: faire bouton plein ecran de liste des produits.
-
+//Todo bug: produit l’epingle ne se déplace plus sur la carte
 
 import Foundation
 import MapKit
@@ -56,7 +46,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBSave: UIBarButtonItem!
     @IBOutlet weak var IBAlert: UIBarButtonItem!
-    @IBOutlet weak var IBTransact: UIBarButtonItem!
+    
+    var IBTransact: UIButton!
     
     var star=0
     var client=false
@@ -68,7 +59,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     let translate = TranslateMessage.sharedInstance
     var flgFirst = false
     var flgFindMe = false
-    var typeListe = 0 //MyList :0, Map:1, Historical:2
+    var typeListe = 0 //Map :0, MyList:1, Historical:2
     
     var latUser:CLLocationDegrees!
     var lonUser:CLLocationDegrees!
@@ -99,8 +90,37 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
+        IBActivity.isHidden = true
         
+        tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
+        if let thisproduct = aProduct {
+            
+            if thisproduct.prod_closed == false {
+                
+                for trans in Transactions.sharedInstance.transactionArray {
+                    let tran = Transaction(dico: trans)
+                    if tran.prod_id == aProduct?.prod_id {
+                        //0 : La transaction en cours. 1 : La transaction a été annulée. 2 : La transaction est confirmée.
+                        if tran.trans_valid == 0 {
+                            
+                            IBTransact = UIButton()
+                            IBTransact.setTitle(translate.message("validerTransact"), for: UIControlState.normal)
+                            IBTransact.titleLabel?.textColor = UIColor.white
+                            IBTransact.titleLabel?.backgroundColor = UIColor.red
+                            IBTransact.titleLabel?.font = UIFont.boldSystemFont(ofSize: 25.0)
+                            IBTransact.titleLabel?.textAlignment = .center
+                            IBTransact.addTarget(self, action: #selector(actionTransact(_:)), for: UIControlEvents.touchUpInside)
+                            IBTransact.tag = 999
+                            IBTransact.sizeToFit()
+                            tableView.addSubview(IBTransact)
+                            
+                        }
+                    }
+                }
+                
+            }
+            
+        }
         
     }
     
@@ -128,13 +148,22 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         }
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
         
-        IBActivity.stopAnimating()
-        IBActivity.isHidden = true
-        
-        
         if flgFirst == false {
             
             if let thisproduct = aProduct {
+                
+                IBAlert.isEnabled = false
+                
+                for mess in Messages.sharedInstance.MessagesArray {
+                    
+                    let message = Message(dico: mess)
+                    
+                    if message.product_id == aProduct?.prod_id {
+                        IBAlert.isEnabled = true
+                        break
+                    }
+                    
+                }
                 
                 if thisproduct.prod_imageUrl == "" {
                     IBAddImage.image = #imageLiteral(resourceName: "noimage")
@@ -175,22 +204,33 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 config.latitude = thisproduct.prod_latitude
                 config.longitude = thisproduct.prod_longitude
                 
-                if config.user_id == thisproduct.prod_by_user {
+                if config.user_id == thisproduct.prod_by_user  {
                     client=false
-                    setUIEnabled(true)
+                    if thisproduct.prod_closed == false {
+                        setUIEnabled(true)
+                    }
+                    else {
+                        IBSave.isEnabled = false
+                        setUIEnabled(false)
+                        
+                    }
+                    
+                    
                 }
                 else {
                     
                     if config.level <= 0 {
                         IBSave.isEnabled = false
                         IBAlert.isEnabled = false
-                        IBTransact.isEnabled = false
                         client=false
                     }
                     else {
                         client=true
                     }
                     
+                    if thisproduct.prod_closed == true {
+                        IBSave.isEnabled = false
+                    }
                     setUIEnabled(false)
                 }
                 
@@ -200,17 +240,13 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 IBEchangeChoice.isOn = false
                 IBAddImage.image = #imageLiteral(resourceName: "noimage")
                 IBAlert.isEnabled = false
-                IBTransact.isEnabled = false
+                IBPrix.text = BlackBox.sharedInstance.formatedAmount(0.0)
+                IBEchangeChoice.isOn = true
+                
                 
             }
             
-            
-            if client {
-                IBSave.title = translate.message("exchangeBuy")
-            }
-            else {
-                IBSave.title = translate.message("save")
-            }
+
             
             IBInfoLabel.text = translate.message("tapALoc")
             IBInfoLocation.placeholder = translate.message("tapALoc")
@@ -225,7 +261,6 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             IBTempsLabel.text = translate.message("availableTime")
             IBTemps.placeholder = translate.message("availableTime")
             IBEtat.text = translate.message("state")
-            IBTransact.title = translate.message("devise")
             
             IBEchangeLabel.text = translate.message("allowExch")
             
@@ -237,24 +272,49 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             
         }
         
+        flgFirst = true
         
-        for trans in Transactions.sharedInstance.transactionArray {
-            let tran = Transaction(dico: trans)
-            if tran.prod_id == aProduct?.prod_id {
-                if tran.trans_valid == 0 || tran.trans_valid == 2 {
-                    aTransaction = tran
-                    IBSave.isEnabled = false
-                }
-            }
+        if client {
+            IBSave.title = translate.message("exchangeBuy")
+            
+        }
+        else {
+            IBSave.title = translate.message("save")
         }
         
-        flgFirst = true
+        if let thisproduct = aProduct {
+            if thisproduct.prod_closed == false {
+                
+                for trans in Transactions.sharedInstance.transactionArray {
+                    let tran = Transaction(dico: trans)
+                    if tran.prod_id == aProduct?.prod_id {
+                        //0 : La transaction en cours. 1 : La transaction a été annulée. 2 : La transaction est confirmée.
+                        if tran.trans_valid == 0 || tran.trans_valid == 2 {
+                            aTransaction = tran
+                            IBSave.isEnabled = false
+                            
+                        }
+                        
+                        if  IBTransact != nil && (tran.trans_valid == 1 || tran.trans_valid == 2) {
+                            IBTransact.removeFromSuperview()
+                            IBTransact = nil
+                        }
+                        
+                        
+                    }
+                }
+                
+            }
+            
+        }
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(animated)
+
+        
         
     }
     
@@ -313,7 +373,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 
                 let xw1 = IBAddImage.frame.origin.x + IBAddImage.frame.size.width
                 let yh1 = IBAddImage.frame.origin.y + IBAddImage.frame.size.height
-                if zx <= xw1 && zx >= IBAddImage.frame.origin.x && zy  <= yh1 && zy >= IBAddImage.frame.origin.y {
+                if zx <= xw1 && zx >= IBAddImage.frame.origin.x && zy  <= yh1 && zy >= IBAddImage.frame.origin.y && client == false && config.level > 0 {
                     
                     actionAddImage()
                 }
@@ -346,7 +406,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         IBStar5.isEnabled = enabled
         IBEchangeChoice.isEnabled = enabled
         IBInfoLocation.isEnabled = enabled
-        
+        IBMyPositon.isEnabled = enabled
         IBFind.isEnabled = enabled
         
         
@@ -459,7 +519,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         
         
     }
-
+    
     
     //MARK: star placeholder
     private func changeStar(_ sender: UIButton) {
@@ -580,7 +640,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             var finalValue = textField.text!.replacingOccurrences(of: translate.message("devise"), with: "")
             finalValue = finalValue.replacingOccurrences(of: " ", with: "")
             if finalValue == "0.0" || finalValue == "0"  {
-                finalValue = ""
+                finalValue = "0"
             }
             
             guard let prix = BlackBox.sharedInstance.formatedAmount(finalValue) else {
@@ -588,12 +648,12 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 return
             }
             
+            
             if prix == 0 {
-                textField.text = ""
+                IBEchangeChoice.isOn = true
             }
-            else {
-                textField.text = BlackBox.sharedInstance.formatedAmount(prix)
-            }
+        
+            textField.text = BlackBox.sharedInstance.formatedAmount(prix)
             
             
         }
@@ -638,7 +698,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         }
         
         var annotations = [MKPointAnnotation]()
-      
+        
         //Setting Visible Area
         let annotation = MKPointAnnotation()
         let coordinate = CLLocationCoordinate2D(latitude: latUser, longitude: lonUser)
@@ -663,8 +723,6 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         flgFindMe = true
         
         self.IBActivity.startAnimating()
-        self.IBActivity.isHidden = false
-        
         
         if let _ = latUser , let _ = lonUser {
             
@@ -691,10 +749,6 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         
         
         self.IBActivity.stopAnimating()
-        self.IBActivity.isHidden = true
-        
-        
-        
         
         
     }
@@ -722,7 +776,6 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         
         
         IBActivity.startAnimating()
-        IBActivity.isHidden = false
         
         config.mapString = IBInfoLocation.text
         
@@ -773,7 +826,6 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 
                 self.IBMap.setRegion(coordinateRegion, animated: true)
                 self.IBActivity.stopAnimating()
-                self.IBActivity.isHidden = true
                 
             }
             
@@ -795,6 +847,17 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             return
         }
         
+        IBActivity.isHidden = false
+        IBActivity.startAnimating()
+        tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+        
+        var priceValue = IBPrix.text!.replacingOccurrences(of: translate.message("devise"), with: "")
+        priceValue = priceValue.replacingOccurrences(of:  " ", with: "")
+        if (priceValue == "0.0" || priceValue == "0") && IBEchangeChoice.isOn == false  {
+            IBEchangeChoice.isOn = true
+        }
+        
+        
         func actionClient() {
             
             performSegue(withIdentifier: "seller", sender: self)
@@ -808,6 +871,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             
             IBSave.isEnabled = false
             IBFind.isEnabled = false
+            IBMyPositon.isEnabled = false
             
             var product = Product(dico: [String : AnyObject]())
             
@@ -831,7 +895,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             var finalValue = IBPrix.text!.replacingOccurrences(of: translate.message("devise"), with: "")
             finalValue = finalValue.replacingOccurrences(of:  " ", with: "")
             if finalValue == "0.0" || finalValue == "0"  {
-                finalValue = ""
+                finalValue = "0"
             }
             
             if aProduct != nil {
@@ -847,6 +911,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             product.prod_tempsDispo = IBTemps.text!
             product.prod_etat = star
             product.prod_hidden = false
+            product.prod_closed = false
             product.prod_echange = IBEchangeChoice.isOn
             
             if aProduct != nil {
@@ -856,8 +921,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                     
                     if success {
                         
-                        //MyList :0, Map:1, Historical:2
-                        if self.typeListe == 0 {
+                        //Map :0, MyList:1, Historical:2
+                        if self.typeListe == 1 {
                             MDBProduct.sharedInstance.getProductsByUser(self.config.user_id) { (success, productArray, errorString) in
                                 
                                 if success {
@@ -869,6 +934,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
+                                        self.IBMyPositon.isEnabled = true
                                         self.dismiss(animated: true, completion: nil)
                                     }
                                     
@@ -881,7 +947,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                             }
                             
                         }
-                        else if self.typeListe == 1 {
+                        else if self.typeListe == 0 {
                             MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                 
                                 if success {
@@ -893,6 +959,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
+                                        self.IBMyPositon.isEnabled = true
                                         self.dismiss(animated: true, completion: nil)
                                     }
                                     
@@ -917,6 +984,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
+                                        self.IBMyPositon.isEnabled = true
                                         self.dismiss(animated: true, completion: nil)
                                     }
                                     
@@ -937,6 +1005,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                 self.IBSave.isEnabled = true
                                 self.IBFind.isEnabled = true
+                                self.IBMyPositon.isEnabled = true
                                 self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
@@ -952,8 +1021,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                     
                     if success {
                         
-                        //MyList :0, Map:1, Historical:2
-                        if self.typeListe == 0{
+                        //Map :0, MyList:1, Historical:2
+                        if self.typeListe == 1 {
                             MDBProduct.sharedInstance.getProductsByUser(self.config.user_id) { (success, productArray, errorString) in
                                 
                                 if success {
@@ -965,6 +1034,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
+                                        self.IBMyPositon.isEnabled = true
                                         self.dismiss(animated: true, completion: nil)
                                     }
                                     
@@ -977,18 +1047,19 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                             }
                             
                         }
-                        else if self.typeListe == 1{
+                        else if self.typeListe == 0 {
                             MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                 
                                 if success {
                                     
-                                    Products.sharedInstance.productsUserArray = productArray
+                                    Products.sharedInstance.productsArray = productArray
                                     
                                     self.config.product_add = true
                                     self.config.product_maj = false
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
+                                        self.IBMyPositon.isEnabled = true
                                         self.dismiss(animated: true, completion: nil)
                                     }
                                     
@@ -1001,18 +1072,19 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                             }
                             
                         }
-                        else if self.typeListe == 2{
+                        else if self.typeListe == 2 {
                             MDBProduct.sharedInstance.getProductsByTrader(self.config.user_id) { (success, productArray, errorString) in
                                 
                                 if success {
                                     
-                                    Products.sharedInstance.productsUserArray = productArray
+                                    Products.sharedInstance.productsTraderArray = productArray
                                     
                                     self.config.product_add = true
                                     self.config.product_maj = false
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
+                                        self.IBMyPositon.isEnabled = true
                                         self.dismiss(animated: true, completion: nil)
                                     }
                                     
@@ -1026,13 +1098,14 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                             
                         }
                         
-                       
+                        
                         
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             self.IBSave.isEnabled = true
                             self.IBFind.isEnabled = true
+                            self.IBMyPositon.isEnabled = true
                             self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
@@ -1055,6 +1128,18 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     
     //MARK: Table View Controller data source
     
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if IBTransact != nil {
+            
+            IBTransact.frame = CGRect(origin: CGPoint.init(x: tableView.frame.size.width/2 - IBTransact.frame.size.width/2 , y: scrollView.contentOffset.y + tableView.frame.size.height - IBTransact.frame.size.height), size: IBTransact.frame.size)
+            
+            view.bringSubview(toFront: view.viewWithTag(999)!)
+            view.bringSubview(toFront: IBTransact)
+            
+        }
+        
+    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         

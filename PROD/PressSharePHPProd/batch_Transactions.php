@@ -39,7 +39,7 @@ if ($result = mysqli_query($con, $sql))
     while($row = $result->fetch_object())
     {  
         $maxDay = $row->maxDayTrigger; 
-        $comAmount = $row->commissionPrice; 
+        $comAmount = $row->commisFixEx; 
     }
 } 
 
@@ -122,8 +122,7 @@ if ($result = mysqli_query($con, $sql))
         $prodId = $row->prod_id;
         $clientId = $row->client_id;
         $vendeurId = $row->vendeur_id;
-        $transAmount = $row->trans_amount;
-        $totalCom  = $transAmount * $comAmount;
+        $totalCom  = $comAmount;
         
         
         $today=date('d-m-Y');
@@ -203,9 +202,15 @@ if ($result = mysqli_query($con, $sql))
                         $sql = "UPDATE Transaction SET trans_valid = 2 WHERE trans_id = '" . mysqli_real_escape_string($con, $transId) . "'";
                         
                         if ($result4 = mysqli_query($con, $sql))
-                        {		
+                        {	
+                            $sql = "UPDATE Product SET prod_closed = 1 WHERE prod_id = '" . mysqli_real_escape_string($con, $prodId) . "'";
+                            $result4 = mysqli_query($con, $sql);
+	
                             $flgOK = 1;		    
                         } 
+                        
+        
+
                                                                                             
                         break;                                               
                     }

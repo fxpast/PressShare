@@ -10,6 +10,7 @@
 
 
 
+
 import CoreData
 import UIKit
 import Foundation
@@ -107,11 +108,43 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
             
             if success {
                 
-                self.aProduct = product
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.refreshControl1.endRefreshing()
-                    self.performSegue(withIdentifier: "fromsettings", sender: self)
+                
+                MDBTransact.sharedInstance.getAllTransactions(self.config.user_id) { (success, transactionArray, errorString) in
+                    
+                    if success {
+                        
+                        Transactions.sharedInstance.transactionArray = transactionArray
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            var i = 0
+                            for tran in Transactions.sharedInstance.transactionArray  {
+                                
+                                let tran1 = Transaction(dico: tran)
+                                
+                                if (tran1.trans_valid != 1 && tran1.trans_valid != 2 )  {
+                                    i+=1
+                                }
+                                
+                            }
+                            if i > 0 {
+                                self.config.trans_badge = i
+                                
+                            }
+                            
+                            self.aProduct = product
+                            self.refreshControl1.endRefreshing()
+                            self.performSegue(withIdentifier: "fromsettings", sender: self)
+                        }
+                    }
+                    else {
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            self.displayAlert(self.translate.message("error"), mess: errorString!)
+                        }
+                    }
+                    
                 }
+                
             }
             else {
                 

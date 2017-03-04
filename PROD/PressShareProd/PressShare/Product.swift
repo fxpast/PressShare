@@ -34,6 +34,8 @@ struct Product {
     var prod_hidden:Bool
     var prod_echange:Bool
     var prodImageOld:String
+    var prod_closed:Bool
+    
     
     
     //MARK: Initialisation
@@ -46,7 +48,6 @@ struct Product {
             prod_imageUrl = dico["prod_imageUrl"] as! String
             prod_imageData = Data()
             prod_nom = dico["prod_nom"] as! String
-            
             prod_date = Date().dateFromString(dico["prod_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             prod_prix = Double(dico["prod_prix"] as! String)!
             prod_by_user = Int(dico["prod_by_user"] as! String)!
@@ -60,6 +61,7 @@ struct Product {
             prod_etat = Int(dico["prod_etat"] as! String)!            
             prod_hidden = (Int(dico["prod_hidden"] as! String)! == 0) ? false : true
             prod_echange = (Int(dico["prod_echange"] as! String)! == 0) ? false : true
+            prod_closed = (Int(dico["prod_closed"] as! String)! == 0) ? false : true
             prodImageOld = ""
             
         }
@@ -81,6 +83,7 @@ struct Product {
             prod_etat = 0
             prod_hidden=false
             prod_echange=false
+            prod_closed=false
             prodImageOld = ""
             
         }
@@ -307,7 +310,7 @@ class MDBProduct {
         var body: String = ""
         if typeUpdate == "ProductTrans" {
             
-            body = "prod_id=\(product.prod_id)&prod_oth_user=\(product.prod_oth_user)&prod_hidden=\(product.prod_hidden)&lang=\(translate.message("lang"))"
+            body = "prod_id=\(product.prod_id)&prod_oth_user=\(product.prod_oth_user)&prod_hidden=\(product.prod_hidden)&prod_closed=\(product.prod_closed)&lang=\(translate.message("lang"))"
             request = CommunRequest.sharedInstance.buildRequest(body, request)
             
         }
@@ -315,7 +318,7 @@ class MDBProduct {
             
             if product.prodImageOld == "" {
                 
-                body = "prod_id=\(product.prod_id)&prod_nom=\(product.prod_nom)&prod_date=\(product.prod_date)&prod_prix=\(product.prod_prix)&prod_by_user=\(product.prod_by_user)&prod_by_cat=\(product.prod_by_cat)&prod_latitude=\(product.prod_latitude)&prod_longitude=\(product.prod_longitude)&prod_mapString=\(product.prod_mapString)&prod_comment=\(product.prod_comment)&prod_tempsDispo=\(product.prod_tempsDispo)&prod_etat=\(product.prod_etat)&prod_hidden=\(product.prod_hidden)&prod_echange=\(product.prod_echange)&prod_imageUrl=\(product.prod_imageUrl)&prodImageOld=\(product.prodImageOld)&lang=\(translate.message("lang"))"
+                body = "prod_id=\(product.prod_id)&prod_nom=\(product.prod_nom)&prod_date=\(product.prod_date)&prod_prix=\(product.prod_prix)&prod_by_user=\(product.prod_by_user)&prod_by_cat=\(product.prod_by_cat)&prod_latitude=\(product.prod_latitude)&prod_longitude=\(product.prod_longitude)&prod_mapString=\(product.prod_mapString)&prod_comment=\(product.prod_comment)&prod_tempsDispo=\(product.prod_tempsDispo)&prod_etat=\(product.prod_etat)&prod_hidden=\(product.prod_hidden)&prod_echange=\(product.prod_echange)&prod_closed=\(product.prod_closed)&prod_imageUrl=\(product.prod_imageUrl)&prodImageOld=\(product.prodImageOld)&lang=\(translate.message("lang"))"
                 request = CommunRequest.sharedInstance.buildRequest(body, request)
             }
             else {
@@ -338,6 +341,7 @@ class MDBProduct {
                     "prod_hidden" : product.prod_hidden,
                     "prod_echange" : product.prod_echange,
                     "prod_id" : product.prod_id,
+                    "prod_closed" : product.prod_closed,
                     "lang" : translate.message("lang")
                     ] as [String : Any]
                 
@@ -379,8 +383,6 @@ class MDBProduct {
         task.resume()
         
     }
-    
-    
     
     func setDeleteProduct(_ product: Product, completionHandlerDelProduct: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
@@ -452,6 +454,7 @@ class MDBProduct {
             "prod_etat" : product.prod_etat,
             "prod_echange" : product.prod_echange,
             "prod_imageUrl" : product.prod_imageUrl,
+            "prod_closed" : product.prod_closed,
             "lang" : translate.message("lang")
             ] as [String : Any]
         

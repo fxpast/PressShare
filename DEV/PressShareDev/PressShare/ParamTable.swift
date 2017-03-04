@@ -19,7 +19,9 @@ struct ParamTable {
     var distanceProduct:Double
     var regionGeoLocat:Double
     var regionProduct:Double
-    var commissionPrice:Double
+    var commisPourcBuy:Double
+    var commisFixEx:Double
+    var maxDayTrigger:Int
     
     //MARK: Initialisation
     
@@ -31,14 +33,18 @@ struct ParamTable {
             distanceProduct = Double(dico["distanceProduct"] as! String)!
             regionGeoLocat = Double(dico["regionGeoLocat"] as! String)!
             regionProduct = Double(dico["regionProduct"] as! String)!
-            commissionPrice = Double(dico["commissionPrice"] as! String)!
+            commisPourcBuy = Double(dico["commisPourcBuy"] as! String)!
+            commisFixEx = Double(dico["commisFixEx"] as! String)!
+            maxDayTrigger = Int(dico["maxDayTrigger"] as! String)!
         }
         else {
             param_id = 0
             distanceProduct = 0
             regionGeoLocat = 0
             regionProduct = 0
-            commissionPrice = 0
+            commisPourcBuy = 0
+            commisFixEx = 0
+            maxDayTrigger = 0
         }
         
     }

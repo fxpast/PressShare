@@ -14,8 +14,17 @@ else {
     $prod_hidden = 1;
 }  
 
+if ($_POST['prod_closed'] == "false") {
+ 
+    $prod_closed = 0;
+}
+else {
+    $prod_closed = 1;
+}  
+
 $sql = "UPDATE Product			
         SET prod_hidden = '" . mysqli_real_escape_string($con, $prod_hidden) . "',
+        prod_closed = '" . mysqli_real_escape_string($con, $prod_closed) . "',
         prod_oth_user = '" . mysqli_real_escape_string($con, $_POST['prod_oth_user']) . "'
         WHERE
         prod_id = '" . mysqli_real_escape_string($con, $_POST['prod_id']) . "'";

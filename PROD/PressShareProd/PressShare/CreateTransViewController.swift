@@ -64,7 +64,10 @@ class CreateTransViewController: UIViewController {
         else {
             IBExchange.isOn = false
             IBTrade.isOn = false
-            
+        }
+        
+        if aProduct?.prod_prix == 0 {
+            IBTrade.isEnabled = false
         }
         
         
@@ -179,16 +182,24 @@ class CreateTransViewController: UIViewController {
             message.vendeur_id = (self.aProduct?.prod_by_user)!
             message.product_id = (self.aProduct?.prod_id)!
             
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeStyle = .none
+            dateFormatter.dateStyle = .medium
+            dateFormatter.locale = Locale.current
+            dateFormatter.doesRelativeDateFormatting = true
+            let dateExpire = Calendar.current.date(byAdding: Calendar.Component.day, value: self.config.maxDayTrigger, to: Date())
+            let dateExpireString = dateFormatter.string(from: dateExpire!)
+            
             var typetransaction = ""
             if self.IBTrade.isOn {
                 
                 typetransaction = self.translate.message("buy")
-                message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.IBInfoProduct.text!) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor"))"
+                message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.IBInfoProduct.text!) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor")) \(self.translate.message("transactExpire")) \(dateExpireString)"
             }
             else if self.IBExchange.isOn {
                 
                 typetransaction = self.translate.message("exchange")
-                message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.aProduct!.prod_nom) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor"))"
+                message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.aProduct!.prod_nom) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor")) \(self.translate.message("transactExpire")) \(dateExpireString)"
             }
             
             
@@ -268,29 +279,61 @@ class CreateTransViewController: UIViewController {
                             product.prod_id = atransaction.prod_id
                             product.prod_hidden = true
                             product.prod_oth_user = self.config.user_id
+                            product.prod_closed = false
                             
                             MDBProduct.sharedInstance.setUpdateProduct("ProductTrans", product) { (success, errorString) in
                                 
                                 if success {
                                     
-                                    
+                                    //Menu Carte
                                     MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
-                                        
                                         
                                         if success {
                                             
-                                            Products.sharedInstance.productsUserArray = productArray
+                                            Products.sharedInstance.productsArray = productArray
                                             
-                                            BlackBox.sharedInstance.performUIUpdatesOnMain {                                               
-                                                self.performSegue(withIdentifier: "messagerie", sender: sender)
-                                                
-                                            }
                                         }
                                         else {
                                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                                 self.displayAlert(self.translate.message("error"), mess: errorString!)
                                             }
                                         }
+                                    }
+                                    
+                                    //Menu Historique
+                                    MDBProduct.sharedInstance.getProductsByTrader(self.config.user_id) { (success, productArray, errorString) in
+                                        
+                                        if success {
+                                            
+                                            Products.sharedInstance.productsTraderArray = productArray
+                                        }
+                                        else {
+                                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                                            }
+                                        }
+                                        
+                                    }
+                                    
+                                    //Menu MaListe
+                                    MDBProduct.sharedInstance.getProductsByUser(self.config.user_id) { (success, productArray, errorString) in
+                                        
+                                        if success {
+                                            
+                                            Products.sharedInstance.productsUserArray = productArray
+                                            
+                                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                self.performSegue(withIdentifier: "messagerie", sender: sender)
+                                                
+                                            }
+                                            
+                                        }
+                                        else {
+                                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                                            }
+                                        }
+                                        
                                     }
                                     
                                 }

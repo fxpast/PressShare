@@ -32,10 +32,20 @@
 		<string>Interlocuteur absent</string>
 		<string>Interlocutor absent</string>
 	</array>
+    <key>transactExpire</key>
+    <array>
+        <string>Attention, vous devez valider la transaction avant le</string>
+        <string>Caution, you must validate the transaction before</string>
+    </array>
     <key>typeOfPay</key>
     <array>
         <string>Type de carte de paiement :</string>
         <string>Type of payment card :</string>
+    </array>
+    <key>validerTransact</key>
+    <array>
+        <string>Valider la transaction</string>
+        <string>Validate the transaction</string>
     </array>
     <key>cryptogram</key>
     <array>
@@ -87,6 +97,11 @@
 		<string>Erreur</string>
 		<string>Error</string>
 	</array>
+    <key>seeOtherProduct</key>
+    <array>
+        <string>Voir les autres produits</string>
+        <string>See others products</string>
+    </array>
 	<key>errorParseJSON</key>
 	<array>
 		<string>Les données n&apos;ont pas pu être transformée au format JSON:</string>
@@ -249,8 +264,8 @@
 	</array>
     <key>mylist</key>
     <array>
-        <string>maListe</string>
-        <string>myList</string>
+        <string>Mes items</string>
+        <string>My items</string>
     </array>
     <key>historical</key>
     <array>
@@ -349,8 +364,8 @@
 	</array>
 	<key>runTransac</key>
 	<array>
-		<string>Transaction en cours</string>
-		<string>Running transaction</string>
+		<string>Liste des transactions</string>
+		<string>Transactions list</string>
 	</array>
 	<key>ExplanTuto</key>
 	<array>
@@ -479,8 +494,8 @@
 	</array>
 	<key>customerFor</key>
 	<array>
-		<string>Prenez contact avec le client pour la suite de la transaction...</string>
-		<string>Contact the customer to following the transaction...</string>
+		<string>Prenez contact avec le client pour la suite de la transaction.</string>
+		<string>Contact the customer to following the transaction.</string>
 	</array>
 	<key>productToShow</key>
 	<array>

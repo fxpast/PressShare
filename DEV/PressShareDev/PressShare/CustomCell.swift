@@ -2,6 +2,9 @@
 //  CustomCell.swift
 //  PressShare
 //
+//
+//Description : Create a cell with subview photo and title properties
+//
 //  Created by MacbookPRV on 21/01/2017.
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //

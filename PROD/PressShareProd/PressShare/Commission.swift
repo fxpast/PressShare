@@ -68,7 +68,7 @@ class MDBCommission {
 
         // Create your request string with parameter name as defined in PHP file
         
-        let body: String = "user_id=\(commission.user_id)&product_id=\(commission.product_id)&com_amount=\(commission.com_amount)&balance=\(balance)&lang=\(translate.lang!)"
+        let body: String = "user_id=\(commission.user_id)&product_id=\(commission.product_id)&com_amount=\(commission.com_amount)&balance=\(balance)&lang=\(translate.message("lang"))"
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_addCommission.php")!)

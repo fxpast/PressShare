@@ -2,6 +2,8 @@
 //  PinView.swift
 //  PressShare
 //
+//Description : Create a extend Pin with prod_id property
+//
 //  Created by MacbookPRV on 20/02/2017.
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //

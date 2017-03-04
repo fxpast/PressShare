@@ -368,8 +368,76 @@ class DetailTransViewController: UIViewController {
             })
             
             
+            var product = Product(dico: [String : AnyObject]())
+            product.prod_id = (self.aTransaction?.prod_id)!
+            product.prod_hidden = true
+            product.prod_oth_user = (self.aTransaction?.proprietaire)!
+            product.prod_closed = true
+            
+            MDBProduct.sharedInstance.setUpdateProduct("ProductTrans", product) { (success, errorString) in
+                
+                if success {
+                    
+                    //Menu Carte
+                    MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
+                        
+                        if success {
+                            
+                            Products.sharedInstance.productsArray = productArray
+                            
+                        }
+                        else {
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            }
+                        }
+                    }
+                    
+                    //Menu Historique
+                    MDBProduct.sharedInstance.getProductsByTrader(self.config.user_id) { (success, productArray, errorString) in
+                        
+                        if success {
+                            
+                            Products.sharedInstance.productsTraderArray = productArray
+                        }
+                        else {
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            }
+                        }
+                        
+                    }
+                    
+                    //Menu MaListe
+                    MDBProduct.sharedInstance.getProductsByUser(self.config.user_id) { (success, productArray, errorString) in
+                        
+                        if success {
+                            
+                            Products.sharedInstance.productsUserArray = productArray
+                            
+                        }
+                        else {
+                            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            }
+                        }
+                        
+                    }
+                    
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    }
+                }
+                
+            }
+            
+            
             config.balance = config.balance - Double(aTransaction!.trans_amount)
-            config.balance = config.balance - config.commissionPrice * Double(aTransaction!.trans_amount)
+            config.balance = config.balance - config.commisPourcBuy * Double(aTransaction!.trans_amount)
             var capital = Capital(dico: [String : AnyObject]())
             var operation = Operation(dico: [String : AnyObject]())
             
@@ -387,7 +455,7 @@ class DetailTransViewController: UIViewController {
                     
                     commission.user_id = self.aTransaction!.proprietaire
                     commission.product_id = self.aTransaction!.prod_id
-                    commission.com_amount = self.config.commissionPrice * Double(self.aTransaction!.trans_amount)
+                    commission.com_amount = self.config.commisPourcBuy * Double(self.aTransaction!.trans_amount)
                     
                     //Création d'une commission d'achat pour le client
                     MDBCommission.sharedInstance.setAddCommission(commission, self.config.balance, completionHandlerCommission: { (success, errorString) in
@@ -441,7 +509,7 @@ class DetailTransViewController: UIViewController {
                                     for dictionary in capitalArray!{
                                         let cap = Capital(dico: dictionary)
                                         capital.balance = cap.balance + Double(self.aTransaction!.trans_amount)
-                                        capital.balance = capital.balance - self.config.commissionPrice * Double(self.aTransaction!.trans_amount)
+                                        capital.balance = capital.balance - self.config.commisPourcBuy * Double(self.aTransaction!.trans_amount)
                                         capital.user_id = cap.user_id
                                         capital.failure_count = cap.failure_count
                                     }
@@ -455,7 +523,7 @@ class DetailTransViewController: UIViewController {
                                             
                                             commission.user_id = self.aTransaction!.vendeur_id
                                             commission.product_id = self.aTransaction!.prod_id
-                                            commission.com_amount = self.config.commissionPrice * Double(self.aTransaction!.trans_amount)
+                                            commission.com_amount = self.config.commisPourcBuy * Double(self.aTransaction!.trans_amount)
                                             
                                             //Création d'une commission d'achat pour le client
                                             MDBCommission.sharedInstance.setAddCommission(commission, capital.balance,  completionHandlerCommission: { (success, errorString) in
@@ -629,20 +697,54 @@ class DetailTransViewController: UIViewController {
                 
                 if success {
                     
+       
                     var product = Product(dico: [String : AnyObject]())
                     product.prod_id = (self.aTransaction?.prod_id)!
                     product.prod_hidden = false
+                    product.prod_oth_user = 0
+                    product.prod_closed = false
                     
                     MDBProduct.sharedInstance.setUpdateProduct("ProductTrans", product) { (success, errorString) in
                         
                         if success {
                             
+                            //Menu Carte
                             MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                 
                                 if success {
                                     
-                                    Products.sharedInstance.productsUserArray = productArray
+                                    Products.sharedInstance.productsArray = productArray
+                                    
+                                }
+                                else {
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                                    }
+                                }
+                            }
                             
+                            //Menu Historique
+                            MDBProduct.sharedInstance.getProductsByTrader(self.config.user_id) { (success, productArray, errorString) in
+                                
+                                if success {
+                                    
+                                    Products.sharedInstance.productsTraderArray = productArray
+                                }
+                                else {
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                                    }
+                                }
+                                
+                            }
+                            
+                            //Menu MaListe
+                            MDBProduct.sharedInstance.getProductsByUser(self.config.user_id) { (success, productArray, errorString) in
+                                
+                                if success {
+                                    
+                                    Products.sharedInstance.productsUserArray = productArray
+                                    
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBActivity.stopAnimating()
                                         self.dismiss(animated: true, completion: nil)
@@ -654,6 +756,7 @@ class DetailTransViewController: UIViewController {
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
+                                
                             }
                             
                         }
@@ -731,12 +834,12 @@ class DetailTransViewController: UIViewController {
             
             var commission = Commission(dico: [String : AnyObject]())
             //l'utilisateur confirme l'echange
-            config.balance = config.balance - config.commissionPrice
+            config.balance = config.balance - config.commisFixEx
             
             
             commission.user_id = aTransaction!.proprietaire
             commission.product_id = aTransaction!.prod_id
-            commission.com_amount = config.commissionPrice * Double(aTransaction!.trans_amount)
+            commission.com_amount = config.commisFixEx
             
             //Création d'une commission d'achat pour le client
             MDBCommission.sharedInstance.setAddCommission(commission, config.balance, completionHandlerCommission: { (success, errorString) in
@@ -824,31 +927,66 @@ class DetailTransViewController: UIViewController {
             MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
                 
                 if success {
-                    
+           
                     var product = Product(dico: [String : AnyObject]())
                     product.prod_id = (self.aTransaction?.prod_id)!
                     product.prod_hidden = false
-                   
+                    product.prod_oth_user = 0
+                    product.prod_closed = false
+                    
                     MDBProduct.sharedInstance.setUpdateProduct("ProductTrans", product) { (success, errorString) in
                         
                         if success {
                             
+                            //Menu Carte
                             MDBProduct.sharedInstance.getProductsByCoord(self.config.user_id, minLon: self.config.minLongitude, maxLon: self.config.maxLongitude , minLat: self.config.minLatitude, maxLat: self.config.maxLatitude) { (success, productArray, errorString) in
                                 
                                 if success {
                                     
-                                    Products.sharedInstance.productsUserArray = productArray
-                                    
-                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                                        self.IBActivity.stopAnimating()
-                                        self.dismiss(animated: true, completion: nil)
-                                    }
+                                    Products.sharedInstance.productsArray = productArray
+                                  
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
+                            }
+                            
+                            //Menu Historique
+                            MDBProduct.sharedInstance.getProductsByTrader(self.config.user_id) { (success, productArray, errorString) in
+                                
+                                if success {
+                                    
+                                    Products.sharedInstance.productsTraderArray = productArray
+                                }
+                                else {
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                                    }
+                                }
+                                
+                            }
+                            
+                            //Menu MaListe
+                            MDBProduct.sharedInstance.getProductsByUser(self.config.user_id) { (success, productArray, errorString) in
+                                
+                                if success {
+                                    
+                                    Products.sharedInstance.productsUserArray = productArray
+                                  
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.stopAnimating()
+                                        self.dismiss(animated: true, completion: nil)
+                                    }
+                                    
+                                }
+                                else {
+                                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                                    }
+                                }
+                                
                             }
                             
                             
