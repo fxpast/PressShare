@@ -1,7 +1,7 @@
 <?php
  
 session_start();
-include 'connect.php';
+include 'api_connect.php';
 
   
 // This SQL statement selects ALL from the table 'Locations'
@@ -19,14 +19,17 @@ $password = "'" . $_POST['user_pass'] . "'";
             User
     WHERE
             user_email = '" . mysqli_real_escape_string($con, $_POST['user_email']) . "'";
-            
-            
+
+
+
 if ($_POST['user_newpassword'] == "false") {
- 
+    $user_newpassword = 0;
     $sql = $sql . " and user_pass = '" . sha1($password) . "'";
 }
-
-        
+else {
+    $user_newpassword = 1;
+}  
+         
    
  
 $flgOK = 0; 
@@ -69,7 +72,7 @@ else {
 	    
 	$sql = "UPDATE User			
 	        SET user_pass = '" . sha1($lastpassword) . "',
-	        user_newpassword = '" . $_POST['user_newpassword'] . "' 
+	        user_newpassword = '" . $user_newpassword . "' 
 	        WHERE
             user_id = '" . mysqli_real_escape_string($con, $userid) . "'";
 	

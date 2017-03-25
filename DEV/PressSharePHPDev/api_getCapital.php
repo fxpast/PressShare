@@ -3,7 +3,7 @@
 
 
 session_start();
-include 'connect.php';
+include 'api_connect.php';
 
   
 //the form has been posted without, so save it

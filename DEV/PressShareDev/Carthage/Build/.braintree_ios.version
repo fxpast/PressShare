@@ -1,0 +1,14 @@
+{
+  "xcodeVersion" : "Xcode 8.2.1\nBuild version 8C1002",
+  "commitish" : "4.7.5",
+  "iOS" : [
+    {
+      "name" : "PayPalUtils",
+      "md5" : "dcf85ac41e91e90a8716b1ccdd8a1430"
+    },
+    {
+      "name" : "BraintreeUI",
+      "md5" : "d177235389f6eab5cb959987a31f16a8"
+    }
+  ]
+}

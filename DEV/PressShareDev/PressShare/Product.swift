@@ -12,11 +12,6 @@
 import Foundation
 import UIKit
 
-// This enum contains all the possible states a photo record can be in
-enum PhotoRecordState {
-    case New, Downloaded, Filtered, Failed
-}
-
 
 struct Product {
     

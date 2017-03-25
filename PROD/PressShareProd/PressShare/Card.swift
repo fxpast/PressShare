@@ -19,11 +19,8 @@ struct Card {
     var typeCard_id:Int
     var user_id:Int
     var typeCard_ImageUrl:String
-    var card_number:String
+    var tokenizedCard:String
     var card_lastNumber:String
-    var card_owner:String
-    var card_date:String
-    var card_crypto:String
     var main_card:Bool
     
     
@@ -35,13 +32,10 @@ struct Card {
             
             card_id = Int(dico["card_id"] as! String)!
             typeCard_id = Int(dico["typeCard_id"] as! String)!
-            user_id = 0
+            user_id = Int(dico["user_id"] as! String)!
             typeCard_ImageUrl = ""
-            card_number = ""
+            tokenizedCard = dico["tokenizedCard"] as! String
             card_lastNumber = dico["card_lastNumber"] as! String
-            card_owner = ""
-            card_date = ""
-            card_crypto = ""
             main_card = (Int(dico["main_card"] as! String)! == 0) ? false : true
             
         }
@@ -50,11 +44,8 @@ struct Card {
             typeCard_id = 0
             typeCard_ImageUrl = ""
             user_id = 0
-            card_number = ""
+            tokenizedCard = ""
             card_lastNumber = ""
-            card_owner = ""
-            card_date = ""
-            card_crypto = ""
             main_card = false
             
         }
@@ -64,7 +55,7 @@ struct Card {
 }
 
 
-//MARK: TypeCards Array
+//MARK: Cards Array
 class Cards {
     
     var cardsArray :[[String:AnyObject]]!
@@ -73,6 +64,8 @@ class Cards {
 }
 
 
+
+//MARK: Card methods
 class MDBCard {
     
     let translate = TranslateMessage.sharedInstance
@@ -132,8 +125,8 @@ class MDBCard {
         }
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "card_id=\(card.card_id)&lang=\(translate.message("lang"))"
-        // Create Data from request
+        let body: String = "card_id=\(card.card_id)&tokenizedCard=\(card.tokenizedCard)&lang=\(translate.message("lang"))"
+        //Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_delCard.php")!)
         
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -178,7 +171,7 @@ class MDBCard {
         }
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "card_id=\(card.card_id)&main_card=\(card.main_card)&lang=\(translate.message("lang"))"
+        let body: String = "card_id=\(card.card_id)&main_card=\(card.main_card)&typeCard_id=\(card.typeCard_id)&tokenizedCard=\(card.tokenizedCard)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateCard.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -223,7 +216,7 @@ class MDBCard {
         }
         
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "typeCard_id=\(card.typeCard_id)&user_id=\(card.user_id)&card_number=\(card.card_number)&card_lastNumber=\(card.card_lastNumber)&card_owner=\(card.card_owner)&card_date=\(card.card_date)&card_crypto=\(card.card_crypto)&lang=\(translate.message("lang"))"
+        let body: String = "typeCard_id=\(card.typeCard_id)&user_id=\(card.user_id)&tokenizedCard=\(card.tokenizedCard)&card_lastNumber=\(card.card_lastNumber)&main_card=\(card.main_card)&lang=\(translate.message("lang"))"
         
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_addCard.php")!)

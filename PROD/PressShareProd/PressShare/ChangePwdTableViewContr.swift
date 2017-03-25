@@ -8,7 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-import CoreData
 import UIKit
 
 class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
@@ -32,13 +31,7 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
-    var users = [User]()
-    
-    var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        return delegate.managedObjectContext
-    }
-    
+
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
@@ -63,9 +56,7 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        users = fetchAllUser()
-        
+     
         tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
         
         
@@ -162,6 +153,14 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
         
     }
     
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("ChangePwdTableViewContr", self)
+        
+    }
+    
+    
     @IBAction func actionCancel(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
     }
@@ -172,26 +171,7 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
         }
         sender.cancelsTouchesInView = false
     }
-    
-    
-    //MARK: coreData function
-    
-    private func fetchAllUser() -> [User] {
-        
-        
-        users.removeAll()
-        // Create the Fetch Request
-        
-        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
-        
-        // Execute the Fetch Request
-        do {
-            return try sharedContext.fetch(request) as! [User]
-        } catch _ {
-            return [User]()
-        }
-    }
-    
+  
     //MARK: Data User with update password
     
     @IBAction func actionDone(_ sender: AnyObject) {
@@ -263,21 +243,6 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
             config.user_newpassword = false
         }
         
-        
-        if users.count > 0 {
-            
-            sharedContext.delete(users[0])
-            users.removeLast()
-            
-            // Save the context.
-            do {
-                try sharedContext.save()
-            } catch let error as NSError {
-                print(error.debugDescription)
-                
-            }
-            
-        }
         
         MDBUser.sharedInstance.setUpdatePass(config) { (success, errorString) in
             if success {

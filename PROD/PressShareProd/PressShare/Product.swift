@@ -17,22 +17,22 @@ struct Product {
     
     
     var prod_id:Int
-    var prod_imageData:Data
-    var prod_imageUrl:String
+    var prod_imageData:Data // stocker l'image binaire
+    var prod_imageUrl:String //stoker url de l'image
     var prod_nom:String
     var prod_date:Date
     var prod_prix:Double
-    var prod_by_user:Int
-    var prod_oth_user:Int
+    var prod_by_user:Int //le vendeur
+    var prod_oth_user:Int //le client
     var prod_by_cat:Int
     var prod_latitude:Double
     var prod_longitude:Double
-    var prod_mapString:String
+    var prod_mapString:String //le nom du lieu sur la carte
     var prod_comment:String
     var prod_tempsDispo:String
     var prod_etat:Int //number of star
     var prod_hidden:Bool
-    var prod_echange:Bool
+    var prod_echange:Bool // autoriser l'echange de produit
     var prodImageOld:String
     var prod_closed:Bool
     
@@ -104,6 +104,8 @@ class Products {
 }
 
 
+
+//MARK: Product methods
 class MDBProduct {
     
     let translate = TranslateMessage.sharedInstance

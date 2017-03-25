@@ -18,9 +18,10 @@ struct Operation {
     var op_id:Int
     var user_id:Int
     var op_date:Date
-    var op_type:Int //1: deposit, 2: withdrawal, 3: buy, 4: sell, 5:Commission
+    var op_type:Int //1: deposit, 2: withdrawal, 3: buy, 4: sell, 5:Commission, 6:refund
     var op_amount:Double
     var op_wording:String
+    
     
     //MARK: Initialisation
     
@@ -59,6 +60,7 @@ class Operations {
 }
 
 
+//MARK: Operation methods
 class MDBOperation {
     
     let translate = TranslateMessage.sharedInstance
@@ -147,6 +149,100 @@ class MDBOperation {
                 }
                 else {
                     completionHandlerAddOp(false, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    func getBraintreeToken(_ userId:Int, completionHandlerbtToken: @escaping (_ success: Bool, _ clientToken: String?, _ errorString: String?) -> Void) {
+        
+        guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
+            completionHandlerbtToken(false, nil, translate.message("errorConnection"))
+            return
+        }
+        
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/bt_getToken.php")!)
+        let body: String = "user_id=\(userId)&lang=\(translate.message("lang"))"
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let token = resultDico["clientToken"] as! String
+                    
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completionHandlerbtToken(true, token, nil)
+                    }
+                    else {
+                        completionHandlerbtToken(false, nil, resultDico["error"] as? String)
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerbtToken(false, nil, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
+    func operationBraintree(_ type:String, _ userId:Int, _ amount: Double, completionHandlerNonce: @escaping (_ success: Bool , _ restAmount: String?, _ errorString: String?) -> Void) {
+        
+        guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
+            completionHandlerNonce(false, nil, translate.message("errorConnection"))
+            return
+        }
+        
+        // Create your request string with parameter name as defined in PHP file
+        let body: String = "user_id=\(userId)&amount=\(amount)&lang=\(translate.message("lang"))"
+        // Create Data from request
+        
+        var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/bt_\(type).php")!)
+        
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let resultDico = result as! [String:AnyObject]
+                    let rest = resultDico["btTransaction"] as! String
+                    
+                    if resultDico["success"] as! String == "1" {
+                        completionHandlerNonce(true, rest, nil)
+                    }
+                    else {
+                        completionHandlerNonce(false, nil, resultDico["error"] as? String)
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerNonce(false, nil, errorStr)
                 }
                 
             })

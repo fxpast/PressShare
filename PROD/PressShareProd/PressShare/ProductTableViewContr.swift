@@ -9,8 +9,6 @@
 //
 
 
-//Todo bug: produit l’epingle ne se déplace plus sur la carte
-
 import Foundation
 import MapKit
 import UIKit
@@ -51,14 +49,14 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     
     var star=0
     var client=false
-    var flgMajImage = false
+    var isMajImage = false
     var fieldName = ""
     var aProduct:Product?
     var aTransaction:Transaction?
     var config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
-    var flgFirst = false
-    var flgFindMe = false
+    var isFirst = true
+    var isFindMe = false
     var typeListe = 0 //Map :0, MyList:1, Historical:2
     
     var latUser:CLLocationDegrees!
@@ -90,8 +88,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        IBActivity.isHidden = true
         
+   
         tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
         if let thisproduct = aProduct {
             
@@ -127,7 +125,11 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if config.flgReturnToTab == true {
+        IBActivity.isHidden = true
+        IBActivity.stopAnimating()
+        
+        
+        if config.isReturnToTab == true {
             dismiss(animated: false, completion: nil)
         }
         
@@ -148,7 +150,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         }
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
         
-        if flgFirst == false {
+        if isFirst == true {
             
             if let thisproduct = aProduct {
                 
@@ -272,7 +274,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             
         }
         
-        flgFirst = true
+        isFirst = false
         
         if client {
             IBSave.title = translate.message("exchangeBuy")
@@ -350,6 +352,16 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         }
         
     }
+    
+    
+    
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("informations_article", self)
+        
+    }
+    
     
     @IBAction func actionCancel(_ sender: AnyObject) {
         
@@ -451,7 +463,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         
         let alertController = UIAlertController(title: translate.message("takePicture"), message: translate.message("makeChoice"), preferredStyle: .alert)
         
-        let actionBiblio = UIAlertAction(title: "Photo", style: .destructive, handler: { (action) in
+        let actionBiblio = UIAlertAction(title: translate.message("library"), style: .destructive, handler: { (action) in
             BlackBox.sharedInstance.performUIUpdatesOnMain {
                 
                 self.imageFromCamera(camera: false, type: nil)
@@ -594,7 +606,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     //MARK: Image Picker Delegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        flgMajImage = true
+        isMajImage = true
         IBAddImage.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         IBAddImage.contentMode = .scaleAspectFit
         
@@ -714,15 +726,16 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         config.latitude = latUser
         config.longitude = lonUser
         
-        flgFindMe = false
+        isFindMe = false
         
     }
     
     @IBAction func actionFindMe(_ sender: AnyObject) {
         
-        flgFindMe = true
+        isFindMe = true
         
-        self.IBActivity.startAnimating()
+        IBActivity.startAnimating()
+        IBActivity.isHidden = false
         
         if let _ = latUser , let _ = lonUser {
             
@@ -748,8 +761,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         }
         
         
-        self.IBActivity.stopAnimating()
-        
+        IBActivity.stopAnimating()
+        IBActivity.isHidden = true
         
     }
     
@@ -776,6 +789,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         
         
         IBActivity.startAnimating()
+        IBActivity.isHidden = false
         
         config.mapString = IBInfoLocation.text
         
@@ -788,6 +802,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     self.IBActivity.stopAnimating()
+                    self.IBActivity.isHidden = true
                     self.displayAlert(self.translate.message("error"), mess: self.translate.message("ErrorGeocode")) //error.debugDescription
                 }
                 return
@@ -826,6 +841,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 
                 self.IBMap.setRegion(coordinateRegion, animated: true)
                 self.IBActivity.stopAnimating()
+                self.IBActivity.isHidden = true
                 
             }
             
@@ -884,7 +900,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 product.prod_imageUrl = ""
             }
             else {
-                if flgMajImage == true {
+                if isMajImage == true {
                     product.prodImageOld = product.prod_imageUrl
                     product.prod_imageUrl = "photo-\(config.user_id!)\(NSUUID().uuidString)"
                     product.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
@@ -1156,7 +1172,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         latUser = manager.location?.coordinate.latitude
         lonUser = manager.location?.coordinate.longitude
         
-        if flgFindMe == true {
+        if isFindMe == true {
             
             findMe()
         }

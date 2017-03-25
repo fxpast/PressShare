@@ -6,13 +6,14 @@
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //
 
+//Todo bug: traduire le libellé : carte bancaire et vos données bancaires sont cryptés
 
-//Todo: Integration de Paypal : https://developer.paypal.com/docs/integration/paypal-here/ios-dev/overview/
 
-//Todo: Integration des cartes de credit des clients avec PayBox : http://www1.paybox.com/espace-integrateur-documentation/les-solutions-paybox-direct-et-paybox-direct-plus/les-operations-de-caisse-direct-plus/#autorisation-seule-abonne
+//Todo: aide ListCardViewController ne fonctionne pas
 
 
 import Foundation
+import UIKit
 
 
 class ListCardViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -114,6 +115,15 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
         
         performSegue(withIdentifier: "CB", sender: self)
     }
+    
+    
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("ListCardViewController", self)
+        
+    }
+    
     
     
     @IBAction func actionDelete(_ sender: AnyObject)  {
@@ -285,39 +295,38 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
         
         //delete row
         let card =  cards[indexPath.row]
-        if card.typeCard_id != 6 {
-            
-            MDBCard.sharedInstance.setDeleteCard(card) { (success, errorString) in
+        
+        MDBCard.sharedInstance.setDeleteCard(card) { (success, errorString) in
             
             if success {
                 
                 let card1 =  self.cards[indexPath.row]
-               
-                    var i = 0
+                
+                var i = 0
+                
+                for cd in Cards.sharedInstance.cardsArray {
+                    i+=1
+                    let card2 = Card(dico: cd)
+                    if (card2.card_id == card1.card_id) {
+                        self.cards.remove(at: indexPath.row)
+                        Cards.sharedInstance.cardsArray.remove(at: i-1)
+                        break
+                    }
+                }
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    for cd in Cards.sharedInstance.cardsArray {
-                        i+=1
-                        let card2 = Card(dico: cd)
-                        if (card2.card_id == card1.card_id) {
-                            self.cards.remove(at: indexPath.row)
-                            Cards.sharedInstance.cardsArray.remove(at: i-1)
-                            break
-                        }
+                    if self.cards.count == 1 {
+                        self.IBDelete.isEnabled=false
+                    }
+                    else {
+                        self.IBDelete.isEnabled=true
                     }
                     
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        
-                        if self.cards.count == 1 {
-                            self.IBDelete.isEnabled=false
-                        }
-                        else {
-                            self.IBDelete.isEnabled=true
-                        }
-                        
-                        self.IBTableView.isEditing = false                        
-                        self.IBTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)
-                        self.IBTableView.reloadData()
-                    }
+                    self.IBTableView.isEditing = false
+                    self.IBTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)
+                    self.IBTableView.reloadData()
+                }
                 
                 
             }
@@ -329,16 +338,14 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
             
         }
         
-        }
-        else {
-            IBTableView.isEditing = false
-        }
+        
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         for index in 0...cards.count-1 {
+            
             if index == indexPath.row {
                 cards[index].main_card = true
             }
@@ -346,6 +353,7 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
                 cards[index].main_card = false
             }
             
+     
             MDBCard.sharedInstance.setUpdateCard(cards[index], completionHandlerUpdCard: { (success, errorString) in
                 
                 if success {
@@ -369,5 +377,6 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
         
     }
     
+  
     
 }

@@ -7,6 +7,10 @@
 //
 
 
+
+//Todo: L'aide de la liste de transaction n'est pas conforme
+
+
 import Foundation
 import UIKit
 
@@ -17,7 +21,7 @@ class ListTransactTablViewContr: UITableViewController {
     
     var transactions = [Transaction]()
     var aindex:Int!
-    var flgOpen=false
+    var isOpen=false
     var config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     var customOpeation = BlockOperation()
@@ -55,9 +59,9 @@ class ListTransactTablViewContr: UITableViewController {
             refreshData()
         }
         
-        if flgOpen == false {
+        if isOpen == false {
             
-            flgOpen = true
+            isOpen = true
             refreshControl1.beginRefreshing()
             
             
@@ -114,6 +118,13 @@ class ListTransactTablViewContr: UITableViewController {
     
     @IBAction func actionCancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("transactions", self)
+        
     }
     
     

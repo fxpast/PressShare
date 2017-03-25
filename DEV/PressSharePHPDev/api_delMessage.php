@@ -1,7 +1,7 @@
 <?php
  
 session_start();
-include 'connect.php';
+include 'api_connect.php';
 
   
 // This SQL statement selects ALL from the table 'Locations'

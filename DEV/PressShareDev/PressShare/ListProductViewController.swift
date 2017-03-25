@@ -8,7 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo: Liste  : optimiser le chargement des photos : https://www.raywenderlich.com/76341/use-nsoperation-nsoperationqueue-swift
 
 
 import Foundation
@@ -19,7 +18,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     @IBOutlet weak var IBSegment: UISegmentedControl!
-    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBTableView: UITableView!
     
     var IBLogout: UIBarButtonItem!
@@ -45,8 +43,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     var frameTableView: CGRect!
     var rowHeightTableView: CGFloat!
-    
-
     
     
     //MARK: View Controller Delegate
@@ -80,7 +76,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             typeListe = 0
         }
         else if isUser == false {
-            IBLogout = UIBarButtonItem.init(image: #imageLiteral(resourceName: "noimage"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(actionLogout(_:)))
+            IBLogout = UIBarButtonItem.init(image: #imageLiteral(resourceName: "eteindre"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(actionLogout(_:)))
         }
         else {
             IBLogout = UIBarButtonItem.init(barButtonSystemItem: UIBarButtonSystemItem.stop, target: self, action: #selector(actionLogout(_:)))
@@ -104,17 +100,15 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
         }
         
-        
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-      
+     
         if  IBTableView == nil {
             
-            runActivity()
-            
+        
             myQueue.cancelAllOperations()
             myQueue.addOperation {
                 
@@ -221,7 +215,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        
         if segue.identifier == "fromtable" {
             
             if let thisProduct = aProduct {
@@ -231,12 +224,11 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 controller.aProduct = thisProduct
                 controller.typeListe = typeListe
-                
             }
-            
         }
         
     }
+    
     
     @IBAction func actionButtonSearch(_ sender: Any) {
         
@@ -277,9 +269,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     @IBAction func actionSegment(_ sender: Any) {
         
         if IBSegment.selectedSegmentIndex == 0 {
-            
-            runActivity()
-            
+       
             if searchText != "" {
                 desallocSearch()
             }
@@ -290,9 +280,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
         else if IBSegment.selectedSegmentIndex == 1 {
-            
-            runActivity()
-            
+        
             if searchText != "" {
                 desallocSearch()
             }
@@ -309,8 +297,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
         else if IBSegment.selectedSegmentIndex == 2 {
-            
-            runActivity()
             
             if searchText != "" {
                 desallocSearch()
@@ -332,10 +318,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     private func batchChargeData() {
         
-        
+        cancelAllOperations()
         products.removeAll()
         IBTableView.reloadData()
-        runActivity()
         
         myQueue.addOperation {
             
@@ -369,23 +354,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         self.dismiss(animated: true, completion: nil)
     }
     
-    
-    private func runActivity() {
-        
-        IBActivity.isHidden = false
-        IBActivity.startAnimating()
-        view.bringSubview(toFront: self.view.viewWithTag(55)!)
-        view.bringSubview(toFront: IBActivity)
-
-    }
-    
     private func stopActivity() {
-        
-        IBActivity.stopAnimating()
         refreshControl.endRefreshing()
-        IBActivity.isHidden = true
         refreshControl.isHidden = true
-        
     }
     
     
@@ -423,7 +394,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         self.searchText = searchText
-        runActivity()
         
         myQueue.cancelAllOperations()
         
@@ -543,6 +513,11 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         BlackBox.sharedInstance.performUIUpdatesOnMain {
             self.IBTableView.reloadData()
+            if self.products.count > 0 {
+                let index = IndexPath.init(row: self.products.count - 1, section: 0)
+                self.IBTableView.scrollToRow(at: index, at: .bottom , animated: false)
+            }
+            
             if self.products.count == 0 {
                 self.stopActivity()
             }
@@ -662,6 +637,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         }
         else {
             
+            cancelAllOperations()
             products.removeAll()
             IBTableView.reloadData()
             
@@ -700,7 +676,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.IBActivity.stopAnimating()
                             self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
@@ -975,6 +950,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             
         case .Downloaded:
             startFiltrationForRecord(product, indexPath)
+            
         default:
             print("nothing")
         }
@@ -991,12 +967,32 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         let downloader = ImageDownloader.init(product: product)
         
         downloader.completionBlock = {
+            
             if downloader.isCancelled {
                 return
             }
             
+            if self.searchText == "" {
+                
+                self.products[indexPath.row].state = downloader.product.state
+                self.products[indexPath.row].prod_imageUrl = downloader.product.prod_imageUrl
+                self.products[indexPath.row].prod_image = downloader.product.prod_image
+                
+            }
+            else {
+                
+                self.productsTmp[indexPath.row].state = downloader.product.state
+                self.productsTmp[indexPath.row].prod_imageUrl = downloader.product.prod_imageUrl
+                self.productsTmp[indexPath.row].prod_image = downloader.product.prod_image
+                
+            }
             
             BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                if downloader.isCancelled {
+                    return
+                }
+
                 self.pendingOperations.downloadsInProgress.removeValue(forKey: indexPath)
                 self.IBTableView.reloadRows(at: [indexPath], with: .fade)
             }
@@ -1019,11 +1015,30 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         let filterer = ImageFiltration.init(product: product)
         
         filterer.completionBlock = {
+            
             if filterer.isCancelled {
                 return
             }
             
+            if self.searchText == "" {
+                
+                self.products[indexPath.row].state = filterer.product.state
+                self.products[indexPath.row].prod_image = filterer.product.prod_image
+                
+            }
+            else {
+                
+                self.productsTmp[indexPath.row].state = filterer.product.state
+                self.productsTmp[indexPath.row].prod_image = filterer.product.prod_image
+                
+            }
+            
             BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                if filterer.isCancelled {
+                    return
+                }
+   
                 self.pendingOperations.filtrationsInProgress.removeValue(forKey: indexPath)
                 self.IBTableView.reloadRows(at: [indexPath], with: .fade)
             }
@@ -1061,7 +1076,13 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             aProduct =  productsTmp[indexPath.row]
         }
         
-        performSegue(withIdentifier: "fromtable", sender: self)
+        
+        if aProduct.state == .Filtered || aProduct.state == .Failed {
+            
+            cancelAllOperations()
+            performSegue(withIdentifier: "fromtable", sender: self)
+            
+        }
         
         
     }
@@ -1096,6 +1117,15 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         pendingOperations.filtrationQueue.isSuspended = true
         
     }
+    
+    
+    private func cancelAllOperations() {
+        
+        pendingOperations.downloadQueue.cancelAllOperations()
+        pendingOperations.filtrationQueue.cancelAllOperations()
+        
+    }
+    
     
     private func resumeAllOperations() {
         

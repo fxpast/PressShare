@@ -1,8 +1,8 @@
 <?php
  
 session_start();
-include 'connect.php';
-
+include 'api_connect.php';
+include 'bt_connect.php';
   
 // This SQL statement selects ALL from the table 'Locations'
 
@@ -10,28 +10,41 @@ include 'connect.php';
 if ($_POST['main_card'] == "false") {
  
     $mainCard = 0;
+    $isMainCard = false;
 }
 else {
     $mainCard = 1;
+    $isMainCard = true;
 }    
 
-        
-$sql = "UPDATE Card			
+
+$token = $_POST['tokenizedCard'];
+
+$result = Braintree_PaymentMethod::update(
+  $token,
+  [
+    'options' => [
+      'makeDefault' => $isMainCard
+    ]
+  ]
+);
+ 
+$flgOK = 0;  
+if ($result->success) {
+     
+    $sql = "UPDATE Card			
         SET main_card = '" . $mainCard . "'
         WHERE
         card_id = '" . mysqli_real_escape_string($con, $_POST['card_id']) . "'";
 
-$flgOK = 0; 
-// Check if there are results
-if ($result = mysqli_query($con, $sql))
-{		
+    // Check if there are results
+    if ($result = mysqli_query($con, $sql))
+    {		
         $flgOK = 1;		    
+    }
+
 }
-
-
-
-     	
-        
+       
         
 if ($flgOK == 0) {
     

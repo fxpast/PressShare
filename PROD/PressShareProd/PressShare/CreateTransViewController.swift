@@ -9,6 +9,7 @@
 //
 
 
+
 import Foundation
 import UIKit
 
@@ -23,6 +24,7 @@ class CreateTransViewController: UIViewController {
     @IBOutlet weak var IBValidate: UIBarButtonItem!
     @IBOutlet weak var IBLabelTrade: UILabel!
     @IBOutlet weak var IBLabelExchange: UILabel!
+    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
     var aProduct:Product?
     
@@ -53,6 +55,11 @@ class CreateTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        IBActivity.isHidden = false
+        IBActivity.startAnimating()
+        
+        IBInfoProduct.numberOfLines = 2
+        
         IBLabelTrade.text = translate.message("buy")
         IBLabelExchange.text = translate.message("exchange")
         IBValidate.title = translate.message("done")
@@ -69,22 +76,30 @@ class CreateTransViewController: UIViewController {
         if aProduct?.prod_prix == 0 {
             IBTrade.isEnabled = false
         }
+        title = translate.message("exchangeBuy")
         
-        
-        IBInfoProduct.text = "\(aProduct!.prod_nom), \(BlackBox.sharedInstance.formatedAmount((aProduct?.prod_prix)!))"
+        IBInfoProduct.text = "\(translate.message("product")): \(aProduct!.prod_nom), \(translate.message("price")): \(BlackBox.sharedInstance.formatedAmount((aProduct?.prod_prix)!))"
         
         MDBUser.sharedInstance.getUser((aProduct?.prod_by_user)!, completionHandlerUser: {(success, usersArray, errorString) in
             
             if success {
                 
-                
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
+                    self.IBActivity.isHidden = true
+                    self.IBActivity.stopAnimating()
+        
                     
                     if (usersArray?.count)! > 0 {
                         for userDico in usersArray! {
                             
-                            self.IBInfoContact1.text = "\(userDico["user_nom"]!) \(userDico["user_prenom"]!)"
-                            self.IBInfoContact2.text = "\(userDico["user_ville"]!), \(userDico["user_pays"]!)"
+                            if userDico["user_nom"] as! String != "" || userDico["user_prenom"] as! String != "" {
+                               self.IBInfoContact1.text = "\(userDico["user_nom"]!) \(userDico["user_prenom"]!)"
+                            }
+                            
+                            if userDico["user_ville"] as! String != "" || userDico["user_pays"] as! String != "" {
+                                self.IBInfoContact2.text = "\(userDico["user_ville"]!) \(userDico["user_pays"]!)"
+                            }
                             
                             break
                             
@@ -95,6 +110,9 @@ class CreateTransViewController: UIViewController {
             else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    self.IBActivity.isHidden = true
+                    self.IBActivity.stopAnimating()
+                    
                 }
             }
             
@@ -107,7 +125,7 @@ class CreateTransViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if config.flgReturnToTab == true {
+        if config.isReturnToTab == true {
             dismiss(animated: false, completion: nil)
         }
         
@@ -148,6 +166,13 @@ class CreateTransViewController: UIViewController {
         
     }
     
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("transactions", self)
+        
+    }
+    
     
     @IBAction func actionSave(_ sender: Any) {
         
@@ -170,8 +195,10 @@ class CreateTransViewController: UIViewController {
                 return
             }
             
+            self.IBActivity.isHidden = false
+            self.IBActivity.startAnimating()
             
-            self.config.flgReturnToTab = true
+            self.config.isReturnToTab = true
             
             var message = Message(dico: [String : AnyObject]())
             
@@ -212,6 +239,7 @@ class CreateTransViewController: UIViewController {
                         if success {
                             
                             //ok
+                       
                         }
                         else {
                             
@@ -324,7 +352,8 @@ class CreateTransViewController: UIViewController {
                                             
                                             BlackBox.sharedInstance.performUIUpdatesOnMain {
                                                 self.performSegue(withIdentifier: "messagerie", sender: sender)
-                                                
+                                                self.IBActivity.isHidden = true
+                                                self.IBActivity.stopAnimating()
                                             }
                                             
                                         }

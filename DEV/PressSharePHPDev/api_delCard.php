@@ -1,21 +1,33 @@
 <?php
  
 session_start();
-include 'connect.php';
-
+include 'api_connect.php';
+include 'bt_connect.php';
+ 
   
+$token = $_POST['tokenizedCard'];
+
+if ($token != "") {
+    
+    $result = Braintree_PaymentMethod::delete($token);
+}
+
+
 // This SQL statement selects ALL from the table 'Locations'
 
+if ($result->success) {
+     
     $sql = "DELETE 
     FROM
             Card
     WHERE
             card_id = " . mysqli_real_escape_string($con, $_POST['card_id']);
 
-  
- 
-// Check if there are results
-$result = mysqli_query($con, $sql);
+    // Check if there are results
+    $result = mysqli_query($con, $sql);
+}
+
+
 if(!$result)
 {
 	//something went wrong, display the error	

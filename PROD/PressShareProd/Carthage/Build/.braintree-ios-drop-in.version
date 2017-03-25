@@ -3,12 +3,12 @@
   "commitish" : "5.1.0",
   "iOS" : [
     {
-      "name" : "BraintreeDropIn",
-      "md5" : "89cf398d8aedaf6bbd5506dd409babad"
+      "name" : "BraintreeUIKit",
+      "md5" : "1ac410d2758ebbe5de9497520179eff6"
     },
     {
-      "name" : "BraintreeUIKit",
-      "md5" : "cb663037e5068e714a6501ada8894f4e"
+      "name" : "BraintreeDropIn",
+      "md5" : "496ecf9aa369b1a10e5ec97f781f7ea6"
     }
   ]
 }

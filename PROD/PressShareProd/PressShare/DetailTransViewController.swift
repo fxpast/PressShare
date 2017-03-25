@@ -8,6 +8,10 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+//Todo: aide DetailTransViewController ne fonctionne pas
+
+
 import Foundation
 import UIKit
 
@@ -144,6 +148,7 @@ class DetailTransViewController: UIViewController {
         
         IBActivity.isHidden = false
         IBActivity.startAnimating()
+        
         let paramId = (aTransaction?.client_id == aTransaction?.proprietaire) ? aTransaction?.vendeur_id : aTransaction?.client_id
         
         
@@ -196,7 +201,7 @@ class DetailTransViewController: UIViewController {
         IBCompliantLabel.text = translate.message("compliant")
         IBLabelMyAbsent.text = translate.message("myAbsence")
         IBOtherText.placeholder = translate.message("other")
-        navigationItem.title = translate.message("runTransac")
+        navigationItem.title = translate.message("validerTransact")
          
         
     }
@@ -204,6 +209,14 @@ class DetailTransViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
+        
+    }
+    
+    
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("DetailTransViewController", self)
         
     }
     

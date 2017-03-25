@@ -2,7 +2,23 @@
  
 
 session_start();
-include 'connect.php';
+include 'api_connect.php';
+
+
+//withdrawal
+if ($_POST['op_type'] == 2) {
+    
+   $sql = "INSERT INTO
+		OperationCredit(user_id, op_date, op_amount)
+	VALUES('" . mysqli_real_escape_string($con, $_POST['user_id']) . "',		  
+		   NOW(),
+                    '" . mysqli_real_escape_string($con, $_POST['op_amount']) . "')";
+				
+    // Check if there are results
+
+    $result = mysqli_query($con, $sql);
+  
+}
 
 
 

@@ -17,6 +17,16 @@ class BlackBox  {
     
     let translate = TranslateMessage.sharedInstance
     
+    
+    func showHelp(_ titre:String, _ sender: AnyObject) {
+        
+        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let controller = storyboard.instantiateViewController(withIdentifier: "help") as! HelpViewController
+        controller.helpTitre = titre
+        sender.present(controller, animated: true, completion: nil)
+        
+    }
+    
      func createLine(frame: CGRect) -> CAShapeLayer {
         
         var x1 = CGFloat()
@@ -235,7 +245,7 @@ class BlackBox  {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = Locale.current
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        numberFormatter.usesGroupingSeparator = true
+        numberFormatter.usesGroupingSeparator = false
         if translate.message("lang") == "fr" {
             
             return "\(numberFormatter.string(from: NSNumber.init(value: amount))!) \(translate.message("devise"))"
@@ -327,6 +337,7 @@ class BlackBox  {
     
     
 }
+
 
 
 

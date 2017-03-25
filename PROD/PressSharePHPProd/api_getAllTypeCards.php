@@ -2,13 +2,13 @@
  
 
 session_start();
-include 'connect.php';
+include 'api_connect.php';
 
 
  //SELECT * FROM `TypeCard`
 // This SQL statement selects ALL from the table 'Locations'
 
-$sql = "SELECT * FROM TypeCard";
+$sql = "SELECT * FROM TypeCard ORDER BY typeCard_id DESC";
 
  
 $flgOK = 0; 

@@ -64,7 +64,6 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
         
         tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
         
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {

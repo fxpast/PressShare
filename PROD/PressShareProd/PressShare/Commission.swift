@@ -54,6 +54,7 @@ struct Commission {
 
 
 
+//MARK: Commission methods
 class MDBCommission {
     
     let translate = TranslateMessage.sharedInstance

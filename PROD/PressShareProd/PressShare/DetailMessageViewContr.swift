@@ -6,11 +6,11 @@
 //  Copyright © 2017 Pastouret Roger. All rights reserved.
 //
 
-//Todo new: Message : ajouter une routine qui s’execute tous le 5 secondes
 
-//Todo new: Integrer la push notification dans l'ajout de message php
+//Todo : Aide inadapté pour détaille message
 
 import Foundation
+import UIKit
 
 class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     
@@ -130,6 +130,16 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         
     }
     
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        
+        initScrollView()
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("transactions", self)
+        
+    }
+    
     
     @IBAction func actionSend(_ sender: Any) {
         
@@ -234,23 +244,11 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     
     @IBAction func actionRefresh(_ sender: Any) {
         
-        for view in IBScrollView.subviews {
-            view.removeFromSuperview()
-        }
-        
-        for layer in IBScrollView.layer.sublayers! {
-            layer.removeFromSuperlayer()
-        }
-        
-        IBScrollView.frame = initFrame
-        IBScrollView.contentOffset = initFrame.origin
-        IBScrollView.contentSize = initFrame.size
-    
-        dateStrAfter = ""
-        dateStrBefore = ""
-        
+  
+        initScrollView()
         refreshData()
     }
+    
     @IBAction func actionCancel(_ sender: Any) {
         
         var flgMAJ = false
@@ -334,6 +332,24 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     
     //MARK: Data Message
     
+    private func initScrollView() {
+     
+        for view in IBScrollView.subviews {
+            view.removeFromSuperview()
+        }
+        
+        for layer in IBScrollView.layer.sublayers! {
+            layer.removeFromSuperlayer()
+        }
+        
+        IBScrollView.frame = initFrame
+        IBScrollView.contentOffset = initFrame.origin
+        IBScrollView.contentSize = initFrame.size
+        
+        dateStrAfter = ""
+        dateStrBefore = ""
+        
+    }
     
     private func DrawLineTime(_ date: Date) {
         

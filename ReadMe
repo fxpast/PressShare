@@ -1,61 +1,9 @@
-User test for Facebook :
-	name : test pressshare
-        password : testpressshare
-	id : 108830289562293
-	email : test_sohgoqx_pressshare@tfbnw.net
-
-
-user test for pressShare : 
-user : test1
-password : test1
-email : test_sohgoqx_pressshare@tfbnw.net
-
-
 
 PressShare est une application qui met en contact des personnes souhaitant échanger leur journaux.
 l’utilisateur se connecte et crée un produit journal sur la carte qui sera visible par les autres utilisateurs.
-Les utilisateurs pourront par la suite entrer en contact pour faire des echanges selon leurs localisation.
-Il y a plusieurs fonctions qui sont en cours de développement et qui ne seront pas terminée avant plusieurs mois.
-Dans le cadre de la formation « iOS developer nanodegree program », j’ai sélectionné les premières fonctions à tester.
-
-Les fonctions à tester sont :
-
-    - Authentification par user/password (test1 / test1) ==> les données user sont stockées dans core data et réutilisées à la prochaine connexion
-    
-    - Authentification par facebook (test pressshare / testpressshare)
-    
-    - A verifier que le compte est créé dans la base de données core data entité user
-    
-    - Affichage de plusieurs épingles produits sur la carte du monde. (données provenant de l’api de mon serveur pressshare.fxpast.com)
-
-    - Sélectionner une épingle pour afficher les produits de la zone géolocalisée.
-     
-    - Affichage de l’onglet List (liste des produits des utilisateurs)
-
-   - Ajouter un produit en cliquant sur le bouton géolocalisation (saisir les informations sur le produit).
-
-
+Les utilisateurs pourront par la suite entrer en contact pour faire des échanges selon leurs localisation.
 
 
 PressShare is an application that connects people who want to exchange their newspapers.
 the user logs in and creates a product on the map that will be visible to other users.
 Users will then be able to contact and making exchanges according to their location.
-There are several features that are in development and will not be completed for several months.
-As part of the training "iOS developer program nanodegree" I selected the first functions to be tested.
-
-
-The features to be tested are:
-
-     - Authentication by user / password (test1 / test1) ==> the data user are stored in core data and used for the next connection
-    
-     - Authentication facebook (test pressshare / testpressshare)
-    
-     - checked that the account is created in the core data user entity
-    
-     - Display multiple products pins on the map. (Data from my own API pressshare.fxpast.com)
-
-     - Select a pin to display products of the geographic location area.
-     
-     - Viewing the List tab (list of user products)
-
-    - Add a product by clicking the geolocation button (enter product information).

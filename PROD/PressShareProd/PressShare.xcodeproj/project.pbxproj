@@ -9,9 +9,10 @@
 /* Begin PBXBuildFile section */
 		DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0B485A1DEF51F500B76652 /* Capital.swift */; };
 		DB0B485D1DEF522D00B76652 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0B485C1DEF522D00B76652 /* Operation.swift */; };
+		DB0D01BB1E832ACF004E499A /* Feedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0D01B71E832ACF004E499A /* Feedback.swift */; };
+		DB0D01BC1E832ACF004E499A /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0D01B81E832ACF004E499A /* FeedbackViewController.swift */; };
+		DB0D01BD1E832ACF004E499A /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0D01B91E832ACF004E499A /* HelpViewController.swift */; };
 		DB17C6531E2C7303001B451B /* DetailMessageViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB17C6521E2C7303001B451B /* DetailMessageViewContr.swift */; };
-		DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB2515861D831C6400B286F7 /* Model.xcdatamodeld */; };
-		DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */; };
 		DB2515981D83226800B286F7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515961D83226800B286F7 /* User.swift */; };
 		DB3003D81E5BC764002D0124 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003D61E5BC764002D0124 /* Card.swift */; };
 		DB3003D91E5BC764002D0124 /* TypeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003D71E5BC764002D0124 /* TypeCard.swift */; };
@@ -32,6 +33,19 @@
 		DB6BDF2F1DE46F24007EAFA3 /* CreateTransViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */; };
 		DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB879CEC1DF76BEC00B05D5F /* Transaction.swift */; };
 		DB9BADB41E44EA6200BE7D76 /* ParamTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9BADB31E44EA6200BE7D76 /* ParamTable.swift */; };
+		DB9BC52F1E83570E00AC882B /* Braintree3DSecure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D01991E8321EF004E499A /* Braintree3DSecure.framework */; };
+		DB9BC5311E83570E00AC882B /* BraintreeCard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D019B1E8321EF004E499A /* BraintreeCard.framework */; };
+		DB9BC5321E83570E00AC882B /* BraintreeCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D019C1E8321EF004E499A /* BraintreeCore.framework */; };
+		DB9BC5331E83570E00AC882B /* BraintreeDataCollector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D019D1E8321EF004E499A /* BraintreeDataCollector.framework */; };
+		DB9BC5341E83570E00AC882B /* BraintreeDropIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D019E1E8321EF004E499A /* BraintreeDropIn.framework */; };
+		DB9BC5351E83570E00AC882B /* BraintreePayPal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D019F1E8321EF004E499A /* BraintreePayPal.framework */; };
+		DB9BC5361E83570E00AC882B /* BraintreeUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D01A01E8321EF004E499A /* BraintreeUI.framework */; };
+		DB9BC5371E83570E00AC882B /* BraintreeUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D01A11E8321EF004E499A /* BraintreeUIKit.framework */; };
+		DB9BC5381E83570E00AC882B /* BraintreeUnionPay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D01A21E8321EF004E499A /* BraintreeUnionPay.framework */; };
+		DB9BC5391E83570E00AC882B /* BraintreeVenmo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D01A31E8321EF004E499A /* BraintreeVenmo.framework */; };
+		DB9BC53A1E83570E00AC882B /* PayPalDataCollector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D01A41E8321EF004E499A /* PayPalDataCollector.framework */; };
+		DB9BC53B1E83570E00AC882B /* PayPalOneTouch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D01A51E8321EF004E499A /* PayPalOneTouch.framework */; };
+		DB9BC53C1E83570E00AC882B /* PayPalUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0D01A61E8321EF004E499A /* PayPalUtils.framework */; };
 		DBA03CD81CECB31800B76896 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA03CD71CECB31800B76896 /* Product.swift */; };
 		DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5301CE5141800CD826D /* MapViewController.swift */; };
 		DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* ListProductViewController.swift */; };
@@ -40,10 +54,6 @@
 		DBBBDAE41DE8C2D9000B5E9E /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */; };
 		DBC585F01E29B9830032A33B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC585EF1E29B9830032A33B /* Config.swift */; };
 		DBCFFAEF1E32E6DD00CF73D8 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */; };
-		DBEDBDB31DC2A0C600EECF0F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDAF1DC2A0C600EECF0F /* Bolts.framework */; };
-		DBEDBDB41DC2A0C600EECF0F /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB01DC2A0C600EECF0F /* FBSDKCoreKit.framework */; };
-		DBEDBDB51DC2A0C600EECF0F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB11DC2A0C600EECF0F /* FBSDKLoginKit.framework */; };
-		DBEDBDB61DC2A0C600EECF0F /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBEDBDB21DC2A0C600EECF0F /* FBSDKShareKit.framework */; };
 		DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7B3831E1EE71200024DA6 /* Commission.swift */; };
 		DBF7CE161DF6064600966F29 /* ListTransactTablViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */; };
 		DBF7CE181DF72DBD00966F29 /* DetailTransViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */; };
@@ -68,9 +78,24 @@
 /* Begin PBXFileReference section */
 		DB0B485A1DEF51F500B76652 /* Capital.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Capital.swift; sourceTree = "<group>"; };
 		DB0B485C1DEF522D00B76652 /* Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
+		DB0D01991E8321EF004E499A /* Braintree3DSecure.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Braintree3DSecure.framework; path = Carthage/Build/iOS/Braintree3DSecure.framework; sourceTree = "<group>"; };
+		DB0D019A1E8321EF004E499A /* BraintreeApplePay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeApplePay.framework; path = Carthage/Build/iOS/BraintreeApplePay.framework; sourceTree = "<group>"; };
+		DB0D019B1E8321EF004E499A /* BraintreeCard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeCard.framework; path = Carthage/Build/iOS/BraintreeCard.framework; sourceTree = "<group>"; };
+		DB0D019C1E8321EF004E499A /* BraintreeCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeCore.framework; path = Carthage/Build/iOS/BraintreeCore.framework; sourceTree = "<group>"; };
+		DB0D019D1E8321EF004E499A /* BraintreeDataCollector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeDataCollector.framework; path = Carthage/Build/iOS/BraintreeDataCollector.framework; sourceTree = "<group>"; };
+		DB0D019E1E8321EF004E499A /* BraintreeDropIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeDropIn.framework; path = Carthage/Build/iOS/BraintreeDropIn.framework; sourceTree = "<group>"; };
+		DB0D019F1E8321EF004E499A /* BraintreePayPal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreePayPal.framework; path = Carthage/Build/iOS/BraintreePayPal.framework; sourceTree = "<group>"; };
+		DB0D01A01E8321EF004E499A /* BraintreeUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeUI.framework; path = Carthage/Build/iOS/BraintreeUI.framework; sourceTree = "<group>"; };
+		DB0D01A11E8321EF004E499A /* BraintreeUIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeUIKit.framework; path = Carthage/Build/iOS/BraintreeUIKit.framework; sourceTree = "<group>"; };
+		DB0D01A21E8321EF004E499A /* BraintreeUnionPay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeUnionPay.framework; path = Carthage/Build/iOS/BraintreeUnionPay.framework; sourceTree = "<group>"; };
+		DB0D01A31E8321EF004E499A /* BraintreeVenmo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeVenmo.framework; path = Carthage/Build/iOS/BraintreeVenmo.framework; sourceTree = "<group>"; };
+		DB0D01A41E8321EF004E499A /* PayPalDataCollector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PayPalDataCollector.framework; path = Carthage/Build/iOS/PayPalDataCollector.framework; sourceTree = "<group>"; };
+		DB0D01A51E8321EF004E499A /* PayPalOneTouch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PayPalOneTouch.framework; path = Carthage/Build/iOS/PayPalOneTouch.framework; sourceTree = "<group>"; };
+		DB0D01A61E8321EF004E499A /* PayPalUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PayPalUtils.framework; path = Carthage/Build/iOS/PayPalUtils.framework; sourceTree = "<group>"; };
+		DB0D01B71E832ACF004E499A /* Feedback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feedback.swift; sourceTree = "<group>"; };
+		DB0D01B81E832ACF004E499A /* FeedbackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
+		DB0D01B91E832ACF004E499A /* HelpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		DB17C6521E2C7303001B451B /* DetailMessageViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailMessageViewContr.swift; sourceTree = "<group>"; };
-		DB2515871D831C6400B286F7 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
-		DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DB2515961D83226800B286F7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DB3003D61E5BC764002D0124 /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		DB3003D71E5BC764002D0124 /* TypeCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeCard.swift; sourceTree = "<group>"; };
@@ -90,6 +115,92 @@
 		DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewContr.swift; sourceTree = "<group>"; };
 		DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateTransViewController.swift; sourceTree = "<group>"; };
 		DB879CEC1DF76BEC00B05D5F /* Transaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		DB8C5E631E834781007AF550 /* .braintree-ios-drop-in.version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".braintree-ios-drop-in.version"; sourceTree = "<group>"; };
+		DB8C5E641E834781007AF550 /* .braintree_ios.version */ = {isa = PBXFileReference; lastKnownFileType = text; path = .braintree_ios.version; sourceTree = "<group>"; };
+		DB8C5E661E834781007AF550 /* 0471D443-1F7D-3CDE-8801-CAE6648F0E47.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "0471D443-1F7D-3CDE-8801-CAE6648F0E47.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E671E834781007AF550 /* 05E782FB-55A8-364F-9D01-4018D0F1C799.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "05E782FB-55A8-364F-9D01-4018D0F1C799.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E681E834781007AF550 /* 0E349622-9155-32CB-90C9-F80F0CF14515.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "0E349622-9155-32CB-90C9-F80F0CF14515.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E691E834781007AF550 /* 0EC7BB70-58D2-3618-AF7C-FD7CF31C41DA.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "0EC7BB70-58D2-3618-AF7C-FD7CF31C41DA.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E6A1E834781007AF550 /* 11ACBD90-F982-3979-8B25-A07F495D6569.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "11ACBD90-F982-3979-8B25-A07F495D6569.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E6B1E834781007AF550 /* 18FDFA94-7BD8-3835-87FE-A6A269D96CFC.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "18FDFA94-7BD8-3835-87FE-A6A269D96CFC.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E6C1E834781007AF550 /* 1A2B20AC-D4B2-3D9D-97BF-10910FAA41A8.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "1A2B20AC-D4B2-3D9D-97BF-10910FAA41A8.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E6D1E834781007AF550 /* 1ABF5177-0981-3EFB-8570-A1F086211EEF.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "1ABF5177-0981-3EFB-8570-A1F086211EEF.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E6E1E834781007AF550 /* 1B5925F4-0CB6-3F8C-8309-6C0BCC5DD12C.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "1B5925F4-0CB6-3F8C-8309-6C0BCC5DD12C.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E6F1E834781007AF550 /* 1C542E34-AC08-3DFB-B7C6-27F05866F222.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "1C542E34-AC08-3DFB-B7C6-27F05866F222.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E701E834781007AF550 /* 2CCF2174-21D1-354E-BCC0-4D4F93CB0A25.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "2CCF2174-21D1-354E-BCC0-4D4F93CB0A25.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E711E834781007AF550 /* 3273A2D9-7EAE-3D2D-97F9-C51A9CEDF549.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "3273A2D9-7EAE-3D2D-97F9-C51A9CEDF549.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E721E834781007AF550 /* 32B7520A-9BB1-3C21-A296-9B418B8FBA1C.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "32B7520A-9BB1-3C21-A296-9B418B8FBA1C.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E731E834781007AF550 /* 335841A0-104B-3915-B418-492F4916D161.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "335841A0-104B-3915-B418-492F4916D161.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E741E834781007AF550 /* 36E3EE69-5DD2-367F-8A3D-0836878F8673.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "36E3EE69-5DD2-367F-8A3D-0836878F8673.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E751E834781007AF550 /* 3949D2D6-AB0B-3B7D-8419-DA505FE93740.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "3949D2D6-AB0B-3B7D-8419-DA505FE93740.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E761E834781007AF550 /* 39E31EC4-ED10-3383-A7B5-6D3300A0478C.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "39E31EC4-ED10-3383-A7B5-6D3300A0478C.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E771E834781007AF550 /* 3A7AB3B9-ABE8-3862-BEDB-C86B1FB4A600.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "3A7AB3B9-ABE8-3862-BEDB-C86B1FB4A600.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E781E834781007AF550 /* 3BF401A9-F9E2-3EEE-8033-53BFFD6B09B9.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "3BF401A9-F9E2-3EEE-8033-53BFFD6B09B9.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E791E834781007AF550 /* 3C8ABC8C-6AD4-3B5E-8A26-ADACC0C03BFD.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "3C8ABC8C-6AD4-3B5E-8A26-ADACC0C03BFD.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E7A1E834781007AF550 /* 422603E6-C172-3AE1-B1D1-6E1C83954F8A.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "422603E6-C172-3AE1-B1D1-6E1C83954F8A.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E7B1E834781007AF550 /* 4457DDF2-00E7-3D24-B4EB-49D58EE33D2A.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "4457DDF2-00E7-3D24-B4EB-49D58EE33D2A.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E7C1E834781007AF550 /* 49F332B7-3822-381C-9D82-C6506AD25F6A.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "49F332B7-3822-381C-9D82-C6506AD25F6A.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E7D1E834781007AF550 /* 4B991FFF-EB83-3D61-A06B-63749B70352F.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "4B991FFF-EB83-3D61-A06B-63749B70352F.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E7E1E834781007AF550 /* 5ACC63B0-24D3-3FF7-9046-1524881C0907.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "5ACC63B0-24D3-3FF7-9046-1524881C0907.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E7F1E834781007AF550 /* 5B4239E8-EEE3-3BAF-95D2-88DA78BC99A5.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "5B4239E8-EEE3-3BAF-95D2-88DA78BC99A5.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E801E834781007AF550 /* 6278332B-504D-3E8F-8645-D6066275792B.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "6278332B-504D-3E8F-8645-D6066275792B.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E811E834781007AF550 /* 6400FBC9-DB17-3521-B532-18F67AE5D2E1.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "6400FBC9-DB17-3521-B532-18F67AE5D2E1.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E821E834781007AF550 /* 675A764A-2185-3C13-8ED3-B2191B1C1873.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "675A764A-2185-3C13-8ED3-B2191B1C1873.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E831E834781007AF550 /* 67D46CCC-6B18-39B7-811A-03EBA726CCA1.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "67D46CCC-6B18-39B7-811A-03EBA726CCA1.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E841E834781007AF550 /* 6DBB39DE-2BC4-3D05-9A09-52A3F7F3275D.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "6DBB39DE-2BC4-3D05-9A09-52A3F7F3275D.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E851E834781007AF550 /* 76D13F14-12B6-3336-B879-CCEF33E66365.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "76D13F14-12B6-3336-B879-CCEF33E66365.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E861E834781007AF550 /* 77AC14E7-3221-3D7D-BA59-8D2296325792.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "77AC14E7-3221-3D7D-BA59-8D2296325792.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E871E834781007AF550 /* 7A7BEB3A-EA4F-3DBD-A103-DF5853332BBC.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "7A7BEB3A-EA4F-3DBD-A103-DF5853332BBC.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E881E834781007AF550 /* 81A0C727-C042-3962-A84C-74E77E7A7E98.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "81A0C727-C042-3962-A84C-74E77E7A7E98.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E891E834781007AF550 /* 892E6C12-1DE3-3EC4-90F9-3831D3D0B4DE.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "892E6C12-1DE3-3EC4-90F9-3831D3D0B4DE.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E8A1E834781007AF550 /* 8CB031C6-5BE4-3454-82FF-9BA7D54C1E25.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "8CB031C6-5BE4-3454-82FF-9BA7D54C1E25.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E8B1E834781007AF550 /* 926E83F8-D601-3288-88D9-FBCE87FCC0CA.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "926E83F8-D601-3288-88D9-FBCE87FCC0CA.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E8C1E834781007AF550 /* 947D3331-4CE4-3C23-96C7-4379CD3C919E.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "947D3331-4CE4-3C23-96C7-4379CD3C919E.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E8D1E834781007AF550 /* 95F510DB-3EF6-3613-A47C-4C341F2B9104.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "95F510DB-3EF6-3613-A47C-4C341F2B9104.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E8E1E834781007AF550 /* A7E9657F-3792-3836-8878-2221EAD93986.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "A7E9657F-3792-3836-8878-2221EAD93986.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E8F1E834781007AF550 /* AB4B19D2-49F8-365F-A224-F9BD2CC8692E.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "AB4B19D2-49F8-365F-A224-F9BD2CC8692E.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E901E834781007AF550 /* B14BCA63-F5B6-3AB0-B4CA-D649EF9DC37A.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "B14BCA63-F5B6-3AB0-B4CA-D649EF9DC37A.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E911E834781007AF550 /* B5AD671B-0156-33A5-9901-3560B15F94C5.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "B5AD671B-0156-33A5-9901-3560B15F94C5.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5E921E834781007AF550 /* Braintree3DSecure.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Braintree3DSecure.framework; sourceTree = "<group>"; };
+		DB8C5E931E834781007AF550 /* Braintree3DSecure.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Braintree3DSecure.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5E941E834781007AF550 /* BraintreeApplePay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeApplePay.framework; sourceTree = "<group>"; };
+		DB8C5E951E834781007AF550 /* BraintreeApplePay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeApplePay.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5E961E834781007AF550 /* BraintreeCard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeCard.framework; sourceTree = "<group>"; };
+		DB8C5E971E834781007AF550 /* BraintreeCard.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeCard.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5E981E834781007AF550 /* BraintreeCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeCore.framework; sourceTree = "<group>"; };
+		DB8C5E991E834781007AF550 /* BraintreeCore.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeCore.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5E9A1E834781007AF550 /* BraintreeDataCollector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeDataCollector.framework; sourceTree = "<group>"; };
+		DB8C5E9B1E834781007AF550 /* BraintreeDataCollector.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeDataCollector.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5E9C1E834781007AF550 /* BraintreeDropIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeDropIn.framework; sourceTree = "<group>"; };
+		DB8C5E9D1E834781007AF550 /* BraintreeDropIn.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeDropIn.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5E9E1E834781007AF550 /* BraintreePayPal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreePayPal.framework; sourceTree = "<group>"; };
+		DB8C5E9F1E834781007AF550 /* BraintreePayPal.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreePayPal.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5EA01E834781007AF550 /* BraintreeUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeUI.framework; sourceTree = "<group>"; };
+		DB8C5EA11E834781007AF550 /* BraintreeUI.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeUI.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5EA21E834781007AF550 /* BraintreeUIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeUIKit.framework; sourceTree = "<group>"; };
+		DB8C5EA31E834781007AF550 /* BraintreeUIKit.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeUIKit.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5EA41E834781007AF550 /* BraintreeUnionPay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeUnionPay.framework; sourceTree = "<group>"; };
+		DB8C5EA51E834781007AF550 /* BraintreeUnionPay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeUnionPay.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5EA61E834781007AF550 /* BraintreeVenmo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BraintreeVenmo.framework; sourceTree = "<group>"; };
+		DB8C5EA71E834781007AF550 /* BraintreeVenmo.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = BraintreeVenmo.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5EA81E834781007AF550 /* C12A2D4B-2269-36E2-A695-D0F0222ECEF4.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "C12A2D4B-2269-36E2-A695-D0F0222ECEF4.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EA91E834781007AF550 /* C1CA06AF-3AC4-3432-B153-3B41FEE842F0.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "C1CA06AF-3AC4-3432-B153-3B41FEE842F0.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EAA1E834781007AF550 /* C8E212A8-4B97-38F1-B7C6-6B6631F03542.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "C8E212A8-4B97-38F1-B7C6-6B6631F03542.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EAB1E834781007AF550 /* CDD9B351-6439-3A38-8587-D367B3A64DF1.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "CDD9B351-6439-3A38-8587-D367B3A64DF1.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EAC1E834781007AF550 /* DBA832C2-C550-3C6B-A6D0-9E322DF4AD65.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "DBA832C2-C550-3C6B-A6D0-9E322DF4AD65.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EAD1E834781007AF550 /* DDA6C6E6-D611-374E-A278-2BF83FDE1F85.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "DDA6C6E6-D611-374E-A278-2BF83FDE1F85.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EAE1E834781007AF550 /* DDDE266F-0DF3-329C-89BD-5B0E6A31181E.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "DDDE266F-0DF3-329C-89BD-5B0E6A31181E.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EAF1E834781007AF550 /* E5E275E8-5D87-3CD0-8DFD-EEB8E57995C8.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "E5E275E8-5D87-3CD0-8DFD-EEB8E57995C8.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EB01E834781007AF550 /* EB1535B1-4601-3CF6-BB79-520C145B11A5.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "EB1535B1-4601-3CF6-BB79-520C145B11A5.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EB11E834781007AF550 /* F123D0D0-DBB8-34CE-BEF4-982777448E42.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "F123D0D0-DBB8-34CE-BEF4-982777448E42.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EB21E834781007AF550 /* F1BADC4B-0046-33E2-A711-1E6D7D680486.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "F1BADC4B-0046-33E2-A711-1E6D7D680486.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EB31E834781007AF550 /* FC456F8B-0B8C-3D53-A576-1692F2636E2D.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; path = "FC456F8B-0B8C-3D53-A576-1692F2636E2D.bcsymbolmap"; sourceTree = "<group>"; };
+		DB8C5EB41E834781007AF550 /* PayPalDataCollector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PayPalDataCollector.framework; sourceTree = "<group>"; };
+		DB8C5EB51E834781007AF550 /* PayPalDataCollector.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = PayPalDataCollector.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5EB61E834781007AF550 /* PayPalOneTouch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PayPalOneTouch.framework; sourceTree = "<group>"; };
+		DB8C5EB71E834781007AF550 /* PayPalOneTouch.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = PayPalOneTouch.framework.dSYM; sourceTree = "<group>"; };
+		DB8C5EB81E834781007AF550 /* PayPalUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PayPalUtils.framework; sourceTree = "<group>"; };
+		DB8C5EB91E834781007AF550 /* PayPalUtils.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = PayPalUtils.framework.dSYM; sourceTree = "<group>"; };
 		DB9BADB31E44EA6200BE7D76 /* ParamTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParamTable.swift; sourceTree = "<group>"; };
 		DBA03CD71CECB31800B76896 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		DBA3C5301CE5141800CD826D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -101,10 +212,6 @@
 		DBC585EF1E29B9830032A33B /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		DBEDBD9E1DC284FF00EECF0F /* PressShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PressShare.entitlements; sourceTree = "<group>"; };
-		DBEDBDAF1DC2A0C600EECF0F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = PressShare/Bolts.framework; sourceTree = "<group>"; };
-		DBEDBDB01DC2A0C600EECF0F /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = PressShare/FBSDKCoreKit.framework; sourceTree = "<group>"; };
-		DBEDBDB11DC2A0C600EECF0F /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = PressShare/FBSDKLoginKit.framework; sourceTree = "<group>"; };
-		DBEDBDB21DC2A0C600EECF0F /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = PressShare/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		DBF7B3831E1EE71200024DA6 /* Commission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Commission.swift; sourceTree = "<group>"; };
 		DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListTransactTablViewContr.swift; sourceTree = "<group>"; };
 		DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailTransViewController.swift; sourceTree = "<group>"; };
@@ -120,21 +227,51 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBEDBDB61DC2A0C600EECF0F /* FBSDKShareKit.framework in Frameworks */,
-				DBEDBDB31DC2A0C600EECF0F /* Bolts.framework in Frameworks */,
-				DBEDBDB41DC2A0C600EECF0F /* FBSDKCoreKit.framework in Frameworks */,
-				DBEDBDB51DC2A0C600EECF0F /* FBSDKLoginKit.framework in Frameworks */,
+				DB9BC52F1E83570E00AC882B /* Braintree3DSecure.framework in Frameworks */,
+				DB9BC5311E83570E00AC882B /* BraintreeCard.framework in Frameworks */,
+				DB9BC5321E83570E00AC882B /* BraintreeCore.framework in Frameworks */,
+				DB9BC5331E83570E00AC882B /* BraintreeDataCollector.framework in Frameworks */,
+				DB9BC5341E83570E00AC882B /* BraintreeDropIn.framework in Frameworks */,
+				DB9BC5351E83570E00AC882B /* BraintreePayPal.framework in Frameworks */,
+				DB9BC5361E83570E00AC882B /* BraintreeUI.framework in Frameworks */,
+				DB9BC5371E83570E00AC882B /* BraintreeUIKit.framework in Frameworks */,
+				DB9BC5381E83570E00AC882B /* BraintreeUnionPay.framework in Frameworks */,
+				DB9BC5391E83570E00AC882B /* BraintreeVenmo.framework in Frameworks */,
+				DB9BC53A1E83570E00AC882B /* PayPalDataCollector.framework in Frameworks */,
+				DB9BC53B1E83570E00AC882B /* PayPalOneTouch.framework in Frameworks */,
+				DB9BC53C1E83570E00AC882B /* PayPalUtils.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB0D01981E8321EC004E499A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DB8C5E621E834781007AF550 /* Build */,
+				DB0D01991E8321EF004E499A /* Braintree3DSecure.framework */,
+				DB0D019A1E8321EF004E499A /* BraintreeApplePay.framework */,
+				DB0D019B1E8321EF004E499A /* BraintreeCard.framework */,
+				DB0D019C1E8321EF004E499A /* BraintreeCore.framework */,
+				DB0D019D1E8321EF004E499A /* BraintreeDataCollector.framework */,
+				DB0D019E1E8321EF004E499A /* BraintreeDropIn.framework */,
+				DB0D019F1E8321EF004E499A /* BraintreePayPal.framework */,
+				DB0D01A01E8321EF004E499A /* BraintreeUI.framework */,
+				DB0D01A11E8321EF004E499A /* BraintreeUIKit.framework */,
+				DB0D01A21E8321EF004E499A /* BraintreeUnionPay.framework */,
+				DB0D01A31E8321EF004E499A /* BraintreeVenmo.framework */,
+				DB0D01A41E8321EF004E499A /* PayPalDataCollector.framework */,
+				DB0D01A51E8321EF004E499A /* PayPalOneTouch.framework */,
+				DB0D01A61E8321EF004E499A /* PayPalUtils.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DB0FAD7D1E3AC7360042C78E /* Ressources */ = {
 			isa = PBXGroup;
 			children = (
 				DBF8D8101CB99E9D00BF706E /* Main.storyboard */,
-				DB2515861D831C6400B286F7 /* Model.xcdatamodeld */,
 				DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */,
 				DBF8D8181CB99E9D00BF706E /* Info.plist */,
 				DBF8D8131CB99E9D00BF706E /* Assets.xcassets */,
@@ -145,12 +282,12 @@
 		DB5EFA371CE39AC80065ECEB /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DB0D01B71E832ACF004E499A /* Feedback.swift */,
 				DB9BADB31E44EA6200BE7D76 /* ParamTable.swift */,
 				DB3003D61E5BC764002D0124 /* Card.swift */,
 				DB3003D71E5BC764002D0124 /* TypeCard.swift */,
 				DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */,
 				DB64B97E1E06880C00013628 /* CommunRequest.swift */,
-				DB2515951D83226800B286F7 /* User+CoreDataProperties.swift */,
 				DB2515961D83226800B286F7 /* User.swift */,
 				DBC585EF1E29B9830032A33B /* Config.swift */,
 				DB879CEC1DF76BEC00B05D5F /* Transaction.swift */,
@@ -177,6 +314,8 @@
 			isa = PBXGroup;
 			children = (
 				DB17C6521E2C7303001B451B /* DetailMessageViewContr.swift */,
+				DB0D01B81E832ACF004E499A /* FeedbackViewController.swift */,
+				DB0D01B91E832ACF004E499A /* HelpViewController.swift */,
 				DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */,
 				DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */,
 				DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */,
@@ -206,23 +345,114 @@
 			name = Delegate;
 			sourceTree = "<group>";
 		};
-		DBA3C5401CE519EA00CD826D /* Framework */ = {
+		DB8C5E621E834781007AF550 /* Build */ = {
 			isa = PBXGroup;
 			children = (
-				DBEDBDAF1DC2A0C600EECF0F /* Bolts.framework */,
-				DBEDBDB01DC2A0C600EECF0F /* FBSDKCoreKit.framework */,
-				DBEDBDB11DC2A0C600EECF0F /* FBSDKLoginKit.framework */,
-				DBEDBDB21DC2A0C600EECF0F /* FBSDKShareKit.framework */,
+				DB8C5E631E834781007AF550 /* .braintree-ios-drop-in.version */,
+				DB8C5E641E834781007AF550 /* .braintree_ios.version */,
+				DB8C5E651E834781007AF550 /* iOS */,
 			);
-			name = Framework;
+			name = Build;
+			path = Carthage/Build;
+			sourceTree = "<group>";
+		};
+		DB8C5E651E834781007AF550 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				DB8C5E661E834781007AF550 /* 0471D443-1F7D-3CDE-8801-CAE6648F0E47.bcsymbolmap */,
+				DB8C5E671E834781007AF550 /* 05E782FB-55A8-364F-9D01-4018D0F1C799.bcsymbolmap */,
+				DB8C5E681E834781007AF550 /* 0E349622-9155-32CB-90C9-F80F0CF14515.bcsymbolmap */,
+				DB8C5E691E834781007AF550 /* 0EC7BB70-58D2-3618-AF7C-FD7CF31C41DA.bcsymbolmap */,
+				DB8C5E6A1E834781007AF550 /* 11ACBD90-F982-3979-8B25-A07F495D6569.bcsymbolmap */,
+				DB8C5E6B1E834781007AF550 /* 18FDFA94-7BD8-3835-87FE-A6A269D96CFC.bcsymbolmap */,
+				DB8C5E6C1E834781007AF550 /* 1A2B20AC-D4B2-3D9D-97BF-10910FAA41A8.bcsymbolmap */,
+				DB8C5E6D1E834781007AF550 /* 1ABF5177-0981-3EFB-8570-A1F086211EEF.bcsymbolmap */,
+				DB8C5E6E1E834781007AF550 /* 1B5925F4-0CB6-3F8C-8309-6C0BCC5DD12C.bcsymbolmap */,
+				DB8C5E6F1E834781007AF550 /* 1C542E34-AC08-3DFB-B7C6-27F05866F222.bcsymbolmap */,
+				DB8C5E701E834781007AF550 /* 2CCF2174-21D1-354E-BCC0-4D4F93CB0A25.bcsymbolmap */,
+				DB8C5E711E834781007AF550 /* 3273A2D9-7EAE-3D2D-97F9-C51A9CEDF549.bcsymbolmap */,
+				DB8C5E721E834781007AF550 /* 32B7520A-9BB1-3C21-A296-9B418B8FBA1C.bcsymbolmap */,
+				DB8C5E731E834781007AF550 /* 335841A0-104B-3915-B418-492F4916D161.bcsymbolmap */,
+				DB8C5E741E834781007AF550 /* 36E3EE69-5DD2-367F-8A3D-0836878F8673.bcsymbolmap */,
+				DB8C5E751E834781007AF550 /* 3949D2D6-AB0B-3B7D-8419-DA505FE93740.bcsymbolmap */,
+				DB8C5E761E834781007AF550 /* 39E31EC4-ED10-3383-A7B5-6D3300A0478C.bcsymbolmap */,
+				DB8C5E771E834781007AF550 /* 3A7AB3B9-ABE8-3862-BEDB-C86B1FB4A600.bcsymbolmap */,
+				DB8C5E781E834781007AF550 /* 3BF401A9-F9E2-3EEE-8033-53BFFD6B09B9.bcsymbolmap */,
+				DB8C5E791E834781007AF550 /* 3C8ABC8C-6AD4-3B5E-8A26-ADACC0C03BFD.bcsymbolmap */,
+				DB8C5E7A1E834781007AF550 /* 422603E6-C172-3AE1-B1D1-6E1C83954F8A.bcsymbolmap */,
+				DB8C5E7B1E834781007AF550 /* 4457DDF2-00E7-3D24-B4EB-49D58EE33D2A.bcsymbolmap */,
+				DB8C5E7C1E834781007AF550 /* 49F332B7-3822-381C-9D82-C6506AD25F6A.bcsymbolmap */,
+				DB8C5E7D1E834781007AF550 /* 4B991FFF-EB83-3D61-A06B-63749B70352F.bcsymbolmap */,
+				DB8C5E7E1E834781007AF550 /* 5ACC63B0-24D3-3FF7-9046-1524881C0907.bcsymbolmap */,
+				DB8C5E7F1E834781007AF550 /* 5B4239E8-EEE3-3BAF-95D2-88DA78BC99A5.bcsymbolmap */,
+				DB8C5E801E834781007AF550 /* 6278332B-504D-3E8F-8645-D6066275792B.bcsymbolmap */,
+				DB8C5E811E834781007AF550 /* 6400FBC9-DB17-3521-B532-18F67AE5D2E1.bcsymbolmap */,
+				DB8C5E821E834781007AF550 /* 675A764A-2185-3C13-8ED3-B2191B1C1873.bcsymbolmap */,
+				DB8C5E831E834781007AF550 /* 67D46CCC-6B18-39B7-811A-03EBA726CCA1.bcsymbolmap */,
+				DB8C5E841E834781007AF550 /* 6DBB39DE-2BC4-3D05-9A09-52A3F7F3275D.bcsymbolmap */,
+				DB8C5E851E834781007AF550 /* 76D13F14-12B6-3336-B879-CCEF33E66365.bcsymbolmap */,
+				DB8C5E861E834781007AF550 /* 77AC14E7-3221-3D7D-BA59-8D2296325792.bcsymbolmap */,
+				DB8C5E871E834781007AF550 /* 7A7BEB3A-EA4F-3DBD-A103-DF5853332BBC.bcsymbolmap */,
+				DB8C5E881E834781007AF550 /* 81A0C727-C042-3962-A84C-74E77E7A7E98.bcsymbolmap */,
+				DB8C5E891E834781007AF550 /* 892E6C12-1DE3-3EC4-90F9-3831D3D0B4DE.bcsymbolmap */,
+				DB8C5E8A1E834781007AF550 /* 8CB031C6-5BE4-3454-82FF-9BA7D54C1E25.bcsymbolmap */,
+				DB8C5E8B1E834781007AF550 /* 926E83F8-D601-3288-88D9-FBCE87FCC0CA.bcsymbolmap */,
+				DB8C5E8C1E834781007AF550 /* 947D3331-4CE4-3C23-96C7-4379CD3C919E.bcsymbolmap */,
+				DB8C5E8D1E834781007AF550 /* 95F510DB-3EF6-3613-A47C-4C341F2B9104.bcsymbolmap */,
+				DB8C5E8E1E834781007AF550 /* A7E9657F-3792-3836-8878-2221EAD93986.bcsymbolmap */,
+				DB8C5E8F1E834781007AF550 /* AB4B19D2-49F8-365F-A224-F9BD2CC8692E.bcsymbolmap */,
+				DB8C5E901E834781007AF550 /* B14BCA63-F5B6-3AB0-B4CA-D649EF9DC37A.bcsymbolmap */,
+				DB8C5E911E834781007AF550 /* B5AD671B-0156-33A5-9901-3560B15F94C5.bcsymbolmap */,
+				DB8C5E921E834781007AF550 /* Braintree3DSecure.framework */,
+				DB8C5E931E834781007AF550 /* Braintree3DSecure.framework.dSYM */,
+				DB8C5E941E834781007AF550 /* BraintreeApplePay.framework */,
+				DB8C5E951E834781007AF550 /* BraintreeApplePay.framework.dSYM */,
+				DB8C5E961E834781007AF550 /* BraintreeCard.framework */,
+				DB8C5E971E834781007AF550 /* BraintreeCard.framework.dSYM */,
+				DB8C5E981E834781007AF550 /* BraintreeCore.framework */,
+				DB8C5E991E834781007AF550 /* BraintreeCore.framework.dSYM */,
+				DB8C5E9A1E834781007AF550 /* BraintreeDataCollector.framework */,
+				DB8C5E9B1E834781007AF550 /* BraintreeDataCollector.framework.dSYM */,
+				DB8C5E9C1E834781007AF550 /* BraintreeDropIn.framework */,
+				DB8C5E9D1E834781007AF550 /* BraintreeDropIn.framework.dSYM */,
+				DB8C5E9E1E834781007AF550 /* BraintreePayPal.framework */,
+				DB8C5E9F1E834781007AF550 /* BraintreePayPal.framework.dSYM */,
+				DB8C5EA01E834781007AF550 /* BraintreeUI.framework */,
+				DB8C5EA11E834781007AF550 /* BraintreeUI.framework.dSYM */,
+				DB8C5EA21E834781007AF550 /* BraintreeUIKit.framework */,
+				DB8C5EA31E834781007AF550 /* BraintreeUIKit.framework.dSYM */,
+				DB8C5EA41E834781007AF550 /* BraintreeUnionPay.framework */,
+				DB8C5EA51E834781007AF550 /* BraintreeUnionPay.framework.dSYM */,
+				DB8C5EA61E834781007AF550 /* BraintreeVenmo.framework */,
+				DB8C5EA71E834781007AF550 /* BraintreeVenmo.framework.dSYM */,
+				DB8C5EA81E834781007AF550 /* C12A2D4B-2269-36E2-A695-D0F0222ECEF4.bcsymbolmap */,
+				DB8C5EA91E834781007AF550 /* C1CA06AF-3AC4-3432-B153-3B41FEE842F0.bcsymbolmap */,
+				DB8C5EAA1E834781007AF550 /* C8E212A8-4B97-38F1-B7C6-6B6631F03542.bcsymbolmap */,
+				DB8C5EAB1E834781007AF550 /* CDD9B351-6439-3A38-8587-D367B3A64DF1.bcsymbolmap */,
+				DB8C5EAC1E834781007AF550 /* DBA832C2-C550-3C6B-A6D0-9E322DF4AD65.bcsymbolmap */,
+				DB8C5EAD1E834781007AF550 /* DDA6C6E6-D611-374E-A278-2BF83FDE1F85.bcsymbolmap */,
+				DB8C5EAE1E834781007AF550 /* DDDE266F-0DF3-329C-89BD-5B0E6A31181E.bcsymbolmap */,
+				DB8C5EAF1E834781007AF550 /* E5E275E8-5D87-3CD0-8DFD-EEB8E57995C8.bcsymbolmap */,
+				DB8C5EB01E834781007AF550 /* EB1535B1-4601-3CF6-BB79-520C145B11A5.bcsymbolmap */,
+				DB8C5EB11E834781007AF550 /* F123D0D0-DBB8-34CE-BEF4-982777448E42.bcsymbolmap */,
+				DB8C5EB21E834781007AF550 /* F1BADC4B-0046-33E2-A711-1E6D7D680486.bcsymbolmap */,
+				DB8C5EB31E834781007AF550 /* FC456F8B-0B8C-3D53-A576-1692F2636E2D.bcsymbolmap */,
+				DB8C5EB41E834781007AF550 /* PayPalDataCollector.framework */,
+				DB8C5EB51E834781007AF550 /* PayPalDataCollector.framework.dSYM */,
+				DB8C5EB61E834781007AF550 /* PayPalOneTouch.framework */,
+				DB8C5EB71E834781007AF550 /* PayPalOneTouch.framework.dSYM */,
+				DB8C5EB81E834781007AF550 /* PayPalUtils.framework */,
+				DB8C5EB91E834781007AF550 /* PayPalUtils.framework.dSYM */,
+			);
+			path = iOS;
 			sourceTree = "<group>";
 		};
 		DBF8D8001CB99E9C00BF706E = {
 			isa = PBXGroup;
 			children = (
 				DBF8D80B1CB99E9D00BF706E /* PressShare */,
-				DBA3C5401CE519EA00CD826D /* Framework */,
 				DBF8D80A1CB99E9C00BF706E /* Products */,
+				DB0D01981E8321EC004E499A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -258,6 +488,7 @@
 				DBF8D8061CB99E9C00BF706E /* Frameworks */,
 				DBF8D8071CB99E9C00BF706E /* Resources */,
 				DBA3C53F1CE519C300CD826D /* Embed Frameworks */,
+				DB0D01B51E8322F0004E499A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -325,12 +556,42 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		DB0D01B51E8322F0004E499A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeVenmo.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeCore.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Braintree3DSecure.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PayPalUtils.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeUnionPay.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreePayPal.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PayPalOneTouch.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeDataCollector.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PayPalDataCollector.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeCard.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeUI.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeDropIn.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeUIKit.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DBF8D8051CB99E9C00BF706E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */,
+				DB0D01BB1E832ACF004E499A /* Feedback.swift in Sources */,
 				DB3003EB1E5BC820002D0124 /* MyProfilTableViewContr.swift in Sources */,
 				DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */,
 				DB9BADB41E44EA6200BE7D76 /* ParamTable.swift in Sources */,
@@ -355,11 +616,11 @@
 				DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */,
 				DB3003E71E5BC820002D0124 /* ChangePwdTableViewContr.swift in Sources */,
 				DBC585F01E29B9830032A33B /* Config.swift in Sources */,
+				DB0D01BC1E832ACF004E499A /* FeedbackViewController.swift in Sources */,
 				DB3003E61E5BC820002D0124 /* CardTableViewController.swift in Sources */,
 				DBB4221D1DF8A76600CB3F5E /* TranslateMessage.swift in Sources */,
 				DB6BDF2F1DE46F24007EAFA3 /* CreateTransViewController.swift in Sources */,
-				DB2515971D83226800B286F7 /* User+CoreDataProperties.swift in Sources */,
-				DB2515881D831C6400B286F7 /* Model.xcdatamodeld in Sources */,
+				DB0D01BD1E832ACF004E499A /* HelpViewController.swift in Sources */,
 				DBF7CE181DF72DBD00966F29 /* DetailTransViewController.swift in Sources */,
 				DBF7CE161DF6064600966F29 /* ListTransactTablViewContr.swift in Sources */,
 				DBBBDAE41DE8C2D9000B5E9E /* BadgeLabel.swift in Sources */,
@@ -486,6 +747,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PressShare",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = PressShare/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -511,6 +773,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PressShare",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = PressShare/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -547,19 +810,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		DB2515861D831C6400B286F7 /* Model.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				DB2515871D831C6400B286F7 /* Model.xcdatamodel */,
-			);
-			currentVersion = DB2515871D831C6400B286F7 /* Model.xcdatamodel */;
-			path = Model.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = DBF8D8011CB99E9C00BF706E /* Project object */;
 }

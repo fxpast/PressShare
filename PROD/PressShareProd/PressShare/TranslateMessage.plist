@@ -17,6 +17,11 @@
 		<string>Connexion à PressShare</string>
 		<string>Connect to PressShare</string>
 	</array>
+    <key>termsOfUse</key>
+    <array>
+        <string>Conditions d'utilisation</string>
+        <string>Terms of use</string>
+    </array>
 	<key>signin</key>
 	<array>
 		<string>S&apos;identifier</string>
@@ -32,61 +37,71 @@
 		<string>Interlocuteur absent</string>
 		<string>Interlocutor absent</string>
 	</array>
-    <key>transactExpire</key>
+	<key>transactExpire</key>
+	<array>
+		<string>Attention, vous devez valider la transaction avant le</string>
+		<string>Caution, you must validate the transaction before</string>
+	</array>
+    <key>feedbackMess</key>
     <array>
-        <string>Attention, vous devez valider la transaction avant le</string>
-        <string>Caution, you must validate the transaction before</string>
+        <string>Merci pour vos suggestions. Grâce à vous, nous pouvons apporter des amélioration concequentes</string>
+        <string>Thank you for your suggestions. Thanks to you, we can make improvements conceive</string>
+    </array>
+    <key>feedback</key>
+    <array>
+        <string>Suggestion</string>
+        <string>Feedback</string>
     </array>
     <key>typeOfPay</key>
-    <array>
-        <string>Type de carte de paiement :</string>
-        <string>Type of payment card :</string>
-    </array>
-    <key>validerTransact</key>
-    <array>
-        <string>Valider la transaction</string>
-        <string>Validate the transaction</string>
-    </array>
-    <key>cryptogram</key>
-    <array>
-        <string>Entrer votre cryptogramme visuel :</string>
-        <string>Enter your visual cryptogram :</string>
-    </array>
-    <key>expiryDate</key>
-    <array>
-        <string>Date d'expiration :</string>
-        <string>expiry date :</string>
-    </array>
-    <key>cameraRear</key>
-    <array>
-        <string>Camera arrière</string>
-        <string>Camera rear</string>
-    </array>
-    <key>cameraFront</key>
-    <array>
-        <string>Camera avant</string>
-        <string>Camera front</string>
-    </array>
-    <key>cardOwner</key>
-    <array>
-        <string>Nom complet du détenteur de la carte:</string>
-        <string>Full cardholder's name:</string>
-    </array>
-    <key>CBNumber</key>
-    <array>
-        <string>Numéro de carte de paiement :</string>
-        <string>Credit card number :</string>
-    </array>
-    <key>compliant</key>
-    <array>
-        <string>Produit non conforme</string>
-        <string>Non-compliant product</string>
-    </array>
-    <key>allowExch</key>
-    <array>
-        <string>Echange possible</string>
-        <string>Exchange possible</string>
-    </array>
+	<array>
+		<string>Type de carte de paiement :</string>
+		<string>Type of payment card :</string>
+	</array>
+	<key>validerTransact</key>
+	<array>
+		<string>Valider la transaction</string>
+		<string>Validate the transaction</string>
+	</array>
+	<key>cryptogram</key>
+	<array>
+		<string>Entrer votre cryptogramme visuel :</string>
+		<string>Enter your visual cryptogram :</string>
+	</array>
+	<key>expiryDate</key>
+	<array>
+		<string>Date d&apos;expiration :</string>
+		<string>expiry date :</string>
+	</array>
+	<key>cameraRear</key>
+	<array>
+		<string>Camera arrière</string>
+		<string>Camera rear</string>
+	</array>
+	<key>cameraFront</key>
+	<array>
+		<string>Camera avant</string>
+		<string>Camera front</string>
+	</array>
+	<key>cardOwner</key>
+	<array>
+		<string>Nom complet du détenteur de la carte:</string>
+		<string>Full cardholder&apos;s name:</string>
+	</array>
+	<key>CBNumber</key>
+	<array>
+		<string>Numéro de carte de paiement :</string>
+		<string>Credit card number :</string>
+	</array>
+	<key>compliant</key>
+	<array>
+		<string>Produit non conforme</string>
+		<string>Non-compliant product</string>
+	</array>
+	<key>allowExch</key>
+	<array>
+		<string>Echange possible</string>
+		<string>Exchange possible</string>
+	</array>
 	<key>date</key>
 	<array>
 		<string>Date</string>
@@ -97,11 +112,11 @@
 		<string>Erreur</string>
 		<string>Error</string>
 	</array>
-    <key>seeOtherProduct</key>
-    <array>
-        <string>Voir les autres produits</string>
-        <string>See others products</string>
-    </array>
+	<key>seeOtherProduct</key>
+	<array>
+		<string>Voir les autres produits</string>
+		<string>See others products</string>
+	</array>
 	<key>errorParseJSON</key>
 	<array>
 		<string>Les données n&apos;ont pas pu être transformée au format JSON:</string>
@@ -222,10 +237,20 @@
 		<string>Depôt ponctuel </string>
 		<string>One time deposit</string>
 	</array>
+	<key>OneTimeRefund</key>
+	<array>
+		<string>Remboursement ponctuel </string>
+		<string>One-time refund</string>
+	</array>
 	<key>OneTimeWithd</key>
 	<array>
 		<string>Retrait ponctuel </string>
 		<string>One-time withdrawal</string>
+	</array>
+	<key>refund</key>
+	<array>
+		<string>Remboursement</string>
+		<string>Refund</string>
 	</array>
 	<key>withdrawal</key>
 	<array>
@@ -262,16 +287,16 @@
 		<string>Carte</string>
 		<string>Map</string>
 	</array>
-    <key>mylist</key>
-    <array>
-        <string>Mes items</string>
-        <string>My items</string>
-    </array>
-    <key>historical</key>
-    <array>
-        <string>Historique</string>
-        <string>Historical</string>
-    </array>
+	<key>mylist</key>
+	<array>
+		<string>Mes items</string>
+		<string>My items</string>
+	</array>
+	<key>historical</key>
+	<array>
+		<string>Historique</string>
+		<string>Historical</string>
+	</array>
 	<key>list</key>
 	<array>
 		<string>Liste</string>
@@ -297,12 +322,12 @@
 		<string>Se desabonner</string>
 		<string>Unsubscribe</string>
 	</array>
-    <key>errorConnection</key>
-    <array>
-        <string>Connexion internet invalide!</string>
-        <string>Internet Connection not Available!</string>
-    </array>
-    <key>connectInfo</key>
+	<key>errorConnection</key>
+	<array>
+		<string>Connexion internet invalide!</string>
+		<string>Internet Connection not Available!</string>
+	</array>
+	<key>connectInfo</key>
 	<array>
 		<string>informations de connexion</string>
 		<string>Connection information</string>
@@ -332,11 +357,11 @@
 		<string>Votre solde est insuffisant pour effectuer une transaction..!</string>
 		<string>Your balance is insufficient to perform a transaction..!</string>
 	</array>
-    <key>errorMinimumBal</key>
-    <array>
-        <string>Votre solde minimum doit être :</string>
-        <string>Your minimum balance must be :</string>
-    </array>
+	<key>errorMinimumBal</key>
+	<array>
+		<string>Votre solde minimum doit être :</string>
+		<string>Your minimum balance must be :</string>
+	</array>
 	<key>errorContactSeller</key>
 	<array>
 		<string>Entrez en contact avec le vendeur</string>
@@ -396,6 +421,11 @@
 	<array>
 		<string>Attention un mail a été envoyé dans votre boite aux lettes. Pensez à vérifier votre dossier spam si vous ne trouvez pas le mail.</string>
 		<string>Beware a email has been sent in your box to the letters. Check your spam folder if you do not find the email</string>
+	</array>
+	<key>rememberMe</key>
+	<array>
+		<string>Se souvenir de moi</string>
+		<string>Remember me</string>
 	</array>
 	<key>password</key>
 	<array>
@@ -502,43 +532,42 @@
 		<string>Produit à afficher</string>
 		<string>Product to show</string>
 	</array>
-    <key>buyCanceled</key>
-    <array>
-        <string>Le client a annulé l'achat du produit.</string>
-        <string>The customer canceled the purchase of the product</string>
-    </array>
-
-    <key>buyConfirmed</key>
-    <array>
-        <string>Le client a confirmé l'achat du produit.</string>
-        <string>The customer confirmed the purchase of the product</string>
-    </array>
-    <key>exchangeCanceled</key>
-    <array>
-        <string>Le client a annulé l'échange du produit.</string>
-        <string>The customer canceled the exchange of the product</string>
-    </array>
-    <key>exchangeConfirmed</key>
-    <array>
-        <string>Le client a confirmé l'échange du produit.</string>
-        <string>The customer confirmed the exchange of the product</string>
-    </array>
-    <key>thisProduct</key>
-    <array>
-        <string>Ce produit</string>
-        <string>This product</string>
-    </array>
-    <key>productAroud</key>
-    <array>
-        <string>Les produits autour de</string>
-        <string>The products around</string>
-    </array>
-    <key>theProduct</key>
-    <array>
-        <string>Le produit :</string>
-        <string>The product :</string>
-    </array>
-    <key>makeChoice</key>
+	<key>buyCanceled</key>
+	<array>
+		<string>Le client a annulé l&apos;achat du produit.</string>
+		<string>The customer canceled the purchase of the product</string>
+	</array>
+	<key>buyConfirmed</key>
+	<array>
+		<string>Le client a confirmé l&apos;achat du produit.</string>
+		<string>The customer confirmed the purchase of the product</string>
+	</array>
+	<key>exchangeCanceled</key>
+	<array>
+		<string>Le client a annulé l&apos;échange du produit.</string>
+		<string>The customer canceled the exchange of the product</string>
+	</array>
+	<key>exchangeConfirmed</key>
+	<array>
+		<string>Le client a confirmé l&apos;échange du produit.</string>
+		<string>The customer confirmed the exchange of the product</string>
+	</array>
+	<key>thisProduct</key>
+	<array>
+		<string>Ce produit</string>
+		<string>This product</string>
+	</array>
+	<key>productAroud</key>
+	<array>
+		<string>Les produits autour de</string>
+		<string>The products around</string>
+	</array>
+	<key>theProduct</key>
+	<array>
+		<string>Le produit :</string>
+		<string>The product :</string>
+	</array>
+	<key>makeChoice</key>
 	<array>
 		<string>Faites votre choix :</string>
 		<string>Make your choice :</string>
@@ -567,6 +596,11 @@
 	<array>
 		<string>Suppression interdite</string>
 		<string>Deletion forbidden</string>
+	</array>
+	<key>library</key>
+	<array>
+		<string>Bibliothèque</string>
+		<string>Library</string>
 	</array>
 	<key>price</key>
 	<array>

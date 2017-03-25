@@ -11,7 +11,6 @@
 
 
 import CoreLocation
-import CoreData
 import Foundation
 import MapKit
 import UIKit
@@ -35,7 +34,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var fieldName = ""
     var keybordY:CGFloat! = 0
     
-    var users = [User]()
     var aProduct:Product!
     
     var userPseudo:String!
@@ -46,20 +44,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var lon:CLLocationDegrees!
     var latUser:CLLocationDegrees!
     var lonUser:CLLocationDegrees!
-    var flgUser = false
-    var flgSelect = false
+    var isUser = false
+    var isSelect = false
     var prodIdNow = 0
-    
+  
     var shapeLayer1:CAShapeLayer!
     
     var locationManager:CLLocationManager!
     
-    var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        return delegate.managedObjectContext
-    }
-    
- 
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
@@ -86,15 +78,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        IBActivity.stopAnimating()
+        IBActivity.stopAnimating()        
+        IBActivity.isHidden = true
         
         IBtextfieldSearch.delegate = self
         
         userPseudo  = config.user_pseudo
         userId = config.user_id
-        
-        users = fetchAllUser()
-        
         
         NotificationCenter.default.addObserver(self, selector: #selector(pushProduct), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
         
@@ -117,7 +107,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         super.viewWillAppear(animated)
         
-        config.flgReturnToTab = false
+        config.isReturnToTab = false
         
     
         IBMap = MKMapView()
@@ -143,11 +133,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         locationManager.startUpdatingLocation()
         
         navigationController?.tabBarItem.title = translate.message("map")
-        IBLogout.image = #imageLiteral(resourceName: "eteindre")
-        IBLogout.title = ""
         IBtextfieldSearch.placeholder = translate.message("tapALoc")
         
-        flgUser = false
+        isUser = false
         
         if config.product_maj == true {
             config.product_maj = false
@@ -162,7 +150,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         pushProduct()
         
         IBButtonAllProduct.setTitle(translate.message("seeOtherProduct"), for: UIControlState.normal)
-        
         
     }
     
@@ -182,7 +169,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     func handleTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             
-            if shapeLayer1 != nil && flgSelect == true {
+            if shapeLayer1 != nil && isSelect == true {
                 IBMessageView.isHidden = true
                 shapeLayer1.removeFromSuperlayer()
                 shapeLayer1 = nil
@@ -195,7 +182,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     
     @objc private func pushProduct() {
-        
         
         IBActivity.startAnimating()
         BlackBox.sharedInstance.pushProduct(menuBar: tabBarController) { (success, product, errorStr) in
@@ -227,6 +213,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                             self.aProduct = product
                             self.IBActivity.stopAnimating()
                             self.performSegue(withIdentifier: "fromMap", sender: self)
+                            
                             
                         }
                     }
@@ -262,6 +249,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("carte_liste", self)
+        
+    }
+    
+    
     @IBAction func actionAllProducts(_ sender: AnyObject) {
         
   
@@ -277,38 +272,21 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
 
-    
-    //MARK: coreData function
-    
-    private func fetchAllUser() -> [User] {
-        
-        users.removeAll()
-        // Create the Fetch Request
-        
-        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
-        
-        // Execute the Fetch Request
-        do {
-            return try sharedContext.fetch(request) as! [User]
-        } catch _ {
-            return [User]()
-        }
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "mapproduct" {
             
             let nav = segue.destination as! UINavigationController
             let controller = nav.topViewController as! ListProductViewController
-            if flgUser {
+            if isUser {
                 
-                controller.flgUser = true
+                controller.isUser = true
+                controller.typeListe = 1 //Map :0, MyList :1, Historical:2
             }
             else {
                 controller.lon = lon
                 controller.lat = lat
-                
+                controller.typeListe = 0 //Map :0, MyList :1, Historical:2
             }
             
         }
@@ -320,7 +298,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 let controller = nav.topViewController as! ProductTableViewContr
                 
                 controller.aProduct = aProduct
-                controller.typeListe = 0 //data product list is Map:0
+                controller.typeListe = 0 //Map :0, MyList :1, Historical:2
                 controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
                 
             }
@@ -467,8 +445,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             IBMap.addAnnotations(annotations)
         }
         
-        if flgSelect == true {
-            flgSelect = false
+        if isSelect == true {
+            isSelect = false
             lat = prod.prod_latitude
             lon = prod.prod_longitude
             let annotation = CustomPin()
@@ -555,23 +533,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     @IBAction func actionLogout(_ sender: AnyObject) {
         
-        //logout
-        if users.count > 0 {
-            for aUser in users {
-                if aUser.user_pseudo == config.user_pseudo {
-                    aUser.user_logout = true
-                    
-                    // Save the context.
-                    do {
-                        try sharedContext.save()
-                    } catch _ {}
-                    
-                    break
-                }
-            }
-            
-            users = fetchAllUser()
-            
+        
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
+        let filePath  = url.appendingPathComponent("userDico")!.path
+        
+        do {
+            try FileManager.default.removeItem(atPath: filePath)
+        } catch  {
+            print("error ", filePath)
         }
         
         self.dismiss(animated: true, completion: nil)
@@ -647,7 +616,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
  
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
         
-        if shapeLayer1 != nil && flgSelect == true {
+        if shapeLayer1 != nil && isSelect == true {
             IBMessageView.isHidden = true
             shapeLayer1.removeFromSuperlayer()
             shapeLayer1 = nil
@@ -692,15 +661,17 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             lat = coord.latitude
             lon = coord.longitude
             prodIdNow = view.tag
-            flgSelect = true
+            isSelect = true
           
             if (view.annotation?.title)! == "user:" {
-                flgUser = true
+                isUser = true
                 performSegue(withIdentifier: "mapproduct", sender: self)
             }
             else if countProduct() > 1 {
                 
                 IBMessageView.isHidden = false
+                IBButtonTitle.setTitle((view.annotation?.title)!, for: UIControlState.normal)
+                IBLabelLieu.text = (view.annotation?.subtitle)!
                 
                 if view.frame.origin.y < self.view.frame.size.height/2 {
                     

@@ -3,52 +3,52 @@
   "commitish" : "4.7.5",
   "iOS" : [
     {
-      "name" : "Braintree3DSecure",
-      "md5" : "06f536af31dba31d70de5db98fc3a01a"
-    },
-    {
-      "name" : "BraintreeApplePay",
-      "md5" : "060137ce398a02bd2f1a6e8462784fc9"
-    },
-    {
       "name" : "BraintreeCard",
-      "md5" : "43453f9a65ea860e2fecaaa0311a8d38"
-    },
-    {
-      "name" : "BraintreeVenmo",
-      "md5" : "3b7f1601f6417daa8c7a5c8e0585e2d0"
+      "md5" : "9c4321100e06f34b24018e136d421a14"
     },
     {
       "name" : "BraintreeDataCollector",
-      "md5" : "605c933afd0cad5b194d97ffeb5d3881"
+      "md5" : "b8d1fae30307b8611851ea3cf919b807"
     },
     {
-      "name" : "PayPalUtils",
-      "md5" : "40f1e845cca89f132b20cded11cb1b84"
-    },
-    {
-      "name" : "BraintreeCore",
-      "md5" : "e04d8a26e41579d93cba293606fef101"
+      "name" : "BraintreeApplePay",
+      "md5" : "96e556cb20140e7a54eee254e4a2fdd2"
     },
     {
       "name" : "PayPalDataCollector",
-      "md5" : "177931deb81016e713b7a717c1578850"
+      "md5" : "7be66a8d381e16f55978a14e6467905a"
+    },
+    {
+      "name" : "BraintreeVenmo",
+      "md5" : "1ce2a3072d4bde9a53ecf6da8fe8f6f5"
     },
     {
       "name" : "BraintreeUnionPay",
-      "md5" : "12744042b7de127db746e68e3980eecb"
+      "md5" : "b2e3df0fa98f44443f7d97ad55b0bd84"
     },
     {
-      "name" : "PayPalOneTouch",
-      "md5" : "3439f7e34ce7376d2b536e454f3ada70"
+      "name" : "BraintreeCore",
+      "md5" : "22ffc4cbdf641169748ef474f31b66df"
+    },
+    {
+      "name" : "PayPalUtils",
+      "md5" : "d72dd8d652d1c32418e8b2a586526d5c"
+    },
+    {
+      "name" : "Braintree3DSecure",
+      "md5" : "e49d6f2d97225a133d0fb2f478211061"
     },
     {
       "name" : "BraintreePayPal",
-      "md5" : "825a30c3366dd9da3518de8c4d9a1bf2"
+      "md5" : "55542d9e3d24382b1ee6143380851ca0"
+    },
+    {
+      "name" : "PayPalOneTouch",
+      "md5" : "ba8d1340cda634cac718f644453cc3b2"
     },
     {
       "name" : "BraintreeUI",
-      "md5" : "66a4f9981777b88734563febefa2a72f"
+      "md5" : "d3fd30e558ea71c02f7a9feff0ac6dd5"
     }
   ]
 }

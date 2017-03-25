@@ -10,7 +10,10 @@
 //
 
 
-import CoreData
+
+//Todo: aide dans MyProfilTableViewContr
+
+
 import UIKit
 
 class MyProfilTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAlertViewDelegate {
@@ -40,13 +43,7 @@ class MyProfilTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAl
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
-    var users = [User]()
-    
-    var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        return delegate.managedObjectContext
-    }
-    
+
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
@@ -72,10 +69,7 @@ class MyProfilTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAl
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        users = fetchAllUser()
-        
         tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
-        
         
     }
     
@@ -146,25 +140,13 @@ class MyProfilTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAl
         sender.cancelsTouchesInView = false
     }
     
-    
-    //MARK: coreData function
-    
-    private func fetchAllUser() -> [User] {
+    @IBAction func actionHelp(_ sender: Any) {
         
-        users.removeAll()
+        //action info
+        BlackBox.sharedInstance.showHelp("MyProfilTableViewContr", self)
         
-        // Create the Fetch Request
-        
-        
-        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
-        
-        // Execute the Fetch Request
-        do {
-            return try sharedContext.fetch(request) as! [User]
-        } catch _ {
-            return [User]()
-        }
     }
+    
     
     @IBAction func actionDone(_ sender: AnyObject) {
         
@@ -185,10 +167,6 @@ class MyProfilTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAl
             if success {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
-                    if self.users.count > 0 {
-                        self.assignUser(self.users[0])
-                    }
-                    
                     self.dismiss(animated: true, completion: nil)
                 }
             }
@@ -204,29 +182,6 @@ class MyProfilTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAl
     }
     
 
-    private func assignUser(_ aUser:User) {
-        
-        aUser.user_pseudo = config.user_pseudo
-        aUser.user_email = config.user_email
-        aUser.user_nom = config.user_nom
-        aUser.user_prenom = config.user_prenom
-        aUser.user_pays = config.user_pays
-        aUser.user_ville = config.user_ville
-        aUser.user_adresse = config.user_adresse
-        aUser.user_codepostal = config.user_codepostal
-        aUser.user_pass = config.user_pass
-        aUser.user_level = config.level as NSNumber?
-        
-        // Save the context.
-        do {
-            try sharedContext.save()
-        } catch _ {}
-        
-        
-        users = fetchAllUser()
-        
-    }
-    
     //MARK: textfield Delegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

@@ -8,8 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-
-
 import CoreData
 import UIKit
 
@@ -24,8 +22,8 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
     @IBOutlet weak var IBPseudoLabel: UILabel!
     @IBOutlet weak var IBVerifPass: UITextField!
     @IBOutlet weak var IBVerifPassLabel: UILabel!
-    @IBOutlet weak var IBAncienPass: UITextField!
-    @IBOutlet weak var IBAncienPassLabel: UILabel!
+    @IBOutlet weak var IBPassword: UITextField!
+    @IBOutlet weak var IBPasswordLabel: UILabel!
     
     
     var fieldName = ""
@@ -33,13 +31,7 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
-    var users = [User]()
-    
-    var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        return delegate.managedObjectContext
-    }
-    
+
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         get {
@@ -84,9 +76,9 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
         IBPseudo.placeholder = translate.message("pseudo")
         IBPseudo.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBPseudo.frame))
 
-        IBAncienPassLabel.text = translate.message("oldPass")
-        IBAncienPass.placeholder = translate.message("oldPass")
-        IBAncienPass.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBAncienPass.frame))
+        IBPasswordLabel.text = translate.message("password")
+        IBPassword.placeholder = translate.message("password")
+        IBPassword.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBPassword.frame))
         IBVerifPassLabel.text = translate.message("checkPass")
         IBVerifPass.placeholder = translate.message("checkPass")
         IBVerifPass.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBVerifPass.frame))
@@ -108,6 +100,14 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
     }
     
     
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("NewUserTableViewContr", self)
+        
+    }
+    
+    
     
     @IBAction func actionCancel(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
@@ -121,26 +121,6 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
         sender.cancelsTouchesInView = false
     }
   
-    
-    //MARK: coreData function
-    
-    private func fetchAllUser() -> [User] {
-        
-        
-        users.removeAll()
-        // Create the Fetch Request
-        
-        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
-        
-        // Execute the Fetch Request
-        do {
-            return try sharedContext.fetch(request) as! [User]
-        } catch _ {
-            return [User]()
-        }
-    }
-    
-    
     //MARK: Data User with Sign up
     
     @IBAction func actionDone(_ sender: AnyObject) {
@@ -155,12 +135,12 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
             return
         }
         
-        guard IBAncienPass.text != "" else {
+        guard IBPassword.text != "" else {
             self.displayAlert(self.translate.message("error"), mess: translate.message("errorPassword"))
             return
         }
         
-        guard IBAncienPass.text == IBVerifPass.text else {
+        guard IBPassword.text == IBVerifPass.text else {
             self.displayAlert(self.translate.message("error"), mess: translate.message("errorPassword"))
             return
         }
@@ -170,7 +150,7 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
         
         config.user_pseudo = IBPseudo.text
         config.user_email = IBemail.text
-        config.user_pass = IBAncienPass.text
+        config.user_pass = IBPassword.text
         
         MDBUser.sharedInstance.setAddUser(config) { (success, errorString) in
             
@@ -178,19 +158,6 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
             
             if success {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    
-                    if self.users.count > 0 {
-                        self.sharedContext.delete(self.users[0])
-                        self.users.removeLast()
-                        // Save the context.
-                        do {
-                            try self.sharedContext.save()
-                        } catch let error as NSError {
-                            print(error.debugDescription)
-                            
-                        }
-                        
-                    }
                     
                     self.dismiss(animated: true, completion: nil)
                 }
@@ -218,9 +185,9 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
           IBemail.becomeFirstResponder()
         }
         else if textField.isEqual(IBemail) {
-          IBAncienPass.becomeFirstResponder()
+          IBPassword.becomeFirstResponder()
         }
-        else if textField.isEqual(IBAncienPass) {
+        else if textField.isEqual(IBPassword) {
             IBVerifPass.becomeFirstResponder()
         }
         else if textField.isEqual(IBVerifPass) {
@@ -243,8 +210,8 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
         else if textField.isEqual(IBVerifPass) {
             fieldName = "IBVerifPass"
         }
-        else if textField.isEqual(IBAncienPass) {
-            fieldName = "IBAncienPass"
+        else if textField.isEqual(IBPassword) {
+            fieldName = "IBPassword"
         }
     }
     
