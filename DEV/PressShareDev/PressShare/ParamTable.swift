@@ -22,6 +22,8 @@ struct ParamTable {
     var commisPourcBuy:Double
     var commisFixEx:Double
     var maxDayTrigger:Int
+    var subscriptAmount:Double!
+    var minimumAmount:Double!
     
     //MARK: Initialisation
     
@@ -36,6 +38,8 @@ struct ParamTable {
             commisPourcBuy = Double(dico["commisPourcBuy"] as! String)!
             commisFixEx = Double(dico["commisFixEx"] as! String)!
             maxDayTrigger = Int(dico["maxDayTrigger"] as! String)!
+            subscriptAmount = Double(dico["subscriptAmount"] as! String)!
+            minimumAmount = Double(dico["minimumAmount"] as! String)!
         }
         else {
             param_id = 0
@@ -45,6 +49,8 @@ struct ParamTable {
             commisPourcBuy = 0
             commisFixEx = 0
             maxDayTrigger = 0
+            subscriptAmount = 0
+            minimumAmount = 0
         }
         
     }
@@ -61,6 +67,7 @@ class ParamTables {
 }
 
 
+//MARK: ParamTable methods
 class MDBParamTable {
     
     let translate = TranslateMessage.sharedInstance

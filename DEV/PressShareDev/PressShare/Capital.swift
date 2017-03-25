@@ -43,7 +43,7 @@ struct Capital {
 }
 
 
-//MARK: Produits Array
+//MARK: Capitals Array
 class Capitals {
     
     var capitalsArray :[[String:AnyObject]]!
@@ -51,6 +51,8 @@ class Capitals {
     
 }
 
+
+//MARK: Capital methods
 class MDBCapital {
     
     let translate = TranslateMessage.sharedInstance

@@ -9,10 +9,28 @@
 //
 
 
+/* Info Sandbox Braintree (Paypal) :
+ 
+ ------------------------------------------------------------------------------------------------------------------
+ https://sandbox.braintreegateway.com
+ user : fxpast@gmail.com
+ password: fxpastsandbox1
+ 
+ Merchant ID: ngygpwcrrdbqybjm
+ Public Key: fxwvx5twt9ft8gyy
+ Private Key: 6d9a2c5d55a9fab4700aa33e10281274
+ 
+ dev ios : https://github.com/braintree/braintree_ios
+ 
+ ------------------------------------------------------------------------------------------------------------------
+ */
+
+//Todo: aide SubscriptViewController ne fonctionne pas
 
 
-import CoreData
 import Foundation
+import BraintreeCore
+import BraintreeCard
 
 class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource  {
     
@@ -28,21 +46,21 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     @IBOutlet weak var IBButtonDeposit: UIButton!
     @IBOutlet weak var IBButtonSubUnsub: UIButton!
     @IBOutlet weak var IBLabelWithdraw: UILabel!
-    
-    var users = [User]()
+    @IBOutlet weak var IBEntete: UILabel!
     
     var fieldName = ""
     var keybordY:CGFloat! = 0
     var config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
-    var flgOpen=false
-    var operations = [Operation]()
+    var isOpen = false
+    var operations = [PressOperation]()
     
     var customOpeation = BlockOperation()
     let myQueue = OperationQueue()
     
-    let subscriptAmount = 10.0
-    let minimumAmount = 10.0
+
+    var aCard: Card!
+    
     
     //MARK: Locked portrait
     open override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
@@ -63,30 +81,73 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         }
     }
     
-    var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        return delegate.managedObjectContext
-    }
-    
     
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        users = fetchAllUser()
-        
+        self.title = translate.message("mySubscrit")
         IBBalance.text = BlackBox.sharedInstance.formatedAmount(config.balance!)
-        
         IBBalance.isEnabled = false
-        
-        
-        
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        IBEntete.text = "\(translate.message("date"))        \(translate.message("type"))    \(translate.message("amount"))  \(translate.message("wording"))"
+        
+        if Cards.sharedInstance.cardsArray == nil {
+            
+            MDBTypeCard.sharedInstance.getAllTypeCards(completionHandlerTypeCards: {(success, typeCardsArray, errorString) in
+                
+                if success {
+                    TypeCards.sharedInstance.typeCardsArray = typeCardsArray
+                }
+                else {
+                    
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    }
+                }
+                
+            })
+            
+            
+            MDBCard.sharedInstance.getAllCards(user_id: config.user_id, completionHandlerCards: {(success, cardsArray, errorString) in
+                if success {
+                    Cards.sharedInstance.cardsArray = cardsArray
+                    
+                    for card in Cards.sharedInstance.cardsArray {
+                        self.aCard = Card(dico: card)
+                        if self.aCard.main_card == true {
+                            break
+                        }
+                        else {
+                            self.aCard = nil
+                        }
+                    }
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    }
+                }
+            })
+        }
+        else {
+            
+            for card in Cards.sharedInstance.cardsArray {
+                aCard = Card(dico: card)
+                if aCard.main_card == true {
+                    break
+                }
+                else {
+                    aCard = nil
+                }
+            }
+            
+        }
+        
         
         IBLabelBalance.text = translate.message("balance")
         IBLabelWithdraw.text = translate.message("withdrawal")
@@ -112,11 +173,11 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if flgOpen == false {
-            flgOpen = true
+        if isOpen == false {
+            isOpen = true
             IBActivity.isHidden = false
             IBActivity.startAnimating()
-            if let _ = Operations.sharedInstance.operationArray {
+            if let _ = PressOperations.sharedInstance.operationArray {
                 
                 myQueue.addOperation {
                     
@@ -167,6 +228,13 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
     }
     
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("SubscriptViewController", self)
+        
+    }
+    
     
     @IBAction func actionCancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)
@@ -212,16 +280,12 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             fieldName = "IBDeposit"
         }
         
-        
-        
     }
     
     
     //MARK: Data operation , capital
     
-    private func withdrawal(_ amount: Double) {
-        
-        
+    private func withdrawal(_ amount: Double, _ typeOp: Int) {
         
         self.config.balance = config.balance - amount
         var capital = Capital(dico: [String : AnyObject]())
@@ -229,30 +293,44 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         capital.user_id = self.config.user_id
         capital.failure_count = self.config.failure_count
         
-        var operation = Operation(dico: [String : AnyObject]())
+        var operation = PressOperation(dico: [String : AnyObject]())
         operation.user_id = self.config.user_id
-        operation.op_type = 2
+        operation.op_type = typeOp
         operation.op_amount = -1 * amount
-        operation.op_wording = self.translate.message("OneTimeWithd")
+        if typeOp == 2 {
+            //withdrawal
+            operation.op_wording = self.translate.message("OneTimeWithd")
+        }
+        else if typeOp == 6 {
+            //refund
+            operation.op_wording = self.translate.message("OneTimeRefund")
+        }
+        
         
         MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
             
             if success {
                 
-                MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                MDBPressOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
                     
                     if success {
                         
-                        MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                        MDBPressOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
                             
                             if success {
                                 
-                                Operations.sharedInstance.operationArray = operationArray
+                                PressOperations.sharedInstance.operationArray = operationArray
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.IBActivity.isHidden = true
+                                    self.IBActivity.stopAnimating()
+                                }
                             }
                             else {
                                 
                                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                                     self.displayAlert(self.translate.message("error"), mess: errorString!)
+                                    self.IBActivity.isHidden = true
+                                    self.IBActivity.stopAnimating()
                                 }
                             }
                             
@@ -273,6 +351,8 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             
                             self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            self.IBActivity.isHidden = true
+                            self.IBActivity.stopAnimating()
                         }
                     }
                     
@@ -286,6 +366,8 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    self.IBActivity.isHidden = true
+                    self.IBActivity.stopAnimating()
                 }
             }
             
@@ -319,10 +401,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 return
             }
             
-            var finalValue = self.IBBalance.text! as String
-            finalValue = finalValue.replacingOccurrences(of: self.translate.message("devise"), with: "")
-            finalValue = finalValue.replacingOccurrences(of: " ", with: "")
-            
+            let finalValue = self.IBBalance.text! as String
             guard let balance = BlackBox.sharedInstance.formatedAmount(finalValue) else {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("balance")) : \(self.translate.message("ErrorPrice"))")
@@ -331,31 +410,28 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 return
             }
             
-            guard balance >= (amount + self.minimumAmount) else {
+            guard balance >= (amount + self.config.minimumAmount!) else {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("errorBalanceTrans")) \n \(self.translate.message("errorMinimumBal")) \(self.minimumAmount)")
+                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("errorBalanceTrans")) \n \(self.translate.message("errorMinimumBal")) \(self.config.minimumAmount!)")
                     
                 }
                 
                 return
             }
             
-            
-            self.withdrawal(amount)
-            
+            self.IBActivity.isHidden = false
+            self.IBActivity.startAnimating()
+            self.braintreeOperation(amount, "withdrawal")
             
         })
         
         let actionCancel = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
             
-            
-            
         })
         
         alertController.addAction(actionCancel)
         alertController.addAction(actionValider)
-        
         
         present(alertController, animated: true) {
             
@@ -366,48 +442,119 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     @IBAction func actionDeposit(_ sender: Any) {
         
+        var alertController = UIAlertController()
         
-        let alertController = UIAlertController(title: translate.message("deposit"), message: translate.message("confirmPayment"), preferredStyle: .alert)
-        
-        let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
+        if aCard == nil {
             
-            guard self.IBDeposit.text != "" else {
+            
+            alertController = UIAlertController(title: "Carte de credit", message: "Ajouter une carte de credit", preferredStyle: .alert)
+            
+            let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
                 
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                self.performSegue(withIdentifier: "CB", sender: self)
+                
+            })
+            
+            let actionCancel = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
+                
+            })
+            
+            alertController.addAction(actionCancel)
+            alertController.addAction(actionValider)
+            
+         
+            
+        }
+        else {
+            
+            alertController = UIAlertController(title: translate.message("deposit"), message: translate.message("confirmPayment"), preferredStyle: .alert)
+            
+            let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
+                
+                guard self.IBDeposit.text != "" else {
                     
-                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("deposit")) : \(self.translate.message("ErrorPrice"))")
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("deposit")) : \(self.translate.message("ErrorPrice"))")
+                    }
+                    
+                    return
                 }
                 
-                return
-            }
-            
-            guard let amount = BlackBox.sharedInstance.formatedAmount(self.IBDeposit.text!) else {
-                
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                guard let amount = BlackBox.sharedInstance.formatedAmount(self.IBDeposit.text!) else {
                     
-                    self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("deposit")) : \(self.translate.message("ErrorPrice"))")
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        
+                        self.displayAlert(self.translate.message("error"), mess: "\(self.translate.message("deposit")) : \(self.translate.message("ErrorPrice"))")
+                    }
+                    
+                    return
                 }
                 
-                return
-            }
+                self.IBActivity.isHidden = false
+                self.IBActivity.startAnimating()
+                self.braintreeOperation(amount, "deposit")
+                
+            })
             
-            self.deposit(amount)
+            let actionCancel = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
+                
+                
+            })
             
-        })
-        
-        let actionCancel = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
+            alertController.addAction(actionCancel)
+            alertController.addAction(actionValider)
             
-            
-        })
-        
-        alertController.addAction(actionCancel)
-        alertController.addAction(actionValider)
+        }
         
         
         present(alertController, animated: true) {
             
         }
         
+    }
+    
+    
+    private func braintreeOperation(_ amount: Double, _ type: String) {
+        
+        MDBPressOperation.sharedInstance.operationBraintree(type, self.config.user_id, amount, completionHandlerNonce: { (success, restAmount, errorString) in
+            
+            if success == true {
+                if type == "deposit" {
+                    self.deposit(amount)
+                }
+                else if type == "withdrawal" {
+                    let rest = Double(restAmount!)!
+                    if rest > 0 {
+                        
+                        if amount > rest {
+                            //refund
+                            self.withdrawal(amount - rest, 6)
+                        }
+                    
+                        //withdrawal
+                        self.withdrawal(rest, 2)
+                        
+                    }
+                    else {
+                        //refund
+                        self.withdrawal(amount - rest, 6)
+                    }
+                    
+                    
+                }
+                
+            }
+            else {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    self.IBActivity.isHidden = true
+                    self.IBActivity.stopAnimating()
+                }
+            }
+            
+            
+        })
         
     }
     
@@ -420,7 +567,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         capital.user_id = config.user_id
         capital.failure_count = config.failure_count
         
-        var operation = Operation(dico: [String : AnyObject]())
+        var operation = PressOperation(dico: [String : AnyObject]())
         operation.user_id = config.user_id
         operation.op_type = 1
         operation.op_amount = amount
@@ -430,20 +577,28 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
             if success {
                 
-                MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                MDBPressOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
                     
                     if success {
                         
-                        MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                        MDBPressOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
                             
                             if success {
                                 
-                                Operations.sharedInstance.operationArray = operationArray
+                                PressOperations.sharedInstance.operationArray = operationArray
+                                
+                                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.IBActivity.isHidden = true
+                                    self.IBActivity.stopAnimating()
+                                }
+                                
                             }
                             else {
                                 
                                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                                     self.displayAlert(self.translate.message("error"), mess: errorString!)
+                                    self.IBActivity.isHidden = true
+                                    self.IBActivity.stopAnimating()
                                 }
                             }
                             
@@ -464,6 +619,9 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             
                             self.displayAlert(self.translate.message("error"), mess: errorString!)
+                            self.IBActivity.isHidden = true
+                            self.IBActivity.stopAnimating()
+                            
                         }
                     }
                     
@@ -477,6 +635,8 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     
                     self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    self.IBActivity.isHidden = true
+                    self.IBActivity.stopAnimating()
                 }
             }
             
@@ -507,13 +667,17 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
         let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
             
+            self.IBActivity.isHidden = false
+            self.IBActivity.startAnimating()
+            
             if self.config.level <= 0 && self.config.balance == 0 {
-                
-                self.deposit(self.subscriptAmount)
+               
+                self.braintreeOperation(self.config.subscriptAmount!, "deposit")
             }
             else if self.config.level > 0 && self.config.balance > 0 {
                 
-                self.withdrawal(self.config.balance)
+                self.braintreeOperation(self.config.balance!, "withdrawal")
+                
             }
             
             
@@ -523,10 +687,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
                 
                 if success {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        
-                        if self.users.count > 0 {
-                            self.assignUser(self.users[0])
-                        }
                         
                         if self.config.level <= 0 {
                             self.IBButtonSubUnsub.setTitle(self.translate.message("subscribe"), for: UIControlState.normal)
@@ -575,32 +735,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     }
     
     
-    
-    private func assignUser(_ aUser:User) {
-        
-        aUser.user_pseudo = config.user_pseudo
-        aUser.user_email = config.user_email
-        aUser.user_nom = config.user_nom
-        aUser.user_prenom = config.user_prenom
-        aUser.user_pays = config.user_pays
-        aUser.user_ville = config.user_ville
-        aUser.user_adresse = config.user_adresse
-        aUser.user_codepostal = config.user_codepostal
-        aUser.user_pass = config.user_pass
-        aUser.user_level = config.level as NSNumber?
-        
-        // Save the context.
-        do {
-            try sharedContext.save()
-        } catch _ {}
-        
-        
-        users = fetchAllUser()
-        
-        
-    }
-    
-    
     private func refreshData()  {
         
         myQueue.cancelAllOperations()
@@ -642,11 +776,11 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         })
         
         
-        MDBOperation.sharedInstance.getAllOperations(config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+        MDBPressOperation.sharedInstance.getAllOperations(config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
             
             if success {
                 
-                Operations.sharedInstance.operationArray = operationArray
+                PressOperations.sharedInstance.operationArray = operationArray
                 self.chargeData()
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -671,13 +805,13 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     private func chargeData() {
         
         
-        for ope in Operations.sharedInstance.operationArray {
+        for ope in PressOperations.sharedInstance.operationArray {
             
             if customOpeation.isCancelled {
                 break
             }
             
-            let opera = Operation(dico: ope)
+            let opera = PressOperation(dico: ope)
             operations.append(opera)
             
             BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -689,27 +823,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         }
         
         
-    }
-    
-    
-    //MARK: coreData function
-    
-    private func fetchAllUser() -> [User] {
-        
-        
-        users.removeAll()
-        
-        // Create the Fetch Request
-        
-        
-        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
-        
-        // Execute the Fetch Request
-        do {
-            return try sharedContext.fetch(request) as! [User]
-        } catch _ {
-            return [User]()
-        }
     }
     
     
@@ -800,12 +913,6 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
-        return  "\(translate.message("date"))        \(translate.message("type"))    \(translate.message("amount"))  \(translate.message("wording"))"
-        
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let CellReuseId = "cell"
@@ -818,7 +925,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         let index = adate.text?.index((adate.text?.startIndex)!, offsetBy: 10)
         adate.text = adate.text?.substring(to: index!)
         
-        //1: deposit, 2: withdrawal, 3: buy, 4: sell, 5:Commission
+        //1: deposit, 2: withdrawal, 3: buy, 4: sell, 5:Commission, 6:refund
         
         let atype =  cell?.contentView.viewWithTag(20) as! UILabel
         if operation.op_type == 1 {
@@ -836,7 +943,9 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         else if operation.op_type == 5 {
             atype.text =  translate.message("commission")
         }
-        
+        else if operation.op_type == 6 {
+            atype.text =  translate.message("refund")
+        }
         let aAmount = cell?.contentView.viewWithTag(30) as! UILabel
         aAmount.text = BlackBox.sharedInstance.formatedAmount(operation.op_amount)
         

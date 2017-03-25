@@ -117,9 +117,7 @@ class ListTypeCBTableViewCrtl: UITableViewController {
             }
             
             let typeC = TypeCard(dico: typeCd)
-            if typeC.typeCard_id != 6 {
-                typeCards.append(typeC)
-            }
+            typeCards.append(typeC)
             
             BlackBox.sharedInstance.performUIUpdatesOnMain {
                 self.tableView.reloadData()
@@ -128,6 +126,12 @@ class ListTypeCBTableViewCrtl: UITableViewController {
         
     }
     
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("ListTypeCBTableViewCrtl", self)
+        
+    }
     
     
     //MARK: Table View Controller data source

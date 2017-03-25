@@ -11,42 +11,51 @@
 
 
 import Foundation
-import CoreData
 
 
-class User: NSManagedObject {
+struct User {
+    
+    
+     var user_adresse: String
+     var user_codepostal: String
+     var user_date: Date
+     var user_email: String
+     var user_id: Int
+     var user_level: Int
+     var user_newpassword: Bool
+     var user_nom: String
+     var user_pass: String
+     var user_pays: String
+     var user_prenom: String
+     var user_pseudo: String
+     var user_ville: String
+     var user_tokenPush: String
+     var user_braintreeID: String
+
     
     // Insert code here to add functionality to your managed object subclass
     
     
-    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertInto: context)
-    }
-    
-    
-    init(dico: [String : AnyObject], context: NSManagedObjectContext) {
-        
-        // Core Data
-        let entity =  NSEntityDescription.entity(forEntityName: "User", in: context)!
-        super.init(entity: entity, insertInto: context)
+    init(dico : [String : AnyObject]) {
         
         // Dictionary
         if dico.count > 1 {
             
-            user_id = Int(dico["user_id"] as! String) as NSNumber?
-            user_pseudo = dico["user_pseudo"] as? String
-            user_pass = dico["user_pass"] as? String
-            user_email = dico["user_email"] as? String
+            user_id = Int(dico["user_id"] as! String)!
+            user_pseudo = dico["user_pseudo"] as! String
+            user_pass = dico["user_pass"] as! String
+            user_email = dico["user_email"] as! String
             user_date = Date().dateFromString(dico["user_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
-            user_level = Int(dico["user_level"] as! String) as NSNumber?
-            user_nom = dico["user_nom"] as? String
-            user_prenom = dico["user_prenom"] as? String
-            user_adresse = dico["user_adresse"] as? String
-            user_codepostal = dico["user_codepostal"] as? String
-            user_ville = dico["user_ville"] as? String
-            user_pays = dico["user_pays"] as? String
+            user_level = Int(dico["user_level"] as! String)!
+            user_nom = dico["user_nom"] as! String
+            user_prenom = dico["user_prenom"] as! String
+            user_adresse = dico["user_adresse"] as! String
+            user_codepostal = dico["user_codepostal"] as! String
+            user_ville = dico["user_ville"] as! String
+            user_pays = dico["user_pays"] as! String
             user_newpassword = (Int(dico["user_newpassword"] as! String)! == 0) ? false : true
-            user_tokenPush = dico["user_pays"] as? String
+            user_tokenPush = dico["user_pays"] as! String
+            user_braintreeID = dico["user_braintreeID"] as! String
             
         }
         else {
@@ -64,20 +73,24 @@ class User: NSManagedObject {
             user_pays = ""
             user_newpassword = false
             user_tokenPush = ""
+            user_braintreeID = ""
         }
-        
-        user_logout = false
-        
+                
     }
-    
-    
-    
     
     
 }
 
+//MARK: Users Array
+class Users {
+    
+    var usersArray :[[String:AnyObject]]!
+    static let sharedInstance = Users()
+    
+}
 
 
+//MARK: User methods
 class MDBUser {
     
     let translate = TranslateMessage.sharedInstance
@@ -232,8 +245,7 @@ class MDBUser {
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let newpassword = (config.user_newpassword==true) ? 1 : 0
-        let body: String = "user_email=\(config.user_email!)&user_pass=\(config.user_pass!)&user_lastpass=\(config.user_lastpass!)&user_newpassword=\(newpassword)&lang=\(translate.message("lang"))"
+        let body: String = "user_email=\(config.user_email!)&user_pass=\(config.user_pass!)&user_lastpass=\(config.user_lastpass!)&user_newpassword=\(config.user_newpassword!)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updatePassword.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -279,7 +291,7 @@ class MDBUser {
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "user_pseudo=\(config.user_pseudo!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_ville=\(config.user_ville!)&user_id=\(config.user_id!)&user_tokenPush=\(config.tokenString!)&user_level=\(config.level!)&lang=\(translate.message("lang"))"
+        let body: String = "user_pseudo=\(config.user_pseudo!)&user_adresse=\(config.user_adresse!)&user_codepostal=\(config.user_codepostal!)&user_nom=\(config.user_nom!)&user_prenom=\(config.user_prenom!)&user_email=\(config.user_email!)&user_pays=\(config.user_pays!)&user_ville=\(config.user_ville!)&user_id=\(config.user_id!)&user_tokenPush=\(config.tokenString!)&user_braintreeID=\(config.user_braintreeID!)&user_level=\(config.level!)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateUser.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)
@@ -420,12 +432,5 @@ class MDBUser {
 }
 
 
-//MARK: Users Array
-class Users {
-    
-    var usersArray :[[String:AnyObject]]!
-    static let sharedInstance = Users()
-    
-}
 
 

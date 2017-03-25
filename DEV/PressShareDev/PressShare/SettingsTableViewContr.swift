@@ -9,9 +9,6 @@
 //
 
 
-
-
-import CoreData
 import UIKit
 import Foundation
 import MobileCoreServices
@@ -22,6 +19,7 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     @IBOutlet weak var IBProfilLabel: UILabel!
+    @IBOutlet weak var IBTermsLabel: UILabel!
     @IBOutlet weak var IBConnectionLabel: UILabel!
     @IBOutlet weak var IBSubscripLabel: UILabel!
     @IBOutlet weak var IBMyCBLabel: UILabel!
@@ -32,31 +30,20 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     @IBOutlet weak var IBPhotoUser: UIImageView!
     @IBOutlet weak var IBInfo: UIImageView!
     
-    
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
-    var users = [User]()
     var aProduct:Product!
     
     let refreshControl1 = UIRefreshControl()
-    
-    var sharedContext: NSManagedObjectContext {
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        return delegate.managedObjectContext
-    }
     
     
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        users = fetchAllUser()
-        
         config.previousView = "SettingsTableViewContr"
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(pushProduct), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
-        
+      
         refreshControl1.addTarget(self, action: #selector(actionRefresh(_:)), for: .valueChanged)
         tableView.addSubview(refreshControl1)
         
@@ -68,13 +55,11 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        config.flgReturnToTab = false
+        config.isReturnToTab = false
         
         self.navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
         
         navigationController?.tabBarItem.title = translate.message("settings")
-        IBLogout.image = #imageLiteral(resourceName: "eteindre")
-        IBLogout.title = ""
         
         IBPhotoUser.image = restoreImageArchive()
         IBNomLabel.text = "\(config.user_nom!) \(config.user_prenom!)"
@@ -89,6 +74,8 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         tableView.scrollToRow(at: IndexPath(item: 4, section: 0), at: .none, animated: false)
         IBSubscripLabel.text = translate.message("mySubscrit")
         tableView.scrollToRow(at: IndexPath(item: 5, section: 0), at: .none, animated: false)
+        IBTermsLabel.text = translate.message("termsOfUse")
+        tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .none, animated: false)
         IBMyCBLabel.text = translate.message("myCB")
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
         
@@ -96,67 +83,6 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        pushProduct()
-        
-    }
-    
-    @objc private func pushProduct() {
-        
-        refreshControl1.beginRefreshing()
-        BlackBox.sharedInstance.pushProduct(menuBar: tabBarController) { (success, product, errorStr) in
-            
-            if success {
-                
-                
-                MDBTransact.sharedInstance.getAllTransactions(self.config.user_id) { (success, transactionArray, errorString) in
-                    
-                    if success {
-                        
-                        Transactions.sharedInstance.transactionArray = transactionArray
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            
-                            var i = 0
-                            for tran in Transactions.sharedInstance.transactionArray  {
-                                
-                                let tran1 = Transaction(dico: tran)
-                                
-                                if (tran1.trans_valid != 1 && tran1.trans_valid != 2 )  {
-                                    i+=1
-                                }
-                                
-                            }
-                            if i > 0 {
-                                self.config.trans_badge = i
-                                
-                            }
-                            
-                            self.aProduct = product
-                            self.refreshControl1.endRefreshing()
-                            self.performSegue(withIdentifier: "fromsettings", sender: self)
-                        }
-                    }
-                    else {
-                        
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.displayAlert(self.translate.message("error"), mess: errorString!)
-                        }
-                    }
-                    
-                }
-                
-            }
-            else {
-                
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.refreshControl1.endRefreshing()
-                    if errorStr != "" {
-                        self.displayAlert(self.translate.message("error"), mess: errorStr!)
-                    }
-                }
-            }
-            
-        }
         
     }
     
@@ -168,7 +94,7 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
             let controller = nav.topViewController as! ProductTableViewContr
             
             controller.aProduct = aProduct
-            controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
+            //controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
             
         }
 
@@ -202,8 +128,7 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
                     if zx <= xw1 && zx >= IBInfo.frame.origin.x && zy  <= yh1 && zy >= IBInfo.frame.origin.y {
                         
                         //action info
-                        let app = UIApplication.shared
-                        app.openURL(URL(string: "\(CommunRequest.sharedInstance.urlServer)/Tuto_PressShare/")!)
+                        BlackBox.sharedInstance.showHelp("SettingsTableViewContr", self)
                         
                     }
                     
@@ -228,7 +153,7 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         
         let alertController = UIAlertController(title: translate.message("takePicture"), message: translate.message("makeChoice"), preferredStyle: .alert)
         
-        let actionBiblio = UIAlertAction(title: "Photo", style: .destructive, handler: { (action) in
+        let actionBiblio = UIAlertAction(title: translate.message("library"), style: .destructive, handler: { (action) in
             BlackBox.sharedInstance.performUIUpdatesOnMain {
                 
                 self.imageFromCamera(camera: false, type: nil)
@@ -341,21 +266,6 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     }
     
     
-    private func fetchAllUser() -> [User] {
-        
-        users.removeAll()
-        // Create the Fetch Request
-        
-        let request : NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "User")
-        
-        // Execute the Fetch Request
-        do {
-            return try sharedContext.fetch(request) as! [User]
-        } catch _ {
-            return [User]()
-        }
-    }
-    
     @IBAction func actionRefresh(_ sender: AnyObject) {
         
         refreshData()
@@ -365,27 +275,20 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     @IBAction func actionLogout(_ sender: AnyObject) {
         
         //logout
-        if users.count > 0 {
-            for aUser in users {
-                if aUser.user_pseudo == config.user_pseudo {
-                    aUser.user_logout = true
-                    
-                    // Save the context.
-                    do {
-                        try sharedContext.save()
-                    } catch _ {}
-                    
-                    break
-                }
-            }
-            
-            users = fetchAllUser()
-            
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
+        let filePath  = url.appendingPathComponent("userDico")!.path
+        
+        do {
+            try FileManager.default.removeItem(atPath: filePath)
+        } catch  {
+            print("error ", filePath)
         }
         
         self.dismiss(animated: true, completion: nil)
         
     }
+    
+    
     
     private func refreshData()  {
         
@@ -513,6 +416,10 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
             if config.level > -1 {
                 performSegue(withIdentifier: "carte", sender: self)
             }
+            
+        case 6:
+            
+            BlackBox.sharedInstance.showHelp("Conditions_PressShare", self)
             
             
         default:

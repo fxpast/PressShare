@@ -10,6 +10,13 @@
 
 
 import Foundation
+import UIKit
+
+// This enum contains all the possible states a photo record can be in
+enum PhotoRecordState {
+    case New, Downloaded, Filtered, Failed
+}
+
 
 struct Product {
     
@@ -17,24 +24,25 @@ struct Product {
     
     
     var prod_id:Int
-    var prod_imageData:Data
-    var prod_imageUrl:String
+    var prod_image:UIImage // stocker l'image
+    var prod_imageUrl:String //stoker url de l'image
     var prod_nom:String
     var prod_date:Date
     var prod_prix:Double
-    var prod_by_user:Int
-    var prod_oth_user:Int
+    var prod_by_user:Int //le vendeur
+    var prod_oth_user:Int //le client
     var prod_by_cat:Int
     var prod_latitude:Double
     var prod_longitude:Double
-    var prod_mapString:String
+    var prod_mapString:String //le nom du lieu sur la carte
     var prod_comment:String
     var prod_tempsDispo:String
     var prod_etat:Int //number of star
     var prod_hidden:Bool
-    var prod_echange:Bool
+    var prod_echange:Bool // autoriser l'echange de produit
     var prodImageOld:String
     var prod_closed:Bool
+    var state:PhotoRecordState
     
     
     
@@ -45,8 +53,7 @@ struct Product {
         if dico.count > 1 {
             
             prod_id = Int(dico["prod_id"] as! String)!
-            prod_imageUrl = dico["prod_imageUrl"] as! String
-            prod_imageData = Data()
+            prod_imageUrl = dico["prod_imageUrl"] as! String            
             prod_nom = dico["prod_nom"] as! String
             prod_date = Date().dateFromString(dico["prod_date"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             prod_prix = Double(dico["prod_prix"] as! String)!
@@ -62,14 +69,12 @@ struct Product {
             prod_hidden = (Int(dico["prod_hidden"] as! String)! == 0) ? false : true
             prod_echange = (Int(dico["prod_echange"] as! String)! == 0) ? false : true
             prod_closed = (Int(dico["prod_closed"] as! String)! == 0) ? false : true
-            prodImageOld = ""
             
         }
         else {
             prod_id = 0
             prod_imageUrl = ""
             prod_nom = ""
-            prod_imageData = Data()
             prod_date = Date()
             prod_prix = 0
             prod_by_user = 0
@@ -84,9 +89,12 @@ struct Product {
             prod_hidden=false
             prod_echange=false
             prod_closed=false
-            prodImageOld = ""
             
         }
+        
+        prod_image = #imageLiteral(resourceName: "noimage")
+        state = PhotoRecordState.New
+        prodImageOld = ""
         
     }
     
@@ -104,6 +112,8 @@ class Products {
 }
 
 
+
+//MARK: Product methods
 class MDBProduct {
     
     let translate = TranslateMessage.sharedInstance
@@ -345,7 +355,7 @@ class MDBProduct {
                     "lang" : translate.message("lang")
                     ] as [String : Any]
                 
-                let bodyData = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: product.prod_imageData, boundary: product.prod_imageUrl)
+                let bodyData = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: UIImageJPEGRepresentation(product.prod_image, 1)!, boundary: product.prod_imageUrl)
                 request = CommunRequest.sharedInstance.buildRequest(bodyData, product, request)
                 
                 
@@ -461,7 +471,7 @@ class MDBProduct {
    
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_addProduct.php")!)
-        let body = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: product.prod_imageData, boundary: product.prod_imageUrl)
+        let body = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: UIImageJPEGRepresentation(product.prod_image, 1)!, boundary: product.prod_imageUrl)
         request = CommunRequest.sharedInstance.buildRequest(body, product, request)
         
         

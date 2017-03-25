@@ -53,6 +53,7 @@ class TypeCards {
 }
 
 
+//MARK: TypeCard methods
 class MDBTypeCard {
     
     let translate = TranslateMessage.sharedInstance

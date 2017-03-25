@@ -51,8 +51,13 @@ class Config {
     var maxLatitude:Double!
     var tokenString:String!
     var typeCard_id:Int!
-    var flgReturnToTab:Bool!
+    var isReturnToTab:Bool!
     var maxDayTrigger:Int!
+    var isRememberMe:Bool!
+    var clientTokenBraintree:String!
+    var user_braintreeID:String!
+    var subscriptAmount:Double!
+    var minimumAmount:Double!
     
     
     func cleaner()  {
@@ -89,7 +94,13 @@ class Config {
         maxLatitude = 0
         tokenString = ""
         typeCard_id = 0
-        flgReturnToTab = false
+        isReturnToTab = false
+        clientTokenBraintree = ""
+        user_braintreeID = ""
+        subscriptAmount = 0
+        minimumAmount = 0
+        
+        
         
      
         MDBParamTable.sharedInstance.getAllParamTables { (success, paramTablesArray, errorString) in
@@ -103,6 +114,8 @@ class Config {
                 self.commisPourcBuy = param.commisPourcBuy
                 self.commisFixEx = param.commisFixEx
                 self.maxDayTrigger = param.maxDayTrigger
+                self.subscriptAmount = param.subscriptAmount
+                self.minimumAmount = param.minimumAmount
                 
             }
             else {
@@ -112,6 +125,8 @@ class Config {
                 self.commisPourcBuy = 0
                 self.commisFixEx = 0
                 self.maxDayTrigger = 0
+                self.subscriptAmount = 0
+                self.minimumAmount = 0
             }
         }
         

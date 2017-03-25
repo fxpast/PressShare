@@ -18,8 +18,6 @@ struct Transaction {
     
     //MARK: Properties Transaction
     
-    
-    
     var trans_id:Int
     var trans_date:Date
     var trans_type:Int   //1 : Buy. 2 : Exchange
@@ -32,22 +30,6 @@ struct Transaction {
     var trans_valid:Int  //0 : La transaction en cours. 1 : La transaction a été annulée. 2 : La transaction est confirmée.
     var trans_avis:String  //interlocuteur, conformite, absence, "tap text"
     var trans_arbitrage:Bool
-    
-    
-    
-    /*
-     var NUMQUESTION:Int
-     var MONTANT:Int
-     var DEVISE:Int
-     var REFERENCE:String
-     var DATEQ:Int
-     var ACQUEREUR:String
-     var ACTIVITE:Int
-     var ARCHIVAGE:String
-     var DATENAISS:Int
-     var PAYS:String
-     var user_id:Int
-     */
     
     //MARK: Initialisation Transaction
     
@@ -67,20 +49,6 @@ struct Transaction {
             trans_valid = Int(dico["trans_valid"] as! String)!
             trans_avis = dico["trans_avis"] as! String
             trans_arbitrage = (Int(dico["trans_arbitrage"] as! String)! == 0) ? false : true
-
-            /*
-             NUMQUESTION = Int(dico["NUMQUESTION"] as! String)!
-             MONTANT = Int(dico["MONTANT"] as! String)!
-             DEVISE = Int(dico["DEVISE"] as! String)!
-             REFERENCE = dico["REFERENCE"] as! String
-             DATEQ = Int(dico["DATEQ"] as! String)!
-             ACQUEREUR = dico["ACQUEREUR"] as! String
-             ACTIVITE = Int(dico["DATEQ"] as! String)!
-             ARCHIVAGE = dico["ARCHIVAGE"] as! String
-             DATENAISS = Int(dico["DATENAISS"] as! String)!
-             PAYS = dico["PAYS"] as! String
-             user_id = Int(dico["user_id"] as! String)!
-             */
             
         }
         else {
@@ -98,21 +66,6 @@ struct Transaction {
             trans_avis = ""
             trans_arbitrage = false
             
-            
-            /*
-             NUMQUESTION = 0
-             MONTANT = 0
-             DEVISE = 0
-             REFERENCE = ""
-             DATEQ = 0
-             ACQUEREUR = ""
-             ACTIVITE = 0
-             ARCHIVAGE = ""
-             DATENAISS = 0
-             PAYS = ""
-             user_id = 0
-             */
-            
         }
         
     }
@@ -129,9 +82,14 @@ class Transactions {
     
 }
 
+
+//MARK: Transaction methods
 class MDBTransact {
     
     let translate = TranslateMessage.sharedInstance
+    
+    
+    
     
     func getAllTransactions(_ userId:Int, completionHandlerTransactions: @escaping (_ success: Bool, _ transactionArray: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         

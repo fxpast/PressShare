@@ -8,6 +8,10 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
+
+//Todo: aide DetailTransViewController ne fonctionne pas
+
+
 import Foundation
 import UIKit
 
@@ -144,6 +148,7 @@ class DetailTransViewController: UIViewController {
         
         IBActivity.isHidden = false
         IBActivity.startAnimating()
+        
         let paramId = (aTransaction?.client_id == aTransaction?.proprietaire) ? aTransaction?.vendeur_id : aTransaction?.client_id
         
         
@@ -196,7 +201,7 @@ class DetailTransViewController: UIViewController {
         IBCompliantLabel.text = translate.message("compliant")
         IBLabelMyAbsent.text = translate.message("myAbsence")
         IBOtherText.placeholder = translate.message("other")
-        navigationItem.title = translate.message("runTransac")
+        navigationItem.title = translate.message("validerTransact")
          
         
     }
@@ -204,6 +209,14 @@ class DetailTransViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
+        
+    }
+    
+    
+    @IBAction func actionHelp(_ sender: Any) {
+        
+        //action info
+        BlackBox.sharedInstance.showHelp("DetailTransViewController", self)
         
     }
     
@@ -439,7 +452,7 @@ class DetailTransViewController: UIViewController {
             config.balance = config.balance - Double(aTransaction!.trans_amount)
             config.balance = config.balance - config.commisPourcBuy * Double(aTransaction!.trans_amount)
             var capital = Capital(dico: [String : AnyObject]())
-            var operation = Operation(dico: [String : AnyObject]())
+            var operation = PressOperation(dico: [String : AnyObject]())
             
             //Acheteur confirme la transaction commerciale
             
@@ -481,15 +494,15 @@ class DetailTransViewController: UIViewController {
                     operation.op_wording = "\(self.translate.message("buy")) \(self.translate.message("product"))"
                     
                     //Création d'un operation d'achat pour le client
-                    MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                    MDBPressOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
                         
                         if success {
                             
-                            MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                            MDBPressOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
                                 
                                 if success {
                                     
-                                    Operations.sharedInstance.operationArray = operationArray
+                                    PressOperations.sharedInstance.operationArray = operationArray
                                 }
                                 else {
                                     
@@ -549,15 +562,15 @@ class DetailTransViewController: UIViewController {
                                             operation.op_wording = "\(self.translate.message("sell")) \(self.translate.message("product"))"
                                             
                                             //Création d'un operation de vente pour le vendeur
-                                            MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                                            MDBPressOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
                                                 
                                                 if success {
                                                     
-                                                    MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                                                    MDBPressOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
                                                         
                                                         if success {
                                                             
-                                                            Operations.sharedInstance.operationArray = operationArray
+                                                            PressOperations.sharedInstance.operationArray = operationArray
                                                         }
                                                         else {
                                                             

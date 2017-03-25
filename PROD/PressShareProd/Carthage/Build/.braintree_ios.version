@@ -1,0 +1,54 @@
+{
+  "xcodeVersion" : "Xcode 8.2.1\nBuild version 8C1002",
+  "commitish" : "4.7.5",
+  "iOS" : [
+    {
+      "name" : "Braintree3DSecure",
+      "md5" : "06f536af31dba31d70de5db98fc3a01a"
+    },
+    {
+      "name" : "BraintreeApplePay",
+      "md5" : "060137ce398a02bd2f1a6e8462784fc9"
+    },
+    {
+      "name" : "BraintreeCard",
+      "md5" : "43453f9a65ea860e2fecaaa0311a8d38"
+    },
+    {
+      "name" : "BraintreeVenmo",
+      "md5" : "3b7f1601f6417daa8c7a5c8e0585e2d0"
+    },
+    {
+      "name" : "BraintreeDataCollector",
+      "md5" : "605c933afd0cad5b194d97ffeb5d3881"
+    },
+    {
+      "name" : "PayPalUtils",
+      "md5" : "40f1e845cca89f132b20cded11cb1b84"
+    },
+    {
+      "name" : "BraintreeCore",
+      "md5" : "e04d8a26e41579d93cba293606fef101"
+    },
+    {
+      "name" : "PayPalDataCollector",
+      "md5" : "177931deb81016e713b7a717c1578850"
+    },
+    {
+      "name" : "BraintreeUnionPay",
+      "md5" : "12744042b7de127db746e68e3980eecb"
+    },
+    {
+      "name" : "PayPalOneTouch",
+      "md5" : "3439f7e34ce7376d2b536e454f3ada70"
+    },
+    {
+      "name" : "BraintreePayPal",
+      "md5" : "825a30c3366dd9da3518de8c4d9a1bf2"
+    },
+    {
+      "name" : "BraintreeUI",
+      "md5" : "66a4f9981777b88734563febefa2a72f"
+    }
+  ]
+}
