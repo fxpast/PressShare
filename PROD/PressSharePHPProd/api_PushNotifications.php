@@ -4,7 +4,7 @@
 //Parameter : product_id, destinataire, tokenPush, contenu, lang
 
 session_start();
-include 'connect.php';
+include 'api_connect.php';
 
   
  

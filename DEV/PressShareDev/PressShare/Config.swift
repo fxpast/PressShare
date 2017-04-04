@@ -31,8 +31,6 @@ class Config {
     var verifpassword:String!
     var user_pass:String!
     var user_lastpass:String!
-    var product_maj:Bool!
-    var product_add:Bool!
     var transaction_maj:Bool!
     var mess_badge:Int!
     var trans_badge:Int!
@@ -58,6 +56,9 @@ class Config {
     var user_braintreeID:String!
     var subscriptAmount:Double!
     var minimumAmount:Double!
+    var heightImage:CGFloat!
+    var widthImage:CGFloat!
+    
     
     
     func cleaner()  {
@@ -79,8 +80,6 @@ class Config {
         verifpassword = ""
         user_pass = ""
         user_lastpass = ""
-        product_maj = false
-        product_add = false
         transaction_maj = false
         mess_badge = 0
         trans_badge = 0
@@ -99,6 +98,8 @@ class Config {
         user_braintreeID = ""
         subscriptAmount = 0
         minimumAmount = 0
+        heightImage = 0
+        widthImage = 0
         
         
         

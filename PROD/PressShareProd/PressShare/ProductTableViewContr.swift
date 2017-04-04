@@ -171,7 +171,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                     IBAddImage.image = #imageLiteral(resourceName: "noimage")
                 }
                 else {
-                    IBAddImage.image = UIImage(data:thisproduct.prod_imageData)
+                    IBAddImage.image =  BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: thisproduct.prod_imageUrl)
                 }
                 
                 IBEchangeChoice.isOn = thisproduct.prod_echange
@@ -610,6 +610,35 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         IBAddImage.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         IBAddImage.contentMode = .scaleAspectFit
         
+        
+        let maxSize : CGFloat = 1024.0
+        let width : CGFloat = (IBAddImage.image?.size.width)!
+        let height : CGFloat = (IBAddImage.image?.size.height)!
+        var newWidth : CGFloat = width
+        var newHeight : CGFloat = height
+        
+        // If any side exceeds the maximun size, reduce the greater side to 1200px and proportionately the other one
+        if (width > maxSize || height > maxSize) {
+            if (width > height) {
+                newWidth = maxSize;
+                newHeight = (height*maxSize)/width;
+            } else {
+                newHeight = maxSize;
+                newWidth = (width*maxSize)/height;
+            }
+        }
+        
+        // Resize the image
+        let newSize = CGSize.init(width: newWidth, height: newHeight)
+        UIGraphicsBeginImageContext(newSize)
+        IBAddImage.image?.draw(in: CGRect.init(origin: CGPoint.init(x: 0, y: 0), size: newSize))
+        IBAddImage.image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        // Set maximun compression in order to decrease file size and enable faster uploads & downloads
+        let imageData = UIImageJPEGRepresentation(IBAddImage.image!, 0.0)!
+        IBAddImage.image = UIImage(data: imageData)
+        
         dismiss(animated: true, completion: nil)
     }
     
@@ -882,8 +911,6 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         
         func actionUser() {
             
-            config.product_maj = false
-            config.product_add = false
             
             IBSave.isEnabled = false
             IBFind.isEnabled = false
@@ -903,7 +930,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 if isMajImage == true {
                     product.prodImageOld = product.prod_imageUrl
                     product.prod_imageUrl = "photo-\(config.user_id!)\(NSUUID().uuidString)"
-                    product.prod_imageData = UIImageJPEGRepresentation(IBAddImage.image!, 1)!
+                    product.prod_image = IBAddImage.image!
                 }
                 
             }
@@ -945,8 +972,6 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                     
                                     Products.sharedInstance.productsUserArray = productArray
                                     
-                                    self.config.product_maj = true
-                                    self.config.product_add = false
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
@@ -970,8 +995,6 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                     
                                     Products.sharedInstance.productsArray = productArray
                                     
-                                    self.config.product_maj = true
-                                    self.config.product_add = false
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
@@ -994,9 +1017,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 if success {
                                     
                                     Products.sharedInstance.productsTraderArray = productArray
-                                    
-                                    self.config.product_maj = true
-                                    self.config.product_add = false
+
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
@@ -1044,9 +1065,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 if success {
                                     
                                     Products.sharedInstance.productsUserArray = productArray
-                                    
-                                    self.config.product_add = true
-                                    self.config.product_maj = false
+          
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
@@ -1069,9 +1088,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 if success {
                                     
                                     Products.sharedInstance.productsArray = productArray
-                                    
-                                    self.config.product_add = true
-                                    self.config.product_maj = false
+              
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true
@@ -1094,9 +1111,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 if success {
                                     
                                     Products.sharedInstance.productsTraderArray = productArray
-                                    
-                                    self.config.product_add = true
-                                    self.config.product_maj = false
+               
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
                                         self.IBSave.isEnabled = true
                                         self.IBFind.isEnabled = true

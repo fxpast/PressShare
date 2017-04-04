@@ -196,7 +196,10 @@ class BlackBox  {
             return UIImage(data:imagData)!
         }
         else {
-            return #imageLiteral(resourceName: "noimage")
+            
+            let path = Bundle.main.path(forResource: "no-image-box", ofType: "png")
+            return UIImage.init(contentsOfFile: path!)!
+            
         }
         
     }

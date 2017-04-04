@@ -32,17 +32,17 @@ class DetailTransViewController: UIViewController {
     @IBOutlet weak var IBButtonCancelr: UIBarButtonItem!
     @IBOutlet weak var IBEnded: UIBarButtonItem!
     
-    @IBOutlet weak var IBConfirm: UISwitch!
-    @IBOutlet weak var IBCancel: UISwitch!
+    @IBOutlet weak var IBisConfirm: UISwitch!
+    @IBOutlet weak var IBisCancel: UISwitch!
     
     @IBOutlet weak var IBOtherText: UITextField!
-    @IBOutlet weak var IBOther: UISwitch!
+    @IBOutlet weak var IBisOther: UISwitch!
     
-    @IBOutlet weak var IBMyAbsent: UISwitch!
+    @IBOutlet weak var IBisMyAbsent: UISwitch!
     @IBOutlet weak var IBLabelMyAbsent: UILabel!
-    @IBOutlet weak var IBCompliant: UISwitch!
+    @IBOutlet weak var IBisCompliant: UISwitch!
     @IBOutlet weak var IBCompliantLabel: UILabel!
-    @IBOutlet weak var IBInterlo: UISwitch!
+    @IBOutlet weak var IBisInterlo: UISwitch!
     @IBOutlet weak var IBLabelInterlo: UILabel!
     
     
@@ -77,39 +77,39 @@ class DetailTransViewController: UIViewController {
         super.viewDidLoad()
         
 
-      IBCancel.isOn = false
-      IBConfirm.isOn = false
+      IBisCancel.isOn = false
+      IBisConfirm.isOn = false
         
         setUIHidden(true)
         
         
         //La transaction a été annulée
         if aTransaction?.trans_valid == 1 {
-            IBCancel.isOn = true
+            IBisCancel.isOn = true
             actionCancel(self)
         
         }
         else if aTransaction?.trans_valid == 2  {
             //La transaction est confirmée
-            IBConfirm.isOn = true
+            IBisConfirm.isOn = true
             actionConfirm(self)
             
         }
         
         if aTransaction?.trans_avis == "interlocuteur" {
-            IBInterlo.isOn = true //l'interlocuteur était absent
+            IBisInterlo.isOn = true //l'interlocuteur était absent
             actionInterlo(self)
         }
         else if aTransaction?.trans_avis == "absence" {
-            IBMyAbsent.isOn = true //Je n'ai pu etre au rendez-vous
+            IBisMyAbsent.isOn = true //Je n'ai pu etre au rendez-vous
             actionMyAbsent(self)
         }
         else if aTransaction?.trans_avis == "conformite" {
-            IBCompliant.isOn = true //le produit vendu ou echangé n'était pas conforme à l'annonce
+            IBisCompliant.isOn = true //le produit vendu ou echangé n'était pas conforme à l'annonce
             actionCompliant(self)
         }
         else {
-            IBOther.isOn = true
+            IBisOther.isOn = true
             IBOtherText.text = aTransaction?.trans_avis
             actionOther(self)
         }
@@ -133,12 +133,12 @@ class DetailTransViewController: UIViewController {
         if (aTransaction?.trans_valid == 1 || aTransaction?.trans_valid == 2 || (aTransaction?.trans_type == 1 && aTransaction?.vendeur_id == aTransaction?.proprietaire))  {
             
             IBEnded.isEnabled = false
-            IBOther.isEnabled = false
-            IBMyAbsent.isEnabled = false
-            IBCompliant.isEnabled = false
-            IBInterlo.isEnabled = false
-            IBConfirm.isEnabled = false
-            IBCancel.isEnabled = false
+            IBisOther.isEnabled = false
+            IBisMyAbsent.isEnabled = false
+            IBisCompliant.isEnabled = false
+            IBisInterlo.isEnabled = false
+            IBisConfirm.isEnabled = false
+            IBisCancel.isEnabled = false
             
         }
         else {
@@ -1026,7 +1026,7 @@ class DetailTransViewController: UIViewController {
         }
         
         
-        guard IBConfirm.isOn || IBCancel.isOn else {
+        guard IBisConfirm.isOn || IBisCancel.isOn else {
             displayAlert(translate.message("error"), mess: translate.message("errorAcceptReject"))
             return
         }
@@ -1036,30 +1036,30 @@ class DetailTransViewController: UIViewController {
         
         let actionValider = UIAlertAction(title: translate.message("done"), style: .destructive, handler: { (action) in
             
-            if self.IBOther.isOn {
+            if self.IBisOther.isOn {
                 self.aTransaction?.trans_avis = self.IBOtherText.text!
                 
             }
-            else if self.IBInterlo.isOn {
+            else if self.IBisInterlo.isOn {
                 self.aTransaction?.trans_avis = "interlocuteur" //l'interlocuteur était absent
                 
             }
-            else if self.IBCompliant.isOn {
+            else if self.IBisCompliant.isOn {
                 self.aTransaction?.trans_avis = "conformite" //le produit vendu ou echangé n'était pas conforme à l'annonce
                 
             }
-            else if self.IBMyAbsent.isOn {
+            else if self.IBisMyAbsent.isOn {
                 self.aTransaction?.trans_avis = "absence" //Je n'ai pu etre au rendez-vous
                 
             }
             
             
-            if self.IBCancel.isOn {
+            if self.IBisCancel.isOn {
                 
                 self.aTransaction?.trans_valid = 1 //La transaction a été annulée
                 
             }
-            else if self.IBConfirm.isOn {
+            else if self.IBisConfirm.isOn {
                 
                 self.aTransaction?.trans_valid = 2 //La transaction est confirmée
                 
@@ -1151,70 +1151,70 @@ class DetailTransViewController: UIViewController {
     
     @IBAction func actionConfirm(_ sender: Any) {
         //confirmer la transaction
-        IBConfirm.isOn = true
-        IBCancel.isOn = (IBConfirm.isOn == true) ? false : true
-        setUIHidden(!IBCancel.isOn)
+        IBisConfirm.isOn = true
+        IBisCancel.isOn = (IBisConfirm.isOn == true) ? false : true
+        setUIHidden(!IBisCancel.isOn)
     }
     
     @IBAction func actionCancel(_ sender: Any) {
         //annuler la transaction
-        IBCancel.isOn = true
-        IBConfirm.isOn = (IBCancel.isOn == true) ? false : true
-        setUIHidden(!IBCancel.isOn)
+        IBisCancel.isOn = true
+        IBisConfirm.isOn = (IBisCancel.isOn == true) ? false : true
+        setUIHidden(!IBisCancel.isOn)
         
     }
     
     @IBAction func actionOther(_ sender: Any) {
         //Autre cause d'annulation de la transaction
-        IBOther.isOn = true
-        IBInterlo.isOn = (IBOther.isOn == true) ? false : true
-        IBMyAbsent.isOn = (IBOther.isOn == true) ? false : true
-        IBCompliant.isOn = (IBOther.isOn == true) ? false : true
+        IBisOther.isOn = true
+        IBisInterlo.isOn = (IBisOther.isOn == true) ? false : true
+        IBisMyAbsent.isOn = (IBisOther.isOn == true) ? false : true
+        IBisCompliant.isOn = (IBisOther.isOn == true) ? false : true
         
-        IBOtherText.isEnabled = IBOther.isOn
+        IBOtherText.isEnabled = IBisOther.isOn
         
     }
     
     @IBAction func actionCompliant(_ sender: Any) {
         //Cause d'annulation : produit non conforme
-        IBCompliant.isOn = true
-        IBInterlo.isOn = (IBCompliant.isOn == true) ? false : true
-        IBMyAbsent.isOn = (IBCompliant.isOn == true) ? false : true
-        IBOther.isOn = (IBCompliant.isOn == true) ? false : true
+        IBisCompliant.isOn = true
+        IBisInterlo.isOn = (IBisCompliant.isOn == true) ? false : true
+        IBisMyAbsent.isOn = (IBisCompliant.isOn == true) ? false : true
+        IBisOther.isOn = (IBisCompliant.isOn == true) ? false : true
         
-        IBOtherText.isEnabled = IBOther.isOn
+        IBOtherText.isEnabled = IBisOther.isOn
         
     }
     
     @IBAction func actionMyAbsent(_ sender: Any) {
         //Cause d'annulation : je suis absent
-        IBMyAbsent.isOn = true
-        IBInterlo.isOn = (IBMyAbsent.isOn == true) ? false : true
-        IBCompliant.isOn = (IBMyAbsent.isOn == true) ? false : true
-        IBOther.isOn = (IBMyAbsent.isOn == true) ? false : true
+        IBisMyAbsent.isOn = true
+        IBisInterlo.isOn = (IBisMyAbsent.isOn == true) ? false : true
+        IBisCompliant.isOn = (IBisMyAbsent.isOn == true) ? false : true
+        IBisOther.isOn = (IBisMyAbsent.isOn == true) ? false : true
         
-        IBOtherText.isEnabled = IBOther.isOn
+        IBOtherText.isEnabled = IBisOther.isOn
         
     }
     
     @IBAction func actionInterlo(_ sender: Any) {
         //Cause d'annulation : mon interlocuteur est absent
-        IBInterlo.isOn = true
-        IBMyAbsent.isOn = (IBInterlo.isOn == true) ? false : true
-        IBCompliant.isOn = (IBInterlo.isOn == true) ? false : true
-        IBOther.isOn = (IBInterlo.isOn == true) ? false : true
+        IBisInterlo.isOn = true
+        IBisMyAbsent.isOn = (IBisInterlo.isOn == true) ? false : true
+        IBisCompliant.isOn = (IBisInterlo.isOn == true) ? false : true
+        IBisOther.isOn = (IBisInterlo.isOn == true) ? false : true
         
-        IBOtherText.isEnabled = IBOther.isOn
+        IBOtherText.isEnabled = IBisOther.isOn
         
         
     }
     
     private func setUIHidden(_ hidden: Bool) {
         
-        IBOther.isHidden = hidden
-        IBInterlo.isHidden = hidden
-        IBCompliant.isHidden = hidden
-        IBMyAbsent.isHidden = hidden
+        IBisOther.isHidden = hidden
+        IBisInterlo.isHidden = hidden
+        IBisCompliant.isHidden = hidden
+        IBisMyAbsent.isHidden = hidden
         
         IBOtherText.isHidden = hidden
         IBOtherText.isEnabled = !hidden
@@ -1223,10 +1223,10 @@ class DetailTransViewController: UIViewController {
         IBCompliantLabel.isHidden = hidden
         IBLabelMyAbsent.isHidden = hidden
         
-        IBOther.isOn = false
-        IBMyAbsent.isOn = false
-        IBCompliant.isOn = false
-        IBInterlo.isOn = false
+        IBisOther.isOn = false
+        IBisMyAbsent.isOn = false
+        IBisCompliant.isOn = false
+        IBisInterlo.isOn = false
         
         
         

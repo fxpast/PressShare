@@ -9,7 +9,6 @@
 //
 
 
-
 import Foundation
 import UIKit
 
@@ -18,8 +17,8 @@ class CreateTransViewController: UIViewController {
     @IBOutlet weak var IBInfoContact1: UILabel!
     @IBOutlet weak var IBInfoContact2: UILabel!
     @IBOutlet weak var IBInfoProduct: UILabel!
-    @IBOutlet weak var IBTrade: UISwitch!
-    @IBOutlet weak var IBExchange: UISwitch!
+    @IBOutlet weak var IBisTrade: UISwitch!
+    @IBOutlet weak var IBisExchange: UISwitch!
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     @IBOutlet weak var IBValidate: UIBarButtonItem!
     @IBOutlet weak var IBLabelTrade: UILabel!
@@ -65,16 +64,16 @@ class CreateTransViewController: UIViewController {
         IBValidate.title = translate.message("done")
         
         if aProduct?.prod_echange == false {
-            IBExchange.isOn = false
-            IBExchange.isEnabled = false
+            IBisExchange.isOn = false
+            IBisExchange.isEnabled = false
         }
         else {
-            IBExchange.isOn = false
-            IBTrade.isOn = false
+            IBisExchange.isOn = false
+            IBisTrade.isOn = false
         }
         
         if aProduct?.prod_prix == 0 {
-            IBTrade.isEnabled = false
+            IBisTrade.isEnabled = false
         }
         title = translate.message("exchangeBuy")
         
@@ -133,15 +132,15 @@ class CreateTransViewController: UIViewController {
     
     @IBAction func actionExchange(_ sender: Any) {
         
-        IBExchange.isOn = true
-        IBTrade.isOn = (IBExchange.isOn) ? false : true
+        IBisExchange.isOn = true
+        IBisTrade.isOn = (IBisExchange.isOn) ? false : true
         
     }
     
     @IBAction func actionTrade(_ sender: Any) {
         
-        IBTrade.isOn = true
-        IBExchange.isOn = (IBTrade.isOn) ? false : true
+        IBisTrade.isOn = true
+        IBisExchange.isOn = (IBisTrade.isOn) ? false : true
         
     }
     
@@ -176,7 +175,7 @@ class CreateTransViewController: UIViewController {
     
     @IBAction func actionSave(_ sender: Any) {
         
-        guard IBTrade.isOn || IBExchange.isOn else {
+        guard IBisTrade.isOn || IBisExchange.isOn else {
             BlackBox.sharedInstance.performUIUpdatesOnMain {
                 self.displayAlert(self.translate.message("error"), mess: self.translate.message("errorTypeTrans"))
             }
@@ -218,12 +217,12 @@ class CreateTransViewController: UIViewController {
             let dateExpireString = dateFormatter.string(from: dateExpire!)
             
             var typetransaction = ""
-            if self.IBTrade.isOn {
+            if self.IBisTrade.isOn {
                 
                 typetransaction = self.translate.message("buy")
                 message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.IBInfoProduct.text!) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor")) \(self.translate.message("transactExpire")) \(dateExpireString)"
             }
-            else if self.IBExchange.isOn {
+            else if self.IBisExchange.isOn {
                 
                 typetransaction = self.translate.message("exchange")
                 message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.aProduct!.prod_nom) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor")) \(self.translate.message("transactExpire")) \(dateExpireString)"
@@ -271,12 +270,12 @@ class CreateTransViewController: UIViewController {
                     atransaction.proprietaire = message.proprietaire
                     atransaction.trans_wording = "transaction : \(self.aProduct!.prod_nom)"
                     
-                    if self.IBTrade.isOn {
+                    if self.IBisTrade.isOn {
                         atransaction.trans_type = 1
                         atransaction.trans_amount = Double(self.aProduct!.prod_prix)
                         
                     }
-                    else if self.IBExchange.isOn {
+                    else if self.IBisExchange.isOn {
                         atransaction.trans_type = 2
                         atransaction.trans_amount = 0
                         

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0B485A1DEF51F500B76652 /* Capital.swift */; };
-		DB0B485D1DEF522D00B76652 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0B485C1DEF522D00B76652 /* Operation.swift */; };
 		DB0D01BB1E832ACF004E499A /* Feedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0D01B71E832ACF004E499A /* Feedback.swift */; };
 		DB0D01BC1E832ACF004E499A /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0D01B81E832ACF004E499A /* FeedbackViewController.swift */; };
 		DB0D01BD1E832ACF004E499A /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0D01B91E832ACF004E499A /* HelpViewController.swift */; };
@@ -26,6 +25,10 @@
 		DB3003EC1E5BC820002D0124 /* NewUserTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003E31E5BC820002D0124 /* NewUserTableViewContr.swift */; };
 		DB3003ED1E5BC820002D0124 /* ProductTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3003E41E5BC820002D0124 /* ProductTableViewContr.swift */; };
 		DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB385C8A1DE5D99D00AD95FF /* Message.swift */; };
+		DB49EE441E86EE8F005D5164 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB49EE401E86EE8F005D5164 /* ImageDownloader.swift */; };
+		DB49EE451E86EE8F005D5164 /* ImageFiltration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB49EE411E86EE8F005D5164 /* ImageFiltration.swift */; };
+		DB49EE461E86EE8F005D5164 /* PendingOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB49EE421E86EE8F005D5164 /* PendingOperations.swift */; };
+		DB49EE471E86EE8F005D5164 /* PressOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB49EE431E86EE8F005D5164 /* PressOperation.swift */; };
 		DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA351CE0FB870065ECEB /* BlackBox.swift */; };
 		DB5FFA0A1DECA0B6003BCA55 /* SubscriptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */; };
 		DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64B97E1E06880C00013628 /* CommunRequest.swift */; };
@@ -77,7 +80,6 @@
 
 /* Begin PBXFileReference section */
 		DB0B485A1DEF51F500B76652 /* Capital.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Capital.swift; sourceTree = "<group>"; };
-		DB0B485C1DEF522D00B76652 /* Operation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
 		DB0D01991E8321EF004E499A /* Braintree3DSecure.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Braintree3DSecure.framework; path = Carthage/Build/iOS/Braintree3DSecure.framework; sourceTree = "<group>"; };
 		DB0D019A1E8321EF004E499A /* BraintreeApplePay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeApplePay.framework; path = Carthage/Build/iOS/BraintreeApplePay.framework; sourceTree = "<group>"; };
 		DB0D019B1E8321EF004E499A /* BraintreeCard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeCard.framework; path = Carthage/Build/iOS/BraintreeCard.framework; sourceTree = "<group>"; };
@@ -109,6 +111,10 @@
 		DB3003E31E5BC820002D0124 /* NewUserTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserTableViewContr.swift; sourceTree = "<group>"; };
 		DB3003E41E5BC820002D0124 /* ProductTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductTableViewContr.swift; sourceTree = "<group>"; };
 		DB385C8A1DE5D99D00AD95FF /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		DB49EE401E86EE8F005D5164 /* ImageDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
+		DB49EE411E86EE8F005D5164 /* ImageFiltration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFiltration.swift; sourceTree = "<group>"; };
+		DB49EE421E86EE8F005D5164 /* PendingOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PendingOperations.swift; sourceTree = "<group>"; };
+		DB49EE431E86EE8F005D5164 /* PressOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PressOperation.swift; sourceTree = "<group>"; };
 		DB5EFA351CE0FB870065ECEB /* BlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackBox.swift; sourceTree = "<group>"; };
 		DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptViewController.swift; sourceTree = "<group>"; };
 		DB64B97E1E06880C00013628 /* CommunRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunRequest.swift; sourceTree = "<group>"; };
@@ -295,7 +301,7 @@
 				DB385C8A1DE5D99D00AD95FF /* Message.swift */,
 				DBF7B3831E1EE71200024DA6 /* Commission.swift */,
 				DB0B485A1DEF51F500B76652 /* Capital.swift */,
-				DB0B485C1DEF522D00B76652 /* Operation.swift */,
+				DB49EE431E86EE8F005D5164 /* PressOperation.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -304,6 +310,9 @@
 			isa = PBXGroup;
 			children = (
 				DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */,
+				DB49EE401E86EE8F005D5164 /* ImageDownloader.swift */,
+				DB49EE411E86EE8F005D5164 /* ImageFiltration.swift */,
+				DB49EE421E86EE8F005D5164 /* PendingOperations.swift */,
 				DB3003DA1E5BC7AA002D0124 /* CustomPin.swift */,
 				DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */,
 			);
@@ -513,7 +522,7 @@
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = TNC26WW3G9;
 						LastSwiftMigration = 0800;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -592,12 +601,15 @@
 			files = (
 				DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */,
 				DB0D01BB1E832ACF004E499A /* Feedback.swift in Sources */,
+				DB49EE451E86EE8F005D5164 /* ImageFiltration.swift in Sources */,
+				DB49EE461E86EE8F005D5164 /* PendingOperations.swift in Sources */,
 				DB3003EB1E5BC820002D0124 /* MyProfilTableViewContr.swift in Sources */,
 				DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */,
 				DB9BADB41E44EA6200BE7D76 /* ParamTable.swift in Sources */,
 				DB3003EC1E5BC820002D0124 /* NewUserTableViewContr.swift in Sources */,
 				DB3003D91E5BC764002D0124 /* TypeCard.swift in Sources */,
 				DB3003EA1E5BC820002D0124 /* LoginTableViewController.swift in Sources */,
+				DB49EE441E86EE8F005D5164 /* ImageDownloader.swift in Sources */,
 				DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */,
 				DB5EFA361CE0FB870065ECEB /* BlackBox.swift in Sources */,
 				DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */,
@@ -607,7 +619,6 @@
 				DBCFFAEF1E32E6DD00CF73D8 /* CustomCell.swift in Sources */,
 				DB17C6531E2C7303001B451B /* DetailMessageViewContr.swift in Sources */,
 				DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */,
-				DB0B485D1DEF522D00B76652 /* Operation.swift in Sources */,
 				DB2515981D83226800B286F7 /* User.swift in Sources */,
 				DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */,
 				DB3003E81E5BC820002D0124 /* ListCardViewController.swift in Sources */,
@@ -615,6 +626,7 @@
 				DBA03CD81CECB31800B76896 /* Product.swift in Sources */,
 				DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */,
 				DB3003E71E5BC820002D0124 /* ChangePwdTableViewContr.swift in Sources */,
+				DB49EE471E86EE8F005D5164 /* PressOperation.swift in Sources */,
 				DBC585F01E29B9830032A33B /* Config.swift in Sources */,
 				DB0D01BC1E832ACF004E499A /* FeedbackViewController.swift in Sources */,
 				DB3003E61E5BC820002D0124 /* CardTableViewController.swift in Sources */,
@@ -741,8 +753,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = PressShare/PressShare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer: pastouret roger (8S6HB7FU4K)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = TNC26WW3G9;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -754,8 +766,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.prv.MemeMe2-0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f97c8bf5-5b32-4765-8b0d-50f3b296f92e";
-				PROVISIONING_PROFILE_SPECIFIER = "Push Notification Application";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PressShare/Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -767,8 +779,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = PressShare/PressShare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer: pastouret roger (8S6HB7FU4K)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = TNC26WW3G9;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -780,8 +792,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.prv.MemeMe2-0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f97c8bf5-5b32-4765-8b0d-50f3b296f92e";
-				PROVISIONING_PROFILE_SPECIFIER = "Push Notification Application";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PressShare/Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;

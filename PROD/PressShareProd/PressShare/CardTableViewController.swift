@@ -64,7 +64,6 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
         
         tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
         
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -188,7 +187,7 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
             
             if config.clientTokenBraintree == "" {
                 
-                MDBOperation.sharedInstance.getBraintreeToken(config.user_id, completionHandlerbtToken: { (success, clientToken, errorString) in
+                MDBPressOperation.sharedInstance.getBraintreeToken(config.user_id, completionHandlerbtToken: { (success, clientToken, errorString) in
                     
                     if success == true {
                         
@@ -372,7 +371,7 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
         
         if config.clientTokenBraintree == "" {
             
-            MDBOperation.sharedInstance.getBraintreeToken(config.user_id, completionHandlerbtToken: { (success, clientToken, errorString) in
+            MDBPressOperation.sharedInstance.getBraintreeToken(config.user_id, completionHandlerbtToken: { (success, clientToken, errorString) in
                 
                 if success == true {
                     self.config.clientTokenBraintree = clientToken

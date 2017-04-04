@@ -10,7 +10,7 @@
 
 //Todo new : supprimer doublon proprieté user et config
 //Todo new : login par pseudo ou email
-
+//Todo bog : Connexion : orientation paysage
 
 
 import Foundation

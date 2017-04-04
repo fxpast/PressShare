@@ -94,7 +94,7 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
             let controller = nav.topViewController as! ProductTableViewContr
             
             controller.aProduct = aProduct
-            controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
+            //controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
             
         }
 
@@ -229,6 +229,35 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
        
         IBPhotoUser.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         IBPhotoUser.contentMode = .scaleAspectFit
+        
+        
+        let maxSize : CGFloat = 1024.0
+        let width : CGFloat = (IBPhotoUser.image?.size.width)!
+        let height : CGFloat = (IBPhotoUser.image?.size.height)!
+        var newWidth : CGFloat = width
+        var newHeight : CGFloat = height
+        
+        // If any side exceeds the maximun size, reduce the greater side to 1200px and proportionately the other one
+        if (width > maxSize || height > maxSize) {
+            if (width > height) {
+                newWidth = maxSize;
+                newHeight = (height*maxSize)/width;
+            } else {
+                newHeight = maxSize;
+                newWidth = (width*maxSize)/height;
+            }
+        }
+        
+        // Resize the image
+        let newSize = CGSize.init(width: newWidth, height: newHeight)
+        UIGraphicsBeginImageContext(newSize)
+        IBPhotoUser.image?.draw(in: CGRect.init(origin: CGPoint.init(x: 0, y: 0), size: newSize))
+        IBPhotoUser.image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        // Set maximun compression in order to decrease file size and enable faster uploads & downloads
+        let imageData = UIImageJPEGRepresentation(IBPhotoUser.image!, 0.0)!
+        IBPhotoUser.image = UIImage(data: imageData)
         
         saveImageArchive(photo: IBPhotoUser.image!)
         

@@ -53,7 +53,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     var config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     var isOpen = false
-    var operations = [Operation]()
+    var operations = [PressOperation]()
     
     var customOpeation = BlockOperation()
     let myQueue = OperationQueue()
@@ -177,7 +177,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             isOpen = true
             IBActivity.isHidden = false
             IBActivity.startAnimating()
-            if let _ = Operations.sharedInstance.operationArray {
+            if let _ = PressOperations.sharedInstance.operationArray {
                 
                 myQueue.addOperation {
                     
@@ -293,7 +293,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         capital.user_id = self.config.user_id
         capital.failure_count = self.config.failure_count
         
-        var operation = Operation(dico: [String : AnyObject]())
+        var operation = PressOperation(dico: [String : AnyObject]())
         operation.user_id = self.config.user_id
         operation.op_type = typeOp
         operation.op_amount = -1 * amount
@@ -311,15 +311,15 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
             if success {
                 
-                MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                MDBPressOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
                     
                     if success {
                         
-                        MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                        MDBPressOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
                             
                             if success {
                                 
-                                Operations.sharedInstance.operationArray = operationArray
+                                PressOperations.sharedInstance.operationArray = operationArray
                                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                                     self.IBActivity.isHidden = true
                                     self.IBActivity.stopAnimating()
@@ -517,7 +517,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     private func braintreeOperation(_ amount: Double, _ type: String) {
         
-        MDBOperation.sharedInstance.operationBraintree(type, self.config.user_id, amount, completionHandlerNonce: { (success, restAmount, errorString) in
+        MDBPressOperation.sharedInstance.operationBraintree(type, self.config.user_id, amount, completionHandlerNonce: { (success, restAmount, errorString) in
             
             if success == true {
                 if type == "deposit" {
@@ -567,7 +567,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         capital.user_id = config.user_id
         capital.failure_count = config.failure_count
         
-        var operation = Operation(dico: [String : AnyObject]())
+        var operation = PressOperation(dico: [String : AnyObject]())
         operation.user_id = config.user_id
         operation.op_type = 1
         operation.op_amount = amount
@@ -577,15 +577,15 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
             
             if success {
                 
-                MDBOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
+                MDBPressOperation.sharedInstance.setAddOperation(operation, completionHandlerAddOp: {(success, errorString) in
                     
                     if success {
                         
-                        MDBOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+                        MDBPressOperation.sharedInstance.getAllOperations(self.config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
                             
                             if success {
                                 
-                                Operations.sharedInstance.operationArray = operationArray
+                                PressOperations.sharedInstance.operationArray = operationArray
                                 
                                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                                     self.IBActivity.isHidden = true
@@ -776,11 +776,11 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         })
         
         
-        MDBOperation.sharedInstance.getAllOperations(config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
+        MDBPressOperation.sharedInstance.getAllOperations(config.user_id, completionHandlerOperations: {(success, operationArray, errorString) in
             
             if success {
                 
-                Operations.sharedInstance.operationArray = operationArray
+                PressOperations.sharedInstance.operationArray = operationArray
                 self.chargeData()
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -805,13 +805,13 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     private func chargeData() {
         
         
-        for ope in Operations.sharedInstance.operationArray {
+        for ope in PressOperations.sharedInstance.operationArray {
             
             if customOpeation.isCancelled {
                 break
             }
             
-            let opera = Operation(dico: ope)
+            let opera = PressOperation(dico: ope)
             operations.append(opera)
             
             BlackBox.sharedInstance.performUIUpdatesOnMain {

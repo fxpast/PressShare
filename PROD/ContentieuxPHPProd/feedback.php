@@ -1,54 +1,56 @@
 <?php
-	session_start();
-        include 'api_connect.php';
 	
-	if(!isset($_SESSION['login']))
-	{
-		header("location: authentification.php");
-	}
-	
-	//création de la requête
-	$query = "SELECT * FROM Feedback";
-	
-	//envoie de la requête et stockage de la reponse
-	$queryFeedback = mysqli_query($con,$query);
-	//$numRow = mysql
-	
-	//Menu
-	echo '
-		<!DOCTYPE html>
-		<html lang="fr">
-		<head>
-			<meta charset="utf-8" />
-			<link rel="stylesheet" type="text/css" href="style.css"/>
-			<title>Les retours d\'informations</title>
-		</head>
-	' ;
-	include("nav_bar.php") ;
-       
-       // feedback_id = 0
-            //comment = ""
-            //origin = ""
-	echo '
-		<body>
-			<div id="show">
-				<table>
-					<th><td> feedback_id </td><td> comment </td><td> origin </td><td> Détails </td> </th>
-	' ;
-	$result = mysqli_fetch_row($queryFeedback);
-	while ($result != NULL)
-	{
-		echo '			
-		<tr><td> '.$result[0].' </td><td> '.$result[1].' </td><td> '.$result[2].' </td><td> Détails </td></tr>
-		' ;
-		$result = mysqli_fetch_row($queryFeedback);
-	}
-	echo '
-				</table>
-			</div>
-		</body>
-	' ;
-	echo '</html>' ;
-	
-	mysqli_free_result($result) ;
+include 'connect.php';
+include 'header.php';
+
+
+
+if($_SESSION['signed_in'] == false | $_SESSION['user_level'] != 2 )
+{
+	//the user is not an admin
+	echo 'Sorry, you do not have sufficient rights to access this page.';
+}
+else {
+        
+    $sql = "SELECT * FROM Feedback";
+
+    $result = mysqli_query($con, $sql);
+
+
+    $isOK = 0;
+
+     //prepare the table
+    echo '<table border="1">
+              <tr>
+                    <th>Feedback</th>
+                    <th>Termimer</th>
+              </tr>';	
+     
+    while($row = $result->fetch_object())
+    {     
+        $isOK = 1;                
+        echo '<tr>';
+                echo '<td class="leftpart">';
+                         echo '<h3><a>' . $row->comment . '</a></h3>' . $row->origin;
+                echo '</td>';  
+                echo '<td class="rightpart">';
+                         echo '<a href="deleteFeedback.php?id=' . $row->feedback_id . '">ok</a>';
+                echo '</td>';             
+        echo '</tr>'; 
+    }
+
+    if($isOK == 0)
+    {
+        echo 'No Feedback defined yet.';
+    }
+        
+    
+}
+    
+        
+include 'footer.php';
+mysqli_close($con);
 ?>
+
+
+

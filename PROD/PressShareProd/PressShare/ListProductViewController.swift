@@ -8,8 +8,6 @@
 //  Copyright © 2016 Pastouret Roger. All rights reserved.
 //
 
-//Todo: Liste  : optimiser le chargement des photos : https://www.raywenderlich.com/76341/use-nsoperation-nsoperationqueue-swift
-
 
 import Foundation
 import UIKit
@@ -19,7 +17,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     @IBOutlet weak var IBSegment: UISegmentedControl!
-    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBTableView: UITableView!
     
     var IBLogout: UIBarButtonItem!
@@ -28,27 +25,26 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     var products = [Product]()
     var productsTmp = [Product]()
+    var pendingOperations:PendingOperations!
+    
     var aProduct:Product!
-    var config = Config.sharedInstance
+    let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     var lat:CLLocationDegrees?
     var lon:CLLocationDegrees?
     var isUser = false //touch on blue user pin
     var typeListe = 0 //Map :0, MyList :1, Historical:2
-    
+    var currentLine = 0
     var customOpeation = BlockOperation()
     let myQueue = OperationQueue()
     var searchText = ""
     let refreshControl = UIRefreshControl()
-    
-    var frameTableView: CGRect!
-    var rowHeightTableView: CGFloat!
-    
+
     //MARK: View Controller Delegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       
+        
         IBAddProduct = UIButton()
         IBAddProduct.setImage(#imageLiteral(resourceName: "addButton"), for: UIControlState())
         IBAddProduct.addTarget(self, action: #selector(actionEpingle(_:)), for: UIControlEvents.touchUpInside)
@@ -66,7 +62,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         super.viewWillAppear(animated)
         
+        pendingOperations = PendingOperations()
         config.isReturnToTab = false
+        
         
         navigationController?.tabBarItem.title = translate.message("list")
         if let _ = lat, let _ = lon {
@@ -99,72 +97,24 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
         }
         
-        
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-      
-        if  IBTableView == nil {
-            
-            runActivity()
-            
-            myQueue.cancelAllOperations()
-            myQueue.addOperation {
-                
-                self.customOpeation = BlockOperation()
-                self.customOpeation.addExecutionBlock {
-                    if !self.customOpeation.isCancelled
-                    {
-                        
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            
-                            self.IBTableView = UITableView()
-                            self.IBTableView.frame = self.frameTableView
-                            self.IBTableView.rowHeight = self.rowHeightTableView
-                            self.IBTableView.backgroundColor = UIColor.init(red: 1.00247 , green: 0.883336, blue: 0.698204, alpha: 1)
-                            self.IBTableView.dataSource = self
-                            self.IBTableView.delegate = self
-                            self.IBTableView.register(CustomCell.self, forCellReuseIdentifier: "Cell")
-                            self.IBTableView.contentMode = .scaleAspectFit
-                            
-                            self.view.addSubview(self.IBTableView)
-                            
-                            self.refreshControl.addTarget(self, action: #selector(self.actionByRefreshCtrl(_:)), for: .valueChanged)
-                            self.IBTableView.addSubview(self.refreshControl)
-                            self.refreshControl.isHidden = true
-                            
-                            
-                            self.view.bringSubview(toFront: self.view.viewWithTag(999)!)
-                            self.view.bringSubview(toFront: self.IBAddProduct)
-                            
-                            self.initData()
-                            
-                        }
-                        
-                    }
-                }
-                
-                self.customOpeation.start()
-                
-            }
-            
-        }
-        else {
-       
-            refreshControl.addTarget(self, action: #selector(actionByRefreshCtrl(_:)), for: .valueChanged)
-            IBTableView.addSubview(refreshControl)
-            refreshControl.isHidden = true
-            
-            IBAddProduct.frame = CGRect(origin: CGPoint.init(x: IBTableView.frame.size.width-IBAddProduct.frame.size.width*2, y: IBTableView.frame.size.height), size: IBAddProduct.frame.size)
-            
-            view.bringSubview(toFront: view.viewWithTag(999)!)
-            view.bringSubview(toFront: IBAddProduct)
-            
-            initData()
-            
-        }
+        
+        refreshControl.addTarget(self, action: #selector(actionByRefreshCtrl(_:)), for: .valueChanged)
+        IBTableView.addSubview(refreshControl)
+        refreshControl.isHidden = true
+        
+        IBAddProduct.frame = CGRect(origin: CGPoint.init(x: IBTableView.frame.size.width-IBAddProduct.frame.size.width*2, y: IBTableView.frame.size.height), size: IBAddProduct.frame.size)
+        
+        view.bringSubview(toFront: view.viewWithTag(999)!)
+        view.bringSubview(toFront: IBAddProduct)
+        
+        initData()
+        
+        
         
         
         if config.mess_badge > 0 {
@@ -183,39 +133,34 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
+        cancelAllOperations()
+        pendingOperations = nil
         
-        IBTableView.dataSource = nil
-        IBTableView.delegate = nil
-        IBTableView.removeFromSuperview()
-        IBTableView = nil
- 
+    }
+    
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        
     }
     
     
     private func initData() {
         
-        if config.product_maj == true || config.product_add == true {
-            refreshData()
-            config.product_maj = false
-            config.product_add = false
-        }
-        else if searchText == "" {
-         
+        if searchText == "" {
+            
             IBSegment.selectedSegmentIndex = typeListe
-            actionSegment(self)
+            loadSegment()
         }
         else {
             view.bringSubview(toFront: view.viewWithTag(444)!)
             view.bringSubview(toFront: IBSearch)
         }
-     
-        frameTableView = IBTableView.frame
-        rowHeightTableView = IBTableView.rowHeight
+        
     }
     
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         
         if segue.identifier == "fromtable" {
             
@@ -226,13 +171,11 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 controller.aProduct = thisProduct
                 controller.typeListe = typeListe
-                controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
-                
             }
-            
         }
         
     }
+    
     
     @IBAction func actionButtonSearch(_ sender: Any) {
         
@@ -245,10 +188,10 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             IBSearch.placeholder = translate.message("product")
             IBSearch.becomeFirstResponder()
             
-       
+            
         }
         else {
-           desallocSearch()
+            desallocSearch()
         }
         
         
@@ -260,7 +203,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         performSegue(withIdentifier: "fromtable", sender: self)
     }
     
-
+    
     
     private func desallocSearch() {
         
@@ -272,9 +215,15 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     @IBAction func actionSegment(_ sender: Any) {
         
+        currentLine = 0
+        loadSegment()
+        
+    }
+    
+    
+    private func loadSegment() {
+        
         if IBSegment.selectedSegmentIndex == 0 {
-            
-            runActivity()
             
             if searchText != "" {
                 desallocSearch()
@@ -287,26 +236,22 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         }
         else if IBSegment.selectedSegmentIndex == 1 {
             
-            runActivity()
-            
             if searchText != "" {
                 desallocSearch()
             }
             
             typeListe = 1
-        
+            
             if let _ = Products.sharedInstance.productsUserArray {
                 batchChargeData()
             }
             else {
                 refreshData()
             }
-        
+            
             
         }
         else if IBSegment.selectedSegmentIndex == 2 {
-            
-            runActivity()
             
             if searchText != "" {
                 desallocSearch()
@@ -321,17 +266,15 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 refreshData()
             }
         }
-        
     }
     
-   
     
     private func batchChargeData() {
         
-        
+        cancelAllOperations()
         products.removeAll()
+        productsTmp.removeAll()
         IBTableView.reloadData()
-        runActivity()
         
         myQueue.addOperation {
             
@@ -361,27 +304,13 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             print("error ", filePath)
         }
         
-
+        
         self.dismiss(animated: true, completion: nil)
     }
     
-    
-    private func runActivity() {
-        
-        IBActivity.isHidden = false
-        IBActivity.startAnimating()
-        view.bringSubview(toFront: self.view.viewWithTag(55)!)
-        view.bringSubview(toFront: IBActivity)
-
-    }
-    
     private func stopActivity() {
-        
-        IBActivity.stopAnimating()
         refreshControl.endRefreshing()
-        IBActivity.isHidden = true
         refreshControl.isHidden = true
-        
     }
     
     
@@ -419,7 +348,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         self.searchText = searchText
-        runActivity()
         
         myQueue.cancelAllOperations()
         
@@ -488,15 +416,15 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         
         var theProducts = [[String:AnyObject]]()
-      
+        
         
         if typeListe == 0 {
             theProducts = Products.sharedInstance.productsArray
-           
+            
         }
         else if typeListe == 1 {
             theProducts = Products.sharedInstance.productsUserArray
-           
+            
         }
         else if typeListe == 2 {
             theProducts = Products.sharedInstance.productsTraderArray
@@ -507,41 +435,43 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             self.navigationItem.title = "\(self.config.user_pseudo!) (\(self.config.user_id!))"
         }
         
+        
         for prod in theProducts {
             
             if customOpeation.isCancelled {
                 break
             }
             
-            var produ = Product(dico: prod)
-            
+            let produ = Product(dico: prod)
             
             if typeListe == 0 {
                 
                 if let _ = lat, let _ = lon {
                     if (produ.prod_latitude >= minimumLat && produ.prod_latitude  <= maximumLat && produ.prod_longitude  >= minimumLon && produ.prod_longitude  <= maximumLon) {
-                        produ.prod_imageUrl = BlackBox.sharedInstance.saveImageArchive(prod_imageUrl: produ.prod_imageUrl)
-                        products.append(produ)
                         
+                        products.append(produ)
                     }
                 }
                 else  {
-                    produ.prod_imageUrl = BlackBox.sharedInstance.saveImageArchive(prod_imageUrl: produ.prod_imageUrl)
-                    products.append(produ)
                     
+                    products.append(produ)
                 }
                 
             }
             else if typeListe == 1  ||  typeListe == 2 {
-                produ.prod_imageUrl = BlackBox.sharedInstance.saveImageArchive(prod_imageUrl: produ.prod_imageUrl)
-                products.append(produ)
                 
+                products.append(produ)
             }
             
         }
         
         BlackBox.sharedInstance.performUIUpdatesOnMain {
             self.IBTableView.reloadData()
+            if self.products.count > 0 {
+                let index = IndexPath.init(row: self.currentLine, section: 0)
+                self.IBTableView.scrollToRow(at: index, at: .bottom , animated: false)
+            }
+            
             if self.products.count == 0 {
                 self.stopActivity()
             }
@@ -552,6 +482,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     
     private func refreshData()  {
         
+        cancelAllOperations()
         myQueue.cancelAllOperations()
         guard myQueue.operationCount == 0 else {
             IBTableView.reloadData()
@@ -589,7 +520,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                         self.tabBarController?.tabBar.items![1].badgeValue = nil
                         UIApplication.shared.applicationIconBadgeNumber = 0
                     }
-                   
+                    
                     
                 }
             }
@@ -604,49 +535,20 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         
-        if config.product_maj == true {
+        cancelAllOperations()
+        products.removeAll()
+        IBTableView.reloadData()
+        
+        if typeListe == 1 {
             
-            MDBProduct.sharedInstance.getProduct(aProduct.prod_id, completionHandlerProduct: { (success, productArray, errorString) in
+            //Menu MaListe
+            MDBProduct.sharedInstance.getProductsByUser(config.user_id) { (success, productArray, errorString) in
                 
                 if success {
                     
-                    for prod in productArray! {
-                        
-                        var produ = Product(dico: prod)
-                        produ.prod_imageUrl = BlackBox.sharedInstance.saveImageArchive(prod_imageUrl: produ.prod_imageUrl)
-                        self.aProduct.prod_id = produ.prod_id
-                        self.aProduct.prod_by_cat = produ.prod_by_cat
-                        self.aProduct.prod_by_user = produ.prod_by_user
-                        self.aProduct.prod_comment = produ.prod_comment
-                        self.aProduct.prod_date = produ.prod_date
-                        self.aProduct.prod_etat = produ.prod_etat
-                        self.aProduct.prod_hidden = produ.prod_hidden
-                        self.aProduct.prod_imageUrl = produ.prod_imageUrl
-                        self.aProduct.prod_latitude = produ.prod_latitude
-                        self.aProduct.prod_longitude = produ.prod_longitude
-                        self.aProduct.prod_mapString = produ.prod_mapString
-                        self.aProduct.prod_nom = produ.prod_nom
-                        self.aProduct.prod_prix = produ.prod_prix
-                        self.aProduct.prod_echange = produ.prod_echange
-                        self.aProduct.prod_tempsDispo = produ.prod_tempsDispo
-                        self.aProduct.prodImageOld = produ.prodImageOld
-                        
-                        break
-                        
-                    }
+                    Products.sharedInstance.productsUserArray = productArray
+                    self.chargeData()
                     
-                    for i in 0...self.products.count-1 {
-                        let prod = self.products[i]
-                        if prod.prod_id == self.aProduct.prod_id {
-                            self.products[i] = self.aProduct
-                            break
-                        }
-                    }
-                    
-                    BlackBox.sharedInstance.performUIUpdatesOnMain {
-                        self.IBTableView.reloadData()
-                        
-                    }
                 }
                 else {
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
@@ -655,83 +557,55 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                     }
                 }
                 
-                
-            })
+            }
+            
             
         }
-        else {
+        else if typeListe == 0 {
+            //Menu Carte
             
-            products.removeAll()
-            IBTableView.reloadData()
+            MDBProduct.sharedInstance.getProductsByCoord(config.user_id, minLon: config.minLongitude, maxLon: config.maxLongitude , minLat: config.minLatitude, maxLat: config.maxLatitude) { (success, productArray, errorString) in
+                
+                if success {
+                    
+                    Products.sharedInstance.productsArray = productArray
+                    self.chargeData()
+                    
+                }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
+                    }
+                }
+            }
             
-            if typeListe == 1 {
+            
+        }
+        else if typeListe == 2 {
+            
+            //Menu Historique
+            MDBProduct.sharedInstance.getProductsByTrader(config.user_id) { (success, productArray, errorString) in
                 
-                //Menu MaListe
-                MDBProduct.sharedInstance.getProductsByUser(config.user_id) { (success, productArray, errorString) in
+                if success {
                     
-                    if success {
-                        
-                        Products.sharedInstance.productsUserArray = productArray
-                        self.chargeData()
-                        
-                    }
-                    else {
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.stopActivity()
-                            self.displayAlert(self.translate.message("error"), mess: errorString!)
-                        }
-                    }
+                    Products.sharedInstance.productsTraderArray = productArray
+                    self.chargeData()
                     
                 }
-                
-                
-            }
-            else if typeListe == 0 {
-                //Menu Carte
-               
-                MDBProduct.sharedInstance.getProductsByCoord(config.user_id, minLon: config.minLongitude, maxLon: config.maxLongitude , minLat: config.minLatitude, maxLat: config.maxLatitude) { (success, productArray, errorString) in
-                    
-                    if success {
-                        
-                        Products.sharedInstance.productsArray = productArray
-                        self.chargeData()
-                        
-                    }
-                    else {
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.IBActivity.stopAnimating()
-                            self.displayAlert(self.translate.message("error"), mess: errorString!)
-                        }
+                else {
+                    BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.stopActivity()
+                        self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
-                
-                
-            }
-            else if typeListe == 2 {
-                
-                //Menu Historique
-                MDBProduct.sharedInstance.getProductsByTrader(config.user_id) { (success, productArray, errorString) in
-                    
-                    if success {
-                        
-                        Products.sharedInstance.productsTraderArray = productArray
-                        self.chargeData()
-                
-                    }
-                    else {
-                        BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            self.stopActivity()
-                            self.displayAlert(self.translate.message("error"), mess: errorString!)
-                        }
-                    }
-                    
-                }
-                
                 
             }
             
             
         }
+        
+        
+        
         
         
     }
@@ -752,6 +626,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
                 productsTmp.append(prod)
             }
             
+            
             BlackBox.sharedInstance.performUIUpdatesOnMain {
                 self.IBTableView.reloadData()
             }
@@ -767,7 +642,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         //delete row
         let product =  products[indexPath.row]
-      
+        
         guard config.user_id == product.prod_by_user && product.prod_closed == false && product.prod_hidden == false else {
             displayAlert(translate.message("error"), mess: translate.message("deletionFor"))
             return
@@ -868,54 +743,57 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         
         let CellReuseId = "Cell"
         var cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
         
-        var product:Product
+        let product:Product
         
         if searchText == "" {
             product =  products[indexPath.row]
+            
         }
         else {
             product =  productsTmp[indexPath.row]
+            
         }
         
-        var firstlastname = UILabel()
-        var photo = UIImageView()
-        
-        for view in (cell?.contentView.subviews)! {
+        switch product.state {
             
-            if view.tag == 99 {
-                firstlastname = view as! UILabel
-                firstlastname.text =  "\(product.prod_nom) (user:\(product.prod_by_user))"
-             
-                if product.prod_closed == true  {
-                    firstlastname.textColor = UIColor.gray
-                }
-                else if product.prod_closed == false && product.prod_hidden == false {
-                    firstlastname.textColor = UIColor.black
-                }
-                else if product.prod_closed == false && product.prod_hidden == true {
-                    firstlastname.textColor = UIColor.blue
-                }
-            }
-            else if view.tag == 88 {
-                photo = view as! UIImageView
+        case .Filtered: break
+        case .Failed: break
+        case .New, .Downloaded:
+            if !tableView.isDragging && !tableView.isDecelerating {
+                startOperationsForPhotoRecord(product, indexPath)
                 
-                if product.prod_imageUrl == "" {
-                     photo.image = #imageLiteral(resourceName: "noimage")
-                }
-                else {
-                     photo.image = BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: product.prod_imageUrl)
-                }
             }
             
         }
+        
+        let firstlastname = cell?.contentView.viewWithTag(99) as! UILabel
+        firstlastname.text =  "\(product.prod_nom) (user:\(product.prod_by_user))"
+        if product.prod_closed == true  {
+            firstlastname.textColor = UIColor.gray
+        }
+        else if product.prod_closed == false && product.prod_hidden == false {
+            firstlastname.textColor = UIColor.black
+        }
+        else if product.prod_closed == false && product.prod_hidden == true {
+            firstlastname.textColor = UIColor.blue
+        }
+        
+        
+        let photo = cell?.contentView.viewWithTag(88) as! UIImageView
+        photo.image = product.prod_image
+        config.heightImage = photo.frame.size.height
+        config.widthImage = photo.frame.size.width
+        
+        
         
         firstlastname.frame = CGRect.init(origin: CGPoint.init(x: photo.frame.size.width + 10, y: firstlastname.frame.origin.y), size: firstlastname.frame.size)
-        
         
         
         var i = 0
@@ -931,41 +809,289 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         cell = chargeBadge(cell!, badgeValue: i)
         
-     
+        
         if indexPath.row == 0 {
             stopActivity()
         }
         
-        
+        currentLine = indexPath.row
         return cell!
         
     }
     
     
+    private func startOperationsForPhotoRecord(_ product:Product, _ indexPath:IndexPath) {
+        
+        switch product.state {
+        case .New:
+            startDownloadForRecord(product, indexPath)
+            
+        case .Downloaded:
+            startFiltrationForRecord(product, indexPath)
+            
+        default: break
+        }
+        
+    }
+    
+    
+    private func startDownloadForRecord(_ product:Product, _ indexPath:IndexPath) {
+        
+        
+        if let _ = pendingOperations.downloadsInProgress[indexPath] {
+            return
+        }
+        
+        let downloader = ImageDownloader.init(product: product)
+        
+        downloader.completionBlock = {
+            
+            if downloader.isCancelled {
+                return
+            }
+            
+            if self.searchText == "" {
+                
+                
+                self.products[indexPath.row].state = downloader.product.state
+                self.products[indexPath.row].prod_imageUrl = downloader.product.prod_imageUrl
+                self.products[indexPath.row].prod_image = downloader.product.prod_image
+                
+            }
+            else {
+                
+                
+                self.productsTmp[indexPath.row].state = downloader.product.state
+                self.productsTmp[indexPath.row].prod_imageUrl = downloader.product.prod_imageUrl
+                self.productsTmp[indexPath.row].prod_image = downloader.product.prod_image
+                
+                
+            }
+            
+            
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                if downloader.isCancelled {
+                    return
+                }
+                
+                self.pendingOperations.downloadsInProgress.removeValue(forKey: indexPath)
+                
+                if downloader.isCancelled {
+                    return
+                }
+                
+                self.IBTableView.reloadRows(at: [indexPath], with: .fade)
+                
+            }
+            
+        }
+        
+        pendingOperations.downloadsInProgress[indexPath] = downloader
+        pendingOperations.downloadQueue.addOperation(downloader)
+        
+        
+    }
+    
+    private func startFiltrationForRecord(_ product:Product, _ indexPath:IndexPath) {
+        
+        
+        if let _ = pendingOperations.filtrationsInProgress[indexPath] {
+            return
+        }
+        
+        let filterer = ImageFiltration.init(product: product)
+        
+        filterer.completionBlock = {
+            
+            if filterer.isCancelled {
+                return
+            }
+            
+            
+            if self.searchText == "" {
+                
+                
+                self.products[indexPath.row].state = filterer.product.state
+                self.products[indexPath.row].prod_image = filterer.product.prod_image
+                
+            }
+            else {
+                
+                self.productsTmp[indexPath.row].state = filterer.product.state
+                self.productsTmp[indexPath.row].prod_image = filterer.product.prod_image
+                
+            }
+            
+            BlackBox.sharedInstance.performUIUpdatesOnMain {
+                
+                if filterer.isCancelled {
+                    return
+                }
+                
+                self.pendingOperations.filtrationsInProgress.removeValue(forKey: indexPath)
+                
+                if filterer.isCancelled {
+                    return
+                }
+                self.IBTableView.reloadRows(at: [indexPath], with: .fade)
+            }
+            
+        }
+        
+        pendingOperations.filtrationsInProgress[indexPath] = filterer
+        pendingOperations.filtrationQueue.addOperation(filterer)
+        
+        
+    }
+    
+    
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if searchText == "" {
+        
+        if self.searchText == "" {
+            
+            
             return products.count
             
         }
         else {
+            
             return productsTmp.count
             
         }
+        
         
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if searchText == "" {
+        
+        
+        if self.searchText == "" {
+            
             aProduct =  products[indexPath.row]
+            
         }
         else {
+            
             aProduct =  productsTmp[indexPath.row]
+            
         }
         
-        performSegue(withIdentifier: "fromtable", sender: self)
         
+        if aProduct.state == .Filtered || aProduct.state == .Failed {
+            
+            performSegue(withIdentifier: "fromtable", sender: self)
+            
+        }
+        
+        
+    }
+    
+    //MARK: Scrollview delegate
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
+        suspendAllOperations()
+        
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        if !decelerate {
+            loadImagesForOnscreenCells()
+            resumeAllOperations()
+        }
+    }
+    
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        
+        loadImagesForOnscreenCells()
+        resumeAllOperations()
+        
+    }
+    
+    private func suspendAllOperations() {
+        
+        pendingOperations.downloadQueue.isSuspended = true
+        pendingOperations.filtrationQueue.isSuspended = true
+        
+    }
+    
+    
+    private func cancelAllOperations() {
+        
+        pendingOperations.downloadQueue.cancelAllOperations()
+        pendingOperations.filtrationQueue.cancelAllOperations()
+        
+    }
+    
+    
+    private func resumeAllOperations() {
+        
+        pendingOperations.downloadQueue.isSuspended = false
+        pendingOperations.filtrationQueue.isSuspended = false
+    }
+    
+    
+    private func loadImagesForOnscreenCells() {
+        
+        //1 Start with an array containing index paths of all the currently visible rows in the table view.
+        if let pathsArray = IBTableView.indexPathsForVisibleRows {
+            
+            //2 Construct a set of all pending operations by combining all the downloads in progress + all the filters in progress.
+            let allPendingOperations = Set(pendingOperations.downloadsInProgress.keys)
+            
+            //3 Construct a set of all index paths with operations to be cancelled. Start with all operations, and then remove the index paths of the visible rows. This will leave the set of operations involving off-screen rows.
+            var toBeCancelled = allPendingOperations
+            let visiblePaths = Set(pathsArray)
+            toBeCancelled.subtract(visiblePaths as Set<IndexPath>)
+            
+            
+            //4 Construct a set of index paths that need their operations started. Start with index paths all visible rows, and then remove the ones where operations are already pending.
+            var toBeStarted = visiblePaths
+            toBeStarted.subtract(allPendingOperations as Set<IndexPath>)
+            
+            //5 Loop through those to be cancelled, cancel them, and remove their reference from PendingOperations.
+            for indexPath in toBeCancelled {
+                
+                if let pendingDownload = pendingOperations.downloadsInProgress[indexPath] {
+                    pendingDownload.cancel()
+                }
+                pendingOperations.downloadsInProgress.removeValue(forKey: indexPath)
+                if let pendingFiltration = pendingOperations.filtrationsInProgress[indexPath] {
+                    pendingFiltration.cancel()
+                }
+                pendingOperations.filtrationsInProgress.removeValue(forKey: indexPath)
+            }
+            
+            for indexPath in toBeStarted {
+                
+                let indexPath = indexPath as IndexPath
+                
+                var recordToProcess:Product
+                
+                if self.searchText == "" {
+                    
+                    recordToProcess = self.products[indexPath.row]
+                    
+                }
+                else {
+                    
+                    recordToProcess = self.productsTmp[indexPath.row]
+                    
+                }
+                
+                startOperationsForPhotoRecord(recordToProcess, indexPath)
+                
+                
+            }
+            
+        }
         
     }
     

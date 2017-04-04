@@ -20,7 +20,7 @@ class CommunRequest {
         
         /* GUARD: Was there an error? */
         guard (error == nil) else {
-            completionHdler(false, nil, "\(translate.message("errorRequest")) \(error?.localizedDescription)")
+            completionHdler(false, nil, "\(translate.message("errorRequest")) \(String(describing: error?.localizedDescription))")
             return
             
         }

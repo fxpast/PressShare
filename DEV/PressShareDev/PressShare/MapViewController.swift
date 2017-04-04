@@ -44,6 +44,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var lon:CLLocationDegrees!
     var latUser:CLLocationDegrees!
     var lonUser:CLLocationDegrees!
+    
     var isUser = false
     var isSelect = false
     var prodIdNow = 0
@@ -137,11 +138,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         isUser = false
         
-        if config.product_maj == true {
-            config.product_maj = false
-            refreshData()
-        }
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -165,6 +161,32 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     }
     
     
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        
+        if IBMap != nil {
+           
+            let region = IBMap.region
+            let annotations = IBMap.annotations
+            
+            viewDidDisappear(false)
+
+            IBMap = MKMapView()
+            IBMap.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height)
+            view.addSubview(IBMap)
+            IBMap.delegate = self
+            
+            IBMap.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
+            
+            view.bringSubview(toFront: view.viewWithTag(999)!)
+            view.bringSubview(toFront: IBAddProduct)
+            
+            IBMap.region = region
+            IBMap.addAnnotations(annotations)
+            
+        }
+        
+    }
     
     func handleTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
@@ -613,7 +635,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     
     //MARK: Map View Delegate
- 
+    
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
         
         if shapeLayer1 != nil && isSelect == true {

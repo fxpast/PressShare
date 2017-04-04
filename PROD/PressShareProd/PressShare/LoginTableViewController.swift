@@ -10,7 +10,7 @@
 
 //Todo new : supprimer doublon proprieté user et config
 //Todo new : login par pseudo ou email
-
+//Todo bog : Connexion : orientation paysage
 
 
 import Foundation
@@ -87,7 +87,7 @@ class LoginTableViewController : UITableViewController, UITextFieldDelegate {
         IBActivity.isHidden = true
         
         config.previousView = "LoginViewController"
-        Operations.sharedInstance.operationArray = nil
+        PressOperations.sharedInstance.operationArray = nil
         Messages.sharedInstance.MessagesArray = nil
         Transactions.sharedInstance.transactionArray = nil
         Capitals.sharedInstance.capitalsArray = nil

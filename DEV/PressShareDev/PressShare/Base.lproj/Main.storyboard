@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E192b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="dOt-q8-CqR">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="dOt-q8-CqR">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -757,13 +757,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pseudo :" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gAC-Se-6AU">
-                                                    <rect key="frame" x="18" y="9" width="206" height="22"/>
+                                                    <rect key="frame" x="18" y="9" width="206" height="21.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Pseudo" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6PH-ee-jmy">
-                                                    <rect key="frame" x="18" y="46.5" width="206" height="31.5"/>
+                                                    <rect key="frame" x="18" y="46" width="206" height="32"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
                                                     <connections>
@@ -2259,23 +2259,23 @@
                         <outlet property="IBActivity" destination="LZG-UF-wNB" id="JUS-q6-MkP"/>
                         <outlet property="IBAmount" destination="EDy-Zy-57M" id="Ncj-ic-2dC"/>
                         <outlet property="IBButtonCancelr" destination="HNY-N9-hgL" id="QkE-0c-tsi"/>
-                        <outlet property="IBCancel" destination="U8f-OQ-fSQ" id="l6k-TA-4sy"/>
                         <outlet property="IBClient" destination="vdJ-cE-6iN" id="gaw-3J-SoP"/>
-                        <outlet property="IBCompliant" destination="7ca-FV-Lde" id="aVh-7y-Pcy"/>
                         <outlet property="IBCompliantLabel" destination="wBW-Z5-Exi" id="Il6-ae-qmS"/>
-                        <outlet property="IBConfirm" destination="f3G-cT-tVn" id="5xm-cR-X6s"/>
                         <outlet property="IBEnded" destination="Gkn-yO-OTk" id="xJ2-UW-erq"/>
                         <outlet property="IBInfoContact" destination="hU9-rm-vD8" id="gaZ-La-Vdd"/>
-                        <outlet property="IBInterlo" destination="Uen-YY-bd0" id="QGG-VO-SPu"/>
                         <outlet property="IBLabelCancel" destination="91I-LB-9zO" id="amL-5U-rQi"/>
                         <outlet property="IBLabelConfirm" destination="g5p-7G-t4S" id="B5J-QW-BcW"/>
                         <outlet property="IBLabelInterlo" destination="MqE-0g-wUp" id="Pds-k6-TmB"/>
                         <outlet property="IBLabelMyAbsent" destination="hWa-uO-FNe" id="9zO-ho-5Hw"/>
                         <outlet property="IBLabelType" destination="mBc-v5-jqX" id="5rB-Kt-kfQ"/>
-                        <outlet property="IBMyAbsent" destination="xM0-nO-Ywr" id="dDe-a2-JNg"/>
-                        <outlet property="IBOther" destination="Ci1-mQ-8PC" id="fZt-5Y-5JF"/>
                         <outlet property="IBOtherText" destination="uK4-Cf-JgA" id="deV-yF-2Kq"/>
                         <outlet property="IBWording" destination="3Wa-aa-lYL" id="e5p-n7-nDt"/>
+                        <outlet property="IBisCancel" destination="U8f-OQ-fSQ" id="jYA-Hk-I36"/>
+                        <outlet property="IBisCompliant" destination="7ca-FV-Lde" id="OnE-ez-HFp"/>
+                        <outlet property="IBisConfirm" destination="f3G-cT-tVn" id="aAa-IL-TJY"/>
+                        <outlet property="IBisInterlo" destination="Uen-YY-bd0" id="JU8-po-DfW"/>
+                        <outlet property="IBisMyAbsent" destination="xM0-nO-Ywr" id="SJZ-Wh-dgL"/>
+                        <outlet property="IBisOther" destination="Ci1-mQ-8PC" id="Rx9-na-BZO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LuU-4p-tjB" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2389,14 +2389,14 @@
                     <connections>
                         <outlet property="IBActivity" destination="nIF-jd-JIO" id="6SM-Xw-xe1"/>
                         <outlet property="IBCancel" destination="eiM-1Y-lyd" id="Yhd-m6-Vqy"/>
-                        <outlet property="IBExchange" destination="kcQ-i0-GVU" id="JiH-d3-8Mc"/>
                         <outlet property="IBInfoContact1" destination="XgS-ih-sCb" id="TRX-SR-Bcb"/>
                         <outlet property="IBInfoContact2" destination="oGo-Oq-olk" id="M1d-sr-s1j"/>
                         <outlet property="IBInfoProduct" destination="8Zc-Qk-zDs" id="dfY-Y7-abB"/>
                         <outlet property="IBLabelExchange" destination="DmI-oK-S0N" id="149-Ir-9Ne"/>
                         <outlet property="IBLabelTrade" destination="VLR-PM-PiP" id="Y3Z-7S-F0i"/>
-                        <outlet property="IBTrade" destination="aLa-Cf-l5y" id="WV9-zW-MS3"/>
                         <outlet property="IBValidate" destination="f4A-Og-Vt6" id="cX6-oU-HXv"/>
+                        <outlet property="IBisExchange" destination="kcQ-i0-GVU" id="tLb-4i-Hfk"/>
+                        <outlet property="IBisTrade" destination="aLa-Cf-l5y" id="ARe-0o-AGV"/>
                         <segue destination="KE9-HJ-dC4" kind="modal" identifier="messagerie" id="Rsp-cw-dyX"/>
                     </connections>
                 </viewController>
@@ -3277,11 +3277,11 @@
         <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="Rsp-cw-dyX"/>
         <segue reference="uGl-lw-gGM"/>
         <segue reference="F4A-tf-dKi"/>
         <segue reference="eKd-Un-fB5"/>
         <segue reference="Drk-94-Gkb"/>
         <segue reference="zxH-SU-zaV"/>
-        <segue reference="Rsp-cw-dyX"/>
     </inferredMetricsTieBreakers>
 </document>

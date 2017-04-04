@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="dOt-q8-CqR">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="dOt-q8-CqR">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -652,7 +652,7 @@
                             </connections>
                         </barButtonItem>
                         <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="line" placeholder="Tap your location" textAlignment="center" minimumFontSize="17" id="Da2-FQ-fj5">
-                            <rect key="frame" x="122" y="7" width="132" height="30"/>
+                            <rect key="frame" x="121.5" y="7" width="132" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -2259,23 +2259,23 @@
                         <outlet property="IBActivity" destination="LZG-UF-wNB" id="JUS-q6-MkP"/>
                         <outlet property="IBAmount" destination="EDy-Zy-57M" id="Ncj-ic-2dC"/>
                         <outlet property="IBButtonCancelr" destination="HNY-N9-hgL" id="QkE-0c-tsi"/>
-                        <outlet property="IBCancel" destination="U8f-OQ-fSQ" id="l6k-TA-4sy"/>
                         <outlet property="IBClient" destination="vdJ-cE-6iN" id="gaw-3J-SoP"/>
-                        <outlet property="IBCompliant" destination="7ca-FV-Lde" id="aVh-7y-Pcy"/>
                         <outlet property="IBCompliantLabel" destination="wBW-Z5-Exi" id="Il6-ae-qmS"/>
-                        <outlet property="IBConfirm" destination="f3G-cT-tVn" id="5xm-cR-X6s"/>
                         <outlet property="IBEnded" destination="Gkn-yO-OTk" id="xJ2-UW-erq"/>
                         <outlet property="IBInfoContact" destination="hU9-rm-vD8" id="gaZ-La-Vdd"/>
-                        <outlet property="IBInterlo" destination="Uen-YY-bd0" id="QGG-VO-SPu"/>
                         <outlet property="IBLabelCancel" destination="91I-LB-9zO" id="amL-5U-rQi"/>
                         <outlet property="IBLabelConfirm" destination="g5p-7G-t4S" id="B5J-QW-BcW"/>
                         <outlet property="IBLabelInterlo" destination="MqE-0g-wUp" id="Pds-k6-TmB"/>
                         <outlet property="IBLabelMyAbsent" destination="hWa-uO-FNe" id="9zO-ho-5Hw"/>
                         <outlet property="IBLabelType" destination="mBc-v5-jqX" id="5rB-Kt-kfQ"/>
-                        <outlet property="IBMyAbsent" destination="xM0-nO-Ywr" id="dDe-a2-JNg"/>
-                        <outlet property="IBOther" destination="Ci1-mQ-8PC" id="fZt-5Y-5JF"/>
                         <outlet property="IBOtherText" destination="uK4-Cf-JgA" id="deV-yF-2Kq"/>
                         <outlet property="IBWording" destination="3Wa-aa-lYL" id="e5p-n7-nDt"/>
+                        <outlet property="IBisCancel" destination="U8f-OQ-fSQ" id="jYA-Hk-I36"/>
+                        <outlet property="IBisCompliant" destination="7ca-FV-Lde" id="OnE-ez-HFp"/>
+                        <outlet property="IBisConfirm" destination="f3G-cT-tVn" id="aAa-IL-TJY"/>
+                        <outlet property="IBisInterlo" destination="Uen-YY-bd0" id="JU8-po-DfW"/>
+                        <outlet property="IBisMyAbsent" destination="xM0-nO-Ywr" id="SJZ-Wh-dgL"/>
+                        <outlet property="IBisOther" destination="Ci1-mQ-8PC" id="Rx9-na-BZO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LuU-4p-tjB" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2389,14 +2389,14 @@
                     <connections>
                         <outlet property="IBActivity" destination="nIF-jd-JIO" id="6SM-Xw-xe1"/>
                         <outlet property="IBCancel" destination="eiM-1Y-lyd" id="Yhd-m6-Vqy"/>
-                        <outlet property="IBExchange" destination="kcQ-i0-GVU" id="JiH-d3-8Mc"/>
                         <outlet property="IBInfoContact1" destination="XgS-ih-sCb" id="TRX-SR-Bcb"/>
                         <outlet property="IBInfoContact2" destination="oGo-Oq-olk" id="M1d-sr-s1j"/>
                         <outlet property="IBInfoProduct" destination="8Zc-Qk-zDs" id="dfY-Y7-abB"/>
                         <outlet property="IBLabelExchange" destination="DmI-oK-S0N" id="149-Ir-9Ne"/>
                         <outlet property="IBLabelTrade" destination="VLR-PM-PiP" id="Y3Z-7S-F0i"/>
-                        <outlet property="IBTrade" destination="aLa-Cf-l5y" id="WV9-zW-MS3"/>
                         <outlet property="IBValidate" destination="f4A-Og-Vt6" id="cX6-oU-HXv"/>
+                        <outlet property="IBisExchange" destination="kcQ-i0-GVU" id="tLb-4i-Hfk"/>
+                        <outlet property="IBisTrade" destination="aLa-Cf-l5y" id="ARe-0o-AGV"/>
                         <segue destination="KE9-HJ-dC4" kind="modal" identifier="messagerie" id="Rsp-cw-dyX"/>
                     </connections>
                 </viewController>
@@ -2416,11 +2416,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <activityIndicatorView opaque="NO" tag="55" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="yaz-fU-XeZ">
-                                <rect key="frame" x="177" y="323" width="20" height="20"/>
-                            </activityIndicatorView>
                             <tableView clipsSubviews="YES" tag="4" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bcx-0w-EHR">
-                                <rect key="frame" x="0.0" y="64" width="375" height="524"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="573"/>
                                 <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.63921568630000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="sectionIndexBackgroundColor" red="1" green="0.85967635919999996" blue="0.63925312040000004" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
@@ -2453,7 +2450,7 @@
                                 </connections>
                             </tableView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Zng-xb-jjk">
-                                <rect key="frame" x="0.0" y="589" width="375" height="29"/>
+                                <rect key="frame" x="0.0" y="638" width="375" height="29"/>
                                 <segments>
                                     <segment title="Liste"/>
                                     <segment title="Mes Items"/>
@@ -2467,11 +2464,9 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Zng-xb-jjk" secondAttribute="trailing" id="0DG-WL-1LY"/>
-                            <constraint firstItem="yaz-fU-XeZ" firstAttribute="centerY" secondItem="6vU-Dj-M8f" secondAttribute="centerY" id="FB2-Ib-Ksc"/>
                             <constraint firstItem="plJ-JF-aze" firstAttribute="top" secondItem="Zng-xb-jjk" secondAttribute="bottom" constant="1" id="O3c-cw-XbF"/>
                             <constraint firstItem="bcx-0w-EHR" firstAttribute="leading" secondItem="6vU-Dj-M8f" secondAttribute="leading" id="RiY-0n-8uE"/>
                             <constraint firstAttribute="trailing" secondItem="bcx-0w-EHR" secondAttribute="trailing" id="a0A-dT-JaI"/>
-                            <constraint firstItem="yaz-fU-XeZ" firstAttribute="centerX" secondItem="6vU-Dj-M8f" secondAttribute="centerX" id="dhb-w3-aR1"/>
                             <constraint firstItem="Zng-xb-jjk" firstAttribute="leading" secondItem="6vU-Dj-M8f" secondAttribute="leading" id="leH-W9-xh2"/>
                             <constraint firstItem="Zng-xb-jjk" firstAttribute="top" secondItem="bcx-0w-EHR" secondAttribute="bottom" constant="1" id="nz1-tj-elI"/>
                             <constraint firstItem="bcx-0w-EHR" firstAttribute="top" secondItem="MX9-VU-ck2" secondAttribute="bottom" id="r9a-XL-Gz9"/>
@@ -2492,7 +2487,6 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
-                        <outlet property="IBActivity" destination="yaz-fU-XeZ" id="Eed-13-Cx7"/>
                         <outlet property="IBSegment" destination="Zng-xb-jjk" id="OWz-bJ-44X"/>
                         <outlet property="IBTableView" destination="bcx-0w-EHR" id="jgz-Y2-PcL"/>
                         <segue destination="29X-R3-2TP" kind="modal" identifier="fromtable" id="8j9-lg-kLp"/>
@@ -3093,14 +3087,14 @@
                                     <outlet property="delegate" destination="ot7-vw-jSx" id="Jiu-1j-SVz"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2R9-UW-V5L">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2R9-UW-V5L">
                                 <rect key="frame" x="237" y="142" width="76" height="30"/>
                                 <state key="normal" title="valider"/>
                                 <connections>
                                     <action selector="actionWithdrawal:" destination="ot7-vw-jSx" eventType="touchUpInside" id="x8c-B4-BpY"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lHH-bR-n4i">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lHH-bR-n4i">
                                 <rect key="frame" x="235" y="193" width="78" height="30"/>
                                 <state key="normal" title="valider"/>
                                 <connections>
@@ -3120,7 +3114,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="retrait" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="emh-QN-Cg4">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="retrait" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="emh-QN-Cg4">
                                 <rect key="frame" x="129" y="143" width="97" height="30"/>
                                 <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.63921568630000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="textColor"/>
@@ -3130,7 +3124,7 @@
                                     <outlet property="delegate" destination="ot7-vw-jSx" id="mng-DW-91Q"/>
                                 </connections>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="depôt" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7j0-hi-Lew">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="depôt" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7j0-hi-Lew">
                                 <rect key="frame" x="129" y="193" width="97" height="30"/>
                                 <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.63921568630000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="textColor"/>
@@ -3283,11 +3277,11 @@
         <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="eKd-Un-fB5"/>
-        <segue reference="smB-gJ-vdI"/>
-        <segue reference="F4A-tf-dKi"/>
-        <segue reference="y1O-tB-4dg"/>
-        <segue reference="Drk-94-Gkb"/>
         <segue reference="Rsp-cw-dyX"/>
+        <segue reference="uGl-lw-gGM"/>
+        <segue reference="F4A-tf-dKi"/>
+        <segue reference="eKd-Un-fB5"/>
+        <segue reference="Drk-94-Gkb"/>
+        <segue reference="zxH-SU-zaV"/>
     </inferredMetricsTieBreakers>
 </document>
