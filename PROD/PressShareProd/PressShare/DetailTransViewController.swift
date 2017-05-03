@@ -17,6 +17,12 @@ import UIKit
 
 class DetailTransViewController: UIViewController {
     
+    @IBOutlet weak var IBNote: UILabel!
+    @IBOutlet weak var IBStar1: UIButton!
+    @IBOutlet weak var IBStar2: UIButton!
+    @IBOutlet weak var IBStar3: UIButton!
+    @IBOutlet weak var IBStar4: UIButton!
+    @IBOutlet weak var IBStar5: UIButton!
     
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBInfoContact: UILabel!
@@ -46,6 +52,9 @@ class DetailTransViewController: UIViewController {
     @IBOutlet weak var IBLabelInterlo: UILabel!
     
     
+    var timerBadge : Timer!
+    var star=0
+
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     var aTransaction:Transaction?
@@ -77,6 +86,25 @@ class DetailTransViewController: UIViewController {
         super.viewDidLoad()
         
 
+        
+        star = (aTransaction?.trans_note)!
+        if star == 1 {
+            actionStar1(IBStar1)
+        }
+        else if star == 2 {
+            actionStar2(IBStar2)
+        }
+        else if star == 3 {
+            actionStar3(IBStar3)
+        }
+        else if star == 4 {
+            actionStar4(IBStar4)
+        }
+        else if star == 5 {
+            actionStar5(IBStar5)
+        }
+
+        
       IBisCancel.isOn = false
       IBisConfirm.isOn = false
         
@@ -201,14 +229,59 @@ class DetailTransViewController: UIViewController {
         IBCompliantLabel.text = translate.message("compliant")
         IBLabelMyAbsent.text = translate.message("myAbsence")
         IBOtherText.placeholder = translate.message("other")
+        IBNote.text = translate.message("transactNote")
         navigationItem.title = translate.message("validerTransact")
          
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+        
+    }
+    
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
+        
+    }
+
+    
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            
+            BlackBox.sharedInstance.checkBadge(completionHdlerBadge: { (success, result) in
+                
+                if success == true {
+                    
+                    if result == "mess_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newMessage"))
+                    }
+                    else if result == "trans_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newTransaction"))
+                    }
+                    
+                }
+                else {
+                    
+                }
+                
+            })
+        }
         
     }
     
@@ -226,6 +299,77 @@ class DetailTransViewController: UIViewController {
     }
     
     
+    
+    //MARK: star placeholder
+    private func changeStar(_ sender: UIButton) {
+        
+        if sender.currentImage == #imageLiteral(resourceName: "whiteStar") {
+            sender.setImage(#imageLiteral(resourceName: "blackStar"), for: UIControlState.normal)
+            
+        }
+        else {
+            sender.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        }
+        
+    }
+    
+    private func initStar() {
+        
+        IBStar1.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        IBStar2.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        IBStar3.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        IBStar4.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        IBStar5.setImage(#imageLiteral(resourceName: "whiteStar"), for: UIControlState.normal)
+        
+    }
+    
+    
+    @IBAction func actionStar1(_ sender: AnyObject) {
+        star = 1
+        
+        initStar()
+        changeStar(sender as! UIButton)
+    }
+    
+    
+    @IBAction func actionStar2(_ sender: AnyObject) {
+        star = 2
+        initStar()
+        changeStar(sender as! UIButton)
+        changeStar(IBStar1)
+    }
+    
+    
+    @IBAction func actionStar3(_ sender: AnyObject) {
+        star = 3
+        initStar()
+        changeStar(sender as! UIButton)
+        changeStar(IBStar2)
+        changeStar(IBStar1)
+    }
+    
+    
+    @IBAction func actionStar4(_ sender: AnyObject) {
+        star = 4
+        initStar()
+        changeStar(sender as! UIButton)
+        changeStar(IBStar3)
+        changeStar(IBStar2)
+        changeStar(IBStar1)
+    }
+    
+    
+    @IBAction func actionStar5(_ sender: AnyObject) {
+        star = 5
+        initStar()
+        changeStar(sender as! UIButton)
+        changeStar(IBStar4)
+        changeStar(IBStar3)
+        changeStar(IBStar2)
+        changeStar(IBStar1)
+    }
+    
+
     
     //MARK: textfield Delegate
     
@@ -1031,6 +1175,16 @@ class DetailTransViewController: UIViewController {
             return
         }
         
+        if IBisConfirm.isOn == true {
+            let minAmount = config.minimumAmount + (self.aTransaction?.trans_amount)!            
+            guard self.config.balance >= minAmount else {
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    self.displayAlert(self.translate.message("error"), mess: self.translate.message("errorBalanceTrans"))
+                }
+                return
+            }
+            
+        }
         
         let alertController = UIAlertController(title: "Transaction", message: translate.message("errorEndedTrans"), preferredStyle: .alert)
         
@@ -1065,6 +1219,31 @@ class DetailTransViewController: UIViewController {
                 
             }
             
+            self.aTransaction?.trans_note = self.star
+            
+            if self.star > 0 {
+                
+                self.config.user_countNote = self.config.user_countNote + 1
+                
+                self.config.user_note = (self.config.user_note + self.star) / self.config.user_countNote
+                
+                MDBUser.sharedInstance.setUpdUserStar(self.config, self.aTransaction!, completionHandlerUpdate: { (success, errorString) in
+                    
+                    if success {
+                        
+                      //Ok
+                        
+                    }
+                    else {
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            self.IBActivity.stopAnimating()
+                            self.displayAlert(self.translate.message("error"), mess: errorString!)
+                        }
+                    }
+                    
+                })
+            }
             
             MDBTransact.sharedInstance.setUpdateTransaction(self.aTransaction!, completionHandlerUpdTrans: { (success, errorString) in
                 

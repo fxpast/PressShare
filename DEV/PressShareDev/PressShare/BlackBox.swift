@@ -16,7 +16,7 @@ import SystemConfiguration
 class BlackBox  {
     
     let translate = TranslateMessage.sharedInstance
-    
+    let config = Config.sharedInstance
     
     func showHelp(_ titre:String, _ sender: AnyObject) {
         
@@ -54,6 +54,194 @@ class BlackBox  {
         return shapeLayer1
         
     }
+    
+    
+    
+    func checkBadge(completionHdlerBadge: @escaping (_ succes: Bool, _ result:String?) -> Void) {
+        
+        config.isTimer = true
+        
+        MDBMessage.sharedInstance.getAllMessages(config.user_id) {(success, messageArray, errorString) in
+            
+            if success {
+                
+                Messages.sharedInstance.MessagesArray = messageArray
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
+                    var i = 0
+                    
+                    for mess in Messages.sharedInstance.MessagesArray {
+                        
+                        let message = Message(dico: mess)
+                        
+                        if message.destinataire == self.config.user_id && message.deja_lu == false {
+                            i+=1
+                        }
+                        
+                    }
+                    if i > self.config.mess_badge {
+                        
+                        self.config.mess_badge = i
+                        completionHdlerBadge(true, "mess_badge")
+                    }
+                    else {
+                        
+                         completionHdlerBadge(false, nil)
+                    }
+                    
+                }
+                
+                
+                MDBTransact.sharedInstance.getAllTransactions(self.config.user_id) { (success, transactionArray, errorString) in
+                    
+                    if success {
+                        
+                        Transactions.sharedInstance.transactionArray = transactionArray
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            var i = 0
+                            for tran in Transactions.sharedInstance.transactionArray  {
+                                
+                                let tran1 = Transaction(dico: tran)
+                                
+                                if (tran1.trans_valid != 1 && tran1.trans_valid != 2 )  {
+                                    i+=1
+                                }
+                                
+                            }
+                            
+                            if i > self.config.trans_badge {
+                                
+                                self.config.trans_badge = i
+                                completionHdlerBadge(true, "trans_badge")
+                            }
+                            else {
+                                
+                                completionHdlerBadge(false, nil)
+                            }
+                            
+                        }
+                        
+                        self.config.isTimer = false
+                    }
+                    else {
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            print(errorString ?? "error message")
+                        }
+                    }
+                    
+                }
+                
+            }
+            else {
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    print(errorString ?? "error message")
+                }
+            }
+            
+        }
+        
+    }
+    
+    func checkBadge(menuBar:UITabBarController?) {
+        
+        config.isTimer = true
+        
+        MDBMessage.sharedInstance.getAllMessages(config.user_id) {(success, messageArray, errorString) in
+            
+            if success {
+                
+                Messages.sharedInstance.MessagesArray = messageArray
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
+                    var i = 0
+                    
+                    for mess in Messages.sharedInstance.MessagesArray {
+                        
+                        let message = Message(dico: mess)
+                        
+                        if message.destinataire == self.config.user_id && message.deja_lu == false {
+                            i+=1
+                        }
+                        
+                    }
+                    if i > 0 {
+                        self.config.mess_badge = i
+                        
+                        menuBar?.tabBar.items![1].badgeValue = "\(i)"
+                        
+                        UIApplication.shared.applicationIconBadgeNumber = i
+                    }
+                    else {
+                        
+                        menuBar?.tabBar.items![1].badgeValue = nil
+                        
+                        UIApplication.shared.applicationIconBadgeNumber = 0
+                    }
+                    
+                }
+                
+                
+                MDBTransact.sharedInstance.getAllTransactions(self.config.user_id) { (success, transactionArray, errorString) in
+                    
+                    if success {
+                        
+                        Transactions.sharedInstance.transactionArray = transactionArray
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            
+                            var i = 0
+                            for tran in Transactions.sharedInstance.transactionArray  {
+                                
+                                let tran1 = Transaction(dico: tran)
+                                
+                                if (tran1.trans_valid != 1 && tran1.trans_valid != 2 )  {
+                                    i+=1
+                                }
+                                
+                            }
+                            if i > 0 {
+                                self.config.trans_badge = i
+                                
+                                if menuBar?.tabBar.items![2] != nil {
+                                    menuBar?.tabBar.items![2].badgeValue = "\(i)"
+                                }
+                                
+                            }
+                            else {
+                                
+                                menuBar?.tabBar.items![2].badgeValue = nil
+                                
+                            }
+                            
+                        }
+                        
+                        self.config.isTimer = false
+                    }
+                    else {
+                        
+                        BlackBox.sharedInstance.performUIUpdatesOnMain {
+                           print(errorString ?? "error message")
+                        }
+                    }
+                    
+                }
+                
+            }
+            else {
+                
+                BlackBox.sharedInstance.performUIUpdatesOnMain {
+                   print(errorString ?? "error message")
+                }
+            }
+            
+        }
+        
+    }
+    
     
     func pushProduct(menuBar:UITabBarController?, completionHdlerPushProduct: @escaping (_ success: Bool, _ product: Product?, _ errorStr: String?) -> Void) {
         
@@ -197,8 +385,7 @@ class BlackBox  {
         }
         else {
             
-            let path = Bundle.main.path(forResource: "no-image-box", ofType: "png")
-            return UIImage.init(contentsOfFile: path!)!
+            return #imageLiteral(resourceName: "noimage")
             
         }
         
@@ -255,7 +442,8 @@ class BlackBox  {
         }
         else if translate.message("lang") == "us" {
             
-            return "\(translate.message("devise")) \(numberFormatter.string(from: NSNumber.init(value: amount))!)"
+            return "\(numberFormatter.string(from: NSNumber.init(value: amount))!) \(translate.message("devise"))"
+            //return "\(translate.message("devise")) \(numberFormatter.string(from: NSNumber.init(value: amount))!)"
             
         }
         

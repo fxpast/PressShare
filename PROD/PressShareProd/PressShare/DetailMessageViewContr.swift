@@ -21,12 +21,14 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     @IBOutlet weak var IBRefresh: UIBarButtonItem!
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     
+    var timerBadge : Timer!
+
     var aProduct:Product?
     var customOpeation = BlockOperation()
     let myQueue = OperationQueue()
     var fieldName = ""
     var keybordY:CGFloat! = 0
-    var config = Config.sharedInstance
+    let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     var dateStrBefore = ""
     var dateStrAfter = ""
@@ -74,6 +76,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
         
         for trans in Transactions.sharedInstance.transactionArray {
             
@@ -130,6 +133,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         
     }
     
+    
     @IBAction func actionHelp(_ sender: Any) {
         
         
@@ -156,7 +160,7 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         message.date_ajout = Date()
         message.expediteur = config.user_id
         message.message_id = 0
-        message.deja_lu_exp = true
+   
         
         if aProduct?.prod_by_user == message.expediteur {
             message.destinataire = aProduct!.prod_oth_user
@@ -242,6 +246,27 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         
     }
     
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            
+            BlackBox.sharedInstance.checkBadge(completionHdlerBadge: { (success, result) in
+                
+                if success == true {
+                    
+                    self.actionRefresh(self)
+                    
+                }
+                else {
+                    
+                }
+                
+            })
+        }
+        
+    }
+    
+    
     @IBAction func actionRefresh(_ sender: Any) {
         
   
@@ -252,6 +277,10 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     @IBAction func actionCancel(_ sender: Any) {
         
         var flgMAJ = false
+        
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
         
         IBRefresh.isEnabled = false
         IBScrollView.isHidden = true
@@ -264,16 +293,16 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                 
                 var message = Message(dico: Messages.sharedInstance.MessagesArray[index])
                 
-                if message.product_id == aProduct?.prod_id && (message.deja_lu_exp == false || message.deja_lu_dest == false) {
+                if message.product_id == aProduct?.prod_id && message.deja_lu == false {
                     
-                    if message.deja_lu_dest == false {
+                    if message.deja_lu == false {
                         config.mess_badge = config.mess_badge - 1
                         UIApplication.shared.applicationIconBadgeNumber = config.mess_badge
                         
                     }
                     
-                    message.deja_lu_dest = true
-                    message.deja_lu_exp = true
+                    message.deja_lu = true
+                   
                     flgMAJ = true
                     MDBMessage.sharedInstance.setUpdateMessage(message, completionHandlerUpdate: { (success, errorString) in
                         

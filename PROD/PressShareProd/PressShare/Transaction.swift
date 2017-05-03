@@ -30,6 +30,7 @@ struct Transaction {
     var trans_valid:Int  //0 : La transaction en cours. 1 : La transaction a été annulée. 2 : La transaction est confirmée.
     var trans_avis:String  //interlocuteur, conformite, absence, "tap text"
     var trans_arbitrage:Bool
+    var trans_note:Int //noter la transaction sur 5
     
     //MARK: Initialisation Transaction
     
@@ -49,6 +50,7 @@ struct Transaction {
             trans_valid = Int(dico["trans_valid"] as! String)!
             trans_avis = dico["trans_avis"] as! String
             trans_arbitrage = (Int(dico["trans_arbitrage"] as! String)! == 0) ? false : true
+            trans_note = Int(dico["trans_note"] as! String)!
             
         }
         else {
@@ -65,6 +67,7 @@ struct Transaction {
             trans_valid = 0
             trans_avis = ""
             trans_arbitrage = false
+            trans_note = 0
             
         }
         
@@ -146,7 +149,7 @@ class MDBTransact {
         }
    
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "trans_id=\(transaction.trans_id)&trans_avis=\(transaction.trans_avis)&trans_valid=\(transaction.trans_valid)&lang=\(translate.message("lang"))"
+        let body: String = "trans_id=\(transaction.trans_id)&trans_avis=\(transaction.trans_avis)&trans_valid=\(transaction.trans_valid)&trans_note=\(transaction.trans_note)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateTransaction.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)

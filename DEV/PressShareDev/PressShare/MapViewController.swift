@@ -24,12 +24,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     @IBOutlet weak var IBLabelLieu: UILabel!
     
     
-    
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     @IBOutlet weak var IBtextfieldSearch: UITextField!
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
+    
     weak var IBMap: MKMapView!
+    
     var IBAddProduct: UIButton!
+    
+    var timerBadge : Timer!
     
     var fieldName = ""
     var keybordY:CGFloat! = 0
@@ -38,7 +41,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     var userPseudo:String!
     var userId:Int!
-    var config = Config.sharedInstance
+    let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     var lat:CLLocationDegrees!
     var lon:CLLocationDegrees!
@@ -102,12 +105,17 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             IBAddProduct.isEnabled = false
         }
         
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
         
+        tabBarController?.tabBar.items?[0].title = translate.message("map")
+        tabBarController?.tabBar.items?[1].title = translate.message("list")
+        tabBarController?.tabBar.items?[2].title = translate.message("settings")
+   
         config.isReturnToTab = false
         
     
@@ -117,11 +125,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         IBMap.delegate = self
        
         IBMap.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
-        
  
         view.bringSubview(toFront: view.viewWithTag(999)!)
         view.bringSubview(toFront: IBAddProduct)
-        
         
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -143,6 +149,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+        
+        
         pushProduct()
         
         IBButtonAllProduct.setTitle(translate.message("seeOtherProduct"), for: UIControlState.normal)
@@ -158,6 +168,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         IBMap.delegate = nil
         IBMap.removeFromSuperview()
         IBMap = nil
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
     }
     
     
@@ -200,6 +213,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             
         }
         sender.cancelsTouchesInView = false
+    }
+    
+    
+    @objc private func routineTimer() {
+    
+        if config.isTimer == false {
+            BlackBox.sharedInstance.checkBadge(menuBar: tabBarController!)
+        }
+        
     }
     
     
@@ -320,8 +342,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 let controller = nav.topViewController as! ProductTableViewContr
                 
                 controller.aProduct = aProduct
-                controller.typeListe = 0 //Map :0, MyList :1, Historical:2
-                //controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
+                controller.typeListe = 0
                 
             }
             
@@ -655,14 +676,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinView?.pinTintColor = UIColor.red
-            let customAnnot = annotation as! CustomPin
-            pinView?.tag = customAnnot.prod_id
-           
         }
         else {
             pinView!.annotation = annotation
         }
+        
+        let customAnnot = annotation as! CustomPin
+        pinView?.tag = customAnnot.prod_id
         
         if (pinView?.annotation?.title)! == "user:" {
             pinView?.pinTintColor = UIColor.blue
@@ -715,7 +735,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 }
                 
             }
-            else if countProduct() == 1 {
+            else if countProduct() == 1 && aProduct != nil {
                 performSegue(withIdentifier: "fromMap", sender: self)
             }
             

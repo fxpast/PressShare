@@ -10,18 +10,18 @@
 	<key>devise</key>
 	<array>
 		<string>€</string>
-		<string>$</string>
+		<string>€</string>
 	</array>
 	<key>connectToPress</key>
 	<array>
 		<string>Connexion à PressShare</string>
 		<string>Connect to PressShare</string>
 	</array>
-    <key>termsOfUse</key>
-    <array>
-        <string>Conditions d'utilisation</string>
-        <string>Terms of use</string>
-    </array>
+	<key>termsOfUse</key>
+	<array>
+		<string>Conditions d&apos;utilisation</string>
+		<string>Terms of use</string>
+	</array>
 	<key>signin</key>
 	<array>
 		<string>S&apos;identifier</string>
@@ -42,17 +42,17 @@
 		<string>Attention, vous devez valider la transaction avant le</string>
 		<string>Caution, you must validate the transaction before</string>
 	</array>
-    <key>feedbackMess</key>
-    <array>
-        <string>Merci pour vos suggestions. Grâce à vous, nous pouvons apporter des amélioration concequentes</string>
-        <string>Thank you for your suggestions. Thanks to you, we can make improvements conceive</string>
-    </array>
-    <key>feedback</key>
-    <array>
-        <string>Suggestion</string>
-        <string>Feedback</string>
-    </array>
-    <key>typeOfPay</key>
+	<key>feedbackMess</key>
+	<array>
+		<string>Merci pour vos suggestions. Grâce à vous, nous pouvons apporter des amélioration concequentes</string>
+		<string>Thank you for your suggestions. Thanks to you, we can make improvements conceive</string>
+	</array>
+	<key>feedback</key>
+	<array>
+		<string>Suggestion</string>
+		<string>Feedback</string>
+	</array>
+	<key>typeOfPay</key>
 	<array>
 		<string>Type de carte de paiement :</string>
 		<string>Type of payment card :</string>
@@ -345,7 +345,7 @@
 	<key>myNotif</key>
 	<array>
 		<string>Mes alertes</string>
-		<string>My notifications or alerts</string>
+		<string>My notifications</string>
 	</array>
 	<key>errorUpdateTrans</key>
 	<array>
@@ -612,6 +612,17 @@
 		<string>commentaire</string>
 		<string>comment</string>
 	</array>
+    <key>star</key>
+    <array>
+        <string>étoiles</string>
+        <string>stars</string>
+    </array>
+
+    <key>transactNote</key>
+    <array>
+        <string>Laisser une note :</string>
+        <string>Leave a note :</string>
+    </array>
 	<key>availableTime</key>
 	<array>
 		<string>Temps dispo</string>
@@ -619,8 +630,8 @@
 	</array>
 	<key>errorEndedTrans</key>
 	<array>
-		<string>Attention vous allez terminer la transaction.</string>
-		<string>Warning you will complete the transaction.</string>
+		<string>Attention vous allez terminer la transaction. Assurez-vous d&apos;avoir bien reçu votre produit avant de valider.</string>
+		<string>Warning you are going to complete the transaction. Make sure you have received your product before validating.</string>
 	</array>
 	<key>errorAcceptReject</key>
 	<array>
@@ -732,6 +743,16 @@
 		<string>Message vide</string>
 		<string>Empty message</string>
 	</array>
+    <key>newTransaction</key>
+    <array>
+        <string>Vous avez une nouvelle transaction</string>
+        <string>You have a new transaction</string>
+    </array>
+    <key>newMessage</key>
+    <array>
+        <string>Vous avez un nouveau message</string>
+        <string>You have a new message</string>
+    </array>
 	<key>sentMessage</key>
 	<array>
 		<string>Message envoyé.</string>

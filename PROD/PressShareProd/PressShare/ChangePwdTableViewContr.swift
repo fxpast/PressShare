@@ -27,7 +27,8 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
     
     var fieldName = ""
     
-    
+    var timerBadge : Timer!
+
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
@@ -142,16 +143,53 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
         
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-    }
+  
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+        
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
+        
+    }
+
+    
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            
+            BlackBox.sharedInstance.checkBadge(completionHdlerBadge: { (success, result) in
+                
+                if success == true {
+                    
+                    if result == "mess_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newMessage"))
+                    }
+                    else if result == "trans_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newTransaction"))
+                    }
+                    
+                }
+                else {
+                    
+                }
+                
+            })
+        }
+        
+    }
+    
+    
+    
     
     @IBAction func actionHelp(_ sender: Any) {
         

@@ -7,7 +7,7 @@ include 'api_connect.php';
 
 
 $sql = "INSERT INTO
-		Message(expediteur, destinataire, proprietaire, vendeur_id, client_id, product_id, date_ajout ,contenu, deja_lu_exp, deja_lu_dest)
+		Message(expediteur, destinataire, proprietaire, vendeur_id, client_id, product_id, date_ajout ,contenu, deja_lu)
 	VALUES('" . mysqli_real_escape_string($con, $_POST['expediteur']) . "',		  
 		   '" . mysqli_real_escape_string($con, $_POST['destinataire']) . "',
                     '" . mysqli_real_escape_string($con, $_POST['expediteur']) . "',
@@ -15,9 +15,8 @@ $sql = "INSERT INTO
                    '" . mysqli_real_escape_string($con, $_POST['client_id']) . "',
                    '" . mysqli_real_escape_string($con, $_POST['product_id']) . "',
 			NOW(),			
-		   '" . mysqli_real_escape_string($con, $_POST['contenu']) . "',
-                   0,
-                   0)";
+		   '" . mysqli_real_escape_string($con, $_POST['contenu']) . "',                   
+                   1)";
 						
 
 if ($_POST['contenu'] == "") {
@@ -29,7 +28,7 @@ $result = mysqli_query($con, $sql);
 
 
 $sql = "INSERT INTO
-		Message(expediteur, destinataire, proprietaire, vendeur_id, client_id, product_id, date_ajout ,contenu, deja_lu_exp, deja_lu_dest)
+		Message(expediteur, destinataire, proprietaire, vendeur_id, client_id, product_id, date_ajout ,contenu, deja_lu)
 	VALUES('" . mysqli_real_escape_string($con, $_POST['expediteur']) . "',		  
 		   '" . mysqli_real_escape_string($con, $_POST['destinataire']) . "',
                     '" . mysqli_real_escape_string($con, $_POST['destinataire']) . "',
@@ -37,8 +36,7 @@ $sql = "INSERT INTO
                    '" . mysqli_real_escape_string($con, $_POST['client_id']) . "',
                    '" . mysqli_real_escape_string($con, $_POST['product_id']) . "',
 			NOW(),			
-		   '" . mysqli_real_escape_string($con, $_POST['contenu']) . "',
-                   0,
+		   '" . mysqli_real_escape_string($con, $_POST['contenu']) . "',                   
                    0)";
 						
 

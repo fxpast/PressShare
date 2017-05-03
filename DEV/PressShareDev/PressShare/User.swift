@@ -31,7 +31,9 @@ struct User {
      var user_ville: String
      var user_tokenPush: String
      var user_braintreeID: String
-
+     var user_note: Int //note per 5 stars
+     var user_countNote: Int //count of note
+    
     
     // Insert code here to add functionality to your managed object subclass
     
@@ -56,6 +58,8 @@ struct User {
             user_newpassword = (Int(dico["user_newpassword"] as! String)! == 0) ? false : true
             user_tokenPush = dico["user_pays"] as! String
             user_braintreeID = dico["user_braintreeID"] as! String
+            user_note = Int(dico["user_note"] as! String)!
+            user_countNote = Int(dico["user_countNote"] as! String)!
             
         }
         else {
@@ -74,6 +78,8 @@ struct User {
             user_newpassword = false
             user_tokenPush = ""
             user_braintreeID = ""
+            user_note = 0 //note per 5 stars
+            user_countNote = 0 //count of note
         }
                 
     }
@@ -283,6 +289,60 @@ class MDBUser {
     }
     
     
+    
+    func setUpdUserStar(_ config: Config, _ aTransaction: Transaction, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+        
+        guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
+            completionHandlerUpdate(false, translate.message("errorConnection"))
+            return
+        }
+        
+        var otherId = 0
+        if aTransaction.client_id == config.user_id {
+            otherId = aTransaction.vendeur_id
+        }
+        else if aTransaction.vendeur_id == config.user_id {
+            otherId = aTransaction.client_id
+        }
+        
+        // Create your request string with parameter name as defined in PHP file
+        let body: String = "user_id=\(otherId)&user_note=\(config.user_note!)&user_countNote=\(config.user_countNote!)&lang=\(translate.message("lang"))"
+        // Create Data from request
+        var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updUserStar.php")!)
+        request = CommunRequest.sharedInstance.buildRequest(body, request)
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
+            
+            CommunRequest.sharedInstance.responseRequest(data, response!, error, completionHdler: { (suces, result, errorStr) in
+                
+                if suces {
+                    
+                    let res = result as! [String:String]
+                    
+                    if (res["success"] == "1") {
+                        completionHandlerUpdate(true, nil)
+                    }
+                    else {
+                        completionHandlerUpdate(false, res["error"])
+                        
+                    }
+                    
+                }
+                else {
+                    completionHandlerUpdate(false, errorStr)
+                }
+                
+            })
+            
+            
+        })
+        
+        
+        task.resume()
+        
+    }
+    
+    
     func setUpdateUser(_ config: Config, completionHandlerUpdate: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         guard  BlackBox.sharedInstance.isConnectedToNetwork() == true else {
@@ -328,7 +388,6 @@ class MDBUser {
         task.resume()
         
     }
-    
     
     
     func setUpdateUserToken(_ config: Config, completionHandlerToken: @escaping (_ success: Bool, _ errorString: String?) -> Void) {

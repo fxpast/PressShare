@@ -24,8 +24,7 @@ struct Message {
     var product_id:Int
     var date_ajout:Date
     var contenu:String
-    var deja_lu_exp:Bool
-    var deja_lu_dest:Bool
+    var deja_lu:Bool
     
     //MARK: Initialisation
     
@@ -43,8 +42,7 @@ struct Message {
             product_id = Int(dico["product_id"] as! String)!
             date_ajout = Date().dateFromString(dico["date_ajout"] as! String, format: "yyyy-MM-dd HH:mm:ss")
             contenu = dico["contenu"] as! String
-            deja_lu_exp = (Int(dico["deja_lu_exp"] as! String)! == 0) ? false : true
-            deja_lu_dest = (Int(dico["deja_lu_dest"] as! String)! == 0) ? false : true
+            deja_lu = (Int(dico["deja_lu"] as! String)! == 0) ? false : true
         }
         else {
             message_id = 0
@@ -56,8 +54,7 @@ struct Message {
             product_id = 0
             date_ajout = Date()
             contenu = ""
-            deja_lu_exp = false
-            deja_lu_dest = false
+            deja_lu = false
             
             
             
@@ -281,7 +278,7 @@ class MDBMessage {
         }
 
         // Create your request string with parameter name as defined in PHP file
-        let body: String = "message_id=\(message.message_id)&deja_lu_exp=\(message.deja_lu_exp)&deja_lu_dest=\(message.deja_lu_dest)&lang=\(translate.message("lang"))"
+        let body: String = "message_id=\(message.message_id)&deja_lu=\(message.deja_lu)&lang=\(translate.message("lang"))"
         // Create Data from request
         var request = NSMutableURLRequest(url: URL(string: "\(CommunRequest.sharedInstance.urlServer)/api_updateMessage.php")!)
         request = CommunRequest.sharedInstance.buildRequest(body, request)

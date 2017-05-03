@@ -7,16 +7,8 @@ include 'api_connect.php';
 // This SQL statement selects ALL from the table 'Locations'
 
 
-if ($_POST['deja_lu_exp'] == "false") {
- 
-    $dejaluExp = 0;
-}
-else {
-    $dejaluExp = 1;
-}    
-
     
-if ($_POST['deja_lu_dest'] == "false") {
+if ($_POST['deja_lu'] == "false") {
  
     $dejaluDest = 0;
 }
@@ -26,8 +18,7 @@ else {
 
         
 $sql = "UPDATE Message			
-        SET deja_lu_exp = '" . $dejaluExp . "',
-            deja_lu_dest = '" . $dejaluDest . "'
+        SET deja_lu = '" . $dejaluDest . "'
         WHERE
         message_id = '" . mysqli_real_escape_string($con, $_POST['message_id']) . "'";
 

@@ -26,7 +26,8 @@ class CreateTransViewController: UIViewController {
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     
     var aProduct:Product?
-    
+    var timerBadge : Timer!
+
     var config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
@@ -93,7 +94,7 @@ class CreateTransViewController: UIViewController {
                         for userDico in usersArray! {
                             
                             if userDico["user_nom"] as! String != "" || userDico["user_prenom"] as! String != "" {
-                               self.IBInfoContact1.text = "\(userDico["user_nom"]!) \(userDico["user_prenom"]!)"
+                               self.IBInfoContact1.text = "\(userDico["user_nom"]!) \(userDico["user_prenom"]!) (\(userDico["user_note"]!) \(self.translate.message("star")))"
                             }
                             
                             if userDico["user_ville"] as! String != "" || userDico["user_pays"] as! String != "" {
@@ -129,6 +130,50 @@ class CreateTransViewController: UIViewController {
         }
         
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
+        
+    }
+
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            
+            BlackBox.sharedInstance.checkBadge(completionHdlerBadge: { (success, result) in
+                
+                if success == true {
+                    
+                    if result == "mess_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newMessage"))
+                    }
+                    else if result == "trans_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newTransaction"))
+                    }
+                    
+                }
+                else {
+                    
+                }
+                
+            })
+        }
+        
+    }
+    
+    
     
     @IBAction func actionExchange(_ sender: Any) {
         

@@ -58,7 +58,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
     var isFirst = true
     var isFindMe = false
     var typeListe = 0 //Map :0, MyList:1, Historical:2
-    
+    var timerBadge : Timer!
+
     var latUser:CLLocationDegrees!
     var lonUser:CLLocationDegrees!
     var locationManager:CLLocationManager!
@@ -94,26 +95,29 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         if let thisproduct = aProduct {
             
             if thisproduct.prod_closed == false {
-                
-                for trans in Transactions.sharedInstance.transactionArray {
-                    let tran = Transaction(dico: trans)
-                    if tran.prod_id == aProduct?.prod_id {
-                        //0 : La transaction en cours. 1 : La transaction a été annulée. 2 : La transaction est confirmée.
-                        if tran.trans_valid == 0 {
-                            
-                            IBTransact = UIButton()
-                            IBTransact.setTitle(translate.message("validerTransact"), for: UIControlState.normal)
-                            IBTransact.titleLabel?.textColor = UIColor.white
-                            IBTransact.titleLabel?.backgroundColor = UIColor.red
-                            IBTransact.titleLabel?.font = UIFont.boldSystemFont(ofSize: 25.0)
-                            IBTransact.titleLabel?.textAlignment = .center
-                            IBTransact.addTarget(self, action: #selector(actionTransact(_:)), for: UIControlEvents.touchUpInside)
-                            IBTransact.tag = 999
-                            IBTransact.sizeToFit()
-                            tableView.addSubview(IBTransact)
-                            
+                if Transactions.sharedInstance.transactionArray != nil {
+                    
+                    for trans in Transactions.sharedInstance.transactionArray {
+                        let tran = Transaction(dico: trans)
+                        if tran.prod_id == aProduct?.prod_id {
+                            //0 : La transaction en cours. 1 : La transaction a été annulée. 2 : La transaction est confirmée.
+                            if tran.trans_valid == 0 {
+                                
+                                IBTransact = UIButton()
+                                IBTransact.setTitle(translate.message("validerTransact"), for: UIControlState.normal)
+                                IBTransact.titleLabel?.textColor = UIColor.white
+                                IBTransact.titleLabel?.backgroundColor = UIColor.red
+                                IBTransact.titleLabel?.font = UIFont.boldSystemFont(ofSize: 25.0)
+                                IBTransact.titleLabel?.textAlignment = .center
+                                IBTransact.addTarget(self, action: #selector(actionTransact(_:)), for: UIControlEvents.touchUpInside)
+                                IBTransact.tag = 999
+                                IBTransact.sizeToFit()
+                                tableView.addSubview(IBTransact)
+                                
+                            }
                         }
                     }
+                    
                 }
                 
             }
@@ -155,14 +159,17 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
             if let thisproduct = aProduct {
                 
                 IBAlert.isEnabled = false
-                
-                for mess in Messages.sharedInstance.MessagesArray {
+                if Messages.sharedInstance.MessagesArray != nil {
                     
-                    let message = Message(dico: mess)
-                    
-                    if message.product_id == aProduct?.prod_id {
-                        IBAlert.isEnabled = true
-                        break
+                    for mess in Messages.sharedInstance.MessagesArray {
+                        
+                        let message = Message(dico: mess)
+                        
+                        if message.product_id == aProduct?.prod_id {
+                            IBAlert.isEnabled = true
+                            break
+                        }
+                        
                     }
                     
                 }
@@ -287,23 +294,32 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         if let thisproduct = aProduct {
             if thisproduct.prod_closed == false {
                 
-                for trans in Transactions.sharedInstance.transactionArray {
-                    let tran = Transaction(dico: trans)
-                    if tran.prod_id == aProduct?.prod_id {
-                        //0 : La transaction en cours. 1 : La transaction a été annulée. 2 : La transaction est confirmée.
-                        if tran.trans_valid == 0 || tran.trans_valid == 2 {
-                            aTransaction = tran
-                            IBSave.isEnabled = false
+                var isRunning = false
+                if Transactions.sharedInstance.transactionArray != nil {
+                    
+                    for trans in Transactions.sharedInstance.transactionArray {
+                        let tran = Transaction(dico: trans)
+                        if tran.prod_id == aProduct?.prod_id {
+                            //0 : La transaction en cours. 1 : La transaction a été annulée. 2 : La transaction est confirmée.
+                            
+                            if tran.trans_valid == 0 {
+                                isRunning = true
+                            }
+                            
+                            if tran.trans_valid == 0 || tran.trans_valid == 2 {
+                                aTransaction = tran
+                                IBSave.isEnabled = false
+                                
+                            }
                             
                         }
-                        
-                        if  IBTransact != nil && (tran.trans_valid == 1 || tran.trans_valid == 2) {
-                            IBTransact.removeFromSuperview()
-                            IBTransact = nil
-                        }
-                        
-                        
                     }
+                    
+                }
+                
+                if  IBTransact != nil && isRunning == false {
+                    IBTransact.removeFromSuperview()
+                    IBTransact = nil
                 }
                 
             }
@@ -317,6 +333,9 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         super.viewDidAppear(animated)
 
         
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+        
+        
         
     }
     
@@ -324,6 +343,42 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         super.viewWillDisappear(animated)
         
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
+        
+    }
+
+    
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            
+            BlackBox.sharedInstance.checkBadge(completionHdlerBadge: { (success, result) in
+                
+                if success == true {
+                    
+                    if result == "mess_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newMessage"))
+                    }
+                    else if result == "trans_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newTransaction"))
+                    }
+                    
+                }
+                else {
+                    
+                }
+                
+            })
+        }
+        
+    }
+    
     
     
     @IBAction func actionTransact(_ sender: Any) {

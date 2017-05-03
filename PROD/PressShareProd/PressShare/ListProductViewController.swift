@@ -23,6 +23,8 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     var IBAddProduct: UIButton!
     var IBSearch: UISearchBar!
     
+    var timerBadge : Timer!
+    
     var products = [Product]()
     var productsTmp = [Product]()
     var pendingOperations:PendingOperations!
@@ -65,6 +67,7 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         pendingOperations = PendingOperations()
         config.isReturnToTab = false
         
+ 
         
         navigationController?.tabBarItem.title = translate.message("list")
         if let _ = lat, let _ = lon {
@@ -103,6 +106,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+        
         refreshControl.addTarget(self, action: #selector(actionByRefreshCtrl(_:)), for: .valueChanged)
         IBTableView.addSubview(refreshControl)
         refreshControl.isHidden = true
@@ -114,20 +120,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         initData()
         
-        
-        
-        
-        if config.mess_badge > 0 {
-            
-            tabBarController?.tabBar.items![1].badgeValue = "\(config.mess_badge!)"
-            UIApplication.shared.applicationIconBadgeNumber = config.mess_badge
-        }
-        else {
-            tabBarController?.tabBar.items![1].badgeValue = nil
-            UIApplication.shared.applicationIconBadgeNumber = 0
-        }
-        
-        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -135,6 +127,10 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         cancelAllOperations()
         pendingOperations = nil
+        
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
         
     }
     
@@ -331,6 +327,15 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            BlackBox.sharedInstance.checkBadge(menuBar: tabBarController!)
+        }
+        
+    }
+    
+    
     @IBAction func actionRefresh(_ sender: AnyObject) {
         
         refreshData()
@@ -488,52 +493,6 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
             IBTableView.reloadData()
             return
         }
-        
-        MDBMessage.sharedInstance.getAllMessages(config.user_id) {(success, messageArray, errorString) in
-            
-            if success {
-                
-                Messages.sharedInstance.MessagesArray = messageArray
-                
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    
-                    var i = 0
-                    for mess in Messages.sharedInstance.MessagesArray {
-                        
-                        let message = Message(dico: mess)
-                        
-                        if message.destinataire == self.config.user_id && message.deja_lu_dest == false {
-                            i+=1
-                        }
-                        
-                    }
-                    
-                    if i > 0 {
-                        self.config.mess_badge = i
-                        
-                        self.tabBarController?.tabBar.items![1].badgeValue = "\(i)"
-                        UIApplication.shared.applicationIconBadgeNumber = i
-                        
-                    }
-                    else {
-                        
-                        self.tabBarController?.tabBar.items![1].badgeValue = nil
-                        UIApplication.shared.applicationIconBadgeNumber = 0
-                    }
-                    
-                    
-                }
-            }
-            else {
-                
-                BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    self.stopActivity()
-                    self.displayAlert(self.translate.message("error"), mess: errorString!)
-                }
-            }
-            
-        }
-        
         
         cancelAllOperations()
         products.removeAll()
@@ -797,12 +756,16 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         
         var i = 0
-        for mess in Messages.sharedInstance.MessagesArray {
+        if Messages.sharedInstance.MessagesArray != nil {
             
-            let message = Message(dico: mess)
-            
-            if message.product_id == product.prod_id  && message.destinataire == self.config.user_id && message.deja_lu_dest == false {
-                i+=1
+            for mess in Messages.sharedInstance.MessagesArray {
+                
+                let message = Message(dico: mess)
+                
+                if message.product_id == product.prod_id  && message.destinataire == self.config.user_id && message.deja_lu == false {
+                    i+=1
+                }
+                
             }
             
         }

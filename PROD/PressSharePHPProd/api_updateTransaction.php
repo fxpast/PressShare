@@ -7,7 +7,8 @@ include 'api_connect.php';
 // This SQL statement selects ALL from the table 'Locations'
 
 $sql = "UPDATE Transaction			
-        SET trans_valid = '" . mysqli_real_escape_string($con, $_POST['trans_valid']) . "',            
+        SET trans_valid = '" . mysqli_real_escape_string($con, $_POST['trans_valid']) . "',    
+            trans_note = '" . mysqli_real_escape_string($con, $_POST['trans_note']) . "',         
             trans_avis = '" . mysqli_real_escape_string($con, $_POST['trans_avis']) . "'
         WHERE
         trans_id = '" . mysqli_real_escape_string($con, $_POST['trans_id']) . "'";

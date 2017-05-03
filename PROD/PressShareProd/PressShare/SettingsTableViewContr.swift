@@ -33,6 +33,8 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     let config = Config.sharedInstance
     let translate = TranslateMessage.sharedInstance
     
+    var timerBadge : Timer!
+    
     var aProduct:Product!
     
     let refreshControl1 = UIRefreshControl()
@@ -49,7 +51,6 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         
         tableView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(handleTap)))
         
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,7 +63,8 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         navigationController?.tabBarItem.title = translate.message("settings")
         
         IBPhotoUser.image = restoreImageArchive()
-        IBNomLabel.text = "\(config.user_nom!) \(config.user_prenom!)"
+        IBNomLabel.text = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_note!) \(self.translate.message("star")))"
+        
         IBEmailLabel.text = config.user_email
         
         tableView.scrollToRow(at: IndexPath(item: 1, section: 0), at: .none, animated: false)
@@ -84,7 +86,19 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+        
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+    
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
+    }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -94,10 +108,18 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
             let controller = nav.topViewController as! ProductTableViewContr
             
             controller.aProduct = aProduct
-            //controller.aProduct?.prod_imageData = UIImageJPEGRepresentation(BlackBox.sharedInstance.restoreImageArchive(prod_imageUrl: (controller.aProduct!.prod_imageUrl)), 1)!
             
         }
 
+    }
+    
+    
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            BlackBox.sharedInstance.checkBadge(menuBar: tabBarController!)
+        }
+        
     }
     
     
@@ -144,7 +166,6 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
     
     private func actionPhotoProfil() {
         
-        
         guard UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) == true else {
             
             imageFromCamera(camera: false, type: nil)
@@ -182,7 +203,6 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         
         let actionAnnuler = UIAlertAction(title: translate.message("cancel"), style: .destructive, handler: { (action) in
             
-            
             //no action
             
         })
@@ -196,7 +216,6 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         self.present(alertController, animated: true) {
             
         }
-        
         
         
     }

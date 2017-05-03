@@ -19,6 +19,8 @@ class ListTransactTablViewContr: UITableViewController {
     
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     
+    var timerBadge : Timer!
+
     var transactions = [Transaction]()
     var aindex:Int!
     var isOpen=false
@@ -53,6 +55,11 @@ class ListTransactTablViewContr: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        
+        
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+  
         
         if config.transaction_maj == true {
             config.transaction_maj = false
@@ -95,6 +102,43 @@ class ListTransactTablViewContr: UITableViewController {
         }
         
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
+        
+    }
+
+    
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            
+            BlackBox.sharedInstance.checkBadge(completionHdlerBadge: { (success, result) in
+                
+                if success == true {
+                    
+                    if result == "mess_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newMessage"))
+                    }
+                    else if result == "trans_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newTransaction"))
+                    }
+                    
+                }
+                else {
+                    
+                }
+                
+            })
+        }
+        
+    }
+    
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         

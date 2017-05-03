@@ -48,6 +48,8 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     @IBOutlet weak var IBLabelWithdraw: UILabel!
     @IBOutlet weak var IBEntete: UILabel!
     
+    var timerBadge : Timer!
+
     var fieldName = ""
     var keybordY:CGFloat! = 0
     var config = Config.sharedInstance
@@ -173,6 +175,11 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        
+        
+        timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
+  
+        
         if isOpen == false {
             isOpen = true
             IBActivity.isHidden = false
@@ -216,6 +223,15 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        config.isTimer = false
+        timerBadge.invalidate()
+        timerBadge = nil
+
+    }
+    
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
@@ -227,6 +243,32 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         }
         
     }
+    
+    @objc private func routineTimer() {
+        
+        if config.isTimer == false {
+            
+            BlackBox.sharedInstance.checkBadge(completionHdlerBadge: { (success, result) in
+                
+                if success == true {
+                    
+                    if result == "mess_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newMessage"))
+                    }
+                    else if result == "trans_badge" {
+                        self.displayAlert(self.translate.message("myNotif"), mess: self.translate.message("newTransaction"))
+                    }
+                    
+                }
+                else {
+                    
+                }
+                
+            })
+        }
+        
+    }
+    
     
     @IBAction func actionHelp(_ sender: Any) {
         

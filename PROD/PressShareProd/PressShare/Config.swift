@@ -54,10 +54,15 @@ class Config {
     var isRememberMe:Bool!
     var clientTokenBraintree:String!
     var user_braintreeID:String!
-    var subscriptAmount:Double!
-    var minimumAmount:Double!
+    var subscriptAmount:Double! //amount to deposit when subcribing
+    var minimumAmount:Double! // minimum amount in the balance
     var heightImage:CGFloat!
     var widthImage:CGFloat!
+    var isTimer:Bool!
+    var dureeTimer:Double!
+    var user_note: Int! //note per 5 stars
+    var user_countNote: Int! //count of note
+    
     
     
     
@@ -100,6 +105,10 @@ class Config {
         minimumAmount = 0
         heightImage = 0
         widthImage = 0
+        isTimer = false
+        dureeTimer = 5.0
+        user_note = 0
+        user_countNote = 0
         
         
         
