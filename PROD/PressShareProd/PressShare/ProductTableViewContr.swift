@@ -151,8 +151,14 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
         
         for i in 0...8 {
             tableView.scrollToRow(at: IndexPath(item: i, section: 0), at: .none, animated: false)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundColor  = UIColor.init(hexString: config.colorApp)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
         }
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
+        
+        tableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
         
         if isFirst == true {
             
@@ -1037,6 +1043,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.isHidden = true
+                                        self.IBActivity.stopAnimating()
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
@@ -1060,6 +1068,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.isHidden = true
+                                        self.IBActivity.stopAnimating()
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
@@ -1083,6 +1093,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.isHidden = true
+                                        self.IBActivity.stopAnimating()
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
@@ -1098,6 +1110,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 self.IBSave.isEnabled = true
                                 self.IBFind.isEnabled = true
                                 self.IBMyPositon.isEnabled = true
+                                self.IBActivity.isHidden = true
+                                self.IBActivity.stopAnimating()
                                 self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
@@ -1131,6 +1145,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.isHidden = true
+                                        self.IBActivity.stopAnimating()
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
@@ -1154,6 +1170,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.isHidden = true
+                                        self.IBActivity.stopAnimating()
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
@@ -1177,6 +1195,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.isHidden = true
+                                        self.IBActivity.stopAnimating()
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
@@ -1192,6 +1212,8 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                             self.IBSave.isEnabled = true
                             self.IBFind.isEnabled = true
                             self.IBMyPositon.isEnabled = true
+                            self.IBActivity.isHidden = true
+                            self.IBActivity.stopAnimating()
                             self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }

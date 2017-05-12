@@ -19,6 +19,7 @@ import BraintreePayPal
 class CardTableViewController: UITableViewController, UITextFieldDelegate, BTViewControllerPresentingDelegate, BTAppSwitchDelegate {
     
     
+    @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBDone: UIBarButtonItem!
     @IBOutlet weak var IBImageCard: UIImageView!
     @IBOutlet weak var IBImageCardLabel: UILabel!
@@ -71,12 +72,20 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
         
         super.viewWillAppear(animated)
         
+        IBActivity.isHidden = true
+        IBActivity.stopAnimating()
         
         for i in 0...2 {
             tableView.scrollToRow(at: IndexPath(item: i, section: 0), at: .none, animated: false)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundColor  = UIColor.init(hexString: config.colorApp)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
         }
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
   
+        tableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
+        
         
         IBDone.title = translate.message("done")
         
@@ -185,6 +194,10 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
     
     @IBAction func actionDone(_ sender: AnyObject) {
         
+        IBActivity.startAnimating()
+        IBActivity.isHidden = false
+        
+        
         //Paypal
         if aCard.typeCard_id == 6 {
             
@@ -252,6 +265,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                                     }
                                     else {
                                         BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                            self.IBActivity.isHidden = true
+                                            self.IBActivity.stopAnimating()
                                             self.displayAlert(self.translate.message("error"), mess: errorString!)
                                         }
                                     }
@@ -263,6 +278,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                             else {
                                 
                                 BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.IBActivity.isHidden = true
+                                    self.IBActivity.stopAnimating()
                                     self.displayAlert(self.translate.message("error"), mess: error!.localizedDescription)
                                 }
                             }
@@ -272,6 +289,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                     else {
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            self.IBActivity.isHidden = true
+                            self.IBActivity.stopAnimating()
                             self.displayAlert(self.translate.message("error"), mess: errorString!)
                         }
                     }
@@ -307,6 +326,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                             }
                             else {
                                 BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                    self.IBActivity.isHidden = true
+                                    self.IBActivity.stopAnimating()
                                     self.displayAlert(self.translate.message("error"), mess: errorString!)
                                 }
                             }
@@ -317,6 +338,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                     }
                     else {
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
+                            self.IBActivity.isHidden = true
+                            self.IBActivity.stopAnimating()
                             self.displayAlert(self.translate.message("error"), mess: error!.localizedDescription)
                         }
                     }
@@ -436,6 +459,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                                 }
                                 else {
                                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                        self.IBActivity.isHidden = true
+                                        self.IBActivity.stopAnimating()
                                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                                     }
                                 }
@@ -449,6 +474,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                             
                             // Handle error here...
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.IBActivity.isHidden = true
+                                self.IBActivity.stopAnimating()
                                 self.displayAlert(self.translate.message("error"), mess: error!.localizedDescription)
                             }
                             
@@ -463,6 +490,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                 else {
                     
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.IBActivity.isHidden = true
+                        self.IBActivity.stopAnimating()
                         self.displayAlert(self.translate.message("error"), mess: errorString!)
                     }
                 }
@@ -501,6 +530,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                         }
                         else {
                             BlackBox.sharedInstance.performUIUpdatesOnMain {
+                                self.IBActivity.isHidden = true
+                                self.IBActivity.stopAnimating()
                                 self.displayAlert(self.translate.message("error"), mess: errorString!)
                             }
                         }
@@ -513,6 +544,8 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                     
                     // Handle error here...
                     BlackBox.sharedInstance.performUIUpdatesOnMain {
+                        self.IBActivity.isHidden = true
+                        self.IBActivity.stopAnimating()
                         self.displayAlert(self.translate.message("error"), mess: error!.localizedDescription)
                     }
                     

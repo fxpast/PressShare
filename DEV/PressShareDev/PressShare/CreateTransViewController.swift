@@ -55,6 +55,12 @@ class CreateTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        IBInfoContact1.text = ""
+        IBInfoContact2.text = ""
+        IBInfoProduct.text = ""
+        IBLabelTrade.text = ""
+        IBLabelExchange.text = ""
+        
         IBActivity.isHidden = false
         IBActivity.startAnimating()
         
@@ -124,6 +130,8 @@ class CreateTransViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
         
         if config.isReturnToTab == true {
             dismiss(animated: false, completion: nil)
@@ -259,17 +267,17 @@ class CreateTransViewController: UIViewController {
             dateFormatter.locale = Locale.current
             dateFormatter.doesRelativeDateFormatting = true
             let dateExpire = Calendar.current.date(byAdding: Calendar.Component.day, value: self.config.maxDayTrigger, to: Date())
-            let dateExpireString = dateFormatter.string(from: dateExpire!)
+            let dateExpireString = dateFormatter.string(from: dateExpire!).lowercased()
             
             var typetransaction = ""
             if self.IBisTrade.isOn {
                 
-                typetransaction = self.translate.message("buy")
+                typetransaction = self.translate.message("buy").lowercased()
                 message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.IBInfoProduct.text!) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor")) \(self.translate.message("transactExpire")) \(dateExpireString)"
             }
             else if self.IBisExchange.isOn {
                 
-                typetransaction = self.translate.message("exchange")
+                typetransaction = self.translate.message("exchange").lowercased()
                 message.contenu = "\(self.translate.message("emailSender")) \(self.config.user_nom!) \(self.config.user_prenom!) \n \(self.translate.message("theProduct")) \(self.aProduct!.prod_nom) \(self.translate.message("hastobechosen")) \(typetransaction). \(self.translate.message("customerFor")) \(self.translate.message("transactExpire")) \(dateExpireString)"
             }
             

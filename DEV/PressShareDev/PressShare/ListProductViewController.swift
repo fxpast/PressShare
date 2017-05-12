@@ -64,6 +64,13 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         super.viewWillAppear(animated)
         
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
+        
+        IBTableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        IBTableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        IBTableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
+        
+        
         pendingOperations = PendingOperations()
         config.isReturnToTab = false
         
@@ -708,6 +715,9 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         
         let CellReuseId = "Cell"
         var cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
+        
+        cell?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        cell?.backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
         
         let product:Product
         

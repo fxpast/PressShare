@@ -16,7 +16,7 @@ $tBadge = 1;
 $sql = "SELECT COUNT(*) total FROM Message WHERE product_id = '" . mysqli_real_escape_string($con, $_POST['product_id']) . "' 
         and destinataire = '" . mysqli_real_escape_string($con, $_POST['destinataire']) . "'
          and proprietaire = '" . mysqli_real_escape_string($con, $_POST['destinataire']) . "' 
-         and deja_lu_dest = 0";
+         and deja_lu = 0";
  
 // Check if there are results
 if ($result = mysqli_query($con, $sql))

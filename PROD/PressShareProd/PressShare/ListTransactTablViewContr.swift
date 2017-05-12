@@ -48,8 +48,9 @@ class ListTransactTablViewContr: UITableViewController {
         super.viewWillAppear(animated)
         self.navigationItem.title = translate.message("runTransac")
         
-      
-        
+        tableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
         
     }
     
@@ -253,6 +254,10 @@ class ListTransactTablViewContr: UITableViewController {
         
         let CellReuseId = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
+        
+        cell?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        cell?.backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        
         let transaction =  transactions[indexPath.row]
         
         

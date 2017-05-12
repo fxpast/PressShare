@@ -20,7 +20,6 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
     
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBTableView: UITableView!
-    @IBOutlet weak var IBDelete: UIBarButtonItem!
     
     var IBAddCard: UIButton!
     
@@ -46,20 +45,18 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
         view.addSubview(IBAddCard)
         
         IBAddCard.frame = CGRect(origin: CGPoint.init(x: view.frame.size.width - IBAddCard.frame.size.width*2, y: view.frame.size.height - IBAddCard.frame.height*2), size: IBAddCard.frame.size)
-        
-        
-        if config.level <= 0 {
-            IBDelete.isEnabled = false
-        }
-        
-        
-        
+  
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
+        
+        IBTableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        IBTableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        IBTableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
         
         
     }
@@ -87,14 +84,7 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
                         self.chargeData()
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
-                            
-                            if self.cards.count == 1 {
-                                self.IBDelete.isEnabled=false
-                            }
-                            else {
-                                self.IBDelete.isEnabled=true
-                            }
-                            
+                      
                             self.IBActivity.stopAnimating()
                             self.IBActivity.isHidden = true
                             
@@ -215,13 +205,6 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
                         
                         BlackBox.sharedInstance.performUIUpdatesOnMain {
                             
-                            if self.cards.count == 1 {
-                                self.IBDelete.isEnabled=false
-                            }
-                            else {
-                                self.IBDelete.isEnabled=true
-                            }
-                            
                             self.IBActivity.stopAnimating()
                             self.IBActivity.isHidden = true
                         }
@@ -291,6 +274,10 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
         
         let CellReuseId = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
+        
+        cell?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        cell?.backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        
         let card =  cards[indexPath.row]
         
         
@@ -357,14 +344,7 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
                 }
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
-                    
-                    if self.cards.count == 1 {
-                        self.IBDelete.isEnabled=false
-                    }
-                    else {
-                        self.IBDelete.isEnabled=true
-                    }
-                    
+       
                     self.IBTableView.isEditing = false
                     self.IBTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)
                     self.IBTableView.reloadData()

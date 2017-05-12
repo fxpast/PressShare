@@ -96,6 +96,17 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
+        
+        IBTableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        IBTableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        IBTableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
+        
+        IBBalance.backgroundColor = UIColor.init(hexString: config.colorApp)
+        IBWithdrawal.backgroundColor = UIColor.init(hexString: config.colorApp)
+        IBDeposit.backgroundColor = UIColor.init(hexString: config.colorApp)
+        
+        
         IBEntete.text = "\(translate.message("date"))        \(translate.message("type"))    \(translate.message("amount"))  \(translate.message("wording"))"
         
         if Cards.sharedInstance.cardsArray == nil {
@@ -959,6 +970,10 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
         let CellReuseId = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
+        
+        cell?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        cell?.backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        
         let operation =  operations[(indexPath as NSIndexPath).row]
         
         let adate = cell?.contentView.viewWithTag(10) as! UILabel

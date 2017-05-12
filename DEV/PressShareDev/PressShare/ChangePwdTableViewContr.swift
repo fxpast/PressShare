@@ -68,9 +68,16 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
         
         for i in 0...3 {
             tableView.scrollToRow(at: IndexPath(item: i, section: 0), at: .none, animated: false)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundColor  = UIColor.init(hexString: config.colorApp)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
         }
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
       
+        tableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
+        
+        
         if config.previousView == "LoginViewController" {
             
             navigationItem.title = translate.message("lostPassword")
@@ -288,7 +295,17 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
                     
                     if self.config.user_newpassword == true {
                         self.IBDone.isEnabled = false
-                        self.displayAlert(self.translate.message("password"), mess: self.translate.message("emailPassword"))
+                        
+                        let alertController = UIAlertController(title: self.translate.message("password"), message: self.translate.message("emailPassword"), preferredStyle: .alert)
+        
+                        let actionOk = UIAlertAction(title: "OK", style: .destructive, handler: { (action) in
+                             self.dismiss(animated: true, completion: nil)
+                        })
+                        
+                        alertController.addAction(actionOk)
+                        self.present(alertController, animated: true) {
+                            //ok
+                        }
                         
                     }
                     else {
@@ -307,6 +324,7 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
         
     }
     
+  
     
     private func randomAlphaNumericString(_ length: Int) -> String {
         

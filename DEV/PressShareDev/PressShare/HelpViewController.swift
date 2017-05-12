@@ -35,6 +35,8 @@ class HelpViewController : UIViewController {
     override func viewWillAppear(_ animated: Bool) {
          super.viewWillAppear(animated)
         IBFeedback.title = translate.message("feedback")
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
+        
         
     }
     

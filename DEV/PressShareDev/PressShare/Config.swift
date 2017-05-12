@@ -61,7 +61,9 @@ class Config {
     var isTimer:Bool!
     var dureeTimer:Double!
     var user_note: Int! //note per 5 stars
-    var user_countNote: Int! //count of note
+    var user_countNote: Int! //counter of note
+    var colorApp:String! //theme color app
+    
     
     
     
@@ -109,11 +111,22 @@ class Config {
         dureeTimer = 5.0
         user_note = 0
         user_countNote = 0
+        colorApp = "FFDBA3"
+        
+        let manager = FileManager.default
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
+        let filePath  = url.appendingPathComponent("colorApp")!.path
+
+        if (NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as? String) == nil  {
+            NSKeyedArchiver.archiveRootObject(colorApp, toFile: filePath)
+        }
+        else {
+            colorApp = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as! String
+        }
         
         
-        
-     
         MDBParamTable.sharedInstance.getAllParamTables { (success, paramTablesArray, errorString) in
+           
             if success {
                 
                 ParamTables.sharedInstance.paramTableArray = paramTablesArray
@@ -126,6 +139,9 @@ class Config {
                 self.maxDayTrigger = param.maxDayTrigger
                 self.subscriptAmount = param.subscriptAmount
                 self.minimumAmount = param.minimumAmount
+                self.colorApp = param.colorApp
+                NSKeyedArchiver.archiveRootObject(self.colorApp, toFile: filePath)
+            
                 
             }
             else {

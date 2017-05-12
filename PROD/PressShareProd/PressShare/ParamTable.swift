@@ -24,6 +24,7 @@ struct ParamTable {
     var maxDayTrigger:Int
     var subscriptAmount:Double!
     var minimumAmount:Double!
+    var colorApp:String!
     
     //MARK: Initialisation
     
@@ -40,6 +41,7 @@ struct ParamTable {
             maxDayTrigger = Int(dico["maxDayTrigger"] as! String)!
             subscriptAmount = Double(dico["subscriptAmount"] as! String)!
             minimumAmount = Double(dico["minimumAmount"] as! String)!
+            colorApp = dico["colorApp"] as! String
         }
         else {
             param_id = 0
@@ -51,6 +53,7 @@ struct ParamTable {
             maxDayTrigger = 0
             subscriptAmount = 0
             minimumAmount = 0
+            colorApp = ""
         }
         
     }

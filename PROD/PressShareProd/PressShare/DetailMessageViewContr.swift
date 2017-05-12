@@ -18,7 +18,6 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     @IBOutlet weak var IBTextMess: UITextView!
     @IBOutlet weak var IBSend: UIButton!
     @IBOutlet weak var IBScrollView: UIScrollView!
-    @IBOutlet weak var IBRefresh: UIBarButtonItem!
     @IBOutlet weak var IBCancel: UIBarButtonItem!
     
     var timerBadge : Timer!
@@ -67,6 +66,9 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
+        IBScrollView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        
         self.navigationItem.title = translate.message("myNotif")
         subscibeToKeyboardNotifications()
         
@@ -282,7 +284,6 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         timerBadge.invalidate()
         timerBadge = nil
         
-        IBRefresh.isEnabled = false
         IBScrollView.isHidden = true
         IBCancel.isEnabled = false
         IBActivity.isHidden = false
@@ -337,7 +338,6 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                                     self.IBSend.isEnabled = true
                                 }
                                 self.IBCancel.isEnabled = true
-                                self.IBRefresh.isEnabled = true
                                 self.IBScrollView.isHidden = false
                                 self.IBActivity.stopAnimating()
                                 self.displayAlert(self.translate.message("error"), mess: errorString!)
@@ -606,7 +606,6 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         }
         
         
-        IBRefresh.isEnabled = false
         IBActivity.isHidden = false
         IBActivity.startAnimating()
         IBScrollView.isHidden = true
@@ -620,7 +619,6 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.chargeData()
                     self.IBActivity.stopAnimating()
-                    self.IBRefresh.isEnabled = true
                     
                 }
             }
@@ -628,7 +626,6 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
                     self.IBActivity.stopAnimating()
-                    self.IBRefresh.isEnabled = true
                     self.displayAlert(self.translate.message("error"), mess: errorString!)
                 }
             }

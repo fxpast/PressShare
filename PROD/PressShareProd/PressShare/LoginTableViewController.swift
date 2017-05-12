@@ -68,13 +68,17 @@ class LoginTableViewController : UITableViewController, UITextFieldDelegate {
         
         super.viewWillAppear(animated)
         
+        config.cleaner()
+        
         for i in 0...4 {
             tableView.scrollToRow(at: IndexPath(item: i, section: 0), at: .none, animated: false)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundColor  = UIColor.init(hexString: config.colorApp)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
         }
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
-        
-        
-        config.cleaner()
+        tableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
         
         
         let manager = FileManager.default
@@ -262,7 +266,7 @@ class LoginTableViewController : UITableViewController, UITextFieldDelegate {
     
     
     @IBAction func actionLogin(_ sender: AnyObject) {
-      
+     
         
         guard IBUser.text != "" else {
             

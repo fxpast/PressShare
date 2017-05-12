@@ -220,6 +220,8 @@ class DetailTransViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
+        
         subscibeToKeyboardNotifications()
         
         IBButtonCancelr.title = translate.message("cancel")

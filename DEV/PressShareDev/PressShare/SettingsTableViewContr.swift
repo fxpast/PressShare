@@ -17,6 +17,7 @@ import MobileCoreServices
 class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     
+    @IBOutlet weak var IBCompteur: UILabel!
     @IBOutlet weak var IBLogout: UIBarButtonItem!
     @IBOutlet weak var IBProfilLabel: UILabel!
     @IBOutlet weak var IBTermsLabel: UILabel!
@@ -66,6 +67,7 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         IBNomLabel.text = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_note!) \(self.translate.message("star")))"
         
         IBEmailLabel.text = config.user_email
+        IBCompteur.text = "\(translate.message("CancelCounter")) \(config.failure_count!)"
         
         tableView.scrollToRow(at: IndexPath(item: 1, section: 0), at: .none, animated: false)
         IBProfilLabel.text = translate.message("editProfil")
@@ -80,6 +82,20 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .none, animated: false)
         IBMyCBLabel.text = translate.message("myCB")
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
+        
+        
+        for i in 0...6 {
+            tableView.scrollToRow(at: IndexPath(item: i, section: 0), at: .none, animated: false)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundColor  = UIColor.init(hexString: config.colorApp)
+            tableView(tableView, cellForRowAt: IndexPath(item: i, section: 0)).backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        }
+        tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
+        
+        tableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
+        
+        
         
     }
     

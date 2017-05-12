@@ -23,10 +23,19 @@ class ListTypeCBTableViewCrtl: UITableViewController {
     let myQueue = OperationQueue()
     
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
+        tableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
+        
+        
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     
-        
         timerBadge = Timer.scheduledTimer(timeInterval: config.dureeTimer, target: self, selector: #selector(routineTimer), userInfo: nil, repeats: true)
   
         
@@ -180,8 +189,11 @@ class ListTypeCBTableViewCrtl: UITableViewController {
         
         let CellReuseId = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseId) as UITableViewCell!
-        let typeCard =  typeCards[indexPath.row]
         
+        cell?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        cell?.backgroundView?.backgroundColor  = UIColor.init(hexString: config.colorApp)
+        
+        let typeCard =  typeCards[indexPath.row]
         
         let photo = cell?.contentView.viewWithTag(10) as! UIImageView
         

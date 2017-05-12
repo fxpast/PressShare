@@ -36,7 +36,8 @@ else
                             Commission en fixe: <input type="text" name="commisFixEx" value="' . $row->commisFixEx . '"/><br />
                             Maximum de jour declenchement: <input type="text" name="maxDayTrigger" value="' . $row->maxDayTrigger . '"/><br />
                             Montant d\'abonnement: <input type="text" name="subscriptAmount" value="' . $row->subscriptAmount . '"/><br />                        
-                            Montant minimum du solde: <input type="text" name="minimumAmount" value="' . $row->minimumAmount . '"/><br />			
+                            Montant minimum du solde: <input type="text" name="minimumAmount" value="' . $row->minimumAmount . '"/><br />
+                            Couleur générale de l\'appli: <input type="text" name="colorApp" value="' . $row->colorApp . '"/> <a href="http://html-color-codes.info" title="HTML color codes" target="_blank">HTML color codes</a> <br />			
                             <input type="submit" value="Update setting" />
                      </form>';
             }
@@ -49,8 +50,9 @@ else
                             commisPourcBuy = '" . mysqli_real_escape_string($con, $_POST['commisPourcBuy']) . "',
                             commisFixEx = '" . mysqli_real_escape_string($con, $_POST['commisFixEx']) . "',
                             maxDayTrigger = '" . mysqli_real_escape_string($con, $_POST['maxDayTrigger']) . "',
-                            subscriptAmount = '" . mysqli_real_escape_string($con, $_POST['subscriptAmount']) . "',                       
-                            minimumAmount = '" . mysqli_real_escape_string($con, $_POST['minimumAmount']) . "' 
+                            subscriptAmount = '" . mysqli_real_escape_string($con, $_POST['subscriptAmount']) . "',   
+                            minimumAmount = '" . mysqli_real_escape_string($con, $_POST['minimumAmount']) . "',                      
+                            colorApp = '" . mysqli_real_escape_string($con, $_POST['colorApp']) . "' 
                             WHERE
                                 param_id = 1";
                                      

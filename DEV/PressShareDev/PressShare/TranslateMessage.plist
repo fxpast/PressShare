@@ -32,6 +32,11 @@
 		<string>Nouveau sur PressShare? Ouvrez un compte</string>
 		<string>New on PressShare? Open an account</string>
 	</array>
+    <key>CancelCounter</key>
+    <array>
+        <string>Compteur d'annulation :</string>
+        <string>Cancel counter :</string>
+    </array>
 	<key>interlocutor</key>
 	<array>
 		<string>Interlocuteur absent</string>
@@ -39,8 +44,8 @@
 	</array>
 	<key>transactExpire</key>
 	<array>
-		<string>Attention, vous devez valider la transaction avant le</string>
-		<string>Caution, you must validate the transaction before</string>
+		<string>La transaction est valide jusqu'au </string>
+		<string>The transaction is valid until </string>
 	</array>
 	<key>feedbackMess</key>
 	<array>
@@ -519,13 +524,13 @@
 	</array>
 	<key>hastobechosen</key>
 	<array>
-		<string>vient d&apos;être choisi pour un</string>
-		<string>has to be chosen for a</string>
+		<string>a été selectionné pour un </string>
+		<string>has to be selected for a </string>
 	</array>
 	<key>customerFor</key>
 	<array>
-		<string>Prenez contact avec le client pour la suite de la transaction.</string>
-		<string>Contact the customer to following the transaction.</string>
+		<string>Prenez contact avec lui pour plus d'information et déterminer un point de RDV.</string>
+		<string>Contact him for further information and to determine an appointment.</string>
 	</array>
 	<key>productToShow</key>
 	<array>

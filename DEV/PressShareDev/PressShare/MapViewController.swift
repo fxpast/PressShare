@@ -116,6 +116,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         tabBarController?.tabBar.items?[1].title = translate.message("list")
         tabBarController?.tabBar.items?[2].title = translate.message("settings")
    
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
+        
         config.isReturnToTab = false
         
     

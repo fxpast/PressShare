@@ -43,7 +43,23 @@ else
                                       </tr>';
                                       
                     echo '<br /><br />';
-                                                 
+                    
+                    $sql3 = "SELECT failure_count FROM Capital
+                            WHERE user_id = '" . mysqli_real_escape_string($con, $row1->proprietaire) . "'";  
+                        
+                    $result3 = mysqli_query($con, $sql3);
+                    while($row3 = $result3->fetch_object())
+                     {
+                             
+                        echo '<tr class="topic-post">                                        
+                                                <td class="post-content">Compteur d\'annulation annuler du client : ' . $row3->failure_count . '</td>                                                                               
+                                          </tr>';
+                                          
+                        echo '<br /><br />';  
+                             
+                     }
+                         
+                                                                         
                     echo '<tr class="topic-post">                                       
                                         <td class="post-content">' . htmlentities(stripslashes('Le client à tort : sa transaction sera validé, une commission fixe sera appliquée et le produit échangé sera terminé.')) . '</td>
                                   </tr>';
@@ -96,7 +112,23 @@ else
                             echo '<tr class="topic-post">                                        
                                                 <td class="post-content">Transaction acceptée par le client : ' . $row2->user_nom . ' ' . $row2->user_prenom . ' - ' . $row2->user_email . '</td>                                                                               
                                           </tr>';
-                            echo '<br /><br />';              
+                            echo '<br /><br />';    
+                            
+                            $sql3 = "SELECT failure_count FROM Capital
+                                    WHERE user_id = '" . mysqli_real_escape_string($con, $row2->user_id) . "'";  
+                                
+                            $result3 = mysqli_query($con, $sql3);
+                            while($row3 = $result3->fetch_object())
+                             {
+                                     
+                                echo '<tr class="topic-post">                                        
+                                                        <td class="post-content">Compteur d\'annulation annuler du client : ' . $row3->failure_count . '</td>                                                                               
+                                                  </tr>';
+                                                  
+                                echo '<br /><br />';  
+                                     
+                             }
+                                                                               
                             echo '<tr class="topic-post">                                        
                                                 <td class="post-content">' . htmlentities(stripslashes('Le client à tort : sa transaction sera annulé, la commission fixe sera remboursée et le produit échangé sera remis en vente.')) . '</td>
                                           </tr>';

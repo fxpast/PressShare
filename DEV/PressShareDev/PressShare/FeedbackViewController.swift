@@ -26,6 +26,8 @@ class FeedbackViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        view.backgroundColor =  UIColor.init(hexString: config.colorApp)
+        
         IBSend.title = translate.message("send")
         title = translate.message("feedback")
         
