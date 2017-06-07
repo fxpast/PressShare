@@ -743,12 +743,13 @@ class ListProductViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         let firstlastname = cell?.contentView.viewWithTag(99) as! UILabel
+        
         firstlastname.text =  "\(product.prod_nom) (user:\(product.prod_by_user))"
         if product.prod_closed == true  {
             firstlastname.textColor = UIColor.gray
         }
         else if product.prod_closed == false && product.prod_hidden == false {
-            firstlastname.textColor = UIColor.black
+            firstlastname.textColor = UIColor.init(hexString: config.colorAppLabel)
         }
         else if product.prod_closed == false && product.prod_hidden == true {
             firstlastname.textColor = UIColor.blue

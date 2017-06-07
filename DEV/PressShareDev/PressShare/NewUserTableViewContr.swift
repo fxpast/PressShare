@@ -78,18 +78,25 @@ class NewUserTableViewContr : UITableViewController, UITextFieldDelegate {
         
         IBDone.title = translate.message("done")
         
+        
+        IBPseudoLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBPseudoLabel.text = translate.message("pseudo")
-        IBPseudo.placeholder = translate.message("pseudo")
+        IBPseudo.attributedPlaceholder = NSAttributedString.init(string: translate.message("pseudo"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBPseudo.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBPseudo.frame))
 
+        IBPasswordLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBPasswordLabel.text = translate.message("password")
-        IBPassword.placeholder = translate.message("password")
+        IBPassword.attributedPlaceholder = NSAttributedString.init(string: translate.message("password"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBPassword.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBPassword.frame))
+       
+        IBVerifPassLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBVerifPassLabel.text = translate.message("checkPass")
-        IBVerifPass.placeholder = translate.message("checkPass")
+        IBVerifPass.attributedPlaceholder = NSAttributedString.init(string: translate.message("checkPass"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBVerifPass.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBVerifPass.frame))
+        
+        IBemailLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBemailLabel.text = translate.message("enterEmail")
-        IBemail.placeholder = translate.message("enterEmail")
+        IBemail.attributedPlaceholder = NSAttributedString.init(string: translate.message("enterEmail"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBemail.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBemail.frame))
         
     }

@@ -69,6 +69,8 @@ class DetailMessageViewContr: UIViewController, UITextViewDelegate  {
         view.backgroundColor =  UIColor.init(hexString: config.colorApp)
         IBScrollView.backgroundColor = UIColor.init(hexString: config.colorApp)
         
+        IBTextMess.textColor = UIColor.init(hexString: config.colorAppText)
+        
         self.navigationItem.title = translate.message("myNotif")
         subscibeToKeyboardNotifications()
         

@@ -206,6 +206,7 @@ class ListTypeCBTableViewCrtl: UITableViewController {
         }
         
         let wording = cell?.contentView.viewWithTag(20) as! UILabel
+        wording.textColor = UIColor.init(hexString: config.colorAppLabel)
         wording.text = typeCard.typeCard_Wording
         
         return cell!

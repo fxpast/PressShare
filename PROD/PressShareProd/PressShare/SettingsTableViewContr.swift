@@ -64,22 +64,40 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         navigationController?.tabBarItem.title = translate.message("settings")
         
         IBPhotoUser.image = restoreImageArchive()
-        IBNomLabel.text = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_note!) \(self.translate.message("star")))"
         
+        
+        IBNomLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBNomLabel.text = "\(config.user_nom!) \(config.user_prenom!) (\(config.user_note!) \(self.translate.message("star")))"
+
+        
+        IBEmailLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBEmailLabel.text = config.user_email
+
+        
+        IBCompteur.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBCompteur.text = "\(translate.message("CancelCounter")) \(config.failure_count!)"
         
         tableView.scrollToRow(at: IndexPath(item: 1, section: 0), at: .none, animated: false)
+        
+        IBProfilLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBProfilLabel.text = translate.message("editProfil")
         tableView.scrollToRow(at: IndexPath(item: 2, section: 0), at: .none, animated: false)
         chargeData(2, labelText: translate.message("runTransac"), badgeValue: config.trans_badge!)
         tableView.scrollToRow(at: IndexPath(item: 3, section: 0), at: .none, animated: false)
+        
+        IBConnectionLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBConnectionLabel.text = translate.message("connectInfo")
         tableView.scrollToRow(at: IndexPath(item: 4, section: 0), at: .none, animated: false)
+        
+        IBSubscripLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBSubscripLabel.text = translate.message("mySubscrit")
         tableView.scrollToRow(at: IndexPath(item: 5, section: 0), at: .none, animated: false)
+        
+        IBTermsLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBTermsLabel.text = translate.message("termsOfUse")
         tableView.scrollToRow(at: IndexPath(item: 6, section: 0), at: .none, animated: false)
+        
+        IBMyCBLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBMyCBLabel.text = translate.message("myCB")
         tableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
         
@@ -411,6 +429,8 @@ class SettingsTableViewContr : UITableViewController, UIImagePickerControllerDel
         
         cell = tableView.cellForRow(at: IndexPath(item: item, section: 0))!
         
+        
+        IBTransactLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBTransactLabel.text = labelText
         
         if cell.contentView.subviews.count > 1 {

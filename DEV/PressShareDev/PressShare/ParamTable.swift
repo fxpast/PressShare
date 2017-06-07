@@ -25,7 +25,12 @@ struct ParamTable {
     var subscriptAmount:Double!
     var minimumAmount:Double!
     var colorApp:String!
+    var colorAppLabel:String!
+    var colorAppText:String!
+    var colorAppPlHd:String!
+    var colorAppBt:String!
     
+  
     //MARK: Initialisation
     
     init(dico : [String : AnyObject]) {
@@ -42,6 +47,10 @@ struct ParamTable {
             subscriptAmount = Double(dico["subscriptAmount"] as! String)!
             minimumAmount = Double(dico["minimumAmount"] as! String)!
             colorApp = dico["colorApp"] as! String
+            colorAppLabel = dico["colorAppLabel"] as! String
+            colorAppText = dico["colorAppText"] as! String
+            colorAppPlHd = dico["colorAppPlHd"] as! String
+            colorAppBt = dico["colorAppBt"] as! String
         }
         else {
             param_id = 0
@@ -54,6 +63,10 @@ struct ParamTable {
             subscriptAmount = 0
             minimumAmount = 0
             colorApp = ""
+            colorAppLabel = ""
+            colorAppText = ""
+            colorAppPlHd = ""
+            colorAppBt = ""
         }
         
     }

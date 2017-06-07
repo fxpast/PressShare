@@ -63,10 +63,10 @@ class Config {
     var user_note: Int! //note per 5 stars
     var user_countNote: Int! //counter of note
     var colorApp:String! //theme color app
-    
-    
-    
-    
+    var colorAppLabel:String! //theme color app label
+    var colorAppText:String! //theme color app text
+    var colorAppPlHd:String! //theme color app placeholder
+    var colorAppBt:String! //theme color app button
     
     func cleaner()  {
         
@@ -112,7 +112,12 @@ class Config {
         user_note = 0
         user_countNote = 0
         colorApp = "FFDBA3"
+        colorAppLabel = "AAAAAA"
+        colorAppText = "000000"
+        colorAppPlHd = "D8D8D8"
+        colorAppBt = "5858FA"
         
+        //5858FA
         let manager = FileManager.default
         let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
         let filePath  = url.appendingPathComponent("colorApp")!.path
@@ -123,6 +128,43 @@ class Config {
         else {
             colorApp = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as! String
         }
+        
+        let filePathLab  = url.appendingPathComponent("colorAppLabel")!.path
+        
+        if (NSKeyedUnarchiver.unarchiveObject(withFile: filePathLab) as? String) == nil  {
+            NSKeyedArchiver.archiveRootObject(colorAppLabel, toFile: filePathLab)
+        }
+        else {
+            colorAppLabel = NSKeyedUnarchiver.unarchiveObject(withFile: filePathLab) as! String
+        }
+        
+        let filePathTx  = url.appendingPathComponent("colorAppText")!.path
+        
+        if (NSKeyedUnarchiver.unarchiveObject(withFile: filePathTx) as? String) == nil  {
+            NSKeyedArchiver.archiveRootObject(colorAppText, toFile: filePathTx)
+        }
+        else {
+            colorAppText = NSKeyedUnarchiver.unarchiveObject(withFile: filePathTx) as! String
+        }
+        
+        let filePathPl  = url.appendingPathComponent("colorAppPlHd")!.path
+        
+        if (NSKeyedUnarchiver.unarchiveObject(withFile: filePathPl) as? String) == nil  {
+            NSKeyedArchiver.archiveRootObject(colorAppPlHd, toFile: filePathPl)
+        }
+        else {
+            colorAppPlHd = NSKeyedUnarchiver.unarchiveObject(withFile: filePathPl) as! String
+        }
+        
+        let filePathBt  = url.appendingPathComponent("colorAppBt")!.path
+        
+        if (NSKeyedUnarchiver.unarchiveObject(withFile: filePathBt) as? String) == nil  {
+            NSKeyedArchiver.archiveRootObject(colorAppBt, toFile: filePathBt)
+        }
+        else {
+            colorAppBt = NSKeyedUnarchiver.unarchiveObject(withFile: filePathBt) as! String
+        }
+        
         
         
         MDBParamTable.sharedInstance.getAllParamTables { (success, paramTablesArray, errorString) in
@@ -141,7 +183,15 @@ class Config {
                 self.minimumAmount = param.minimumAmount
                 self.colorApp = param.colorApp
                 NSKeyedArchiver.archiveRootObject(self.colorApp, toFile: filePath)
-            
+                self.colorAppLabel = param.colorAppLabel
+                NSKeyedArchiver.archiveRootObject(self.colorAppLabel, toFile: filePathLab)
+                self.colorAppText = param.colorAppText
+                NSKeyedArchiver.archiveRootObject(self.colorAppText, toFile: filePathTx)
+                self.colorAppPlHd = param.colorAppPlHd
+                NSKeyedArchiver.archiveRootObject(self.colorAppPlHd, toFile: filePathPl)
+                self.colorAppBt = param.colorAppBt
+                NSKeyedArchiver.archiveRootObject(self.colorAppBt, toFile: filePathBt)
+                
                 
             }
             else {

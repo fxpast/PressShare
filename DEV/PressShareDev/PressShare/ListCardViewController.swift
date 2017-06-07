@@ -20,6 +20,8 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
     
     @IBOutlet weak var IBActivity: UIActivityIndicatorView!
     @IBOutlet weak var IBTableView: UITableView!
+    @IBOutlet weak var IBCBLabel: UILabel!
+    @IBOutlet weak var IBInfoLabel: UILabel!
     
     var IBAddCard: UIButton!
     
@@ -58,6 +60,11 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
         IBTableView.backgroundView?.backgroundColor = UIColor.init(hexString: config.colorApp)
         IBTableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
         
+        IBCBLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBCBLabel.text = translate.message("myCB")
+        
+        IBInfoLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBInfoLabel.text = translate.message("infoCB")
         
     }
     
@@ -292,6 +299,7 @@ class ListCardViewController: UIViewController, UITableViewDelegate, UITableView
         }
         
         let lastNumber = cell?.contentView.viewWithTag(20) as! UILabel
+        lastNumber.textColor = UIColor.init(hexString: config.colorAppLabel)
         if card.typeCard_id == 6 {
             
             lastNumber.text = "Paypal"

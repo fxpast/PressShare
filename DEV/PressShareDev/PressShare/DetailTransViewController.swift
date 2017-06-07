@@ -142,13 +142,11 @@ class DetailTransViewController: UIViewController {
             actionOther(self)
         }
         
-        
-        
+        IBWording.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBWording.text = "\(translate.message("wording")) \(aTransaction!.trans_wording)"
+        IBAmount.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBAmount.text = "\(translate.message("amount")) \(BlackBox.sharedInstance.formatedAmount(aTransaction!.trans_amount))"
         
-        
-  
         if aTransaction?.trans_type == 1 {
             IBLabelType.text = "\(IBLabelType.text!) \(translate.message("buy"))"
         }
@@ -167,6 +165,11 @@ class DetailTransViewController: UIViewController {
             IBisInterlo.isEnabled = false
             IBisConfirm.isEnabled = false
             IBisCancel.isEnabled = false
+            IBStar1.isEnabled = false
+            IBStar2.isEnabled = false
+            IBStar3.isEnabled = false
+            IBStar4.isEnabled = false
+            IBStar5.isEnabled = false
             
         }
         else {
@@ -179,12 +182,15 @@ class DetailTransViewController: UIViewController {
         
         let paramId = (aTransaction?.client_id == aTransaction?.proprietaire) ? aTransaction?.vendeur_id : aTransaction?.client_id
         
+        IBClient.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBInfoContact.textColor = UIColor.init(hexString: config.colorAppLabel)
         
         MDBUser.sharedInstance.getUser(paramId!, completionHandlerUser: {(success, usersArray, errorString) in
             
             if success {
                 
                 BlackBox.sharedInstance.performUIUpdatesOnMain {
+                    
                     
                     if (usersArray?.count)! > 0 {
                         for userDico in usersArray! {
@@ -224,14 +230,27 @@ class DetailTransViewController: UIViewController {
         
         subscibeToKeyboardNotifications()
         
+        
         IBButtonCancelr.title = translate.message("cancel")
         IBEnded.title = translate.message("done")
+        
+        IBLabelConfirm.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBLabelConfirm.text = translate.message("confirm")
+        
+        IBLabelCancel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBLabelCancel.text = translate.message("cancel")
+        
+        IBCompliantLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBCompliantLabel.text = translate.message("compliant")
+        
+        IBLabelMyAbsent.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBLabelMyAbsent.text = translate.message("myAbsence")
-        IBOtherText.placeholder = translate.message("other")
+        
+        IBOtherText.attributedPlaceholder = NSAttributedString.init(string: translate.message("other"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+        
+        IBNote.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBNote.text = translate.message("transactNote")
+        
         navigationItem.title = translate.message("validerTransact")
          
         
@@ -1086,7 +1105,10 @@ class DetailTransViewController: UIViewController {
             MDBCapital.sharedInstance.setUpdateCapital(capital, completionHandlerUpdate: { (success, errorString) in
                 
                 if success {
+                    
+                    //OK
            
+                    /*
                     var product = Product(dico: [String : AnyObject]())
                     product.prod_id = (self.aTransaction?.prod_id)!
                     product.prod_hidden = false
@@ -1158,6 +1180,8 @@ class DetailTransViewController: UIViewController {
                         }
                         
                     }
+                    
+                    */
                     
                 }
                 else {

@@ -50,6 +50,8 @@ class FeedbackViewController: UIViewController {
         config.isTimer = false
         timerBadge.invalidate()
         timerBadge = nil
+        IBTextView.textColor = UIColor.init(hexString: config.colorAppText)
+        
         
     }
     

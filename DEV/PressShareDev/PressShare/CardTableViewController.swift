@@ -91,6 +91,7 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
         
    
         
+        IBTypeCardLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBTypeCardLabel.text = translate.message("typeOfPay")
         
         if  config.typeCard_id != 0 {
@@ -127,7 +128,7 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
                     } catch  {
                         print("error url : ", typeC.typeCard_ImageUrl)
                     }
-                    
+                    IBImageCardLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
                     IBImageCardLabel.text = typeC.typeCard_Wording
                     
                 }
@@ -137,11 +138,15 @@ class CardTableViewController: UITableViewController, UITextFieldDelegate, BTVie
         }
         
         
+        IBNumber.attributedPlaceholder = NSAttributedString.init(string: translate.message("CBNumber"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+
         
-        IBNumber.placeholder = translate.message("CBNumber")
+        IBNumberLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBNumberLabel.text = translate.message("CBNumber")
         IBNumber.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBNumber.frame))
 
+        
+        IBDateLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBDateLabel.text = translate.message("expiryDate")
         IBDate.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBDate.frame))
         

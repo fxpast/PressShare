@@ -104,8 +104,8 @@
 	</array>
 	<key>allowExch</key>
 	<array>
-		<string>Echange possible</string>
-		<string>Exchange possible</string>
+		<string>Possibilité de partage (sans rémunération)?</string>
+		<string>Sharing possible (no remuneration)?</string>
 	</array>
 	<key>date</key>
 	<array>
@@ -212,6 +212,11 @@
 		<string>Confirmer la resilisation</string>
 		<string> Confirm termination</string>
 	</array>
+    <key>myPosition</key>
+    <array>
+        <string>Ma position</string>
+        <string>My position</string>
+    </array>
 	<key>sell</key>
 	<array>
 		<string>Vendre</string>
@@ -342,6 +347,11 @@
 		<string>Mon abonnement</string>
 		<string>My subscription</string>
 	</array>
+    <key>infoCB</key>
+    <array>
+        <string>Vos données bancaires sont cryptées de façon sécurisée.</string>
+        <string>Your bank details are encrypted securely.</string>
+    </array>
 	<key>myCB</key>
 	<array>
 		<string>Mes cartes bancaires</string>
@@ -617,12 +627,16 @@
 		<string>commentaire</string>
 		<string>comment</string>
 	</array>
+    <key>userNote</key>
+    <array>
+        <string>Note de l'utilisateur:</string>
+        <string>User's note :</string>
+    </array>
     <key>star</key>
     <array>
         <string>étoiles</string>
         <string>stars</string>
     </array>
-
     <key>transactNote</key>
     <array>
         <string>Laisser une note :</string>

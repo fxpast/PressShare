@@ -55,6 +55,12 @@ class CreateTransViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        IBInfoContact1.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBInfoContact2.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBInfoProduct.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBLabelTrade.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBLabelExchange.textColor = UIColor.init(hexString: config.colorAppLabel)
+
         IBInfoContact1.text = ""
         IBInfoContact2.text = ""
         IBInfoProduct.text = ""
@@ -100,7 +106,7 @@ class CreateTransViewController: UIViewController {
                         for userDico in usersArray! {
                             
                             if userDico["user_nom"] as! String != "" || userDico["user_prenom"] as! String != "" {
-                               self.IBInfoContact1.text = "\(userDico["user_nom"]!) \(userDico["user_prenom"]!) (\(userDico["user_note"]!) \(self.translate.message("star")))"
+                               self.IBInfoContact1.text = "\(userDico["user_nom"]!) \(userDico["user_prenom"]!) (\(self.translate.message("userNote")) \(userDico["user_note"]!) \(self.translate.message("star")))"
                             }
                             
                             if userDico["user_ville"] as! String != "" || userDico["user_pays"] as! String != "" {

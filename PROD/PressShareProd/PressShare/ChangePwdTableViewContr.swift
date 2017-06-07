@@ -78,6 +78,9 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
         tableView.sectionIndexColor = UIColor.init(hexString: config.colorApp)
         
         
+     
+        IBEmail.textColor = UIColor.init(hexString: config.colorAppText)
+        
         if config.previousView == "LoginViewController" {
             
             navigationItem.title = translate.message("lostPassword")
@@ -129,21 +132,30 @@ class ChangePwdTableViewContr : UITableViewController, UITextFieldDelegate {
         
         
       
+        
         IBDone.title = translate.message("done")
         
-        IBOldPass.placeholder = translate.message("oldPass")
+        IBOldPass.attributedPlaceholder = NSAttributedString.init(string: translate.message("oldPass"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+        IBOldPassLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBOldPassLabel.text = translate.message("oldPass")
         IBOldPass.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBOldPass.frame))
 
-        IBNewPass.placeholder = translate.message("newPass")
+        
+        IBNewPass.attributedPlaceholder = NSAttributedString.init(string: translate.message("newPass"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+        IBNewPassLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBNewPassLabel.text = translate.message("newPass")
         IBNewPass.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBNewPass.frame))
 
-        IBCheckPass.placeholder = translate.message("checkPass")
+        
+        
+        IBCheckPass.attributedPlaceholder = NSAttributedString.init(string: translate.message("checkPass"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+        IBCheckPassLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBCheckPassLabel.text = translate.message("checkPass")
         IBCheckPass.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBCheckPass.frame))
 
-        IBEmail.placeholder = translate.message("enterEmail")
+        
+        IBEmail.attributedPlaceholder = NSAttributedString.init(string: translate.message("enterEmail"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])        
+        IBEmailLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBEmailLabel.text = translate.message("enterEmail")
         IBEmail.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBEmail.frame))
 

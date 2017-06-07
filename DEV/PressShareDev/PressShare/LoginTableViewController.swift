@@ -99,23 +99,38 @@ class LoginTableViewController : UITableViewController, UITextFieldDelegate {
         Cards.sharedInstance.cardsArray = nil
         
         IBPressConnect.text = translate.message("connectToPress")
-        IBUser.placeholder = translate.message("pseudo")
+        IBPressConnect.textColor = UIColor.init(hexString: config.colorAppLabel)
+        
+        
+        IBUser.attributedPlaceholder = NSAttributedString.init(string: translate.message("pseudo"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+        IBUser.textColor = UIColor.init(hexString: config.colorAppText)
+        
         IBUserLabel.text = translate.message("pseudo")
+        IBUserLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+        
         IBUser.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBUser.frame))
         
-        IBPassword.placeholder = translate.message("password")
         IBPasswordLabel.text = translate.message("password")
+        IBPasswordLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+        
         IBPassword.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBPassword.frame))
+        
+        IBPassword.attributedPlaceholder = NSAttributedString.init(string: translate.message("password"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+        IBPassword.textColor = UIColor.init(hexString: config.colorAppText)
         
         
         IBLogin.setTitle(translate.message("signin"), for: UIControlState())
         IBLogin.titleLabel?.textAlignment = NSTextAlignment.center
+        IBLogin.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
         IBNewAccount.setTitle(translate.message("signup"), for: UIControlState())
         IBNewAccount.titleLabel?.textAlignment = NSTextAlignment.center
+        IBNewAccount.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
         IBLostPass.setTitle(translate.message("lostPassword"), for: UIControlState())
         IBLostPass.titleLabel?.textAlignment = NSTextAlignment.center
+        IBLostPass.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
         IBAnonyme.setTitle(translate.message("anonyme"), for: UIControlState())
         IBAnonyme.titleLabel?.textAlignment = NSTextAlignment.center
+        IBAnonyme.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
         
         
         filePath  = url.appendingPathComponent("userDico")!.path

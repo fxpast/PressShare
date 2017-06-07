@@ -190,12 +190,16 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                 IBEchangeChoice.isOn = thisproduct.prod_echange
                 
                 IBNom.text =  thisproduct.prod_nom
+                IBNom.textColor = UIColor.init(hexString: config.colorAppText)
                 
                 IBPrix.text = BlackBox.sharedInstance.formatedAmount(thisproduct.prod_prix)
+                IBPrix.textColor = UIColor.init(hexString: config.colorAppText)
                 
                 IBComment.text = thisproduct.prod_comment
+                IBComment.textColor = UIColor.init(hexString: config.colorAppText)
                 
                 IBTemps.text = thisproduct.prod_tempsDispo
+                IBTemps.textColor = UIColor.init(hexString: config.colorAppText)
                 
                 star = thisproduct.prod_etat
                 if star == 1 {
@@ -214,6 +218,7 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
                     actionStar5(IBStar5)
                 }
                 IBInfoLocation.text = thisproduct.prod_mapString
+                IBInfoLocation.textColor = UIColor.init(hexString: config.colorAppText)
                 
                 config.mapString = thisproduct.prod_mapString
                 config.latitude = thisproduct.prod_latitude
@@ -264,19 +269,38 @@ class ProductTableViewContr : UITableViewController , MKMapViewDelegate, CLLocat
 
             
             IBInfoLabel.text = translate.message("tapALoc")
-            IBInfoLocation.placeholder = translate.message("tapALoc")
+            IBInfoLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+            IBInfoLocation.attributedPlaceholder = NSAttributedString.init(string: translate.message("tapALoc"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
             
+            
+            
+            
+            IBMyPositon.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
+            IBMyPositon.setTitle(translate.message("myPosition"), for: UIControlState())
+            
+            IBFind.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
             IBFind.setTitle(translate.message("findOnMap"), for: UIControlState())
-            IBNomLabel.text = translate.message("description")
-            IBNom.placeholder = translate.message("description")
-            IBPrixLabel.text = translate.message("price")
-            IBPrix.placeholder = translate.message("price")
-            IBCommentLabel.text = translate.message("comment")
-            IBComment.placeholder = translate.message("comment")
-            IBTempsLabel.text = translate.message("availableTime")
-            IBTemps.placeholder = translate.message("availableTime")
-            IBEtat.text = translate.message("state")
             
+            IBNomLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+            IBNomLabel.text = translate.message("description")
+            IBNom.attributedPlaceholder = NSAttributedString.init(string: translate.message("description"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+            
+            IBPrixLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+            IBPrixLabel.text = translate.message("price")
+            IBPrix.attributedPlaceholder = NSAttributedString.init(string: translate.message("price"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+            
+            IBCommentLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+            IBCommentLabel.text = translate.message("comment")
+            IBComment.attributedPlaceholder = NSAttributedString.init(string: translate.message("comment"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+            
+            IBTempsLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
+            IBTempsLabel.text = translate.message("availableTime")
+            IBTemps.attributedPlaceholder = NSAttributedString.init(string: translate.message("availableTime"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+            
+            IBEtat.text = translate.message("state")
+            IBEtat.textColor = UIColor.init(hexString: config.colorAppLabel)
+
+            IBEchangeLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
             IBEchangeLabel.text = translate.message("allowExch")
             
             IBNom.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBNom.frame))

@@ -90,6 +90,8 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
         self.title = translate.message("mySubscrit")
         IBBalance.text = BlackBox.sharedInstance.formatedAmount(config.balance!)
+        IBBalance.textColor = UIColor.init(hexString: config.colorAppText)
+        
         IBBalance.isEnabled = false
     }
     
@@ -108,6 +110,7 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
         
         IBEntete.text = "\(translate.message("date"))        \(translate.message("type"))    \(translate.message("amount"))  \(translate.message("wording"))"
+        IBEntete.textColor = UIColor.init(hexString: config.colorAppLabel)
         
         if Cards.sharedInstance.cardsArray == nil {
             
@@ -163,10 +166,26 @@ class SubscriptViewController: UIViewController, UITextFieldDelegate, UITableVie
         
         
         IBLabelBalance.text = translate.message("balance")
+        IBLabelBalance.textColor = UIColor.init(hexString: config.colorAppLabel)
+        
         IBLabelWithdraw.text = translate.message("withdrawal")
+        IBLabelWithdraw.textColor = UIColor.init(hexString: config.colorAppLabel)
+        IBWithdrawal.attributedPlaceholder = NSAttributedString.init(string: translate.message("withdrawal"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+        IBWithdrawal.textColor = UIColor.init(hexString: config.colorAppText)
+        
+        
         IBLabelDeposit.text = translate.message("deposit")
+        IBLabelDeposit.textColor = UIColor.init(hexString: config.colorAppLabel)
+        
+        IBDeposit.attributedPlaceholder = NSAttributedString.init(string: translate.message("withdrawal"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
+        IBDeposit.textColor = UIColor.init(hexString: config.colorAppText)
+
+        IBButtonWithdr.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
         IBButtonWithdr.setTitle(translate.message("done"), for: UIControlState.normal)
+        IBButtonDeposit.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
         IBButtonDeposit.setTitle(translate.message("done"), for: UIControlState.normal)
+        
+        IBButtonSubUnsub.setTitleColor(UIColor.init(hexString: config.colorAppBt), for: UIControlState())
         
         if config.level <= 0 {
             IBButtonSubUnsub.setTitle(translate.message("subscribe"), for: UIControlState.normal)

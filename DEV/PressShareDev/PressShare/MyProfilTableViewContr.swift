@@ -94,38 +94,73 @@ class MyProfilTableViewContr : UITableViewController ,UITextFieldDelegate,  UIAl
         
         navigationItem.title = "\(config.user_pseudo!) (\(config.user_id!))"
         
-        IBPseudo.placeholder = translate.message("pseudo")
+        IBPseudo.attributedPlaceholder = NSAttributedString.init(string: translate.message("pseudo"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBPseudo.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBPseudo.frame))
+        
+        IBPseudoLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBPseudoLabel.text = translate.message("pseudo")
-        IBEmail.placeholder = translate.message("mail")
+        
+        IBEmail.attributedPlaceholder = NSAttributedString.init(string: translate.message("mail"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBEmail.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBEmail.frame))
+        IBEmailLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBEmailLabel.text = translate.message("mail")
-        IBNickName.placeholder = translate.message("nickName")
+        
+        IBNickName.attributedPlaceholder = NSAttributedString.init(string: translate.message("nickName"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBNickName.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBNickName.frame))
+        IBNickNameLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBNickNameLabel.text = translate.message("nickName")
-        IBSurname.placeholder = translate.message("surname")
+        
+        IBSurname.attributedPlaceholder = NSAttributedString.init(string: translate.message("surname"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBSurname.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBSurname.frame))
+        IBSurnameLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBSurnameLabel.text = translate.message("surname")
-        IBAdresse.placeholder = translate.message("adresse")
+        
+        IBAdresse.attributedPlaceholder = NSAttributedString.init(string: translate.message("adresse"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBAdresse.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBAdresse.frame))
+        IBAdresseLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBAdresseLabel.text = translate.message("adresse")
-        IBZipCode.placeholder = translate.message("zipCode")
+        
+        IBZipCode.attributedPlaceholder = NSAttributedString.init(string: translate.message("zipCode"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBZipCode.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBZipCode.frame))
+        IBZipCodeLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBZipCodeLabel.text = translate.message("zipCode")
-        IBCity.placeholder = translate.message("city")
+       
+        IBCity.attributedPlaceholder = NSAttributedString.init(string: translate.message("city"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBCity.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBCity.frame))
+        
+        IBCityLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBCityLabel.text = translate.message("city")
-        IBCountry.placeholder = translate.message("country")
+        
+        IBCountry.attributedPlaceholder = NSAttributedString.init(string: translate.message("country"), attributes: [NSForegroundColorAttributeName : UIColor.init(hexString: config.colorAppPlHd)])
         IBCountry.layer.addSublayer(BlackBox.sharedInstance.createLine(frame: IBCountry.frame))
+        
+        IBCountryLabel.textColor = UIColor.init(hexString: config.colorAppLabel)
         IBCountryLabel.text = translate.message("country")
+        
         IBPseudo.text = config.user_pseudo
+        IBPseudo.textColor = UIColor.init(hexString: config.colorAppText)
+
         IBEmail.text = config.user_email
+        IBEmail.textColor = UIColor.init(hexString: config.colorAppText)
+
         IBNickName.text = config.user_nom
+        IBNickName.textColor = UIColor.init(hexString: config.colorAppText)
+
         IBSurname.text = config.user_prenom
+        IBSurname.textColor = UIColor.init(hexString: config.colorAppText)
+
         IBAdresse.text = config.user_adresse
+        IBAdresse.textColor = UIColor.init(hexString: config.colorAppText)
+
         IBZipCode.text = config.user_codepostal
+        IBZipCode.textColor = UIColor.init(hexString: config.colorAppText)
+
         IBCity.text = config.user_ville
+        IBCity.textColor = UIColor.init(hexString: config.colorAppText)
+
         IBCountry.text = config.user_pays
+        IBCountry.textColor = UIColor.init(hexString: config.colorAppText)
+
         
     }
     
