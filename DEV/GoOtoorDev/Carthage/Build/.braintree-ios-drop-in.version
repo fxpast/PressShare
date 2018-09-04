@@ -1,0 +1,13 @@
+{
+  "commitish" : "6.1.0",
+  "iOS" : [
+    {
+      "name" : "BraintreeDropIn",
+      "hash" : "c6dedfdbe910b2011a4aa056ca5f53e556e9a577bf7b01c5cf702d367d8b6dc9"
+    },
+    {
+      "name" : "BraintreeUIKit",
+      "hash" : "2332dc6e5b7f80ef2621b83805032266f597cbd9ac6c87a789fd6fe6a6bfff86"
+    }
+  ]
+}

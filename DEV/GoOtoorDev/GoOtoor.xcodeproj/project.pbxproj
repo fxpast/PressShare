@@ -1,0 +1,787 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DB05D8051E4EC27B00D4E27A /* CardTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB05D8031E4EC27B00D4E27A /* CardTableViewController.swift */; };
+		DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0B485A1DEF51F500B76652 /* Capital.swift */; };
+		DB0B485D1DEF522D00B76652 /* PressOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0B485C1DEF522D00B76652 /* PressOperation.swift */; };
+		DB16B7EA1E415DCE003BDC68 /* ParamTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB16B7E91E415DCE003BDC68 /* ParamTable.swift */; };
+		DB17C6531E2C7303001B451B /* DetailMessageViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB17C6521E2C7303001B451B /* DetailMessageViewContr.swift */; };
+		DB22E202206E7B56005B9EEF /* CreneauTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB22E201206E7B56005B9EEF /* CreneauTableViewController.swift */; };
+		DB2515981D83226800B286F7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB2515961D83226800B286F7 /* User.swift */; };
+		DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB385C8A1DE5D99D00AD95FF /* Message.swift */; };
+		DB432BA31E4DF6A000186F7F /* ListCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB432BA21E4DF6A000186F7F /* ListCardViewController.swift */; };
+		DB437EE51E80462F003F0E3F /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB437EE41E80462F003F0E3F /* HelpViewController.swift */; };
+		DB437EE71E815C6F003F0E3F /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB437EE61E815C6F003F0E3F /* FeedbackViewController.swift */; };
+		DB437EE91E816AE8003F0E3F /* Feedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB437EE81E816AE8003F0E3F /* Feedback.swift */; };
+		DB5EFA361CE0FB870065ECEB /* MyTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5EFA351CE0FB870065ECEB /* MyTools.swift */; };
+		DB5FFA0A1DECA0B6003BCA55 /* SubscriptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */; };
+		DB619F992088A70B00936DB0 /* AddCreneauTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB619F982088A70B00936DB0 /* AddCreneauTableViewController.swift */; };
+		DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64B97E1E06880C00013628 /* CommunRequest.swift */; };
+		DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */; };
+		DB6BDF2F1DE46F24007EAFA3 /* CreateTransViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */; };
+		DB8627521F4CBDC60000FB06 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627511F4CBDC60000FB06 /* Users.swift */; };
+		DB8627541F4CBDFB0000FB06 /* MDBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627531F4CBDFB0000FB06 /* MDBUser.swift */; };
+		DB8627561F4CBE4D0000FB06 /* Transactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627551F4CBE4D0000FB06 /* Transactions.swift */; };
+		DB8627581F4CBE7E0000FB06 /* MDBTransact.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627571F4CBE7E0000FB06 /* MDBTransact.swift */; };
+		DB86275A1F4CBECA0000FB06 /* Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627591F4CBECA0000FB06 /* Products.swift */; };
+		DB86275C1F4CBEF20000FB06 /* MDBProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB86275B1F4CBEF20000FB06 /* MDBProduct.swift */; };
+		DB86275E1F4CBF4F0000FB06 /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB86275D1F4CBF4F0000FB06 /* Cards.swift */; };
+		DB8627601F4CBF870000FB06 /* MDBCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB86275F1F4CBF870000FB06 /* MDBCard.swift */; };
+		DB8627621F4CBFB30000FB06 /* TypeCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627611F4CBFB30000FB06 /* TypeCards.swift */; };
+		DB8627641F4CD5930000FB06 /* MDBTypeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627631F4CD5930000FB06 /* MDBTypeCard.swift */; };
+		DB8627661F4CD5FD0000FB06 /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627651F4CD5FD0000FB06 /* Messages.swift */; };
+		DB8627691F4CD6260000FB06 /* MDBMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627681F4CD6260000FB06 /* MDBMessage.swift */; };
+		DB86276B1F4CD6560000FB06 /* Feedbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB86276A1F4CD6560000FB06 /* Feedbacks.swift */; };
+		DB86276D1F4CD6760000FB06 /* MDBFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB86276C1F4CD6760000FB06 /* MDBFeedback.swift */; };
+		DB86276F1F4CD6B40000FB06 /* MDBCommission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB86276E1F4CD6B40000FB06 /* MDBCommission.swift */; };
+		DB8627711F4CD6E70000FB06 /* Capitals.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627701F4CD6E70000FB06 /* Capitals.swift */; };
+		DB8627731F4CD7040000FB06 /* MDBCapital.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627721F4CD7040000FB06 /* MDBCapital.swift */; };
+		DB8627751F4CD72D0000FB06 /* PressOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627741F4CD72D0000FB06 /* PressOperations.swift */; };
+		DB8627771F4CD7480000FB06 /* MDBPressOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627761F4CD7480000FB06 /* MDBPressOperation.swift */; };
+		DB8627791F4CD77A0000FB06 /* ParamTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8627781F4CD77A0000FB06 /* ParamTables.swift */; };
+		DB86277B1F4CD7990000FB06 /* MDBParamTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB86277A1F4CD7990000FB06 /* MDBParamTable.swift */; };
+		DB86277D1F4CD8030000FB06 /* PhotoRecordState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB86277C1F4CD8030000FB06 /* PhotoRecordState.swift */; };
+		DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB879CEC1DF76BEC00B05D5F /* Transaction.swift */; };
+		DB87DEC51E5B27FC00221A5E /* CustomPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB87DEC41E5B27FC00221A5E /* CustomPin.swift */; };
+		DB8CBCC6206A6B8B0066E280 /* PayPalDataCollector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCB6206A6B880066E280 /* PayPalDataCollector.framework */; };
+		DB8CBCC7206A6B8B0066E280 /* PayPalUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCB7206A6B880066E280 /* PayPalUtils.framework */; };
+		DB8CBCC8206A6B8B0066E280 /* BraintreeCard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCB8206A6B880066E280 /* BraintreeCard.framework */; };
+		DB8CBCC9206A6B8B0066E280 /* BraintreeDataCollector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCB9206A6B880066E280 /* BraintreeDataCollector.framework */; };
+		DB8CBCCA206A6B8B0066E280 /* BraintreeCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCBA206A6B880066E280 /* BraintreeCore.framework */; };
+		DB8CBCCB206A6B8B0066E280 /* Braintree3DSecure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCBB206A6B880066E280 /* Braintree3DSecure.framework */; };
+		DB8CBCCC206A6B8B0066E280 /* PayPalOneTouch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCBC206A6B890066E280 /* PayPalOneTouch.framework */; };
+		DB8CBCCD206A6B8B0066E280 /* BraintreeApplePay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCBD206A6B890066E280 /* BraintreeApplePay.framework */; };
+		DB8CBCCE206A6B8B0066E280 /* BraintreePaymentFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCBE206A6B890066E280 /* BraintreePaymentFlow.framework */; };
+		DB8CBCCF206A6B8B0066E280 /* BraintreePayPal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCBF206A6B890066E280 /* BraintreePayPal.framework */; };
+		DB8CBCD0206A6B8B0066E280 /* BraintreeUnionPay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCC0206A6B890066E280 /* BraintreeUnionPay.framework */; };
+		DB8CBCD1206A6B8B0066E280 /* BraintreeAmericanExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCC1206A6B8A0066E280 /* BraintreeAmericanExpress.framework */; };
+		DB8CBCD2206A6B8B0066E280 /* BraintreeUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCC2206A6B8A0066E280 /* BraintreeUIKit.framework */; };
+		DB8CBCD3206A6B8B0066E280 /* BraintreeDropIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCC3206A6B8A0066E280 /* BraintreeDropIn.framework */; };
+		DB8CBCD4206A6B8B0066E280 /* BraintreeUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCC4206A6B8A0066E280 /* BraintreeUI.framework */; };
+		DB8CBCD5206A6B8B0066E280 /* BraintreeVenmo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CBCC5206A6B8A0066E280 /* BraintreeVenmo.framework */; };
+		DB9052F020966EE600E2CAF9 /* Creneaux.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9052EF20966EE600E2CAF9 /* Creneaux.swift */; };
+		DBA03CD81CECB31800B76896 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA03CD71CECB31800B76896 /* Product.swift */; };
+		DBA3C5331CE5141800CD826D /* LoginTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C52F1CE5141800CD826D /* LoginTableViewController.swift */; };
+		DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5301CE5141800CD826D /* MapViewController.swift */; };
+		DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA3C5311CE5141800CD826D /* ListProductViewController.swift */; };
+		DBB4221B1DF8A70D00CB3F5E /* TranslateMessage.plist in Resources */ = {isa = PBXBuildFile; fileRef = DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */; };
+		DBB4221D1DF8A76600CB3F5E /* TranslateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */; };
+		DBBBDAE41DE8C2D9000B5E9E /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */; };
+		DBBCE3881E521D5900D9788F /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBCE3871E521D5900D9788F /* Card.swift */; };
+		DBC585F01E29B9830032A33B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC585EF1E29B9830032A33B /* Config.swift */; };
+		DBC58BD51E847A4900B0EA74 /* ImageFiltration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC58BD41E847A4900B0EA74 /* ImageFiltration.swift */; };
+		DBC58BD91E84A13900B0EA74 /* PendingOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC58BD81E84A13900B0EA74 /* PendingOperations.swift */; };
+		DBC58BDB1E84A16000B0EA74 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC58BDA1E84A16000B0EA74 /* ImageDownloader.swift */; };
+		DBCFFAEF1E32E6DD00CF73D8 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */; };
+		DBE8BAA11E4E732100CADE22 /* TypeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE8BAA01E4E732100CADE22 /* TypeCard.swift */; };
+		DBEC379320695E320002E6C9 /* ProductTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBEC379220695E310002E6C9 /* ProductTableViewContr.swift */; };
+		DBF34A501E4E315800C7AA14 /* ListTypeCBTableViewCrtl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF34A4F1E4E315800C7AA14 /* ListTypeCBTableViewCrtl.swift */; };
+		DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7B3831E1EE71200024DA6 /* Commission.swift */; };
+		DBF7CE141DF5EBB300966F29 /* NewUserTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE131DF5EBB300966F29 /* NewUserTableViewContr.swift */; };
+		DBF7CE161DF6064600966F29 /* ListTransactTablViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */; };
+		DBF7CE181DF72DBD00966F29 /* DetailTransViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */; };
+		DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D80C1CB99E9D00BF706E /* AppDelegate.swift */; };
+		DBF8D8121CB99E9D00BF706E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBF8D8101CB99E9D00BF706E /* Main.storyboard */; };
+		DBF8D8141CB99E9D00BF706E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBF8D8131CB99E9D00BF706E /* Assets.xcassets */; };
+		DBF8D8251CB9A0B700BF706E /* ChangePwdTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8201CB9A0B700BF706E /* ChangePwdTableViewContr.swift */; };
+		DBF8D8271CB9A0B700BF706E /* MyProfilTableViewContr.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8D8221CB9A0B700BF706E /* MyProfilTableViewContr.swift */; };
+		DBFF55962074F92E00EDB9B7 /* Creneau.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBFF55952074F92E00EDB9B7 /* Creneau.swift */; };
+		DBFF55982074FFA700EDB9B7 /* MDBCreneau.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBFF55972074FFA700EDB9B7 /* MDBCreneau.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DBA3C53F1CE519C300CD826D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		DB05D8031E4EC27B00D4E27A /* CardTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardTableViewController.swift; sourceTree = "<group>"; };
+		DB0B485A1DEF51F500B76652 /* Capital.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Capital.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB0B485C1DEF522D00B76652 /* PressOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PressOperation.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB16B7E91E415DCE003BDC68 /* ParamTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParamTable.swift; sourceTree = "<group>"; };
+		DB17C6521E2C7303001B451B /* DetailMessageViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DetailMessageViewContr.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB22E201206E7B56005B9EEF /* CreneauTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreneauTableViewController.swift; sourceTree = "<group>"; };
+		DB2515961D83226800B286F7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = User.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB385C8A1DE5D99D00AD95FF /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Message.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB432BA21E4DF6A000186F7F /* ListCardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListCardViewController.swift; sourceTree = "<group>"; };
+		DB437EE41E80462F003F0E3F /* HelpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		DB437EE61E815C6F003F0E3F /* FeedbackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
+		DB437EE81E816AE8003F0E3F /* Feedback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feedback.swift; sourceTree = "<group>"; };
+		DB5EFA351CE0FB870065ECEB /* MyTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyTools.swift; sourceTree = "<group>"; };
+		DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptViewController.swift; sourceTree = "<group>"; };
+		DB619F982088A70B00936DB0 /* AddCreneauTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCreneauTableViewController.swift; sourceTree = "<group>"; };
+		DB64B97E1E06880C00013628 /* CommunRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CommunRequest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SettingsTableViewContr.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CreateTransViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB8627511F4CBDC60000FB06 /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
+		DB8627531F4CBDFB0000FB06 /* MDBUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBUser.swift; sourceTree = "<group>"; };
+		DB8627551F4CBE4D0000FB06 /* Transactions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transactions.swift; sourceTree = "<group>"; };
+		DB8627571F4CBE7E0000FB06 /* MDBTransact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBTransact.swift; sourceTree = "<group>"; };
+		DB8627591F4CBECA0000FB06 /* Products.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Products.swift; sourceTree = "<group>"; };
+		DB86275B1F4CBEF20000FB06 /* MDBProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBProduct.swift; sourceTree = "<group>"; };
+		DB86275D1F4CBF4F0000FB06 /* Cards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
+		DB86275F1F4CBF870000FB06 /* MDBCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBCard.swift; sourceTree = "<group>"; };
+		DB8627611F4CBFB30000FB06 /* TypeCards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeCards.swift; sourceTree = "<group>"; };
+		DB8627631F4CD5930000FB06 /* MDBTypeCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBTypeCard.swift; sourceTree = "<group>"; };
+		DB8627651F4CD5FD0000FB06 /* Messages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
+		DB8627681F4CD6260000FB06 /* MDBMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBMessage.swift; sourceTree = "<group>"; };
+		DB86276A1F4CD6560000FB06 /* Feedbacks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feedbacks.swift; sourceTree = "<group>"; };
+		DB86276C1F4CD6760000FB06 /* MDBFeedback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBFeedback.swift; sourceTree = "<group>"; };
+		DB86276E1F4CD6B40000FB06 /* MDBCommission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBCommission.swift; sourceTree = "<group>"; };
+		DB8627701F4CD6E70000FB06 /* Capitals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Capitals.swift; sourceTree = "<group>"; };
+		DB8627721F4CD7040000FB06 /* MDBCapital.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBCapital.swift; sourceTree = "<group>"; };
+		DB8627741F4CD72D0000FB06 /* PressOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PressOperations.swift; sourceTree = "<group>"; };
+		DB8627761F4CD7480000FB06 /* MDBPressOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBPressOperation.swift; sourceTree = "<group>"; };
+		DB8627781F4CD77A0000FB06 /* ParamTables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParamTables.swift; sourceTree = "<group>"; };
+		DB86277A1F4CD7990000FB06 /* MDBParamTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBParamTable.swift; sourceTree = "<group>"; };
+		DB86277C1F4CD8030000FB06 /* PhotoRecordState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoRecordState.swift; sourceTree = "<group>"; };
+		DB879CEC1DF76BEC00B05D5F /* Transaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Transaction.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DB87DEC41E5B27FC00221A5E /* CustomPin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPin.swift; sourceTree = "<group>"; };
+		DB8CBCB6206A6B880066E280 /* PayPalDataCollector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PayPalDataCollector.framework; path = Carthage/Build/iOS/PayPalDataCollector.framework; sourceTree = "<group>"; };
+		DB8CBCB7206A6B880066E280 /* PayPalUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PayPalUtils.framework; path = Carthage/Build/iOS/PayPalUtils.framework; sourceTree = "<group>"; };
+		DB8CBCB8206A6B880066E280 /* BraintreeCard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeCard.framework; path = Carthage/Build/iOS/BraintreeCard.framework; sourceTree = "<group>"; };
+		DB8CBCB9206A6B880066E280 /* BraintreeDataCollector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeDataCollector.framework; path = Carthage/Build/iOS/BraintreeDataCollector.framework; sourceTree = "<group>"; };
+		DB8CBCBA206A6B880066E280 /* BraintreeCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeCore.framework; path = Carthage/Build/iOS/BraintreeCore.framework; sourceTree = "<group>"; };
+		DB8CBCBB206A6B880066E280 /* Braintree3DSecure.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Braintree3DSecure.framework; path = Carthage/Build/iOS/Braintree3DSecure.framework; sourceTree = "<group>"; };
+		DB8CBCBC206A6B890066E280 /* PayPalOneTouch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PayPalOneTouch.framework; path = Carthage/Build/iOS/PayPalOneTouch.framework; sourceTree = "<group>"; };
+		DB8CBCBD206A6B890066E280 /* BraintreeApplePay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeApplePay.framework; path = Carthage/Build/iOS/BraintreeApplePay.framework; sourceTree = "<group>"; };
+		DB8CBCBE206A6B890066E280 /* BraintreePaymentFlow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreePaymentFlow.framework; path = Carthage/Build/iOS/BraintreePaymentFlow.framework; sourceTree = "<group>"; };
+		DB8CBCBF206A6B890066E280 /* BraintreePayPal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreePayPal.framework; path = Carthage/Build/iOS/BraintreePayPal.framework; sourceTree = "<group>"; };
+		DB8CBCC0206A6B890066E280 /* BraintreeUnionPay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeUnionPay.framework; path = Carthage/Build/iOS/BraintreeUnionPay.framework; sourceTree = "<group>"; };
+		DB8CBCC1206A6B8A0066E280 /* BraintreeAmericanExpress.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeAmericanExpress.framework; path = Carthage/Build/iOS/BraintreeAmericanExpress.framework; sourceTree = "<group>"; };
+		DB8CBCC2206A6B8A0066E280 /* BraintreeUIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeUIKit.framework; path = Carthage/Build/iOS/BraintreeUIKit.framework; sourceTree = "<group>"; };
+		DB8CBCC3206A6B8A0066E280 /* BraintreeDropIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeDropIn.framework; path = Carthage/Build/iOS/BraintreeDropIn.framework; sourceTree = "<group>"; };
+		DB8CBCC4206A6B8A0066E280 /* BraintreeUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeUI.framework; path = Carthage/Build/iOS/BraintreeUI.framework; sourceTree = "<group>"; };
+		DB8CBCC5206A6B8A0066E280 /* BraintreeVenmo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BraintreeVenmo.framework; path = Carthage/Build/iOS/BraintreeVenmo.framework; sourceTree = "<group>"; };
+		DB9052EF20966EE600E2CAF9 /* Creneaux.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Creneaux.swift; sourceTree = "<group>"; };
+		DBA03CD71CECB31800B76896 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Product.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DBA3C52F1CE5141800CD826D /* LoginTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LoginTableViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DBA3C5301CE5141800CD826D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MapViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DBA3C5311CE5141800CD826D /* ListProductViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ListProductViewController.swift; sourceTree = "<group>"; };
+		DBA3C5411CE51A1B00CD826D /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TranslateMessage.plist; sourceTree = "<group>"; };
+		DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslateMessage.swift; sourceTree = "<group>"; };
+		DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BadgeLabel.swift; sourceTree = "<group>"; };
+		DBBCE3871E521D5900D9788F /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		DBC585EF1E29B9830032A33B /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		DBC58BD41E847A4900B0EA74 /* ImageFiltration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFiltration.swift; sourceTree = "<group>"; };
+		DBC58BD81E84A13900B0EA74 /* PendingOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PendingOperations.swift; sourceTree = "<group>"; };
+		DBC58BDA1E84A16000B0EA74 /* ImageDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
+		DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
+		DBE8BAA01E4E732100CADE22 /* TypeCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeCard.swift; sourceTree = "<group>"; };
+		DBEC379220695E310002E6C9 /* ProductTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductTableViewContr.swift; sourceTree = "<group>"; };
+		DBEDBD9E1DC284FF00EECF0F /* GoOtoor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoOtoor.entitlements; sourceTree = "<group>"; };
+		DBF34A4F1E4E315800C7AA14 /* ListTypeCBTableViewCrtl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListTypeCBTableViewCrtl.swift; sourceTree = "<group>"; };
+		DBF7B3831E1EE71200024DA6 /* Commission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Commission.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DBF7CE131DF5EBB300966F29 /* NewUserTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserTableViewContr.swift; sourceTree = "<group>"; };
+		DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ListTransactTablViewContr.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DetailTransViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DBF8D8091CB99E9C00BF706E /* GoOtoor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoOtoor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBF8D80C1CB99E9D00BF706E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DBF8D8111CB99E9D00BF706E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DBF8D8131CB99E9D00BF706E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DBF8D8181CB99E9D00BF706E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DBF8D8201CB9A0B700BF706E /* ChangePwdTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePwdTableViewContr.swift; sourceTree = "<group>"; };
+		DBF8D8221CB9A0B700BF706E /* MyProfilTableViewContr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfilTableViewContr.swift; sourceTree = "<group>"; };
+		DBFF55952074F92E00EDB9B7 /* Creneau.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Creneau.swift; sourceTree = "<group>"; };
+		DBFF55972074FFA700EDB9B7 /* MDBCreneau.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDBCreneau.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DBF8D8061CB99E9C00BF706E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB8CBCC6206A6B8B0066E280 /* PayPalDataCollector.framework in Frameworks */,
+				DB8CBCC7206A6B8B0066E280 /* PayPalUtils.framework in Frameworks */,
+				DB8CBCC8206A6B8B0066E280 /* BraintreeCard.framework in Frameworks */,
+				DB8CBCC9206A6B8B0066E280 /* BraintreeDataCollector.framework in Frameworks */,
+				DB8CBCCA206A6B8B0066E280 /* BraintreeCore.framework in Frameworks */,
+				DB8CBCCB206A6B8B0066E280 /* Braintree3DSecure.framework in Frameworks */,
+				DB8CBCCC206A6B8B0066E280 /* PayPalOneTouch.framework in Frameworks */,
+				DB8CBCCD206A6B8B0066E280 /* BraintreeApplePay.framework in Frameworks */,
+				DB8CBCCE206A6B8B0066E280 /* BraintreePaymentFlow.framework in Frameworks */,
+				DB8CBCCF206A6B8B0066E280 /* BraintreePayPal.framework in Frameworks */,
+				DB8CBCD0206A6B8B0066E280 /* BraintreeUnionPay.framework in Frameworks */,
+				DB8CBCD1206A6B8B0066E280 /* BraintreeAmericanExpress.framework in Frameworks */,
+				DB8CBCD2206A6B8B0066E280 /* BraintreeUIKit.framework in Frameworks */,
+				DB8CBCD3206A6B8B0066E280 /* BraintreeDropIn.framework in Frameworks */,
+				DB8CBCD4206A6B8B0066E280 /* BraintreeUI.framework in Frameworks */,
+				DB8CBCD5206A6B8B0066E280 /* BraintreeVenmo.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DB0FAD7D1E3AC7360042C78E /* Ressources */ = {
+			isa = PBXGroup;
+			children = (
+				DBF8D8101CB99E9D00BF706E /* Main.storyboard */,
+				DBB4221A1DF8A70D00CB3F5E /* TranslateMessage.plist */,
+				DBF8D8181CB99E9D00BF706E /* Info.plist */,
+				DBF8D8131CB99E9D00BF706E /* Assets.xcassets */,
+			);
+			name = Ressources;
+			sourceTree = "<group>";
+		};
+		DB5EFA371CE39AC80065ECEB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DB2515961D83226800B286F7 /* User.swift */,
+				DB879CEC1DF76BEC00B05D5F /* Transaction.swift */,
+				DBFF55952074F92E00EDB9B7 /* Creneau.swift */,
+				DBA03CD71CECB31800B76896 /* Product.swift */,
+				DBBCE3871E521D5900D9788F /* Card.swift */,
+				DBE8BAA01E4E732100CADE22 /* TypeCard.swift */,
+				DB385C8A1DE5D99D00AD95FF /* Message.swift */,
+				DB437EE81E816AE8003F0E3F /* Feedback.swift */,
+				DBF7B3831E1EE71200024DA6 /* Commission.swift */,
+				DB0B485A1DEF51F500B76652 /* Capital.swift */,
+				DB0B485C1DEF522D00B76652 /* PressOperation.swift */,
+				DB16B7E91E415DCE003BDC68 /* ParamTable.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		DB5EFA3B1CE39AFB0065ECEB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				DBBBDAE31DE8C2D9000B5E9E /* BadgeLabel.swift */,
+				DBC58BD41E847A4900B0EA74 /* ImageFiltration.swift */,
+				DBC58BDA1E84A16000B0EA74 /* ImageDownloader.swift */,
+				DBC58BD81E84A13900B0EA74 /* PendingOperations.swift */,
+				DB87DEC41E5B27FC00221A5E /* CustomPin.swift */,
+				DBCFFAEE1E32E6DD00CF73D8 /* CustomCell.swift */,
+				DB86277C1F4CD8030000FB06 /* PhotoRecordState.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		DB5EFA3C1CE39B010065ECEB /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DB17C6521E2C7303001B451B /* DetailMessageViewContr.swift */,
+				DB22E201206E7B56005B9EEF /* CreneauTableViewController.swift */,
+				DB619F982088A70B00936DB0 /* AddCreneauTableViewController.swift */,
+				DBEC379220695E310002E6C9 /* ProductTableViewContr.swift */,
+				DB5FFA091DECA0B6003BCA55 /* SubscriptViewController.swift */,
+				DBF7CE171DF72DBD00966F29 /* DetailTransViewController.swift */,
+				DBF7CE151DF6064600966F29 /* ListTransactTablViewContr.swift */,
+				DB6BDF2E1DE46F24007EAFA3 /* CreateTransViewController.swift */,
+				DBA3C5311CE5141800CD826D /* ListProductViewController.swift */,
+				DB437EE61E815C6F003F0E3F /* FeedbackViewController.swift */,
+				DBA3C5301CE5141800CD826D /* MapViewController.swift */,
+				DBA3C52F1CE5141800CD826D /* LoginTableViewController.swift */,
+				DB437EE41E80462F003F0E3F /* HelpViewController.swift */,
+				DBF8D8201CB9A0B700BF706E /* ChangePwdTableViewContr.swift */,
+				DBF7CE131DF5EBB300966F29 /* NewUserTableViewContr.swift */,
+				DBF8D8221CB9A0B700BF706E /* MyProfilTableViewContr.swift */,
+				DB68C3621CF1486D009C936F /* SettingsTableViewContr.swift */,
+				DBF34A4F1E4E315800C7AA14 /* ListTypeCBTableViewCrtl.swift */,
+				DB05D8031E4EC27B00D4E27A /* CardTableViewController.swift */,
+				DB432BA21E4DF6A000186F7F /* ListCardViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		DB5EFA3D1CE39B520065ECEB /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				DBF8D80C1CB99E9D00BF706E /* AppDelegate.swift */,
+				DBA3C5411CE51A1B00CD826D /* Bridging-Header.h */,
+			);
+			name = Delegate;
+			sourceTree = "<group>";
+		};
+		DB86274E1F4CBCFA0000FB06 /* lists */ = {
+			isa = PBXGroup;
+			children = (
+				DB8627511F4CBDC60000FB06 /* Users.swift */,
+				DB8627551F4CBE4D0000FB06 /* Transactions.swift */,
+				DB8627591F4CBECA0000FB06 /* Products.swift */,
+				DB86275D1F4CBF4F0000FB06 /* Cards.swift */,
+				DB9052EF20966EE600E2CAF9 /* Creneaux.swift */,
+				DB8627611F4CBFB30000FB06 /* TypeCards.swift */,
+				DB8627651F4CD5FD0000FB06 /* Messages.swift */,
+				DB86276A1F4CD6560000FB06 /* Feedbacks.swift */,
+				DB8627701F4CD6E70000FB06 /* Capitals.swift */,
+				DB8627741F4CD72D0000FB06 /* PressOperations.swift */,
+				DB8627781F4CD77A0000FB06 /* ParamTables.swift */,
+			);
+			name = lists;
+			sourceTree = "<group>";
+		};
+		DB86274F1F4CBD3F0000FB06 /* daos */ = {
+			isa = PBXGroup;
+			children = (
+				DB64B97E1E06880C00013628 /* CommunRequest.swift */,
+				DB8627531F4CBDFB0000FB06 /* MDBUser.swift */,
+				DB8627571F4CBE7E0000FB06 /* MDBTransact.swift */,
+				DBFF55972074FFA700EDB9B7 /* MDBCreneau.swift */,
+				DB86275B1F4CBEF20000FB06 /* MDBProduct.swift */,
+				DB86275F1F4CBF870000FB06 /* MDBCard.swift */,
+				DB8627631F4CD5930000FB06 /* MDBTypeCard.swift */,
+				DB8627681F4CD6260000FB06 /* MDBMessage.swift */,
+				DB86276C1F4CD6760000FB06 /* MDBFeedback.swift */,
+				DB86276E1F4CD6B40000FB06 /* MDBCommission.swift */,
+				DB8627721F4CD7040000FB06 /* MDBCapital.swift */,
+				DB8627761F4CD7480000FB06 /* MDBPressOperation.swift */,
+				DB86277A1F4CD7990000FB06 /* MDBParamTable.swift */,
+			);
+			name = daos;
+			sourceTree = "<group>";
+		};
+		DB8627501F4CBD520000FB06 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				DB5EFA351CE0FB870065ECEB /* MyTools.swift */,
+				DBC585EF1E29B9830032A33B /* Config.swift */,
+				DBB4221C1DF8A76600CB3F5E /* TranslateMessage.swift */,
+			);
+			name = utils;
+			sourceTree = "<group>";
+		};
+		DBBB75611E707AE40040EA08 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DB8CBCBB206A6B880066E280 /* Braintree3DSecure.framework */,
+				DB8CBCC1206A6B8A0066E280 /* BraintreeAmericanExpress.framework */,
+				DB8CBCBD206A6B890066E280 /* BraintreeApplePay.framework */,
+				DB8CBCB8206A6B880066E280 /* BraintreeCard.framework */,
+				DB8CBCBA206A6B880066E280 /* BraintreeCore.framework */,
+				DB8CBCB9206A6B880066E280 /* BraintreeDataCollector.framework */,
+				DB8CBCC3206A6B8A0066E280 /* BraintreeDropIn.framework */,
+				DB8CBCBE206A6B890066E280 /* BraintreePaymentFlow.framework */,
+				DB8CBCBF206A6B890066E280 /* BraintreePayPal.framework */,
+				DB8CBCC4206A6B8A0066E280 /* BraintreeUI.framework */,
+				DB8CBCC2206A6B8A0066E280 /* BraintreeUIKit.framework */,
+				DB8CBCC0206A6B890066E280 /* BraintreeUnionPay.framework */,
+				DB8CBCC5206A6B8A0066E280 /* BraintreeVenmo.framework */,
+				DB8CBCB6206A6B880066E280 /* PayPalDataCollector.framework */,
+				DB8CBCBC206A6B890066E280 /* PayPalOneTouch.framework */,
+				DB8CBCB7206A6B880066E280 /* PayPalUtils.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DBF8D8001CB99E9C00BF706E = {
+			isa = PBXGroup;
+			children = (
+				DBF8D80B1CB99E9D00BF706E /* GoOtoor */,
+				DBBB75611E707AE40040EA08 /* Frameworks */,
+				DBF8D80A1CB99E9C00BF706E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DBF8D80A1CB99E9C00BF706E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DBF8D8091CB99E9C00BF706E /* GoOtoor.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DBF8D80B1CB99E9D00BF706E /* GoOtoor */ = {
+			isa = PBXGroup;
+			children = (
+				DBEDBD9E1DC284FF00EECF0F /* GoOtoor.entitlements */,
+				DB8627501F4CBD520000FB06 /* utils */,
+				DB86274F1F4CBD3F0000FB06 /* daos */,
+				DB86274E1F4CBCFA0000FB06 /* lists */,
+				DB5EFA3D1CE39B520065ECEB /* Delegate */,
+				DB5EFA3C1CE39B010065ECEB /* Controllers */,
+				DB5EFA3B1CE39AFB0065ECEB /* Views */,
+				DB5EFA371CE39AC80065ECEB /* Models */,
+				DB0FAD7D1E3AC7360042C78E /* Ressources */,
+			);
+			path = GoOtoor;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DBF8D8081CB99E9C00BF706E /* GoOtoor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DBF8D81B1CB99E9D00BF706E /* Build configuration list for PBXNativeTarget "GoOtoor" */;
+			buildPhases = (
+				DBF8D8051CB99E9C00BF706E /* Sources */,
+				DBF8D8061CB99E9C00BF706E /* Frameworks */,
+				DBF8D8071CB99E9C00BF706E /* Resources */,
+				DBA3C53F1CE519C300CD826D /* Embed Frameworks */,
+				DBDCF1BB1E7367C500B94BF0 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GoOtoor;
+			productName = PressShare;
+			productReference = DBF8D8091CB99E9C00BF706E /* GoOtoor.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DBF8D8011CB99E9C00BF706E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "Pastouret Roger";
+				TargetAttributes = {
+					DBF8D8081CB99E9C00BF706E = {
+						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = TNC26WW3G9;
+						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = DBF8D8041CB99E9C00BF706E /* Build configuration list for PBXProject "GoOtoor" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DBF8D8001CB99E9C00BF706E;
+			productRefGroup = DBF8D80A1CB99E9C00BF706E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DBF8D8081CB99E9C00BF706E /* GoOtoor */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DBF8D8071CB99E9C00BF706E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DBF8D8141CB99E9D00BF706E /* Assets.xcassets in Resources */,
+				DBF8D8121CB99E9D00BF706E /* Main.storyboard in Resources */,
+				DBB4221B1DF8A70D00CB3F5E /* TranslateMessage.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DBDCF1BB1E7367C500B94BF0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeApplePay.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeVenmo.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeCore.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Braintree3DSecure.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PayPalUtils.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeUnionPay.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreePayPal.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PayPalOneTouch.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeDataCollector.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PayPalDataCollector.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeCard.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeUI.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeDropIn.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeUIKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreePaymentFlow.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BraintreeAmericanExpress.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DBF8D8051CB99E9C00BF706E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB86276B1F4CD6560000FB06 /* Feedbacks.swift in Sources */,
+				DB05D8051E4EC27B00D4E27A /* CardTableViewController.swift in Sources */,
+				DB86275C1F4CBEF20000FB06 /* MDBProduct.swift in Sources */,
+				DBF8D8271CB9A0B700BF706E /* MyProfilTableViewContr.swift in Sources */,
+				DB8627621F4CBFB30000FB06 /* TypeCards.swift in Sources */,
+				DB8627731F4CD7040000FB06 /* MDBCapital.swift in Sources */,
+				DB437EE51E80462F003F0E3F /* HelpViewController.swift in Sources */,
+				DBC58BD91E84A13900B0EA74 /* PendingOperations.swift in Sources */,
+				DB432BA31E4DF6A000186F7F /* ListCardViewController.swift in Sources */,
+				DB68C3631CF1486D009C936F /* SettingsTableViewContr.swift in Sources */,
+				DB22E202206E7B56005B9EEF /* CreneauTableViewController.swift in Sources */,
+				DBE8BAA11E4E732100CADE22 /* TypeCard.swift in Sources */,
+				DBA3C5351CE5141900CD826D /* ListProductViewController.swift in Sources */,
+				DB437EE91E816AE8003F0E3F /* Feedback.swift in Sources */,
+				DB437EE71E815C6F003F0E3F /* FeedbackViewController.swift in Sources */,
+				DB16B7EA1E415DCE003BDC68 /* ParamTable.swift in Sources */,
+				DBF34A501E4E315800C7AA14 /* ListTypeCBTableViewCrtl.swift in Sources */,
+				DBF7CE141DF5EBB300966F29 /* NewUserTableViewContr.swift in Sources */,
+				DB86276D1F4CD6760000FB06 /* MDBFeedback.swift in Sources */,
+				DB8627691F4CD6260000FB06 /* MDBMessage.swift in Sources */,
+				DB86277B1F4CD7990000FB06 /* MDBParamTable.swift in Sources */,
+				DBF8D8251CB9A0B700BF706E /* ChangePwdTableViewContr.swift in Sources */,
+				DB86276F1F4CD6B40000FB06 /* MDBCommission.swift in Sources */,
+				DB8627521F4CBDC60000FB06 /* Users.swift in Sources */,
+				DB8627641F4CD5930000FB06 /* MDBTypeCard.swift in Sources */,
+				DBEC379320695E320002E6C9 /* ProductTableViewContr.swift in Sources */,
+				DBC58BDB1E84A16000B0EA74 /* ImageDownloader.swift in Sources */,
+				DB0B485B1DEF51F500B76652 /* Capital.swift in Sources */,
+				DB5EFA361CE0FB870065ECEB /* MyTools.swift in Sources */,
+				DBF8D80D1CB99E9D00BF706E /* AppDelegate.swift in Sources */,
+				DB8627661F4CD5FD0000FB06 /* Messages.swift in Sources */,
+				DB5FFA0A1DECA0B6003BCA55 /* SubscriptViewController.swift in Sources */,
+				DB8627601F4CBF870000FB06 /* MDBCard.swift in Sources */,
+				DBA3C5341CE5141900CD826D /* MapViewController.swift in Sources */,
+				DB87DEC51E5B27FC00221A5E /* CustomPin.swift in Sources */,
+				DB385C8B1DE5D99D00AD95FF /* Message.swift in Sources */,
+				DBC58BD51E847A4900B0EA74 /* ImageFiltration.swift in Sources */,
+				DBCFFAEF1E32E6DD00CF73D8 /* CustomCell.swift in Sources */,
+				DB17C6531E2C7303001B451B /* DetailMessageViewContr.swift in Sources */,
+				DBF7B3841E1EE71200024DA6 /* Commission.swift in Sources */,
+				DB8627751F4CD72D0000FB06 /* PressOperations.swift in Sources */,
+				DB86275A1F4CBECA0000FB06 /* Products.swift in Sources */,
+				DB8627561F4CBE4D0000FB06 /* Transactions.swift in Sources */,
+				DBFF55962074F92E00EDB9B7 /* Creneau.swift in Sources */,
+				DBBCE3881E521D5900D9788F /* Card.swift in Sources */,
+				DB0B485D1DEF522D00B76652 /* PressOperation.swift in Sources */,
+				DB2515981D83226800B286F7 /* User.swift in Sources */,
+				DB8627581F4CBE7E0000FB06 /* MDBTransact.swift in Sources */,
+				DB8627791F4CD77A0000FB06 /* ParamTables.swift in Sources */,
+				DB8627711F4CD6E70000FB06 /* Capitals.swift in Sources */,
+				DB86277D1F4CD8030000FB06 /* PhotoRecordState.swift in Sources */,
+				DB8627541F4CBDFB0000FB06 /* MDBUser.swift in Sources */,
+				DB879CED1DF76BEC00B05D5F /* Transaction.swift in Sources */,
+				DBA03CD81CECB31800B76896 /* Product.swift in Sources */,
+				DB64B97F1E06880C00013628 /* CommunRequest.swift in Sources */,
+				DBC585F01E29B9830032A33B /* Config.swift in Sources */,
+				DB86275E1F4CBF4F0000FB06 /* Cards.swift in Sources */,
+				DBB4221D1DF8A76600CB3F5E /* TranslateMessage.swift in Sources */,
+				DBFF55982074FFA700EDB9B7 /* MDBCreneau.swift in Sources */,
+				DB8627771F4CD7480000FB06 /* MDBPressOperation.swift in Sources */,
+				DB6BDF2F1DE46F24007EAFA3 /* CreateTransViewController.swift in Sources */,
+				DBF7CE181DF72DBD00966F29 /* DetailTransViewController.swift in Sources */,
+				DB9052F020966EE600E2CAF9 /* Creneaux.swift in Sources */,
+				DBF7CE161DF6064600966F29 /* ListTransactTablViewContr.swift in Sources */,
+				DB619F992088A70B00936DB0 /* AddCreneauTableViewController.swift in Sources */,
+				DBBBDAE41DE8C2D9000B5E9E /* BadgeLabel.swift in Sources */,
+				DBA3C5331CE5141800CD826D /* LoginTableViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		DBF8D8101CB99E9D00BF706E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DBF8D8111CB99E9D00BF706E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DBF8D8191CB99E9D00BF706E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: pastouret roger (TNC26WW3G9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DBF8D81A1CB99E9D00BF706E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: pastouret roger (TNC26WW3G9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DBF8D81C1CB99E9D00BF706E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GoOtoor/GoOtoor.entitlements;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GoOtoor",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "$(SRCROOT)/GoOtoor/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.prv.GoOtoor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "GoOtoor/Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		DBF8D81D1CB99E9D00BF706E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GoOtoor/GoOtoor.entitlements;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GoOtoor",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "$(SRCROOT)/GoOtoor/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.prv.GoOtoor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "GoOtoor/Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DBF8D8041CB99E9C00BF706E /* Build configuration list for PBXProject "GoOtoor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DBF8D8191CB99E9D00BF706E /* Debug */,
+				DBF8D81A1CB99E9D00BF706E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DBF8D81B1CB99E9D00BF706E /* Build configuration list for PBXNativeTarget "GoOtoor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DBF8D81C1CB99E9D00BF706E /* Debug */,
+				DBF8D81D1CB99E9D00BF706E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DBF8D8011CB99E9C00BF706E /* Project object */;
+}
